@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameWorld - Unblocked Games Hub</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter font and dark mode defaults */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles to achieve the minimalist game site look */
+        .game-card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<!-- Swapping to a dark theme (bg-black) with white text -->
+<body class="bg-gray-900 text-white">
+
+    <!-- Header / Navigation (Simple, Dark, Minimal) -->
+    <header class="bg-gray-800 sticky top-0 z-50 border-b border-gray-700">
+        <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+            <div class="flex items-center">
+                <!-- LOGO WITH ICON ADDED -->
+                <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-white hover:text-cyan-400 transition duration-300">
+                    <!-- Game Controller Icon -->
+                    <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2v-5m-9-2a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z"/>
+                    </svg>
+                    <!-- Logo Text -->
+                    <span>UBG<span class="text-cyan-400">100</span></span>
+                </a>
+            </div>
+            
+            <!-- Mobile Menu Button (hidden on desktop) -->
+            <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none absolute right-4 top-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+            
+            <!-- Desktop Menu (Centered Links) - HOME ACTIVE -->
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="index.html" class="text-white border-b-2 border-cyan-400 transition duration-200 font-medium">Home</a>
+                <a href="games.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Games</a>
+                <a href="faq.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">FAQ</a>
+                <a href="changelog.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Changelog</a>
+            </div>
+        </nav>
+        
+        <!-- Mobile Menu (hidden by default) -->
+        <div id="mobile-menu" class="md:hidden hidden bg-gray-800 px-4 pb-4 border-t border-gray-700">
+            <a href="index.html" class="block text-white border-l-2 border-cyan-400 py-2 pl-2 transition duration-200 border-b border-gray-700">Home</a>
+            <a href="games.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">Games</a>
+            <a href="faq.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">FAQ</a>
+            <a href="changelog.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200">Changelog</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Featured Games Grid (Primary Content) -->
+        <section class="py-8 sm:py-12">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center mb-8 text-white">
+                    Featured Games
+                </h2>
+                
+                <!-- Game Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    
+                    <!-- Game Card 1: Rooftop Snipers -->
+                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700">
+                        <img src="https://placehold.co/400x200/222222/bbbbbb?text=ROOFTOP+SNIPERS" 
+                             alt="Rooftop Snipers" 
+                             class="w-full h-32 object-cover"
+                             onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
+                        <div class="p-4">
+                            <h3 class="text-xl font-semibold mb-2 text-white">Rooftop Snipers</h3>
+                            <p class="text-gray-400 text-sm mb-4 line-clamp-2">Challenge your friends side by side or play the computer. Shoot your opponent off the map to win.</p>
+                            <a href="#" class="block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
+                                Play Now
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Game Card 2: Tube Jumpers -->
+                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700">
+                        <img src="https://placehold.co/400x200/222222/bbbbbb?text=TUBE+JUMPERS" 
+                             alt="Tube Jumpers" 
+                             class="w-full h-32 object-cover"
+                             onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
+                        <div class="p-4">
+                            <h3 class="text-xl font-semibold mb-2 text-white">Tube Jumpers</h3>
+                            <p class="text-gray-400 text-sm mb-4 line-clamp-2">The last one to stay on the tubes wins. Watch out for miscellaneous objects while watching your back.</p>
+                            <a href="#" class="block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
+                                Play Now
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Game Card 3: Slope -->
+                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700">
+                        <img src="https://placehold.co/400x200/222222/bbbbbb?text=SLOPE" 
+                             alt="Slope" 
+                             class="w-full h-32 object-cover"
+                             onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
+                        <div class="p-4">
+                            <h3 class="text-xl font-semibold mb-2 text-white">Slope</h3>
+                            <p class="text-gray-400 text-sm mb-4 line-clamp-2">Slope is the ultimate running game that will put your skills to the test, an all-time favorite of the internet!</p>
+                            <a href="#" class="block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
+                                Play Now
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Game Card 4: Stack -->
+                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700">
+                        <img src="https://placehold.co/400x200/222222/bbbbbb?text=STACK" 
+                             alt="Stack" 
+                             class="w-full h-32 object-cover"
+                             onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
+                        <div class="p-4">
+                            <h3 class="text-xl font-semibold mb-2 text-white">Stack</h3>
+                            <p class="text-gray-400 text-sm mb-4 line-clamp-2">Keep stacking up the blocks as high as you can! Just make sure you don't run out of blocks...</p>
+                            <a href="#" class="block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
+                                Play Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- What is GameWorld Section -->
+        <section class="py-12 sm:py-16 bg-gray-950 border-y border-gray-800 mt-6">
+            <div class="container mx-auto px-4 max-w-4xl">
+                <h2 class="text-3xl font-bold text-center mb-6 text-white">
+                    What is GameWorld?
+                </h2>
+                <div class="text-center text-lg text-gray-300 space-y-4">
+                    <p>
+                        GameWorld is a site that serves as a hub for the best games on the internet, for free!
+                    </p>
+                    <p>
+                        Our focus is on bringing quality entertainment that you will enjoy. With a collection of over 100 games and counting, the options are endless. What are you waiting for? Go find one and start playing!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials/Community Section (Simplified) -->
+        <section class="py-12 sm:py-16">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center mb-10 text-white">
+                    What Users Have to Say
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <!-- Testimonial 1 -->
+                    <div class="bg-gray-800 p-6 rounded-lg border-l-4 border-cyan-500 shadow-xl">
+                        <p class="text-gray-300 italic mb-4">"This website provides a vast variety of games and receives constant updates. Make sure to try out GameWorld today!"</p>
+                        <p class="font-semibold text-white">- Alpha</p>
+                    </div>
+
+                    <!-- Testimonial 2 -->
+                    <div class="bg-gray-800 p-6 rounded-lg border-l-4 border-cyan-500 shadow-xl">
+                        <p class="text-gray-300 italic mb-4">"I use GameWorld everyday because of its diverse games that it offers. The website design is simple but nice and very easy to use."</p>
+                        <p class="font-semibold text-white">- Flamesawoken</p>
+                    </div>
+                    
+                    <!-- Testimonial 3 -->
+                    <div class="bg-gray-800 p-6 rounded-lg border-l-4 border-cyan-500 shadow-xl">
+                        <p class="text-gray-300 italic mb-4">"GameWorld is such a good website, they listen to their community about what games people want. Highly recommended!"</p>
+                        <p class="font-semibold text-white">- Locklyn</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 border-t border-gray-700 mt-10">
+        <div class="container mx-auto px-4 py-6 text-center">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="index.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Home</a>
+                <a href="games.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Games</a>
+                <a href="faq.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">FAQ</a>
+                <a href="changelog.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Terms of Service</a>
+            </div>
+            <p class="text-gray-500 text-xs">
+                Copyright GameWorld © 2025. All rights reserved to respective owners.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Simple JS for Mobile Menu Toggle -->
+    <script>
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
