@@ -186,142 +186,142 @@
     </header>
 
     <main>
-        <section class="py-8 sm:py-12">
-            <div class="container mx-auto px-4">
-                <h1 class="text-3xl font-bold text-center mb-10 text-white">
-                    Full Game Catalog (100+ Games)
-                </h1>
+    <section class="py-8 sm:py-12">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl font-bold text-center mb-10 text-white">
+                Full Game Catalog (100+ Games)
+            </h1>
 
-                <div class="mb-10 max-w-lg mx-auto">
-                    <input type="text" placeholder="Search for a game..." class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" style="background-color: var(--bg-glass-card); border-color: var(--border-glass-light);" />
+            <div class="mb-10 max-w-lg mx-auto">
+                <input type="text" placeholder="Search for a game..." class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" style="background-color: var(--bg-glass-card); border-color: var(--border-glass-light);" />
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                
+                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
+                    <img src="/assets/nikki.jpg" alt="Drift Hunters" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
+                    <div class="p-3">
+                        <h3 class="text-lg font-semibold text-white truncate">Yume Nikki</h3>
+                        <p class="text-gray-400 text-xs">Weirdness / Simulation</p>
+                        <button onclick="openGameModal('/games/clyumenikki.html', 'Yume Nikki')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    </div>
                 </div>
                 
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-                    
-                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                        <img src="/assets/nikki.jpg" alt="Drift Hunters" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
-                        <div class="p-3">
-                            <h3 class="text-lg font-semibold text-white truncate">Yume Nikki</h3>
-                            <p class="text-gray-400 text-xs">Weirdness / Simulation</p>
-                            <button onclick="openGameModal('/games/clyumenikki.html', 'Yume Nikki')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                        </div>
-                    </div>
-                    
-                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                        <img src="/assets/cookie.png" alt="Cookie Clicker" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
-                        <div class="p-3">
-                            <h3 class="text-lg font-semibold text-white truncate">Cookie Clicker</h3>
-                            <p class="text-gray-400 text-xs">Idle / Simulation</p>
-                            <button onclick="openGameModal('https://cookieclickerz.vercel.app/', 'Cookie Clicker')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                        </div>
-                    </div>
-
-                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                        <img src="/assets/doom1.jpg" alt="Retro Bowl" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
-                        <div class="p-3">
-                            <h3 class="text-lg font-semibold text-white truncate">Doom 1</h3>
-                            <p class="text-gray-400 text-xs">Survival / Shooter</p>
-                            <button onclick="openGameModal('/games/DOOM.html', 'Doom 1')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                        </div>
-                    </div>
-                    
-                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                        <img src="/assets/doom2.png" alt="Fireboy & Watergirl" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
-                        <div class="p-3">
-                            <h3 class="text-lg font-semibold text-white truncate">Doom 2</h3>
-                            <p class="text-gray-400 text-xs">Survival / Shooter</p>
-                            <button onclick="openGameModal('/games/Doom 2.html', 'Doom 2')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                        </div>
-                    </div>
-
-                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                        <img src="/assets/factory.jpg" alt="Run 3" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
-                        <div class="p-3">
-                            <h3 class="text-lg font-semibold text-white truncate">Nubby's number factory</h3>
-                            <p class="text-gray-400 text-xs">Arcade / Endless</p>
-                            <button onclick="openGameModal('/games/Nubbys Number Factory.html', 'NNF')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                        </div>
-                    </div>
-
-                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                        <img src="/assets/pizzatower.jpg" alt="Voxel City" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
-                        <div class="p-3">
-                            <h3 class="text-lg font-semibold text-white truncate">Pizza Tower</h3>
-                            <p class="text-gray-400 text-xs">Fast Paced / Platformer</p>
-                            <button onclick="openGameModal('/games/Pizza Tower.html', 'Pizza Tower')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                        </div>
-                    </div>
-                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                        <img src="/assets/cavestory.png" alt="Space Rider" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
-                        <div class="p-3">
-                            <h3 class="text-lg font-semibold text-white truncate">Cave Story</h3>
-                            <p class="text-gray-400 text-xs">Platformer / Shooter</p>
-                            <button onclick="openGameModal('https://smmskm.vercel.app/', 'Cave Story')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                        </div>
-                    </div>
-                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                        <img src="/assets/572190-vqi8cznu-v4.jpg" alt="Tower Defense X" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
-                        <div class="p-3">
-                            <h3 class="text-lg font-semibold text-white truncate">BFDIA5B</h3>
-                            <p class="text-gray-400 text-xs">Platformer / Puzzle</p>
-                            <button onclick="openGameModal('/games/clbfdia5b.html', 'BFDIA5b')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                        </div>
-                    </div>
-                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                        <img src="/assets/uncanny-cat-canny-cat.gif" alt="Platformer Pro" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
-                        <div class="p-3">
-                            <h3 class="text-lg font-semibold text-white truncate">Uncanny Cat Golf</h3>
-                            <p class="text-gray-400 text-xs">Golf</p>
-                            <button onclick="openGameModal('/games/cluncannycatgolf.html', 'Uncanny Cat Golf')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                        </div>
-                    </div>
-                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                        <img src="/assets/ngon.png" alt="Minesweeper" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
-                        <div class="p-3">
-                            <h3 class="text-lg font-semibold text-white truncate">N-GON</h3>
-                            <p class="text-gray-400 text-xs">Puzzle / Classic</p>
-                            <button onclick="openGameModal('/games/n-gon.html', 'N-GON')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                        </div>
-                    </div>
-                </div>
-                 <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                        <img src="/assets/deltarune.jpg" alt="Delta" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
-                        <div class="p-3">
-                            <h3 class="text-lg font-semibold text-white truncate">Deltarune</h3>
-                            <p class="text-gray-400 text-xs">RPG</p>
-                            <button onclick="openGameModal('https://deltacook.vercel.app/', 'Deltarune')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                        </div>
-                    </div>
-                </div>
-             <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                        <img src="/assets/2133.png" alt="life" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
-                        <div class="p-3">
-                            <h3 class="text-lg font-semibold text-white truncate">Half-Life</h3>
-                            <p class="text-gray-400 text-xs">Shooter</p>
-                            <button onclick="openGameModal('/games/Half Life.html', 'Half-life')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                        </div>
-                    </div>
-                </div>
-             <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                        <img src="/assets/knight.jpeg" alt="knight" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
-                        <div class="p-3">
-                            <h3 class="text-lg font-semibold text-white truncate">Hollow Knight</h3>
-                            <p class="text-gray-400 text-xs">RPG/ Metroidvania</p>
-                            <button onclick="openGameModal('/games/Hollow Knight(1).html', 'Hollow Knight')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                        </div>
-                    </div>
-                </div>
-             <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                        <img src="/assets/Sony-playstation-parappa-the-rapper.png" alt="rapper" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
-                        <div class="p-3">
-                            <h3 class="text-lg font-semibold text-white truncate">Parappa the Rapper</h3>
-                            <p class="text-gray-400 text-xs">Rhythm</p>
-                            <button onclick="openGameModal('https://deltacook.vercel.app/', 'Parappa the Rapper')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                        </div>
+                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
+                    <img src="/assets/cookie.png" alt="Cookie Clicker" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
+                    <div class="p-3">
+                        <h3 class="text-lg font-semibold text-white truncate">Cookie Clicker</h3>
+                        <p class="text-gray-400 text-xs">Idle / Simulation</p>
+                        <button onclick="openGameModal('https://cookieclickerz.vercel.app/', 'Cookie Clicker')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                     </div>
                 </div>
 
+                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
+                    <img src="/assets/doom1.jpg" alt="Retro Bowl" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
+                    <div class="p-3">
+                        <h3 class="text-lg font-semibold text-white truncate">Doom 1</h3>
+                        <p class="text-gray-400 text-xs">Survival / Shooter</p>
+                        <button onclick="openGameModal('/games/DOOM.html', 'Doom 1')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    </div>
+                </div>
+                
+                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
+                    <img src="/assets/doom2.png" alt="Fireboy & Watergirl" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
+                    <div class="p-3">
+                        <h3 class="text-lg font-semibold text-white truncate">Doom 2</h3>
+                        <p class="text-gray-400 text-xs">Survival / Shooter</p>
+                        <button onclick="openGameModal('/games/Doom 2.html', 'Doom 2')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    </div>
+                </div>
 
+                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
+                    <img src="/assets/factory.jpg" alt="Run 3" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
+                    <div class="p-3">
+                        <h3 class="text-lg font-semibold text-white truncate">Nubby's number factory</h3>
+                        <p class="text-gray-400 text-xs">Arcade / Endless</p>
+                        <button onclick="openGameModal('/games/Nubbys Number Factory.html', 'NNF')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    </div>
+                </div>
+
+                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
+                    <img src="/assets/pizzatower.jpg" alt="Voxel City" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
+                    <div class="p-3">
+                        <h3 class="text-lg font-semibold text-white truncate">Pizza Tower</h3>
+                        <p class="text-gray-400 text-xs">Fast Paced / Platformer</p>
+                        <button onclick="openGameModal('/games/Pizza Tower.html', 'Pizza Tower')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    </div>
+                </div>
+                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
+                    <img src="/assets/cavestory.png" alt="Space Rider" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
+                    <div class="p-3">
+                        <h3 class="text-lg font-semibold text-white truncate">Cave Story</h3>
+                        <p class="text-gray-400 text-xs">Platformer / Shooter</p>
+                        <button onclick="openGameModal('https://smmskm.vercel.app/', 'Cave Story')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    </div>
+                </div>
+                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
+                    <img src="/assets/572190-vqi8cznu-v4.jpg" alt="Tower Defense X" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
+                    <div class="p-3">
+                        <h3 class="text-lg font-semibold text-white truncate">BFDIA5B</h3>
+                        <p class="text-gray-400 text-xs">Platformer / Puzzle</p>
+                        <button onclick="openGameModal('/games/clbfdia5b.html', 'BFDIA5b')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    </div>
+                </div>
+                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
+                    <img src="/assets/uncanny-cat-canny-cat.gif" alt="Platformer Pro" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
+                    <div class="p-3">
+                        <h3 class="text-lg font-semibold text-white truncate">Uncanny Cat Golf</h3>
+                        <p class="text-gray-400 text-xs">Golf</p>
+                        <button onclick="openGameModal('/games/cluncannycatgolf.html', 'Uncanny Cat Golf')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    </div>
+                </div>
+                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
+                    <img src="/assets/ngon.png" alt="Minesweeper" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
+                    <div class="p-3">
+                        <h3 class="text-lg font-semibold text-white truncate">N-GON</h3>
+                        <p class="text-gray-400 text-xs">Puzzle / Classic</p>
+                        <button onclick="openGameModal('/games/n-gon.html', 'N-GON')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    </div>
+                </div>
+
+                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
+                    <img src="/assets/deltarune.jpg" alt="Delta" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
+                    <div class="p-3">
+                        <h3 class="text-lg font-semibold text-white truncate">Deltarune</h3>
+                        <p class="text-gray-400 text-xs">RPG</p>
+                        <button onclick="openGameModal('https://deltacook.vercel.app/', 'Deltarune')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    </div>
+                </div>
+
+                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
+                    <img src="/assets/2133.png" alt="life" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
+                    <div class="p-3">
+                        <h3 class="text-lg font-semibold text-white truncate">Half-Life</h3>
+                        <p class="text-gray-400 text-xs">Shooter</p>
+                        <button onclick="openGameModal('/games/Half Life.html', 'Half-life')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    </div>
+                </div>
+
+                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
+                    <img src="/assets/knight.jpeg" alt="knight" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
+                    <div class="p-3">
+                        <h3 class="text-lg font-semibold text-white truncate">Hollow Knight</h3>
+                        <p class="text-gray-400 text-xs">RPG/ Metroidvania</p>
+                        <button onclick="openGameModal('/games/Hollow Knight(1).html', 'Hollow Knight')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    </div>
+                </div>
+
+                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
+                    <img src="/assets/Sony-playstation-parappa-the-rapper.png" alt="rapper" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
+                    <div class="p-3">
+                        <h3 class="text-lg font-semibold text-white truncate">Parappa the Rapper</h3>
+                        <p class="text-gray-400 text-xs">Rhythm</p>
+                        <button onclick="openGameModal('https://deltacook.vercel.app/', 'Parappa the Rapper')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    </div>
+                </div>
+
+            </div> </div> </section>
+</main>
     <footer class="bg-gray-800 border-t border-gray-700 mt-10 glass-header">
         <div class="container mx-auto px-4 py-6 text-center">
             <div class="flex justify-center space-x-6 mb-4">
