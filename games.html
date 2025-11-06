@@ -4,43 +4,136 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Qbup</title>
-    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Inter font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* --- NEW: CSS Variables for Theming --- */
+        :root {
+            /* Default Theme: Cyberpunk */
+            --bg-image: url('https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?auto=format&fit=crop&w=1920&q=80');
+            --color-primary: #06b6d4; /* cyan-500 */
+            --color-primary-light: #22d3ee; /* cyan-400 */
+            --color-primary-dark: #0891b2; /* cyan-600 */
+            
+            --color-text-base: #D1D5DB; /* gray-300 */
+            --color-text-white: #ffffff;
+            --color-text-dark: #111827; /* gray-900 */
+            
+            --bg-page: #030712; /* gray-950 - fallback if image fails */
+            --bg-glass-header: rgba(17, 24, 39, 0.6); /* gray-900/60 */
+            --bg-glass-card: rgba(31, 41, 55, 0.5); /* gray-800/50 */
+            --bg-glass-card-hover: rgba(55, 65, 81, 0.7); /* gray-700/70 */
+            --bg-glass-modal: rgba(3, 7, 18, 0.8); /* gray-950/80 */
+            --bg-glass-modal-header: rgba(31, 41, 55, 0.7); /* gray-800/70 */
+            --bg-glass-controls: rgba(55, 65, 81, 0.7); /* gray-700/70 */
+            --bg-glass-controls-hover: rgba(75, 85, 99, 0.8); /* gray-600/80 */
+
+            --border-glass: rgba(55, 65, 81, 0.5); /* gray-700/50 */
+            --border-glass-light: rgba(75, 85, 99, 0.3); /* gray-600/30 */
+            
+            --blur-strength: 10px;
+        }
+        
+        .theme-forest {
+            --bg-image: url('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80');
+            --color-primary: #22c55e; /* green-500 */
+            --color-primary-light: #4ade80; /* green-400 */
+            --color-primary-dark: #16a34a; /* green-600 */
+            --bg-glass-card: rgba(16, 44, 25, 0.5); /* Dark green tint */
+            --bg-glass-card-hover: rgba(26, 64, 35, 0.7);
+        }
+        
+        .theme-ocean {
+            --bg-image: url('https://images.unsplash.com/photo-1439405326854-014607f694d7?auto=format&fit=crop&w=1920&q=80');
+            --color-primary: #3b82f6; /* blue-500 */
+            --color-primary-light: #60a5fa; /* blue-400 */
+            --color-primary-dark: #2563eb; /* blue-600 */
+            --bg-glass-card: rgba(17, 34, 63, 0.5); /* Dark blue tint */
+            --bg-glass-card-hover: rgba(27, 44, 73, 0.7);
+        }
+        /* --- End of Theming --- */
+
         body {
             font-family: 'Inter', sans-serif;
+            /* Apply theme */
+            background-color: var(--bg-page);
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--color-text-base);
+            transition: background-image 0.5s ease-in-out;
         }
+
+        /* NEW: Glassmorphism classes */
+        .glass-header {
+            background-color: var(--bg-glass-header);
+            backdrop-filter: blur(var(--blur-strength));
+            -webkit-backdrop-filter: blur(var(--blur-strength));
+            border-bottom: 1px solid var(--border-glass);
+        }
+
         .game-card {
+            background-color: var(--bg-glass-card);
+            backdrop-filter: blur(var(--blur-strength));
+            -webkit-backdrop-filter: blur(var(--blur-strength));
+            border: 1px solid var(--border-glass-light);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: background-color 0.2s;
         }
-        /* Custom styles for control buttons and transition */
+        .game-card:hover {
+            background-color: var(--bg-glass-card-hover);
+        }
+        
+        .glass-modal-container {
+            background-color: var(--bg-glass-modal);
+            backdrop-filter: blur(var(--blur-strength));
+            -webkit-backdrop-filter: blur(var(--blur-strength));
+            border: 1px solid var(--border-glass);
+        }
+        .glass-modal-header {
+            background-color: var(--bg-glass-modal-header);
+            border-bottom-color: var(--border-glass);
+        }
+
+        /* Update control buttons to use theme */
         .control-btn {
-            /* Applied using @apply in JS for clarity, but defined here for global use */
             padding: 8px;
             border-radius: 9999px;
-            background-color: #374151; /* gray-700 */
-            color: #D1D5DB; /* gray-300 */
+            background-color: var(--bg-glass-controls);
+            color: var(--color-text-base);
             transition-duration: 150ms;
         }
         .control-btn:hover {
-            background-color: #4B5563; /* gray-600 */
+            background-color: var(--bg-glass-controls-hover);
             color: white;
         }
-        /* Ensure the iframe fills the container */
+        
         #game-iframe {
             width: 100%;
             height: 100%;
         }
+
+        /* Override Tailwind classes to use CSS variables */
+        .text-cyan-400 { color: var(--color-primary-light) !important; }
+        .border-cyan-400 { border-color: var(--color-primary-light) !important; }
+        .hover\:text-cyan-400:hover { color: var(--color-primary-light) !important; }
+        .bg-cyan-500 { background-color: var(--color-primary) !important; }
+        .hover\:bg-cyan-400:hover { background-color: var(--color-primary-light) !important; }
+        .focus\:ring-cyan-500:focus { --tw-ring-color: var(--color-primary) !important; }
+        
+        .text-gray-900 { color: var(--color-text-dark) !important; }
+        .text-white { color: var(--color-text-white) !important; }
+        .text-gray-300 { color: var(--color-text-base) !important; }
+        .bg-gray-800 { background-color: var(--bg-glass-card) !important; }
+        .bg-gray-900 { background-color: var(--bg-page) !important; }
+        .border-gray-700 { border-color: var(--border-glass) !important; }
+
     </style>
 </head>
-<body class="bg-gray-900 text-white">
-
-    <!-- Header / Navigation (GAMES ACTIVE) -->
-    <header class="bg-gray-800 sticky top-0 z-50 border-b border-gray-700">
+<body class="bg-gray-900 text-white"> <header class="bg-gray-800 sticky top-0 z-50 border-b border-gray-700 glass-header">
         <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <div class="flex items-center">
                 <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-white hover:text-cyan-400 transition duration-300">
@@ -57,25 +150,41 @@
                 </svg>
             </button>
             
-            <!-- Desktop Menu - GAMES ACTIVE -->
             <div class="hidden md:flex space-x-6 items-center">
                 <a href="index.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Home</a>
                 <a href="games.html" class="text-white border-b-2 border-cyan-400 transition duration-200 font-medium">Games</a>
                 <a href="faq.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">FAQ</a>
                 <a href="changelog.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Changelog</a>
-            </div>
+                
+                <div class="relative" id="theme-picker-dropdown">
+                    <button id="theme-picker-button" class="flex items-center text-gray-300 hover:text-white transition duration-200 font-medium">
+                        <span>Themes</span>
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="theme-menu" class="hidden absolute right-0 mt-2 w-40 rounded-lg shadow-lg py-1 game-card z-10"> <a href="#" onclick="applyTheme('theme-cyber'); return false;" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50">Cyberpunk</a>
+                        <a href="#" onclick="applyTheme('theme-forest'); return false;" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50">Forest</a>
+                        <a href="#" onclick="applyTheme('theme-ocean'); return false;" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50">Ocean</a>
+                    </div>
+                </div>
+                </div>
         </nav>
         
-        <!-- Mobile Menu -->
         <div id="mobile-menu" class="md:hidden hidden bg-gray-800 px-4 pb-4 border-t border-gray-700">
             <a href="index.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">Home</a>
             <a href="games.html" class="block text-white border-l-2 border-cyan-400 py-2 pl-2 transition duration-200 border-b border-gray-700">Games</a>
             <a href="faq.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">FAQ</a>
-            <a href="changelog.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200">Changelog</a>
+            <a href="changelog.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">Changelog</a>
+            <div class="border-b border-gray-700 py-2 pl-2">
+                <span class="text-gray-400 text-sm font-bold">Theme</span>
+                <div class="mt-2 space-y-1">
+                    <a href="#" onclick="applyTheme('theme-cyber'); return false;" class="block text-gray-300 hover:text-white">Cyberpunk</a>
+                    <a href="#" onclick="applyTheme('theme-forest'); return false;" class="block text-gray-300 hover:text-white">Forest</a>
+                    <a href="#" onclick="applyTheme('theme-ocean'); return false;" class="block text-gray-300 hover:text-white">Ocean</a>
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- Main Content -->
     <main>
         <section class="py-8 sm:py-12">
             <div class="container mx-auto px-4">
@@ -83,16 +192,13 @@
                     Full Game Catalog (100+ Games)
                 </h1>
 
-                <!-- Search Bar Placeholder -->
                 <div class="mb-10 max-w-lg mx-auto">
-                    <input type="text" placeholder="Search for a game..." class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+                    <input type="text" placeholder="Search for a game..." class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" style="background-color: var(--bg-glass-card); border-color: var(--border-glass-light);" />
                 </div>
                 
-                <!-- Game Grid -->
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
                     
-                    <!-- Game Card 1 -->
-                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700 group">
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
                         <img src="/assets/nikki.jpg" alt="Drift Hunters" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
                         <div class="p-3">
                             <h3 class="text-lg font-semibold text-white truncate">Yume Nikki</h3>
@@ -101,8 +207,7 @@
                         </div>
                     </div>
                     
-                    <!-- Game Card 2 -->
-                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700 group">
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
                         <img src="/assets/cookie.png" alt="Cookie Clicker" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
                         <div class="p-3">
                             <h3 class="text-lg font-semibold text-white truncate">Cookie Clicker</h3>
@@ -111,8 +216,7 @@
                         </div>
                     </div>
 
-                    <!-- Game Card 3 -->
-                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700 group">
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
                         <img src="/assets/doom1.jpg" alt="Retro Bowl" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
                         <div class="p-3">
                             <h3 class="text-lg font-semibold text-white truncate">Doom 1</h3>
@@ -121,8 +225,7 @@
                         </div>
                     </div>
                     
-                    <!-- Game Card 4 -->
-                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700 group">
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
                         <img src="/assets/doom2.png" alt="Fireboy & Watergirl" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
                         <div class="p-3">
                             <h3 class="text-lg font-semibold text-white truncate">Doom 2</h3>
@@ -131,8 +234,7 @@
                         </div>
                     </div>
 
-                    <!-- Game Card 5 -->
-                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700 group">
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
                         <img src="/assets/factory.jpg" alt="Run 3" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
                         <div class="p-3">
                             <h3 class="text-lg font-semibold text-white truncate">Nubby's number factory</h3>
@@ -141,8 +243,7 @@
                         </div>
                     </div>
 
-                    <!-- Add 5 more placeholder cards for visual consistency -->
-                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700 group">
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
                         <img src="/assets/pizzatower.jpg" alt="Voxel City" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
                         <div class="p-3">
                             <h3 class="text-lg font-semibold text-white truncate">Pizza Tower</h3>
@@ -150,7 +251,7 @@
                             <button onclick="openGameModal('/games/Pizza Tower.html', 'Pizza Tower')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                         </div>
                     </div>
-                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700 group">
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
                         <img src="/assets/cavestory.png" alt="Space Rider" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
                         <div class="p-3">
                             <h3 class="text-lg font-semibold text-white truncate">Cave Story</h3>
@@ -158,7 +259,7 @@
                             <button onclick="openGameModal('https://smmskm.vercel.app/', 'Cave Story')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                         </div>
                     </div>
-                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700 group">
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
                         <img src="/assets/572190-vqi8cznu-v4.jpg" alt="Tower Defense X" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
                         <div class="p-3">
                             <h3 class="text-lg font-semibold text-white truncate">BFDIA5B</h3>
@@ -166,7 +267,7 @@
                             <button onclick="openGameModal('/games/clbfdia5b.html', 'BFDIA5b')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                         </div>
                     </div>
-                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700 group">
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
                         <img src="/assets/uncanny-cat-canny-cat.gif" alt="Platformer Pro" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
                         <div class="p-3">
                             <h3 class="text-lg font-semibold text-white truncate">Uncanny Cat Golf</h3>
@@ -174,7 +275,7 @@
                             <button onclick="openGameModal('/games/cluncannycatgolf.html', 'Uncanny Cat Golf')" class="mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                         </div>
                     </div>
-                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700 group">
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
                         <img src="https://placehold.co/400x250/222222/bbbbbb?text=MINESWEEPER" alt="Minesweeper" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200">
                         <div class="p-3">
                             <h3 class="text-lg font-semibold text-white truncate">Minesweeper</h3>
@@ -184,7 +285,6 @@
                     </div>
                 </div>
 
-                <!-- Pagination Placeholder -->
                 <div class="flex justify-center mt-12 space-x-2">
                     <button class="bg-cyan-500 text-gray-900 px-4 py-2 rounded-lg font-bold">1</button>
                     <button class="bg-gray-800 text-gray-300 hover:bg-gray-700 px-4 py-2 rounded-lg font-medium transition">2</button>
@@ -196,8 +296,7 @@
         </section>
     </main>
 
-    <!-- Footer (Same as index.html) -->
-    <footer class="bg-gray-800 border-t border-gray-700 mt-10">
+    <footer class="bg-gray-800 border-t border-gray-700 mt-10 glass-header">
         <div class="container mx-auto px-4 py-6 text-center">
             <div class="flex justify-center space-x-6 mb-4">
                 <a href="index.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Home</a>
@@ -211,96 +310,151 @@
         </div>
     </footer>
 
-    <!-- Game Player Modal -->
     <div id="game-modal" class="fixed inset-0 bg-black bg-opacity-95 z-[100] hidden flex items-center justify-center p-2 sm:p-4 transition-opacity duration-300">
-        <div class="w-full h-full max-w-7xl max-h-[95vh] flex flex-col bg-gray-950 rounded-xl overflow-hidden shadow-2xl">
+        <div class="w-full h-full max-w-7xl max-h-[95vh] flex flex-col bg-gray-950 rounded-xl overflow-hidden shadow-2xl glass-modal-container">
             
-            <!-- Modal Header / Controls -->
-            <div class="flex-shrink-0 bg-gray-800 p-3 flex justify-between items-center border-b border-gray-700">
+            <div class="flex-shrink-0 bg-gray-800 p-3 flex justify-between items-center border-b border-gray-700 glass-modal-header">
                 <h2 id="game-modal-title" class="text-xl font-bold text-cyan-400 truncate">Game Title</h2>
                 <div class="flex space-x-2 items-center">
                     
-                    <!-- Open in New Tab -->
                     <button id="open-new-tab-btn" class="control-btn" title="Open in New Tab">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                     </button>
                     
-                    <!-- Open in about:blank (Advanced Unblocking) -->
                     <button id="open-blank-btn" class="control-btn" title="Open in about:blank (Cloaking)">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                     </button>
 
-                    <!-- Fullscreen -->
                     <button id="fullscreen-btn" class="control-btn" title="Fullscreen Game">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m0 11v-4m0 4h-4m4 0l-5-5m-5 5v-4m-5 4h4m-4 0l5-5"></path></svg>
                     </button>
 
-                    <!-- Copy URL to represent downloading/sharing -->
                     <button id="copy-url-btn" class="control-btn" title="Copy Game URL (Share)">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5z"></path></svg>
                     </button>
 
-                    <!-- Close Button -->
                     <button onclick="closeGameModal()" class="control-btn bg-red-600 hover:bg-red-500 text-white" title="Close Player">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
             </div>
 
-            <!-- Iframe Container -->
             <div class="flex-grow relative bg-black">
-                <!-- allowfullscreen is critical for fullscreen functionality -->
                 <iframe id="game-iframe" src="" frameborder="0" allowfullscreen class="w-full h-full"></iframe>
             </div>
         </div>
     </div>
 
-    <!-- Temporary Message Box (for copy/errors) -->
     <div id="message-box" class="fixed bottom-5 right-5 z-[110] p-3 rounded-lg bg-cyan-600 text-white shadow-xl hidden transition-opacity duration-300 opacity-0"></div>
 
-    <!-- Simple JS for Mobile Menu Toggle and Game Modal -->
+    <audio id="audio-theme-cyber" src="/sounds/cyber-select.mp3" preload="auto"></audio>
+    <audio id="audio-theme-forest" src="/sounds/forest-select.mp3" preload="auto"></audio>
+    <audio id="audio-theme-ocean" src="/sounds/ocean-select.mp3" preload="auto"></audio>
+
     <script>
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
             document.getElementById('mobile-menu').classList.toggle('hidden');
         });
 
+        // --- NEW: Theme Picker Logic ---
+        const themeButton = document.getElementById('theme-picker-button');
+        const themeMenu = document.getElementById('theme-menu');
+
+        if (themeButton) {
+            themeButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                themeMenu.classList.toggle('hidden');
+            });
+        }
+
+        // Close dropdown if clicking outside
+        window.addEventListener('click', function(e) {
+            if (themeMenu && !themeMenu.contains(e.target) && !themeButton.contains(e.target)) {
+                themeMenu.classList.add('hidden');
+            }
+        });
+
+        /**
+         * Applies a theme and plays a sound.
+         * @param {string} themeName - e.g., 'theme-cyber'
+         */
+        function applyTheme(themeName) {
+            // 1. Clear all theme classes from body
+            document.body.className = '';
+            
+            // 2. Add the new theme class
+            document.body.classList.add(themeName);
+            
+            // 3. Save to localStorage
+            localStorage.setItem('qbup-theme', themeName);
+            
+            // 4. Play sound effect
+            // Stop all theme sounds first to prevent overlap
+            document.querySelectorAll('audio[id^="audio-theme-"]').forEach(audio => {
+                audio.pause();
+                audio.currentTime = 0;
+            });
+            
+            const audio = document.getElementById('audio-' + themeName);
+            if (audio) {
+                // Play and catch any errors (e.g., browser blocking autoplay)
+                audio.play().catch(e => console.warn("Audio play failed.", e));
+            } else {
+                console.log(`Audio file for ${themeName} not found.`);
+            }
+            
+            // Hide the menu after selection
+            if (themeMenu) {
+                themeMenu.classList.add('hidden');
+            }
+            // Also hide mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        /**
+         * On page load, apply the saved theme.
+         */
+        (function() {
+            const savedTheme = localStorage.getItem('qbup-theme') || 'theme-cyber'; // Default to 'theme-cyber'
+            // Apply theme on load, but don't play sound
+            document.body.className = '';
+            document.body.classList.add(savedTheme);
+        })();
+        // --- END: Theme Picker Logic ---
+
+
         let currentGameUrl = '';
 
         /**
          * Utility function to show temporary messages.
-         * @param {string} text - The message content.
-         * @param {string} type - 'success' or 'error'.
          */
         function showMessage(text, type = 'success') {
             const messageBox = document.getElementById('message-box');
             messageBox.textContent = text;
             
-            // Set color based on type
             if (type === 'error') {
                 messageBox.classList.remove('bg-cyan-600');
                 messageBox.classList.add('bg-red-600');
+                messageBox.style.backgroundColor = 'var(--color-primary-dark)'; // Use theme color
             } else {
                 messageBox.classList.remove('bg-red-600');
                 messageBox.classList.add('bg-cyan-600');
+                messageBox.style.backgroundColor = 'var(--color-primary)'; // Use theme color
             }
 
             messageBox.classList.remove('hidden');
-            // Force opacity to 1
             setTimeout(() => {
                 messageBox.style.opacity = '1';
             }, 10);
             
             setTimeout(() => {
                 messageBox.style.opacity = '0';
-                // Wait for fade-out before hiding completely
                 setTimeout(() => messageBox.classList.add('hidden'), 300);
             }, 3000);
         }
 
         /**
-         * Opens the game modal, loads the URL, and sets up button handlers.
-         * @param {string} url - The URL of the game to load in the iframe.
-         * @param {string} title - The title of the game.
+         * Opens the game modal.
          */
         function openGameModal(url, title) {
             currentGameUrl = url;
@@ -308,14 +462,11 @@
             document.getElementById('game-iframe').src = url;
             document.getElementById('game-modal').classList.remove('hidden');
             
-            // Set up control button actions
             document.getElementById('open-new-tab-btn').onclick = () => {
                 window.open(currentGameUrl, '_blank');
             };
 
             document.getElementById('open-blank-btn').onclick = () => {
-                // This method opens a new window and injects an iframe linking back to the game URL,
-                // often bypassing content filters (known as the "about:blank" cloaking trick).
                 const newWindow = window.open('about:blank', '_blank');
                 if (newWindow) {
                     newWindow.document.write(`
@@ -329,53 +480,49 @@
                     `);
                     newWindow.document.close();
                 } else {
-                    showMessage("Popup blocked! Please allow popups for this site to use the cloaking feature.", 'error');
+                    showMessage("Popup blocked! Please allow popups.", 'error');
                 }
             };
 
             document.getElementById('fullscreen-btn').onclick = toggleFullscreen;
-            
             document.getElementById('copy-url-btn').onclick = copyGameUrl;
         }
 
         /**
-         * Closes the game modal and stops the iframe content.
+         * Closes the game modal.
          */
         function closeGameModal() {
-            document.getElementById('game-iframe').src = ''; // Clear src to stop the game/audio
+            document.getElementById('game-iframe').src = '';
             document.getElementById('game-modal').classList.add('hidden');
         }
 
         /**
-         * Requests fullscreen mode for the game iframe.
+         * Requests fullscreen mode.
          */
         function toggleFullscreen() {
             const iframe = document.getElementById('game-iframe');
-            
-            // Check if the current environment supports and allows fullscreen
             const requestFS = iframe.requestFullscreen || iframe.mozRequestFullScreen || iframe.webkitRequestFullscreen || iframe.msRequestFullscreen;
 
             if (requestFS) {
                 requestFS.call(iframe);
             } else {
-                showMessage("Fullscreen mode is not supported in this browser environment.", 'error');
+                showMessage("Fullscreen is not supported here.", 'error');
             }
         }
         
         /**
-         * Copies the game URL to the clipboard.
+         * Copies the game URL.
          */
         function copyGameUrl() {
-            // Using execCommand('copy') as it is more reliable inside iFrames
             const tempInput = document.createElement('input');
             tempInput.value = currentGameUrl;
             document.body.appendChild(tempInput);
             tempInput.select();
             try {
                 document.execCommand('copy');
-                showMessage('Game URL copied to clipboard!', 'success');
+                showMessage('Game URL copied!', 'success');
             } catch (err) {
-                showMessage('Could not copy URL. Please copy it manually.', 'error');
+                showMessage('Could not copy URL.', 'error');
             }
             document.body.removeChild(tempInput);
         }
