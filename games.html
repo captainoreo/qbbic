@@ -53,6 +53,83 @@
             --bg-glass-card: rgba(17, 34, 63, 0.5); /* Dark blue tint */
             --bg-glass-card-hover: rgba(27, 44, 73, 0.7);
         }
+
+        /* --- NEW THEMES --- */
+        
+        .theme-wii {
+            --bg-image: none;
+            --bg-page: #f5f5f5;
+            --color-primary: #009dff; /* Wii Blue */
+            --color-primary-light: #40baff;
+            --color-primary-dark: #007acc;
+            
+            --color-text-base: #333333; /* Dark gray text */
+            --color-text-white: #000000; /* Headings, etc. */
+            --color-text-dark: #ffffff; /* Text on buttons */
+            
+            --bg-glass-header: rgba(240, 240, 240, 0.7);
+            --bg-glass-card: rgba(255, 255, 255, 0.8);
+            --bg-glass-card-hover: rgba(255, 255, 255, 1);
+            --bg-glass-modal: rgba(240, 240, 240, 0.9);
+            --bg-glass-modal-header: rgba(230, 230, 230, 0.8);
+            --bg-glass-controls: rgba(230, 230, 230, 0.8);
+            --bg-glass-controls-hover: rgba(220, 220, 220, 0.9);
+
+            --border-glass: rgba(0, 0, 0, 0.1);
+            --border-glass-light: rgba(0, 0, 0, 0.05);
+            
+            --blur-strength: 5px;
+        }
+        
+        .theme-ps3 {
+            --bg-image: url('https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=1920&q=80'); /* Abstract wave/smoke */
+            --color-primary: #ffffff; /* White highlight */
+            --color-primary-light: #f0f0f0;
+            --color-primary-dark: #e0e0e0;
+            
+            --color-text-base: #ffffff;
+            --color-text-white: #ffffff;
+            --color-text-dark: #000000; /* Black text on white buttons */
+            
+            --bg-page: #0a0a1a; /* Dark blue/purple fallback */
+            --bg-glass-header: rgba(10, 10, 20, 0.6);
+            --bg-glass-card: rgba(20, 20, 30, 0.5);
+            --bg-glass-card-hover: rgba(40, 40, 50, 0.7);
+            --bg-glass-modal: rgba(3, 3, 10, 0.8);
+            --bg-glass-modal-header: rgba(20, 20, 30, 0.7);
+            --bg-glass-controls: rgba(50, 50, 60, 0.7);
+            --bg-glass-controls-hover: rgba(70, 70, 80, 0.8);
+
+            --border-glass: rgba(100, 100, 120, 0.5);
+            --border-glass-light: rgba(120, 120, 140, 0.3);
+            
+            --blur-strength: 8px;
+        }
+        
+        .theme-virtualboy {
+            --bg-image: none;
+            --bg-page: #000000;
+            --color-primary: #ff0000; /* Bright Red */
+            --color-primary-light: #ff3333;
+            --color-primary-dark: #cc0000;
+            
+            --color-text-base: #ff0000; /* All text is red */
+            --color-text-white: #ff0000; /* All text is red */
+            --color-text-dark: #000000; /* Black text on red buttons */
+            
+            --bg-glass-header: rgba(20, 0, 0, 0.6);
+            --bg-glass-card: rgba(10, 0, 0, 0.5);
+            --bg-glass-card-hover: rgba(30, 0, 0, 0.7);
+            --bg-glass-modal: rgba(5, 0, 0, 0.8);
+            --bg-glass-modal-header: rgba(30, 0, 0, 0.7);
+            --bg-glass-controls: rgba(40, 0, 0, 0.7);
+            --bg-glass-controls-hover: rgba(60, 0, 0, 0.8);
+
+            --border-glass: rgba(100, 0, 0, 0.5);
+            --border-glass-light: rgba(255, 0, 0, 0.3); /* Red border on cards */
+            
+            --blur-strength: 2px;
+        }
         /* --- End of Theming --- */
 
         body {
@@ -164,6 +241,9 @@
                     <div id="theme-menu" class="hidden absolute right-0 mt-2 w-40 rounded-lg shadow-lg py-1 game-card z-10"> <a href="#" onclick="applyTheme('theme-cyber'); return false;" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50">Cyberpunk</a>
                         <a href="#" onclick="applyTheme('theme-forest'); return false;" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50">Windows 7 Nyancat</a>
                         <a href="#" onclick="applyTheme('theme-ocean'); return false;" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50">Ocean</a>
+                        <a href="#" onclick="applyTheme('theme-wii'); return false;" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50">Wii Menu</a>
+                        <a href="#" onclick="applyTheme('theme-ps3'); return false;" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50">PS3 XMB</a>
+                        <a href="#" onclick="applyTheme('theme-virtualboy'); return false;" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50">Virtual Boy</a>
                     </div>
                 </div>
                 </div>
@@ -180,6 +260,9 @@
                     <a href="#" onclick="applyTheme('theme-cyber'); return false;" class="block text-gray-300 hover:text-white">Cyberpunk</a>
                     <a href="#" onclick="applyTheme('theme-forest'); return false;" class="block text-gray-300 hover:text-white">Forest</a>
                     <a href="#" onclick="applyTheme('theme-ocean'); return false;" class="block text-gray-300 hover:text-white">Ocean</a>
+                    <a href="#" onclick="applyTheme('theme-wii'); return false;" class="block text-gray-300 hover:text-white">Wii Menu</a>
+                    <a href="#" onclick="applyTheme('theme-ps3'); return false;" class="block text-gray-300 hover:text-white">PS3 XMB</a>
+                    <a href="#" onclick="applyTheme('theme-virtualboy'); return false;" class="block text-gray-300 hover:text-white">Virtual Boy</a>
                 </div>
             </div>
         </div>
@@ -404,6 +487,9 @@
     <audio id="audio-theme-cyber" src="/sounds/cyber-select.mp3" preload="auto"></audio>
     <audio id="audio-theme-forest" src="/sounds/forest-select.mp3" preload="auto"></audio>
     <audio id="audio-theme-ocean" src="/sounds/ocean-select.mp3" preload="auto"></audio>
+    <audio id="audio-theme-wii" src="/sounds/wii-select.mp3" preload="auto"></audio>
+    <audio id="audio-theme-ps3" src="/sounds/ps3-select.mp3" preload="auto"></audio>
+    <audio id="audio-theme-virtualboy" src="/sounds/virtualboy-select.mp3" preload="auto"></audio>
 
     <script>
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
