@@ -11,31 +11,39 @@
     <style>
         /* --- CSS Variables for Theming --- */
         :root {
-            /* Default Theme: Cyberpunk */
-            --bg-image: url('https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?auto=format&fit=crop&w=1920&q=80');
-            --color-primary: #06b6d4; /* cyan-500 */
-            --color-primary-light: #22d3ee; /* cyan-400 */
-            --color-primary-dark: #0891b2; /* cyan-600 */
+            /* Default Theme: Game Boy */
+            --bg-image: none;
+            --color-primary: #9bbc0f; /* GB Light */
+            --color-primary-light: #9bbc0f;
+            --color-primary-dark: #8bac0f;
             
-            --color-text-base: #D1D5DB; /* gray-300 */
-            --color-text-white: #ffffff;
-            --color-text-dark: #111827; /* gray-900 */
+            --color-text-base: #9bbc0f;
+            --color-text-white: #9bbc0f;
+            --color-text-dark: #0f380f; /* GB Dark */
             
-            --bg-page: #030712; /* gray-950 - fallback if image fails */
-            --bg-glass-header: rgba(17, 24, 39, 0.6); /* gray-900/60 */
-            --bg-glass-card: rgba(31, 41, 55, 0.5); /* gray-800/50 */
-            --bg-glass-card-hover: rgba(55, 65, 81, 0.7); /* gray-700/70 */
-            --bg-glass-modal: rgba(3, 7, 18, 0.8); /* gray-950/80 */
-            --bg-glass-modal-header: rgba(31, 41, 55, 0.7); /* gray-800/70 */
-            --bg-glass-controls: rgba(55, 65, 81, 0.7); /* gray-700/70 */
-            --bg-glass-controls-hover: rgba(75, 85, 99, 0.8); /* gray-600/80 */
+            --bg-page: #0f380f; /* GB Dark */
+            --bg-glass-header: #306230; /* GB Medium */
+            --bg-glass-card: #306230;
+            --bg-glass-card-hover: #8bac0f;
+            --bg-glass-modal: #0f380f;
+            --bg-glass-modal-header: #306230;
+            --bg-glass-controls: #306230;
+            --bg-glass-controls-hover: #8bac0f;
 
-            --border-glass: rgba(55, 65, 81, 0.5); /* gray-700/50 */
-            --border-glass-light: rgba(75, 85, 99, 0.3); /* gray-600/30 */
+            --border-glass: #0f380f;
+            --border-glass-light: #306230;
             
-            --blur-strength: 10px;
+            --blur-strength: 0px; /* No blur for pixel look */
         }
         
+        /* Added for Game Boy theme to remove blur */
+        .theme-gb .glass-header,
+        .theme-gb .game-card,
+        .theme-gb .glass-modal-container {
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
         .theme-forest {
             --bg-image: url('/assets/nyan.jpg');
             --color-primary: #22c55e; /* green-500 */
@@ -43,15 +51,33 @@
             --color-primary-dark: #16a34a; /* green-600 */
             --bg-glass-card: rgba(16, 44, 25, 0.5); /* Dark green tint */
             --bg-glass-card-hover: rgba(26, 64, 35, 0.7);
+            --blur-strength: 10px;
         }
         
-        .theme-ocean {
-            --bg-image: url('/assets/nyan.jpg');
-            --color-primary: #3b82f6; /* blue-500 */
-            --color-primary-light: #60a5fa; /* blue-400 */
-            --color-primary-dark: #2563eb; /* blue-600 */
-            --bg-glass-card: rgba(17, 34, 63, 0.5); /* Dark blue tint */
-            --bg-glass-card-hover: rgba(27, 44, 73, 0.7);
+        .theme-gba {
+            /* Game Boy Advance Theme (Indigo) */
+            --bg-image: none;
+            --color-primary: #644287; /* GBA Indigo */
+            --color-primary-light: #815AAA;
+            --color-primary-dark: #4C3265;
+            
+            --color-text-base: #D1D5DB; /* Keep light text */
+            --color-text-white: #ffffff;
+            --color-text-dark: #111827;
+            
+            --bg-page: #252525; /* Dark grey bezel */
+            --bg-glass-header: rgba(76, 50, 101, 0.6);
+            --bg-glass-card: rgba(76, 50, 101, 0.5);
+            --bg-glass-card-hover: rgba(100, 66, 135, 0.7);
+            --bg-glass-modal: rgba(20, 20, 30, 0.8);
+            --bg-glass-modal-header: rgba(76, 50, 101, 0.7);
+            --bg-glass-controls: rgba(100, 66, 135, 0.7);
+            --bg-glass-controls-hover: rgba(129, 90, 170, 0.8);
+
+            --border-glass: rgba(100, 66, 135, 0.5);
+            --border-glass-light: rgba(100, 66, 135, 0.3);
+            
+            --blur-strength: 10px; /* Keep blur */
         }
         /* --- End of Theming --- */
 
@@ -145,7 +171,7 @@
 
     </style>
 </head>
-<body class="theme-cyber"> 
+<body class="theme-gb"> 
 
     <header class="bg-gray-800 sticky top-0 z-50 border-b border-gray-700 glass-header">
         <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
@@ -176,10 +202,10 @@
                         <span>Themes</span>
                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div id="theme-menu" class="hidden absolute right-0 mt-2 w-40 rounded-lg shadow-lg py-1 game-card z-10"> 
-                        <a href="#" data-theme="theme-cyber" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 theme-link">Cyberpunk</a>
+                    <div id="theme-menu" class="hidden absolute right-0 mt-2 w-48 rounded-lg shadow-lg py-1 game-card z-10"> 
+                        <a href="#" data-theme="theme-gb" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 theme-link">Game Boy</a>
+                        <a href="#" data-theme="theme-gba" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 theme-link">Game Boy Advance</a>
                         <a href="#" data-theme="theme-forest" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 theme-link">Windows 7 Nyancat</a>
-                        <a href="#" data-theme="theme-ocean" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 theme-link">Ocean</a>
                     </div>
                 </div>
             </div>
@@ -193,9 +219,9 @@
             <div class="border-b border-gray-700 py-2 pl-2">
                 <span class="text-gray-400 text-sm font-bold">Theme</span>
                 <div class="mt-2 space-y-1">
-                    <a href="#" data-theme="theme-cyber" class="block text-gray-300 hover:text-white theme-link">Cyberpunk</a>
+                    <a href="#" data-theme="theme-gb" class="block text-gray-300 hover:text-white theme-link">Game Boy</a>
+                    <a href="#" data-theme="theme-gba" class="block text-gray-300 hover:text-white theme-link">Game Boy Advance</a>
                     <a href="#" data-theme="theme-forest" class="block text-gray-300 hover:text-white theme-link">Forest</a>
-                    <a href="#" data-theme="theme-ocean" class="block text-gray-300 hover:text-white theme-link">Ocean</a>
                 </div>
             </div>
         </div>
@@ -464,9 +490,9 @@
 
     <div id="message-box" class-></div>
 
-    <audio id="audio-theme-cyber" src="/sounds/cyber-select.mp3" preload="auto"></audio>
+    <audio id="audio-theme-gb" src="/sounds/gb-select.mp3" preload="auto"></audio>
     <audio id="audio-theme-forest" src="/sounds/forest-select.mp3" preload="auto"></audio>
-    <audio id="audio-theme-ocean" src="/sounds/ocean-select.mp3" preload="auto"></audio>
+    <audio id="audio-theme-gba" src="/sounds/gba-select.mp3" preload="auto"></audio>
 
     <script>
         // Wait for the DOM to be fully loaded before running scripts
@@ -474,7 +500,7 @@
 
             // --- Globals ---
             let currentGameUrl = '';
-            const allThemes = ['theme-cyber', 'theme-forest', 'theme-ocean'];
+            const allThemes = ['theme-gb', 'theme-forest', 'theme-gba'];
 
             // --- Element References ---
             const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -532,7 +558,7 @@
 
             /**
              * Applies a theme, plays sound, and saves to localStorage.
-             * @param {string} themeName - e.g., 'theme-cyber'
+             * @param {string} themeName - e.g., 'theme-gb'
              */
             function applyTheme(themeName) {
                 // 1. Safer class removal
@@ -564,7 +590,7 @@
              * On page load, apply the saved theme.
              */
             (function loadSavedTheme() {
-                const savedTheme = localStorage.getItem('qbup-theme') || 'theme-cyber';
+                const savedTheme = localStorage.getItem('qbup-theme') || 'theme-gb';
                 document.body.classList.remove(...allThemes); // Clean slate
                 document.body.classList.add(savedTheme);
             })();
