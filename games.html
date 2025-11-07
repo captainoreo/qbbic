@@ -82,8 +82,7 @@
         /* --- End of Theming --- */
 
         body {
-            /* --- UPDATED FONT --- */
-            font-family: 'Early GameBoy', sans-serif;
+            font-family: 'Inter', sans-serif;
             /* Apply theme */
             background-color: var(--bg-page);
             background-image: var(--bg-image);
@@ -493,7 +492,7 @@
 
     <audio id="audio-theme-gb" src="/sounds/gb-select.mp3" preload="auto"></audio>
     <audio id="audio-theme-forest" src="/sounds/forest-select.mp3" preload="auto"></audio>
-    <audio id="audio-theme-gba" src="/sounds/gba-select.Lmp3" preload="auto"></audio>
+    <audio id="audio-theme-gba" src="/sounds/gba-select.mp3" preload="auto"></audio>
 
     <script>
         // Wait for the DOM to be fully loaded before running scripts
@@ -684,7 +683,6 @@
                         requestFS.call(gameIframe);
                     } else {
                         showMessage("Fullscreen is not supported here.", 'error');
-Opening.
                     }
                 });
             }
