@@ -54,8 +54,6 @@
             --bg-glass-card-hover: rgba(27, 44, 73, 0.7);
         }
 
-        /* --- NEW THEMES (UPDATED) --- */
-        
         .theme-wii {
             --bg-image: none;
             --bg-page: #f5f5f5;
@@ -82,7 +80,7 @@
         }
         
         .theme-ps3 {
-            --bg-image: url('https://i.imgur.com/rS4zT2g.jpg'); /* Accurate XMB wave static image */
+            --bg-image: none; /* <-- REMOVED static image */
             --color-primary: #ffffff; /* White highlight */
             --color-primary-light: #f0f0f0;
             --color-primary-dark: #e0e0e0;
@@ -91,7 +89,7 @@
             --color-text-white: #ffffff;
             --color-text-dark: #000000; /* Black text on white buttons */
             
-            --bg-page: #0a0a1a; /* Dark blue/purple fallback */
+            --bg-page: #050518; /* <-- Dark blue/purple base */
             --bg-glass-header: rgba(10, 10, 20, 0.4); /* More transparent */
             --bg-glass-card: rgba(15, 15, 25, 0.3); /* More transparent */
             --bg-glass-card-hover: rgba(30, 30, 40, 0.5);
@@ -104,6 +102,11 @@
             --border-glass-light: rgba(220, 220, 255, 0.2); /* Lighter "glow" border */
             
             --blur-strength: 12px; /* Increased blur */
+            
+            /* <-- ADDED for pseudo-element positioning */
+            position: relative;
+            overflow: hidden;
+            z-index: 0;
         }
         
         .theme-virtualboy {
@@ -131,6 +134,44 @@
             --blur-strength: 2px;
         }
         /* --- End of Theming --- */
+
+        /* --- NEW: XMB Wave Animation --- */
+        @keyframes xmbBgScroll {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 400% 400%; }
+        }
+
+        .theme-ps3::before,
+        .theme-ps3::after {
+            content: "";
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%; /* Huge to cover screen and animate */
+            height: 300%;
+            z-index: -1; /* Behind content */
+            opacity: 0.6;
+            animation: xmbBgScroll 80s linear infinite;
+        }
+
+        /* First layer of the wave */
+        .theme-ps3::before {
+            background-image: radial-gradient(ellipse at 40% 40%, rgba(50, 50, 150, 0.3) 0%, transparent 50%),
+                              radial-gradient(ellipse at 60% 60%, rgba(80, 80, 200, 0.2) 0%, transparent 40%);
+            background-size: 50% 50%;
+            animation-duration: 70s; /* Different speed */
+        }
+
+        /* Second layer of the wave */
+        .theme-ps3::after {
+            background-image: radial-gradient(ellipse at 30% 70%, rgba(100, 100, 255, 0.25) 0%, transparent 40%),
+                              radial-gradient(ellipse at 70% 30%, rgba(150, 150, 255, 0.2) 0%, transparent 35%);
+            background-size: 45% 45%;
+            animation-duration: 90s; /* Different speed and direction */
+            animation-direction: reverse;
+        }
+        /* --- End XMB Wave --- */
+
 
         body {
             font-family: 'Inter', sans-serif;
@@ -199,7 +240,7 @@
         .hover\:text-cyan-400:hover { color: var(--color-primary-light) !important; }
         .bg-cyan-500 { background-color: var(--color-primary) !important; }
         .hover\:bg-cyan-400:hover { background-color: var(--color-primary-light) !important; }
-        .focus\:ring-cyan-500:focus { --tw-ring-color: var(--color-primary) !important; }
+        .focus\:ring-cyan-500:focus { --tw-ring-color: var(--color-primary) !importan; }
         
         .text-gray-900 { color: var(--color-text-dark) !important; }
         .text-white { color: var(--color-text-white) !important; }
