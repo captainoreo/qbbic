@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF--8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Qbbic</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -92,6 +92,93 @@
             --border-glass-light: rgba(100, 66, 135, 0.3);
             
             --blur-strength: 10px; /* Keep blur */
+        }
+        
+        /* --- NEW: Windows 7 Theme --- */
+        .theme-win7 {
+            --bg-image: url('/assets/win7-wallpaper.jpg'); /* Placeholder path */
+            --bg-size: cover;
+            --bg-position: center;
+
+            --color-primary: #00AEEF; /* Windows Blue */
+            --color-primary-light: #36C8FF;
+            --color-primary-dark: #0089B6;
+            
+            --color-text-base: #ffffff;
+            --color-text-white: #ffffff;
+            --color-text-dark: #000000; /* Dark text for buttons */
+            
+            --bg-page: #005B88; /* Fallback color */
+            --bg-glass-header: rgba(240, 240, 250, 0.4); /* Aero glass */
+            --bg-glass-card: rgba(230, 230, 245, 0.3);
+            --bg-glass-card-hover: rgba(255, 255, 255, 0.5);
+            --bg-glass-modal: rgba(20, 20, 30, 0.8);
+            --bg-glass-modal-header: rgba(240, 240, 250, 0.5);
+            --bg-glass-controls: rgba(230, 230, 245, 0.3);
+            --bg-glass-controls-hover: rgba(255, 255, 255, 0.5);
+
+            --border-glass: rgba(255, 255, 255, 0.3);
+            --border-glass-light: rgba(255, 255, 255, 0.2);
+            
+            --blur-strength: 12px;
+        }
+
+        /* --- NEW: PS4 Theme --- */
+        .theme-ps4 {
+            --bg-image: none;
+            --bg-size: cover;
+            --bg-position: center;
+
+            --color-primary: #0070D1; /* PlayStation Blue */
+            --color-primary-light: #0099FF;
+            --color-primary-dark: #005099;
+            
+            --color-text-base: #ffffff;
+            --color-text-white: #ffffff;
+            --color-text-dark: #ffffff; /* White text for buttons */
+            
+            --bg-page: #013A81; /* Dark blue background */
+            --bg-glass-header: rgba(10, 23, 41, 0.8); /* Dark translucent panels */
+            --bg-glass-card: rgba(10, 23, 41, 0.7);
+            --bg-glass-card-hover: rgba(15, 33, 59, 0.9);
+            --bg-glass-modal: rgba(10, 23, 41, 0.95);
+            --bg-glass-modal-header: rgba(15, 33, 59, 0.9);
+            --bg-glass-controls: rgba(15, 33, 59, 0.7);
+            --bg-glass-controls-hover: rgba(0, 112, 209, 0.8);
+
+            --border-glass: rgba(0, 112, 209, 0.5);
+            --border-glass-light: rgba(0, 112, 209, 0.3);
+            
+            --blur-strength: 2px; /* Very subtle blur */
+        }
+
+        /* --- NEW: PS2 Theme --- */
+        .theme-ps2 {
+            --bg-image: url('/assets/ps2-cubes.gif'); /* Placeholder for animated cubes */
+            --bg-size: cover;
+            --bg-position: center;
+
+            --color-primary: #3378F2; /* PS2 Blue */
+            --color-primary-light: #66A0FF;
+            --color-primary-dark: #0050C0;
+            
+            --color-text-base: #ffffff;
+            --color-text-white: #ffffff;
+            --color-text-dark: #ffffff; /* White text for buttons */
+            
+            --bg-page: #00001a; /* Very dark blue */
+            --bg-glass-header: rgba(10, 10, 30, 0.6); /* Translucent dark blue */
+            --bg-glass-card: rgba(10, 10, 30, 0.5);
+            --bg-glass-card-hover: rgba(20, 20, 50, 0.7);
+            --bg-glass-modal: rgba(0, 0, 10, 0.9);
+            --bg-glass-modal-header: rgba(10, 10, 30, 0.7);
+            --bg-glass-controls: rgba(20, 20, 50, 0.7);
+            --bg-glass-controls-hover: rgba(51, 120, 242, 0.8);
+
+            --border-glass: rgba(51, 120, 242, 0.4);
+            --border-glass-light: rgba(51, 120, 242, 0.2);
+            
+            --blur-strength: 5px;
         }
         /* --- End of Theming --- */
 
@@ -220,6 +307,9 @@
                         <a href="#" data-theme="theme-gb" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 theme-link">Game Boy</a>
                         <a href="#" data-theme="theme-gba" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 theme-link">Game Boy Advance</a>
                         <a href="#" data-theme="theme-forest" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 theme-link">Windows 7 Nyancat</a>
+                        <a href="#" data-theme="theme-win7" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 theme-link">Windows 7 (Aero)</a>
+                        <a href="#" data-theme="theme-ps2" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 theme-link">PlayStation 2</a>
+                        <a href="#" data-theme="theme-ps4" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 theme-link">PlayStation 4</a>
                     </div>
                 </div>
             </div>
@@ -235,7 +325,10 @@
                 <div class="mt-2 space-y-1">
                     <a href="#" data-theme="theme-gb" class="block text-gray-300 hover:text-white theme-link">Game Boy</a>
                     <a href="#" data-theme="theme-gba" class="block text-gray-300 hover:text-white theme-link">Game Boy Advance</a>
-                    <a href="#" data-theme="theme-forest" class="block text-gray-300 hover:text-white theme-link">Forest</a>
+                    <a href="#" data-theme="theme-forest" class="block text-gray-300 hover:text-white theme-link">Windows 7 Nyancat</a>
+                    <a href="#" data-theme="theme-win7" class="block text-gray-300 hover:text-white theme-link">Windows 7 (Aero)</a>
+                    <a href="#" data-theme="theme-ps2" class="block text-gray-300 hover:text-white theme-link">PlayStation 2</a>
+                    <a href="#" data-theme="theme-ps4" class="block text-gray-300 hover:text-white theme-link">PlayStation 4</a>
                 </div>
             </div>
         </div>
@@ -507,6 +600,9 @@
     <audio id="audio-theme-gb" src="/sounds/gb-select.mp3" preload="auto"></audio>
     <audio id="audio-theme-forest" src="/sounds/forest-select.mp3" preload="auto"></audio>
     <audio id="audio-theme-gba" src="/sounds/gba-select.mp3" preload="auto"></audio>
+    <audio id="audio-theme-win7" src="/sounds/win7-select.mp3" preload="auto"></audio>
+    <audio id="audio-theme-ps2" src="/sounds/ps2-select.mp3" preload="auto"></audio>
+    <audio id="audio-theme-ps4" src="/sounds/ps4-select.mp3" preload="auto"></audio>
 
     <script>
         // Wait for the DOM to be fully loaded before running scripts
@@ -514,7 +610,8 @@
 
             // --- Globals ---
             let currentGameUrl = '';
-            const allThemes = ['theme-gb', 'theme-forest', 'theme-gba'];
+            // Updated list of all themes
+            const allThemes = ['theme-gb', 'theme-forest', 'theme-gba', 'theme-win7', 'theme-ps4', 'theme-ps2'];
 
             // --- Element References ---
             const mobileMenuButton = document.getElementById('mobile-menu-button');
