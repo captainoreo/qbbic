@@ -52,6 +52,47 @@
             transition: background-image 0.5s ease-in-out;
         }
 
+        /* --- NEW: Preloader Styles --- */
+        #preloader {
+            position: fixed;
+            inset: 0; /* Covers the entire viewport */
+            width: 100vw;
+            height: 100vh;
+            background-color: #000; /* Black background like the video */
+            z-index: 9999; /* On top of all other content */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #preloader.loaded {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(102, 160, 255, 0.2); /* Faint track using theme color */
+            border-top-color: var(--color-primary-light); /* Active spinner part using theme color */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        /* --- End of Preloader Styles --- */
+
+
         /* Glassmorphism classes */
         .glass-header {
             background-color: var(--bg-glass-header);
@@ -132,6 +173,9 @@
 </head>
 <body> 
 
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
     <header class="bg-gray-800 sticky top-0 z-50 border-b border-gray-700 glass-header">
         <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <div class="flex items-center">
@@ -607,6 +651,15 @@
                     setTimeout(() => messageBox.classList.add('hidden'), 300);
                 }, 3000);
             }
+
+            // --- NEW: Preloader Logic ---
+            // We use window.onload to wait for all content (like images) to load
+            window.onload = () => {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.classList.add('loaded'); // Triggers the fade-out
+                }
+            };
 
         }); // End of DOMContentLoaded
     </script>
