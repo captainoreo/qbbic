@@ -52,14 +52,14 @@
             transition: background-image 0.5s ease-in-out;
         }
 
-        /* --- NEW: Preloader Styles --- */
+        /* --- Preloader Styles --- */
         #preloader {
             position: fixed;
-            inset: 0; /* Covers the entire viewport */
+            inset: 0; 
             width: 100vw;
             height: 100vh;
-            background-color: #000; /* Black background like the video */
-            z-index: 9999; /* On top of all other content */
+            background-color: #000;
+            z-index: 9999; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -76,8 +76,8 @@
         .spinner {
             width: 50px;
             height: 50px;
-            border: 5px solid rgba(102, 160, 255, 0.2); /* Faint track using theme color */
-            border-top-color: var(--color-primary-light); /* Active spinner part using theme color */
+            border: 5px solid rgba(102, 160, 255, 0.2); 
+            border-top-color: var(--color-primary-light); 
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -91,6 +91,82 @@
             }
         }
         /* --- End of Preloader Styles --- */
+        
+        /* --- Game Grid 3D Container --- */
+        #game-grid {
+            perspective: 1500px; /* Establishes 3D space */
+        }
+        
+        /* --- Game Card Cube Appearance & Entrance Animation --- */
+        .game-card {
+            /* Existing glass styles */
+            background-color: var(--bg-glass-card);
+            backdrop-filter: blur(var(--blur-strength));
+            -webkit-backdrop-filter: blur(var(--blur-strength));
+            border: 1px solid var(--border-glass-light);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: background-color 0.2s, opacity 0.8s, transform 0.8s;
+
+            /* Setup for 3D/Animation */
+            position: relative;
+            transform-style: preserve-3d;
+            transform-origin: center bottom;
+            
+            /* Initial HIDDEN state for Entrance Animation */
+            opacity: 0;
+            transform: translateZ(-200px) translateY(50px) rotateX(-90deg); 
+            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        box-shadow 0.2s;
+        }
+
+        /* Final VISIBLE state (applied by JS after preloader fades) */
+        .game-card.visible {
+            opacity: 1;
+            transform: translateZ(0) translateY(0) rotateX(0deg); /* Moves into position */
+        }
+
+        /* Cube Visual Effect: Transparent Body */
+        .game-card::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            /* Base style for transparent cube effect */
+            background: rgba(51, 120, 242, 0.1); /* Light blue tint */
+            border: 1px solid rgba(51, 120, 242, 0.2);
+            backdrop-filter: blur(1px);
+            -webkit-backdrop-filter: blur(1px);
+            border-radius: 0.5rem;
+            pointer-events: none;
+            
+            /* Fakes the top/side face with perspective transform */
+            transform-origin: top left;
+            transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(1px); 
+            transition: transform 0.3s ease;
+        }
+
+        /* Image (Front face) */
+        .game-card img {
+            position: relative;
+            z-index: 10; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Adds slight depth */
+        }
+
+        /* Hover effect */
+        .game-card:hover {
+            background-color: var(--bg-glass-card-hover);
+            transform: scale(1.03) translateZ(10px); /* Lift the card slightly forward */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); 
+        }
+
+        .game-card:hover::before {
+             background: rgba(51, 120, 242, 0.2); /* Enhance transparency on hover */
+             transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px); /* Push background back */
+        }
+        /* --- End of Cube & Animation Styles --- */
 
 
         /* Glassmorphism classes */
@@ -100,19 +176,9 @@
             -webkit-backdrop-filter: blur(var(--blur-strength));
             border-bottom: 1px solid var(--border-glass);
         }
-
-        .game-card {
-            background-color: var(--bg-glass-card);
-            backdrop-filter: blur(var(--blur-strength));
-            -webkit-backdrop-filter: blur(var(--blur-strength));
-            border: 1px solid var(--border-glass-light);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: background-color 0.2s, opacity 0.3s;
-        }
-        .game-card:hover {
-            background-color: var(--bg-glass-card-hover);
-        }
         
+        /* ... existing glass-modal and control-btn styles ... */
+
         .glass-modal-container {
             background-color: var(--bg-glass-modal);
             backdrop-filter: blur(var(--blur-strength));
@@ -176,9 +242,9 @@
     <div id="preloader">
         <div class="spinner"></div>
     </div>
-    <audio id="intro-sound" src="/assets/SCPH-10000_00015.wav" preload="auto"></audio>
-    <audio id="hover-sound" src="/assets/SCPH-10000_00021.wav" preload="auto"></audio>
-    <audio id="select-sound" src="/assets/SCPH-10000_00022.wav" preload="auto"></audio>
+    <audio id="intro-sound" src="/assets/sounds/ps2_intro.mp3" preload="auto"></audio>
+    <audio id="hover-sound" src="/assets/sounds/ps2_hover.mp3" preload="auto"></audio>
+    <audio id="select-sound" src="/assets/sounds/ps2_select.mp3" preload="auto"></audio>
     <header class="bg-gray-800 sticky top-0 z-50 border-b border-gray-700 glass-header">
         <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <div class="flex items-center">
@@ -227,8 +293,8 @@
             
             <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
                 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/nikki.jpg" alt="Yume Nikki" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/nikki.jpg" alt="Yume Nikki" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Yume Nikki</h3>
                         <p class="text-gray-400 text-xs">Weirdness / Simulation</p>
@@ -236,8 +302,8 @@
                     </div>
                 </div>
                 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/cookie.png" alt="Cookie Clicker" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/cookie.png" alt="Cookie Clicker" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Cookie Clicker</h3>
                         <p class="text-gray-400 text-xs">Idle / Simulation</p>
@@ -245,8 +311,8 @@
                     </div>
                 </div>
 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/doom1.jpg" alt="Doom 1" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/doom1.jpg" alt="Doom 1" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Doom 1</h3>
                         <p class="text-gray-400 text-xs">Survival / Shooter</p>
@@ -254,8 +320,8 @@
                     </div>
                 </div>
                 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/doom2.png" alt="Doom 2" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/doom2.png" alt="Doom 2" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Doom 2</h3>
                         <p class="text-gray-400 text-xs">Survival / Shooter</p>
@@ -263,8 +329,8 @@
                     </div>
                 </div>
 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/factory.jpg" alt="Nubby's number factory" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/factory.jpg" alt="Nubby's number factory" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Nubby's number factory</h3>
                         <p class="text-gray-400 text-xs">Arcade / Endless</p>
@@ -272,40 +338,40 @@
                     </div>
                 </div>
 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/pizzatower.jpg" alt="Pizza Tower" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/pizzatower.jpg" alt="Pizza Tower" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Pizza Tower</h3>
                         <p class="text-gray-400 text-xs">Fast Paced / Platformer</p>
                         <button type="button" data-url="/games/Pizza Tower.html" data-title="Pizza Tower" aria-label="Play Pizza Tower" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                     </div>
                 </div>
-                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/cavestory.png" alt="Cave Story" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/cavestory.png" alt="Cave Story" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Cave Story</h3>
                         <p class="text-gray-400 text-xs">Platformer / Shooter</p>
                         <button type="button" data-url="https://smmskm.vercel.app/" data-title="Cave Story" aria-label="Play Cave Story" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                     </div>
                 </div>
-                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/572190-vqi8cznu-v4.jpg" alt="BFDIA5B" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/572190-vqi8cznu-v4.jpg" alt="BFDIA5B" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">BFDIA5B</h3>
                         <p class="text-gray-400 text-xs">Platformer / Puzzle</p>
                         <button type="button" data-url="/games/clbfdia5b.html" data-title="BFDIA5b" aria-label="Play BFDIA5B" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                     </div>
                 </div>
-                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/uncanny-cat-canny-cat.gif" alt="Uncanny Cat Golf" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/uncanny-cat-canny-cat.gif" alt="Uncanny Cat Golf" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Uncanny Cat Golf</h3>
                         <p class="text-gray-400 text-xs">Golf</p>
                         <button type="button" data-url="/games/cluncannycatgolf.html" data-title="Uncanny Cat Golf" aria-label="Play Uncanny Cat Golf" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                     </div>
                 </div>
-                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/ngon.png" alt="N-GON" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/ngon.png" alt="N-GON" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">N-GON</h3>
                         <p class="text-gray-400 text-xs">Puzzle / Classic</p>
@@ -313,8 +379,8 @@
                     </div>
                 </div>
 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/hx2er6ahcrv11.gif" alt="Deltarune" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/hx2er6ahcrv11.gif" alt="Deltarune" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Deltarune</h3>
                         <p class="text-gray-400 text-xs">RPG</p>
@@ -322,8 +388,8 @@
                     </div>
                 </div>
 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/2133.png" alt="Half-Life" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/2133.png" alt="Half-Life" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Half-Life</h3>
                         <p class="text-gray-400 text-xs">Shooter</p>
@@ -331,8 +397,8 @@
                     </div>
                 </div>
 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/knight.jpeg" alt="Hollow Knight" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/knight.jpeg" alt="Hollow Knight" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Hollow Knight</h3>
                         <p class="text-gray-400 text-xs">RPG/ Metroidvania</p>
@@ -340,8 +406,8 @@
                     </div>
                 </div>
 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/Sony-playstation-parappa-the-rapper.png" alt="Parappa the Rapper" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/Sony-playstation-parappa-the-rapper.png" alt="Parappa the Rapper" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Parappa the Rapper</h3>
                         <p class="text-gray-400 text-xs">Rhythm</p>
@@ -349,8 +415,8 @@
                     </div>
                 </div>
 
-                 <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/remix.jpg" alt="Smash Remix" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                 <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/remix.jpg" alt="Smash Remix" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Smash Remix</h3>
                         <p class="text-gray-400 text-xs">Fighting</p>
@@ -358,8 +424,8 @@
                     </div>
                 </div>
 
-                  <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/585.webp" alt="Fallout" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                  <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/585.webp" alt="Fallout" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Fallout</h3>
                         <p class="text-gray-400 text-xs">Survival</p>
@@ -367,8 +433,8 @@
                     </div>
                 </div>
                 
-                  <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/423.png" alt="Webfishing" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                  <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/423.png" alt="Webfishing" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Webfishing</h3>
                         <p class="text-gray-400 text-xs">Fishing / simulation</p>
@@ -376,8 +442,8 @@
                     </div>
                 </div>
                 
-                  <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/212.png" alt="rope" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                  <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/212.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Cut the rope</h3>
                         <p class="text-gray-400 text-xs">Puzzle</p>
@@ -386,8 +452,8 @@
                 </div>
 
                 
-                 <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/213.png" alt="rope" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                 <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/213.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Cut the rope time travel</h3>
                         <p class="text-gray-400 text-xs">Puzzle</p>
@@ -395,8 +461,8 @@
                     </div>
                 </div>
                 
-                   <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/214.png" alt="rope" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                   <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/214.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">Cut the rope Holidays</h3>
                         <p class="text-gray-400 text-xs">Puzzle</p>
@@ -405,8 +471,8 @@
                 </div>
 
                 
-                   <div class="rounded-lg game-card overflow-hidden transition duration-200 group">
-                    <img src="/assets/350.png" alt="rope" class="w-full h-28 object-cover group-hover:opacity-80 transition duration-200" loading="lazy" decoding="async">
+                   <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                    <img src="/assets/350.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                     <div class="p-3">
                         <h3 class="text-lg font-semibold text-white truncate">The Binding of isaac</h3>
                         <p class="text-gray-400 text-xs">Puzzle</p>
@@ -492,6 +558,23 @@
             }
         }
 
+        /**
+         * Triggers the intro sound and the staggered animation for game cards.
+         */
+        function startIntroSequence() {
+            // 1. Play Intro Sound
+            playSound(introSound);
+
+            // 2. Start Staggered Game Card Reveal
+            const gameCards = document.querySelectorAll('.game-card');
+            gameCards.forEach((card, index) => {
+                // Stagger the animation by 50ms per card
+                setTimeout(() => {
+                    card.classList.add('visible');
+                }, index * 50); // 50ms delay between each card
+            });
+        }
+
         // Wait for the DOM to be fully loaded before running scripts
         document.addEventListener('DOMContentLoaded', () => {
 
@@ -518,13 +601,13 @@
             
             const messageBox = document.getElementById('message-box');
 
-            // --- NEW: Hover Sound Setup ---
+            // --- Hover Sound Setup ---
             const hoverSelector = 'a, button, .game-card'; 
             document.querySelectorAll(hoverSelector).forEach(el => {
                 el.addEventListener('mouseenter', () => playSound(hoverSound));
             });
 
-            // --- NEW: Select/Click Sound Setup (using delegation) ---
+            // --- Select/Click Sound Setup (using delegation) ---
             const clickSelector = 'a, button, .game-play-btn';
             document.body.addEventListener('click', (e) => {
                 if (e.target.closest(clickSelector)) {
@@ -556,33 +639,22 @@
                 });
             }
 
-            // --- Game Modal Logic ---
-
-            /**
-             * Opens the game modal with a specific URL and title.
-             */
+            // --- Game Modal Logic (Unchanged) ---
             function openGameModal(url, title) {
                 currentGameUrl = url;
                 gameModalTitle.textContent = title;
                 gameIframe.src = url;
                 gameModal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                document.body.style.overflow = 'hidden'; 
             }
-
-            /**
-             * Closes the game modal and clears the iframe.
-             */
             function closeGameModal() {
-                gameIframe.src = 'about:blank'; // Use about:blank for a clean stop
+                gameIframe.src = 'about:blank'; 
                 currentGameUrl = '';
                 gameModal.classList.add('hidden');
-                document.body.style.overflow = ''; // Restore scrolling
+                document.body.style.overflow = ''; 
             }
-
-            // Use Event Delegation for opening games
             if (gameGrid) {
                 gameGrid.addEventListener('click', (e) => {
-                    // Find the closest button if the user clicked inside it (e.g., on the text)
                     const playButton = e.target.closest('.game-play-btn');
                     if (playButton) {
                         const url = playButton.dataset.url;
@@ -593,14 +665,11 @@
                     }
                 });
             }
-
-            // Set up modal button listeners ONCE
             if (openNewTabBtn) {
                 openNewTabBtn.addEventListener('click', () => {
                     window.open(currentGameUrl, '_blank');
                 });
             }
-
             if (openBlankBtn) {
                 openBlankBtn.addEventListener('click', () => {
                     const newWindow = window.open('about:blank', '_blank');
@@ -620,7 +689,6 @@
                     }
                 });
             }
-
             if (fullscreenBtn) {
                 fullscreenBtn.addEventListener('click', () => {
                     const requestFS = gameIframe.requestFullscreen || gameIframe.mozRequestFullScreen || gameIframe.webkitRequestFullscreen || gameIframe.msRequestFullscreen;
@@ -631,24 +699,17 @@
                     }
                 });
             }
-
             if (copyUrlBtn) {
                 copyUrlBtn.addEventListener('click', copyGameUrl);
             }
-
             if (closeModalBtn) {
                 closeModalBtn.addEventListener('click', closeGameModal);
             }
-
-            /**
-             * Copies the game URL using the modern Clipboard API.
-             */
             async function copyGameUrl() {
                 if (!navigator.clipboard) {
                     showMessage('Clipboard API not supported.', 'error');
                     return;
                 }
-                
                 try {
                     await navigator.clipboard.writeText(currentGameUrl);
                     showMessage('Game URL copied!', 'success');
@@ -657,15 +718,9 @@
                     showMessage('Could not copy URL.', 'error');
                 }
             }
-
-            /**
-             * Utility function to show temporary messages.
-             */
             function showMessage(text, type = 'success') {
                 messageBox.textContent = text;
-                
                 messageBox.classList.remove('bg-cyan-600', 'bg-red-600');
-                
                 if (type === 'error') {
                     messageBox.classList.add('bg-red-600');
                     messageBox.style.backgroundColor = 'var(--color-primary-dark)';
@@ -673,12 +728,10 @@
                     messageBox.classList.add('bg-cyan-600');
                     messageBox.style.backgroundColor = 'var(--color-primary)';
                 }
-
                 messageBox.classList.remove('hidden');
                 setTimeout(() => {
                     messageBox.style.opacity = '1';
                 }, 10);
-                
                 setTimeout(() => {
                     messageBox.style.opacity = '0';
                     setTimeout(() => messageBox.classList.add('hidden'), 300);
@@ -687,21 +740,18 @@
 
         }); // End of DOMContentLoaded
 
-        // --- NEW: Preloader & Intro Sound Logic ---
-        // We use window.onload to wait for all content (like images) to load
+        // --- Preloader & Intro Sound Logic ---
         window.onload = () => {
             const preloader = document.getElementById('preloader');
             
-            // 1. Play Intro Sound
-            if (introSound) {
-                // Attempt to play the sound. May fail, which is caught by playSound
-                playSound(introSound);
+            // 1. Hide Preloader (starts 0.5s transition)
+            if (preloader) {
+                preloader.classList.add('loaded'); 
             }
 
-            // 2. Hide Preloader
-            if (preloader) {
-                preloader.classList.add('loaded'); // Triggers the fade-out
-            }
+            // 2. Call intro sequence 550ms after starting the fade-out
+            // This waits for the preloader to be visually gone before the sound and cards appear.
+            setTimeout(startIntroSequence, 550);
         };
     </script>
 </body>
