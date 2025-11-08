@@ -5,18 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Qbbic</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    
     <style>
-        /* --- CUSTOM FONT DEFINITION --- */
+        /* --- CUSTOM FONT DEFINITION (Applied Globally) --- */
         @font-face {
-            font-family: 'BTSEPS2';
-            src: url('/assets/btseps2.TTF') format('truetype');
+            font-family: 'GameBoyFont';
+            src: url('/assets/Early GameBoy.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
-            font-display: swap; /* Ensures text is visible during font loading */
+            /* Ensures text is visible during font loading */
+            font-display: swap; 
         }
         
         /* --- CSS Variables for Theming --- */
@@ -51,8 +48,8 @@
         /* --- End of Theming --- */
 
         body {
-            /* Using Inter for general body text */
-            font-family: 'Inter', sans-serif;
+            /* New: Use GameBoyFont for everything */
+            font-family: 'GameBoyFont', sans-serif;
             
             /* Apply theme */
             background-color: var(--bg-page);
@@ -64,12 +61,6 @@
             transition: background-image 0.5s ease-in-out;
         }
         
-        /* --- NEW: Font for titles and logo --- */
-        .display-font {
-            font-family: 'BTSEPS2', sans-serif;
-        }
-        /* ----------------------------------- */
-
         /* --- Preloader Styles --- */
         #preloader {
             position: fixed;
@@ -258,13 +249,14 @@
     <div id="preloader">
         <div class="spinner"></div>
     </div>
-    <audio id="intro-sound" src="/assets/sounds/ps2_intro.mp3" preload="auto"></audio>
-    <audio id="hover-sound" src="/assets/sounds/ps2_hover.mp3" preload="auto"></audio>
-    <audio id="select-sound" src="/assets/sounds/ps2_select.mp3" preload="auto"></audio>
+    <audio id="intro-sound" src="/assets/SCPH-10000_00015.wav" preload="auto"></audio>
+    <audio id="hover-sound" src="/assets/SCPH-10000_00021.wav" preload="auto"></audio>
+    <audio id="select-sound" src="/assets/SCPH-10000_00022.wav" preload="auto"></audio>
+    <audio id="exit-sound" src="/assets/SCPH-10000_00024.wav" preload="auto"></audio>
     <header class="bg-gray-800 sticky top-0 z-50 border-b border-gray-700 glass-header">
         <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <div class="flex items-center">
-                <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-white hover:text-cyan-400 transition duration-300 display-font">
+                <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-white hover:text-cyan-400 transition duration-300">
                     <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2v-5m-9-2a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z"/>
                     </svg>
@@ -279,7 +271,7 @@
                 </svg>
             </button>
             
-            <div class="hidden md:flex space-x-6 items-center display-font">
+            <div class="hidden md:flex space-x-6 items-center">
                 <a href="index.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Home</a>
                 <a href="games.html" class="text-white border-b-2 border-cyan-400 transition duration-200 font-medium">Games</a>
                 <a href="faq.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">FAQ</a>
@@ -288,7 +280,7 @@
             </div>
         </nav>
         
-        <div id="mobile-menu" class="md:hidden hidden bg-gray-800 px-4 pb-4 border-t border-gray-700 display-font">
+        <div id="mobile-menu" class="md:hidden hidden bg-gray-800 px-4 pb-4 border-t border-gray-700">
             <a href="index.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">Home</a>
             <a href="games.html" class="block text-white border-l-2 border-cyan-400 py-2 pl-2 transition duration-200 border-b border-gray-700">Games</a>
             <a href="faq.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">FAQ</a>
@@ -299,7 +291,7 @@
     <main>
     <section class="py-8 sm:py-12">
         <div class="container mx-auto px-4">
-            <h1 class="text-3xl font-bold text-center mb-10 text-white display-font">
+            <h1 class="text-3xl font-bold text-center mb-10 text-white">
                 Full Game Catalog (100+ Games)
             </h1>
 
@@ -503,7 +495,7 @@
 
     <footer class="bg-gray-800 border-t border-gray-700 mt-10 glass-header">
         <div class="container mx-auto px-4 py-6 text-center">
-            <div class="flex justify-center space-x-6 mb-4 display-font">
+            <div class="flex justify-center space-x-6 mb-4">
                 <a href="index.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Home</a>
                 <a href="games.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Games</a>
                 <a href="faq.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">FAQ</a>
@@ -521,7 +513,7 @@
         <div class="w-full h-full max-w-7xl max-h-[95vh] flex flex-col bg-gray-950 rounded-xl overflow-hidden shadow-2xl glass-modal-container">
             
             <div class="flex-shrink-0 bg-gray-800 p-3 flex justify-between items-center border-b border-gray-700 glass-modal-header">
-                <h2 id="game-modal-title" class="text-xl font-bold text-cyan-400 truncate display-font">Game Title</h2>
+                <h2 id="game-modal-title" class="text-xl font-bold text-cyan-400 truncate">Game Title</h2>
                 <div class="flex space-x-2 items-center">
                     
                     <button id="open-new-tab-btn" type="button" class="control-btn" title="Open in New Tab">
@@ -564,6 +556,8 @@
         const introSound = document.getElementById('intro-sound');
         const hoverSound = document.getElementById('hover-sound');
         const selectSound = document.getElementById('select-sound');
+        // NEW: Reference to the exit sound
+        const exitSound = document.getElementById('exit-sound');
 
         function playSound(audioElement) {
             if (audioElement) {
@@ -627,8 +621,8 @@
             // --- Select/Click Sound Setup (using delegation) ---
             const clickSelector = 'a, button, .game-play-btn';
             document.body.addEventListener('click', (e) => {
-                if (e.target.closest(clickSelector)) {
-                    // This sound plays for clicks on links, nav, and play buttons
+                // Only play select sound if the target is NOT the close button, since the close function plays its own sound.
+                if (e.target.closest(clickSelector) && e.target.closest('#close-game-modal-btn') === null) {
                     playSound(selectSound);
                 }
             });
@@ -656,7 +650,7 @@
                 });
             }
 
-            // --- Game Modal Logic (Unchanged) ---
+            // --- Game Modal Logic ---
             function openGameModal(url, title) {
                 currentGameUrl = url;
                 gameModalTitle.textContent = title;
@@ -664,12 +658,19 @@
                 gameModal.classList.remove('hidden');
                 document.body.style.overflow = 'hidden'; 
             }
+            
+            // MODIFIED: Added playSound(exitSound)
             function closeGameModal() {
+                // 1. Play the exit sound
+                playSound(exitSound);
+
+                // 2. Clear iframe and hide modal
                 gameIframe.src = 'about:blank'; 
                 currentGameUrl = '';
                 gameModal.classList.add('hidden');
                 document.body.style.overflow = ''; 
             }
+            
             if (gameGrid) {
                 gameGrid.addEventListener('click', (e) => {
                     const playButton = e.target.closest('.game-play-btn');
@@ -719,6 +720,7 @@
             if (copyUrlBtn) {
                 copyUrlBtn.addEventListener('click', copyGameUrl);
             }
+            // Close button now calls the function that includes the exit sound
             if (closeModalBtn) {
                 closeModalBtn.addEventListener('click', closeGameModal);
             }
