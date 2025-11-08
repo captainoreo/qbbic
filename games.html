@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF--8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Qbbic</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,7 +12,13 @@
         /* --- CSS Variables for Theming --- */
         :root {
             /* Default Theme: Game Boy */
-            --bg-image: none;
+            --color-check-1: #0f380f; /* GB Dark */
+            --color-check-2: #306230; /* GB Medium */
+            --bg-image: repeating-linear-gradient(to right, var(--color-check-1) 0, var(--color-check-1) 10px, var(--color-check-2) 10px, var(--color-check-2) 20px),
+                        repeating-linear-gradient(to bottom, var(--color-check-1) 0, var(--color-check-1) 10px, var(--color-check-2) 10px, var(--color-check-2) 20px);
+            --bg-size: 20px 20px; /* Creates 10px squares */
+            --bg-position: 0 0;
+            
             --color-primary: #9bbc0f; /* GB Light */
             --color-primary-light: #9bbc0f;
             --color-primary-dark: #8bac0f;
@@ -46,6 +52,8 @@
 
         .theme-forest {
             --bg-image: url('/assets/nyan.jpg');
+            --bg-size: cover;
+            --bg-position: center;
             --color-primary: #22c55e; /* green-500 */
             --color-primary-light: #4ade80; /* green-400 */
             --color-primary-dark: #16a34a; /* green-600 */
@@ -56,7 +64,13 @@
         
         .theme-gba {
             /* Game Boy Advance Theme (Indigo) */
-            --bg-image: none;
+            --color-check-1: #252525; /* GBA Dark Bezel */
+            --color-check-2: #333333; /* GBA Light Bezel */
+            --bg-image: repeating-linear-gradient(to right, var(--color-check-1) 0, var(--color-check-1) 10px, var(--color-check-2) 10px, var(--color-check-2) 20px),
+                        repeating-linear-gradient(to bottom, var(--color-check-1) 0, var(--color-check-1) 10px, var(--color-check-2) 10px, var(--color-check-2) 20px);
+            --bg-size: 20px 20px; /* Creates 10px squares */
+            --bg-position: 0 0;
+
             --color-primary: #644287; /* GBA Indigo */
             --color-primary-light: #815AAA;
             --color-primary-dark: #4C3265;
@@ -86,8 +100,8 @@
             /* Apply theme */
             background-color: var(--bg-page);
             background-image: var(--bg-image);
-            background-size: cover;
-            background-position: center;
+            background-size: var(--bg-size);
+            background-position: var(--bg-position);
             background-attachment: fixed;
             color: var(--color-text-base);
             transition: background-image 0.5s ease-in-out;
