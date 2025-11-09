@@ -1,0 +1,41 @@
+ <!DOCTYPE html>
+<html>
+<head>
+    <title>Acid bunny</title>
+</head>
+<body>
+
+    <!-- This is the container where the Flash content will be displayed -->
+    <div id="ruffle-container"></div>
+
+    <!-- Include the Ruffle JavaScript player -->
+    <script src="flash/ruffle.js"></script>
+
+    <script>
+        window.RufflePlayer = window.RufflePlayer || {};
+        window.addEventListener("load", (event) => {
+            // Get the newest Ruffle player instance
+            const ruffle = window.RufflePlayer.newest();
+            // Create a player
+            const player = ruffle.createPlayer();
+            const container = document.getElementById("ruffle-container");
+
+            // Append the player to the container
+            container.appendChild(player);
+
+            // Load the SWF file into the player
+            player.load({
+                url: "acidbunny2.swf", // Replace with the actual path to your SWF file
+                backgroundColor: "#ffffff", // Optional: set background color
+                // You can add other configurations here, like:
+                // contextMenu: { "contextMenu": false } // to disable the context menu
+            });
+
+            // Optionally set the size of the player
+            player.style.width = "960px";
+            player.style.height = "700px";
+        });
+    </script>
+
+</body>
+</html>
