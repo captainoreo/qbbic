@@ -42,14 +42,13 @@
         
         body {
             font-family: 'GameBoyFont', sans-serif;
-            /* Allow body to be transparent for the background effect */
             background-color: transparent; 
             color: var(--color-text-base);
             min-height: 100vh;
         }
         
         /* ------------------------------------- */
-        /* --- NEW PURE CSS 3D CUBE FIELD --- */
+        /* --- PURE CSS 3D CUBE FIELD --- */
         /* ------------------------------------- */
         #css-3d-background {
             position: fixed;
@@ -61,9 +60,8 @@
             overflow: hidden;
             background-color: var(--bg-page);
 
-            /* Set up 3D perspective for the *scene* */
             perspective: 1200px;
-            perspective-origin: 50% 50%; /* View from the center */
+            perspective-origin: 50% 50%;
 
             /* Radial Gradient to simulate the central glow/fog */
             background: radial-gradient(circle at center, rgba(51, 120, 242, 0.1) 0%, var(--bg-page) 70%);
@@ -73,14 +71,12 @@
             --size: 5px; 
             
             position: absolute;
-            /* Initial position is set using inline styles in the HTML for variety */
             
             width: var(--size);
             height: var(--size);
             
             transform-style: preserve-3d;
             
-            /* Animation applied to all layers */
             animation: moveCube var(--duration) linear infinite;
         }
 
@@ -91,10 +87,9 @@
             width: 100%;
             height: 100%;
             border: 1px solid var(--color-primary-light);
-            /* Add a subtle glow */
             box-shadow: 0 0 5px var(--color-primary-light);
             opacity: 0.6;
-            background: rgba(51, 120, 242, 0.05); /* Very light tint */
+            background: rgba(51, 120, 242, 0.05);
             transform-style: preserve-3d;
         }
 
@@ -123,31 +118,39 @@
         /* --- END PURE CSS 3D CUBE FIELD --- */
         /* ------------------------------------- */
 
-        /* --- Game Card Cube Appearance & Entrance Animation --- */
+        /* --- Game Card Appearance (Now always visible) --- */
         .game-card {
             background-color: var(--bg-glass-card);
             backdrop-filter: blur(var(--blur-strength));
             -webkit-backdrop-filter: blur(var(--blur-strength));
             border: 1px solid var(--border-glass-light);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: background-color 0.2s, opacity 0.8s, transform 0.8s;
+            /* Simplify transition for hover effects only */
+            transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s; 
 
             position: relative;
             transform-style: preserve-3d;
             transform-origin: center bottom;
             
-            opacity: 0;
-            transform: translateZ(-200px) translateY(50px) rotateX(-90deg); 
-            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
-                        transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        box-shadow 0.2s;
-        }
-
-        .game-card.visible {
-            opacity: 1;
+            /* Initial state is now fully visible and non-transformed */
+            opacity: 1; 
             transform: translateZ(0) translateY(0) rotateX(0deg); 
         }
         
+        /* The .game-card.visible class is no longer needed/used */
+
+        .game-card:hover {
+            background-color: var(--bg-glass-card-hover);
+            transform: scale(1.03) translateZ(10px); 
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); 
+        }
+
+        .game-card:hover::before {
+             background: rgba(51, 120, 242, 0.2); 
+             transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px); 
+        }
+        /* --- End of Cube & Animation Styles --- */
+
         /* Glassmorphism and Utility Classes (Kept as-is) */
         .glass-header {
             background-color: var(--bg-glass-header);
@@ -200,15 +203,10 @@
     
     <div id="page-content" class="relative z-10">
 
-        <div id="preloader" class="flex-col">
-             <h1 class="text-6xl font-extrabold text-white mb-6">QB<span class="text-cyan-400">BIC</span></h1>
-            <div class="spinner"></div>
-            <p class="text-white mt-4 text-sm">Loading Interface...</p>
-        </div>
-        <audio id="intro-sound" src="/assets/ps4-menu-intro.mp3" preload="auto"></audio>
+         <audio id="intro-sound" src="/assets/ps4-menu-intro.mp3" preload="auto"></audio>
         <audio id="hover-sound" src="/assets/ps4-scroll-foward.mp3" preload="auto"></audio>
         <audio id="select-sound" src="/assets/ps4-select-button.mp3" preload="auto"></audio>
-        <audio id="exit-sound" src="/assets/SCPH-10000_00024.wav" preload="auto"></audio>
+        <audio id="exit-sound" src="/assets/ps4-back-button.mp3" preload="auto"></audio>
         
         <header class="sticky top-0 z-50 border-b border-gray-700 glass-header">
             <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
@@ -526,9 +524,10 @@
 
         <div id="message-box" class></div>
 
-    </div> <script>
+    </div> 
+    <script>
         // --- Sound Element References (Global for all listeners) ---
-        const introSound = document.getElementById('intro-sound');
+        // The introSound element is still in HTML, but its play logic has been removed.
         const hoverSound = document.getElementById('hover-sound');
         const selectSound = document.getElementById('select-sound');
         const exitSound = document.getElementById('exit-sound');
@@ -540,22 +539,7 @@
             }
         }
 
-        /**
-         * Triggers the intro sound and the staggered animation for game cards.
-         */
-        function startIntroSequence() {
-            // 1. Play Intro Sound
-            playSound(introSound);
-
-            // 2. Start Staggered Game Card Reveal
-            const gameCards = document.querySelectorAll('.game-card');
-            gameCards.forEach((card, index) => {
-                // Stagger the animation by 50ms per card
-                setTimeout(() => {
-                    card.classList.add('visible');
-                }, index * 50); // 50ms delay between each card
-            });
-        }
+        // REMOVED: The startIntroSequence function
 
         // Wait for the DOM to be fully loaded before running scripts
         document.addEventListener('DOMContentLoaded', () => {
@@ -728,20 +712,8 @@
 
         }); // End of DOMContentLoaded
 
-        // --- Preloader & Intro Logic ---
-        window.onload = () => {
-            const preloader = document.getElementById('preloader');
-            
-            // 1. Hide Preloader (starts 0.5s transition)
-            if (preloader) {
-                preloader.classList.add('loaded'); 
-            }
-
-            // 2. Call intro sequence after the fade-out starts
-            setTimeout(startIntroSequence, 550);
-        };
+        // REMOVED: window.onload logic to handle preloader and intro sequence
         
     </script>
-    
-    </body>
+</body>
 </html>
