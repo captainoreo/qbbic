@@ -19,36 +19,36 @@
         
         /* --- CSS Variables for Theming --- */
         :root {
-            /* Default Theme: PS2 */
-            --bg-image: url('/assets/ps2-cubes.gif'); /* Placeholder for animated cubes */
+            /* New Theme: Pitch Black / White Cubes */
+            --bg-image: none; 
             --bg-size: cover;
             --bg-position: center;
 
-            --color-primary: #3378F2; /* PS2 Blue */
-            --color-primary-light: #66A0FF;
-            --color-primary-dark: #0050C0;
+            --color-primary: #ffffff; /* Pure White */
+            --color-primary-light: #eeeeee; /* Light Gray */
+            --color-primary-dark: #888888; /* Darker Gray for subtle effects */
             
             --color-text-base: #ffffff;
             --color-text-white: #ffffff;
-            --color-text-dark: #ffffff; /* White text for buttons */
+            --color-text-dark: #111111; /* Dark text for white buttons */
             
-            --bg-page: #00001a; /* Very dark blue */
-            --bg-glass-header: rgba(10, 10, 30, 0.6); /* Translucent dark blue */
-            --bg-glass-card: rgba(10, 10, 30, 0.5);
-            --bg-glass-card-hover: rgba(20, 20, 50, 0.7);
-            --bg-glass-modal: rgba(0, 0, 10, 0.9);
-            --bg-glass-modal-header: rgba(10, 10, 30, 0.7);
-            --bg-glass-controls: rgba(20, 20, 50, 0.7);
-            --bg-glass-controls-hover: rgba(51, 120, 242, 0.8);
+            --bg-page: #000000; /* Pitch Black */
+            --bg-glass-header: rgba(0, 0, 0, 0.7); /* Translucent Black */
+            --bg-glass-card: rgba(255, 255, 255, 0.05); /* Extremely subtle glass effect (almost invisible) */
+            --bg-glass-card-hover: rgba(255, 255, 255, 0.1);
+            --bg-glass-modal: rgba(0, 0, 0, 0.95);
+            --bg-glass-modal-header: rgba(0, 0, 0, 0.8);
+            --bg-glass-controls: rgba(255, 255, 255, 0.1);
+            --bg-glass-controls-hover: rgba(255, 255, 255, 0.2);
 
-            --border-glass: rgba(51, 120, 242, 0.4);
-            --border-glass-light: rgba(51, 120, 242, 0.2);
+            --border-glass: rgba(255, 255, 255, 0.2);
+            --border-glass-light: rgba(255, 255, 255, 0.1);
             
-            --blur-strength: 5px;
+            --blur-strength: 3px; /* Slightly less blur */
         }
         /* --- End of Theming --- */
 
-        /* NEW: Styles for the 3D background canvas */
+        /* Styles for the 3D background canvas */
         #3d-background {
             position: fixed;
             top: 0;
@@ -65,7 +65,6 @@
             
             /* Apply theme */
             background-color: transparent; /* Changed to transparent so 3D scene background shows */
-            /* background-image: var(--bg-image); */ /* <-- COMMENTED OUT to let 3D background show */
             background-size: var(--bg-size);
             background-position: var(--bg-position);
             background-attachment: fixed;
@@ -73,15 +72,17 @@
             transition: background-image 0.5s ease-in-out;
         }
         
-        /* --- Preloader Styles --- */
+        /* --- Preloader Styles (The Intro Screen) --- */
         #preloader {
             position: fixed;
             inset: 0; 
             width: 100vw;
             height: 100vh;
-            background-color: #000;
+            background-color: var(--bg-page); /* Pitch Black */
             z-index: 9999; 
+            /* Added flex-col to stack intro elements */
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
@@ -97,7 +98,8 @@
         .spinner {
             width: 50px;
             height: 50px;
-            border: 5px solid rgba(102, 160, 255, 0.2); 
+            /* Changed spinner color to white theme */
+            border: 5px solid rgba(255, 255, 255, 0.2); 
             border-top-color: var(--color-primary-light); 
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -120,12 +122,12 @@
         
         /* --- Game Card Cube Appearance & Entrance Animation --- */
         .game-card {
-            /* Existing glass styles - backdrop-filter is key to seeing the background */
+            /* Minimalist glass styles for black/white theme */
             background-color: var(--bg-glass-card);
             backdrop-filter: blur(var(--blur-strength));
             -webkit-backdrop-filter: blur(var(--blur-strength));
             border: 1px solid var(--border-glass-light);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
             transition: background-color 0.2s, opacity 0.8s, transform 0.8s;
 
             /* Setup for 3D/Animation */
@@ -147,7 +149,7 @@
             transform: translateZ(0) translateY(0) rotateX(0deg); /* Moves into position */
         }
 
-        /* Cube Visual Effect: Transparent Body */
+        /* Cube Visual Effect: White Outline */
         .game-card::before {
             content: '';
             position: absolute;
@@ -155,9 +157,10 @@
             height: 100%;
             top: 0;
             left: 0;
-            /* Base style for transparent cube effect */
-            background: rgba(51, 120, 242, 0.1); /* Light blue tint */
-            border: 1px solid rgba(51, 120, 242, 0.2);
+            
+            /* Base style for transparent cube effect - White/light gray tint */
+            background: rgba(255, 255, 255, 0.1); 
+            border: 1px solid rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(1px);
             -webkit-backdrop-filter: blur(1px);
             border-radius: 0.5rem;
@@ -184,7 +187,7 @@
         }
 
         .game-card:hover::before {
-             background: rgba(51, 120, 242, 0.2); /* Enhance transparency on hover */
+             background: rgba(255, 255, 255, 0.2); /* Enhance transparency on hover */
              transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px); /* Push background back */
         }
         /* --- End of Cube & Animation Styles --- */
@@ -227,6 +230,7 @@
         }
 
         /* Override Tailwind classes to use CSS variables */
+        /* All blue/cyan is now mapped to white/light gray */
         .text-cyan-400 { color: var(--color-primary-light) !important; }
         .border-cyan-400 { border-color: var(--color-primary-light) !important; }
         .hover\:text-cyan-400:hover { color: var(--color-primary-light) !important; }
@@ -234,6 +238,7 @@
         .hover\:bg-cyan-400:hover { background-color: var(--color-primary-light) !important; }
         .focus\:ring-cyan-500:focus { --tw-ring-color: var(--color-primary) !important; }
         
+        /* Text/BG colors are mostly white/black theme now */
         .text-gray-900 { color: var(--color-text-dark) !important; }
         .text-white { color: var(--color-text-white) !important; }
         .text-gray-300 { color: var(--color-text-base) !important; }
@@ -261,14 +266,16 @@
 
     <div id="page-content" class="relative z-10">
 
-        <div id="preloader">
+        <div id="preloader" class="flex-col">
+             <h1 class="text-6xl font-extrabold text-white mb-6">QB<span class="text-cyan-400">BIC</span></h1>
             <div class="spinner"></div>
+            <p class="text-white mt-4 text-sm">Loading Interface...</p>
         </div>
         <audio id="intro-sound" src="/assets/SCPH-10000_00015.wav" preload="auto"></audio>
         <audio id="hover-sound" src="/assets/SCPH-10000_00021.wav" preload="auto"></audio>
         <audio id="select-sound" src="/assets/SCPH-10000_00022.wav" preload="auto"></audio>
         <audio id="exit-sound" src="/assets/SCPH-10000_00024.wav" preload="auto"></audio>
-        <header class="bg-gray-800 sticky top-0 z-50 border-b border-gray-700 glass-header">
+        <header class="sticky top-0 z-50 border-b border-gray-700 glass-header">
             <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
                 <div class="flex items-center">
                     <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-white hover:text-cyan-400 transition duration-300">
@@ -526,7 +533,7 @@
         </section>
     </main>
 
-        <footer class="bg-gray-800 border-t border-gray-700 mt-10 glass-header">
+        <footer class="border-t border-gray-700 mt-10 glass-header">
             <div class="container mx-auto px-4 py-6 text-center">
                 <div class="flex justify-center space-x-6 mb-4">
                     <a href="index.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Home</a>
@@ -545,7 +552,7 @@
             
             <div class="w-full h-full max-w-7xl max-h-[95vh] flex flex-col bg-gray-950 rounded-xl overflow-hidden shadow-2xl glass-modal-container">
                 
-                <div class="flex-shrink-0 bg-gray-800 p-3 flex justify-between items-center border-b border-gray-700 glass-modal-header">
+                <div class="flex-shrink-0 p-3 flex justify-between items-center border-b border-gray-700 glass-modal-header">
                     <h2 id="game-modal-title" class="text-xl font-bold text-cyan-400 truncate">Game Title</h2>
                     <div class="flex space-x-2 items-center">
                         
@@ -589,7 +596,6 @@
         const introSound = document.getElementById('intro-sound');
         const hoverSound = document.getElementById('hover-sound');
         const selectSound = document.getElementById('select-sound');
-        // NEW: Reference to the exit sound
         const exitSound = document.getElementById('exit-sound');
 
         function playSound(audioElement) {
@@ -645,7 +651,6 @@
             const messageBox = document.getElementById('message-box');
 
             // --- Hover Sound Setup ---
-            // Only targets the Play button for the hover sound effect.
             const hoverSelector = '.game-play-btn'; 
             document.querySelectorAll(hoverSelector).forEach(el => {
                 el.addEventListener('mouseenter', () => playSound(hoverSound));
@@ -654,7 +659,6 @@
             // --- Select/Click Sound Setup (using delegation) ---
             const clickSelector = 'a, button, .game-play-btn';
             document.body.addEventListener('click', (e) => {
-                // Only play select sound if the target is NOT the close button, since the close function plays its own sound.
                 if (e.target.closest(clickSelector) && e.target.closest('#close-game-modal-btn') === null) {
                     playSound(selectSound);
                 }
@@ -692,7 +696,6 @@
                 document.body.style.overflow = 'hidden'; 
             }
             
-            // MODIFIED: Added playSound(exitSound)
             function closeGameModal() {
                 // 1. Play the exit sound
                 playSound(exitSound);
@@ -773,17 +776,20 @@
             function showMessage(text, type = 'success') {
                 messageBox.textContent = text;
                 messageBox.classList.remove('bg-cyan-600', 'bg-red-600');
+                // Use CSS variables for consistent theming
+                const successColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
+                const errorColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-dark').trim();
+
                 if (type === 'error') {
-                    messageBox.classList.add('bg-red-600');
-                    messageBox.style.backgroundColor = 'var(--color-primary-dark)';
+                    messageBox.style.backgroundColor = errorColor;
                 } else {
-                    messageBox.classList.add('bg-cyan-600');
-                    messageBox.style.backgroundColor = 'var(--color-primary)';
+                    messageBox.style.backgroundColor = successColor;
                 }
+                
                 messageBox.classList.remove('hidden');
-                setTimeout(() => {
-                    messageBox.style.opacity = '1';
-                }, 10);
+                messageBox.classList.add('fixed', 'bottom-4', 'left-1/2', '-translate-x-1/2', 'px-4', 'py-2', 'rounded-lg', 'text-white', 'shadow-lg', 'transition-opacity', 'duration-300', 'z-[101]');
+                messageBox.style.opacity = '1';
+                
                 setTimeout(() => {
                     messageBox.style.opacity = '0';
                     setTimeout(() => messageBox.classList.add('hidden'), 300);
@@ -816,8 +822,8 @@
 
             const scene = new THREE.Scene();
             
-            // Add blue fog, like the original PS2 background
-            const fogColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-page').trim() || '#00001a';
+            // Set fog color to pitch black theme variable
+            const fogColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-page').trim() || '#000000';
             scene.fog = new THREE.Fog(fogColor, 10, 150); 
 
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -830,18 +836,18 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
 
             // Create cubes
-            const geometry = new THREE.BoxGeometry(1.5, 5, 1.5); // Taller cubes, like the source image
-            const material = new THREE.MeshLambertMaterial({ color: 0xeeeeee }); // Off-white/grey material
+            const geometry = new THREE.BoxGeometry(1.5, 5, 1.5); // Taller cubes
+            // Set cube material to pure white
+            const material = new THREE.MeshLambertMaterial({ color: 0xffffff }); 
             
             const cubes = [];
-            // MODIFIED: Increased cube count from 70 to 150 for a denser field
+            // Use 150 cubes for a denser field
             for (let i = 0; i < 150; i++) {
                 const cube = new THREE.Mesh(geometry, material);
                 
-                // MODIFIED: Reduced the random range for X and Y for a tighter, less sparse feel
+                // Position cubes randomly in a medium volume
                 cube.position.x = (Math.random() - 0.5) * 100;
                 cube.position.y = (Math.random() - 0.5) * 70;
-                // Place them mostly in the distance, but let some pass by
                 cube.position.z = Math.random() * 100 - 50; 
 
                 // Random rotation
@@ -853,12 +859,16 @@
             }
             
             // Add light
-            const ambientLight = new THREE.AmbientLight(0x404040); // soft white ambient light
+            const ambientLight = new THREE.AmbientLight(0x202020); // soft white ambient light
             scene.add(ambientLight);
             
-            // Use the primary blue color from CSS for the light spot effect
-            const lightColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-light').trim() || '#66A0FF';
-            const pointLight = new THREE.PointLight(lightColor, 2, 100);
+            // Use the primary light color from CSS (which is now white/light gray)
+            const lightColorCSS = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-light').trim() || '#eeeeee';
+            // Convert CSS hex color string to THREE.js hex integer
+            const lightColorHex = parseInt(lightColorCSS.replace('#', ''), 16); 
+
+            // Point light (using white/light color)
+            const pointLight = new THREE.PointLight(lightColorHex, 2, 100);
             pointLight.position.set(0, 5, 20); // Position light near the camera center
             scene.add(pointLight);
 
@@ -868,10 +878,10 @@
             function animate() {
                 requestAnimationFrame(animate);
                 
-                // MODIFIED: Slowed down the camera rotation
+                // Slow camera rotation
                 camera.rotation.y += 0.00005; 
                 
-                // MODIFIED: Slowed down the forward movement
+                // Slow forward movement
                 camera.position.z -= 0.03;
                 
                 // Loop the camera/scene to simulate infinite movement
@@ -892,14 +902,9 @@
             });
         }
         
-        // Start the 3D scene after the preloader starts to fade out.
-        const originalOnLoad = window.onload;
-        window.onload = () => {
-            if (originalOnLoad) {
-                originalOnLoad();
-            }
-            setTimeout(init3DBackground, 550);
-        };
+        // Start the 3D scene immediately so it runs behind the preloader (the intro).
+        // Using setTimeout to ensure all other setup finishes first.
+        setTimeout(init3DBackground, 100); 
     </script>
 </body>
 </html>
