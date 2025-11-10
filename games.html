@@ -63,7 +63,8 @@
             font-family: 'GameBoyFont', sans-serif;
             
             /* Apply theme */
-            background-color: var(--bg-page);
+            /* --- CHANGE 1: Made background transparent to see canvas --- */
+            background-color: transparent; 
             /* background-image: var(--bg-image); */ /* <-- COMMENTED OUT to let 3D background show */
             background-size: var(--bg-size);
             background-position: var(--bg-position);
@@ -817,9 +818,11 @@
             scene.fog = new THREE.Fog(fogColor, 10, 150); 
 
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            
+            /* --- CHANGE 2: Set alpha to false so the renderer has its own background --- */
             const renderer = new THREE.WebGLRenderer({
                 canvas: document.getElementById('3d-background'),
-                alpha: true // Make canvas transparent so CSS background color shows
+                alpha: false 
             });
             renderer.setSize(window.innerWidth, window.innerHeight);
 
