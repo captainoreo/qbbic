@@ -45,23 +45,81 @@
             --blur-strength: 3px;
         }
         /* --- End of Theming --- */
-        
-        /* --- NEW LOCALIZED EFFECT KEYFRAMES --- */
-        @keyframes flicker {
-            0%, 100% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.2), 0 0 10px rgba(255, 255, 255, 0.05); }
-            50% { box-shadow: 0 0 8px rgba(255, 255, 255, 0.4), 0 0 15px rgba(255, 255, 255, 0.1); }
-            75% { box-shadow: 0 0 6px rgba(255, 255, 255, 0.3), 0 0 12px rgba(255, 255, 255, 0.08); }
-        }
-        /* --- END NEW EFFECT --- */
 
         body {
             font-family: 'GameBoyFont', sans-serif;
-            /* Now using solid black background */
             background-color: var(--bg-page); 
             color: var(--color-text-base);
             min-height: 100vh;
         }
         
+        /* ------------------------------------- */
+        /* --- NEW CSS 3D CUBE ANIMATION --- */
+        /* ------------------------------------- */
+        #css-3d-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; 
+            overflow: hidden;
+
+            /* Set up the 3D space */
+            perspective: 1000px;
+        }
+
+        .cube-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            
+            /* Center the cube visually */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cube {
+            /* Cube Size */
+            --cube-size: 50vw; 
+            width: var(--cube-size);
+            height: var(--cube-size);
+            
+            transform-style: preserve-3d;
+            
+            /* Apply the continuous rotation */
+            animation: rotateCube 30s linear infinite; 
+        }
+
+        .face {
+            position: absolute;
+            width: var(--cube-size);
+            height: var(--cube-size);
+            
+            /* Wireframe appearance */
+            border: 1px solid var(--color-primary-light);
+            background: rgba(255, 255, 255, 0.01); /* Very slight tint */
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); /* Subtle white glow */
+        }
+
+        /* Positioning the six faces of the cube */
+        .front  { transform: rotateY(  0deg) translateZ(calc(var(--cube-size) / 2)); }
+        .back   { transform: rotateY(180deg) translateZ(calc(var(--cube-size) / 2)); }
+        .right  { transform: rotateY( 90deg) translateZ(calc(var(--cube-size) / 2)); }
+        .left   { transform: rotateY(-90deg) translateZ(calc(var(--cube-size) / 2)); }
+        .top    { transform: rotateX( 90deg) translateZ(calc(var(--cube-size) / 2)); }
+        .bottom { transform: rotateX(-90deg) translateZ(calc(var(--cube-size) / 2)); }
+
+        @keyframes rotateCube {
+            from { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            to { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+        }
+        /* ------------------------------------- */
+        /* --- END CSS 3D CUBE ANIMATION --- */
+        /* ------------------------------------- */
+
         /* --- Preloader Styles (The Intro Screen) --- */
         #preloader {
             position: fixed;
@@ -114,7 +172,6 @@
             transition: background-color 0.2s, opacity 0.8s, transform 0.8s;
 
             position: relative;
-            /* Removed transform-style: preserve-3d */
             
             /* Initial HIDDEN state for Entrance Animation */
             opacity: 0;
@@ -130,23 +187,16 @@
             transform: translateY(0); 
         }
 
-        /* LOCALIZED FLICKER EFFECT on Cards */
+        /* Removed old flicker effect on the card pseudo-element */
         .game-card::before {
             content: '';
             position: absolute;
-            inset: 0; /* Cover the whole card */
-            
-            /* Clean white border */
+            inset: 0; 
             border: 1px solid rgba(255, 255, 255, 0.1); 
-            
             border-radius: 0.5rem;
             pointer-events: none;
             z-index: 1;
-            
-            /* Apply the flicker animation */
-            animation: flicker 4s infinite alternate; 
-
-            /* Removed old 3D transforms */
+            animation: none; 
             transform: none; 
             background: none;
         }
@@ -158,14 +208,14 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); 
         }
 
-        /* Hover effect on the flicker element (optional boost) */
+        /* Removed hover flicker on the card pseudo-element */
         .game-card:hover::before {
-             animation: flicker 0.2s infinite alternate; /* Faster flicker on hover */
-             box-shadow: 0 0 15px rgba(255, 255, 255, 0.6), 0 0 25px rgba(255, 255, 255, 0.2);
+             animation: none; 
+             box-shadow: none;
         }
         /* --- End of Card Styles --- */
 
-        /* Glassmorphism classes */
+        /* Glassmorphism classes and Tailwind overrides */
         .glass-header {
             background-color: var(--bg-glass-header);
             backdrop-filter: blur(var(--blur-strength));
@@ -232,6 +282,20 @@
     </style>
 </head>
 <body> 
+    
+    <div id="css-3d-background">
+        <div class="cube-container">
+            <div class="cube">
+                <div class="face front"></div>
+                <div class="face back"></div>
+                <div class="face right"></div>
+                <div class="face left"></div>
+                <div class="face top"></div>
+                <div class="face bottom"></div>
+            </div>
+        </div>
+    </div>
+    
     <div id="page-content" class="relative z-10">
 
         <div id="preloader" class="flex-col">
@@ -775,7 +839,6 @@
             setTimeout(startIntroSequence, 500);
         };
         
-        // Removed Three.js script block.
     </script>
 </body>
 </html>
