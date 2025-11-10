@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Qbbic</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         /* --- CUSTOM FONT DEFINITION (Applied Globally) --- */
         @font-face {
@@ -47,13 +48,23 @@
         }
         /* --- End of Theming --- */
 
+        /* NEW: Styles for the 3D background canvas */
+        #3d-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Puts it behind everything */
+        }
+
         body {
             /* New: Use GameBoyFont for everything */
             font-family: 'GameBoyFont', sans-serif;
             
             /* Apply theme */
             background-color: var(--bg-page);
-            background-image: var(--bg-image);
+            /* background-image: var(--bg-image); */ /* <-- COMMENTED OUT to let 3D background show */
             background-size: var(--bg-size);
             background-position: var(--bg-position);
             background-attachment: fixed;
@@ -245,6 +256,7 @@
     </style>
 </head>
 <body> 
+    <canvas id="3d-background"></canvas>
 
     <div id="preloader">
         <div class="spinner"></div>
@@ -258,7 +270,7 @@
             <div class="flex items-center">
                 <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-white hover:text-cyan-400 transition duration-300">
                     <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2v-5m-9-2a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002 2v-5m-9-2a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z"/>
                     </svg>
                     <span>QB<span class="text-cyan-400">BIC</span></span>
                 </a>
@@ -788,6 +800,95 @@
 
             // 2. Call intro sequence 550ms after starting the fade-out
             setTimeout(startIntroSequence, 550);
+        };
+    </script>
+
+    <script>
+        function init3DBackground() {
+            // Check if THREE is loaded
+            if (typeof THREE === 'undefined') {
+                console.error("three.js is not loaded!");
+                return;
+            }
+
+            const scene = new THREE.Scene();
+            // Add blue fog, just like the PS2, using the CSS variable
+            const fogColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-page').trim() || '#00001a';
+            scene.fog = new THREE.Fog(fogColor, 10, 150); 
+
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({
+                canvas: document.getElementById('3d-background'),
+                alpha: true // Make canvas transparent so CSS background color shows
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            // Create cubes
+            const geometry = new THREE.BoxGeometry(1, 4, 1); // Make them tall, like the image
+            const material = new THREE.MeshLambertMaterial({ color: 0xcccccc }); // Simple grey material
+            
+            const cubes = [];
+            for (let i = 0; i < 50; i++) {
+                const cube = new THREE.Mesh(geometry, material);
+                
+                // Position cubes randomly in a wide area
+                cube.position.x = (Math.random() - 0.5) * 100;
+                cube.position.y = (Math.random() - 0.5) * 100;
+                cube.position.z = (Math.random() - 0.5) * 100;
+
+                // Random rotation
+                cube.rotation.x = Math.random() * 2 * Math.PI;
+                cube.rotation.y = Math.random() * 2 * Math.PI;
+
+                scene.add(cube);
+                cubes.push(cube);
+            }
+            
+            // Add light
+            const light = new THREE.AmbientLight(0x404040); // soft white light
+            scene.add(light);
+            // Use the primary blue color from CSS for the light
+            const lightColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-light').trim() || '#66A0FF';
+            const pointLight = new THREE.PointLight(lightColor, 1, 150);
+            pointLight.position.set(0, 10, 30); // Position light in front of camera
+            scene.add(pointLight);
+
+            camera.position.z = 50; // Start further back
+
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                // Move the camera forward to "fly"
+                camera.position.z -= 0.05;
+                
+                // Reset camera if it gets too far, placing it back at the start
+                if (camera.position.z < -50) {
+                    camera.position.z = 50;
+                }
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            // Handle window resizing
+            window.addEventListener('resize', () => {
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+            });
+        }
+        
+        // Start the 3D scene after the preloader fades
+        // We can tie it to the existing window.onload logic
+        const originalOnLoad = window.onload;
+        window.onload = () => {
+            if (originalOnLoad) {
+                originalOnLoad();
+            }
+            // Start the 3D scene *after* the preloader starts to fade
+            setTimeout(init3DBackground, 550);
         };
     </script>
 </body>
