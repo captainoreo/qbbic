@@ -126,7 +126,11 @@
             -webkit-backdrop-filter: blur(var(--blur-strength));
             border: 1px solid var(--border-glass-light);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: background-color 0.2s, opacity 0.8s, transform 0.8s;
+            /* CRITICAL: Set transition time for the hover effect */
+            transition: background-color 0.3s, 
+                        opacity 0.8s, 
+                        transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        box-shadow 0.3s;
 
             /* Setup for 3D/Animation */
             position: relative;
@@ -136,9 +140,6 @@
             /* Initial HIDDEN state for Entrance Animation */
             opacity: 0;
             transform: translateZ(-200px) translateY(50px) rotateX(-90deg); 
-            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
-                        transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        box-shadow 0.2s;
         }
 
         /* Final VISIBLE state (applied by JS after preloader fades) */
@@ -166,7 +167,7 @@
             /* Fakes the top/side face with perspective transform */
             transform-origin: top left;
             transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(1px); 
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, background 0.3s ease; /* Added transition */
         }
 
         /* Image (Front face) */
@@ -176,16 +177,18 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Adds slight depth */
         }
 
-        /* Hover effect */
+        /* --- HOVER EFFECT (MODIFIED) --- */
         .game-card:hover {
             background-color: var(--bg-glass-card-hover);
-            transform: scale(1.03) translateZ(10px); /* Lift the card slightly forward */
+            /* NEW: Lifts higher, scales up, and tilts back slightly for a more "3D" feel */
+            transform: scale(1.05) translateZ(40px) rotateX(-8deg); 
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); 
         }
 
         .game-card:hover::before {
              background: rgba(51, 120, 242, 0.2); /* Enhance transparency on hover */
-             transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px); /* Push background back */
+             /* NEW: Pushes the "bottom" face further back to enhance the 3D lift */
+             transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(-10px);
         }
         /* --- End of Cube & Animation Styles --- */
 
@@ -582,7 +585,7 @@
             </div>
         </div>
 
-        <div id="message-box" class="hidden fixed bottom-5 right-5 z-[200] p-4 rounded-md text-white shadow-lg transition-opacity duration-300 opacity-0"></div>
+        <div id="message-box" class="hidden fixed top-5 right-5 p-3 rounded-lg text-white font-bold z-[200] transition-opacity duration-300 opacity-0"></div>
 
     </div> <script>
         // --- Sound Element References (Global for all listeners) ---
@@ -807,6 +810,7 @@
     </script>
 
     <script>
+        // --- 3D BACKGROUND SCRIPT (MODIFIED) ---
         function init3DBackground() {
             // Check if THREE is loaded
             if (typeof THREE === 'undefined') {
@@ -818,10 +822,6 @@
             
             // Add blue fog, like the original PS2 background
             const fogColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-page').trim() || '#00001a';
-            
-            // FIX #1: Set the scene background to the fog color for a seamless blend
-            scene.background = new THREE.Color(fogColor); 
-            
             scene.fog = new THREE.Fog(fogColor, 10, 150); 
 
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -833,14 +833,9 @@
             });
             renderer.setSize(window.innerWidth, window.innerHeight);
 
-            // FIX #2A: Get the theme color before creating objects
-            const lightColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-light').trim() || '#66A0FF';
-
             // Create cubes
             const geometry = new THREE.BoxGeometry(1.5, 5, 1.5); // Taller cubes, like the source image
-            
-            // FIX #2B: Use MeshBasicMaterial with the blue theme color to match the unlit PS2 aesthetic
-            const material = new THREE.MeshBasicMaterial({ color: lightColor }); 
+            const material = new THREE.MeshLambertMaterial({ color: 0xeeeeee }); // Off-white/grey material
             
             const cubes = [];
             // Increase cube count for a denser field of view
@@ -857,6 +852,11 @@
                 cube.rotation.x = Math.random() * 2 * Math.PI;
                 cube.rotation.y = Math.random() * 2 * Math.PI;
                 
+                // --- NEW: Add custom properties for animation ---
+                cube.moveSpeed = (Math.random() - 0.5) * 0.05; // Vertical float speed
+                cube.rotSpeedX = (Math.random() - 0.5) * 0.01; // Rotation speed
+                cube.rotSpeedY = (Math.random() - 0.5) * 0.01; // Rotation speed
+                
                 scene.add(cube);
                 cubes.push(cube);
             }
@@ -866,34 +866,36 @@
             scene.add(ambientLight);
             
             // Use the primary blue color from CSS for the light spot effect
-            // Note: This light will not affect the cubes since they are MeshBasicMaterial, 
-            // but it can still affect other objects if they were added later.
+            const lightColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-light').trim() || '#66A0FF';
             const pointLight = new THREE.PointLight(lightColor, 2, 100);
             pointLight.position.set(0, 5, 20); // Position light near the camera center
             scene.add(pointLight);
 
             camera.position.z = 25; // Start a comfortable distance back
 
-            // Animation loop
+            // --- Animation loop (MODIFIED) ---
             function animate() {
                 requestAnimationFrame(animate);
                 
-                // Slowly rotate the camera for a subtle movement effect
-                camera.rotation.y += 0.0001; 
-                
-                // Move the camera forward (into the scene) to simulate flying
-                camera.position.z -= 0.08;
-                
-                // Loop the camera/scene to simulate infinite movement
-                if (camera.position.z < -50) {
-                    camera.position.z = 50;
-                }
-
-                // FIX #3: Animate the cubes so they tumble
+                // --- NEW: Animate each cube individually ---
                 cubes.forEach(cube => {
-                    cube.rotation.x += 0.005;
-                    cube.rotation.y += 0.005;
+                    // Apply rotation
+                    cube.rotation.x += cube.rotSpeedX;
+                    cube.rotation.y += cube.rotSpeedY;
+
+                    // Apply vertical movement
+                    cube.position.y += cube.moveSpeed;
+
+                    // Wrap around vertically (if it goes too high, pop it in at the bottom)
+                    if (cube.position.y > 50) {
+                        cube.position.y = -50;
+                    } else if (cube.position.y < -50) {
+                        cube.position.y = 50;
+                    }
                 });
+                
+                // Still keep a very slow camera pan for subtle movement
+                camera.rotation.y += 0.0001;
 
                 renderer.render(scene, camera);
             }
