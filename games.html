@@ -12,49 +12,44 @@
             src: url('/assets/Early GameBoy.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
-            /* Ensures text is visible during font loading */
             font-display: swap; 
         }
         
-        /* --- CSS Variables for Theming (Pitch Black / White Cubes) --- */
+        /* --- CSS Variables for Theming (PS2-like Blue/Dark) --- */
         :root {
-            --bg-image: none; 
-            --bg-size: cover;
-            --bg-position: center;
-
-            --color-primary: #ffffff; /* Pure White */
-            --color-primary-light: #eeeeee; /* Light Gray */
-            --color-primary-dark: #888888; /* Darker Gray for subtle effects */
+            --color-primary: #3378F2; /* PS2 Blue */
+            --color-primary-light: #66A0FF;
+            --color-primary-dark: #0050C0;
             
             --color-text-base: #ffffff;
             --color-text-white: #ffffff;
-            --color-text-dark: #111111; 
+            --color-text-dark: #ffffff; 
             
-            --bg-page: #000000; /* Pitch Black */
-            --bg-glass-header: rgba(0, 0, 0, 0.7); 
-            --bg-glass-card: rgba(255, 255, 255, 0.05);
-            --bg-glass-card-hover: rgba(255, 255, 255, 0.1);
-            --bg-glass-modal: rgba(0, 0, 0, 0.95);
-            --bg-glass-modal-header: rgba(0, 0, 0, 0.8);
-            --bg-glass-controls: rgba(255, 255, 255, 0.1);
-            --bg-glass-controls-hover: rgba(255, 255, 255, 0.2);
+            --bg-page: #00001a; /* Very dark blue for background */
+            --bg-glass-header: rgba(10, 10, 30, 0.6); 
+            --bg-glass-card: rgba(10, 10, 30, 0.5);
+            --bg-glass-card-hover: rgba(20, 20, 50, 0.7);
+            --bg-glass-modal: rgba(0, 0, 10, 0.9);
+            --bg-glass-modal-header: rgba(10, 10, 30, 0.7);
+            --bg-glass-controls: rgba(20, 20, 50, 0.7);
+            --bg-glass-controls-hover: rgba(51, 120, 242, 0.8);
 
-            --border-glass: rgba(255, 255, 255, 0.2);
-            --border-glass-light: rgba(255, 255, 255, 0.1);
+            --border-glass: rgba(51, 120, 242, 0.4);
+            --border-glass-light: rgba(51, 120, 242, 0.2);
             
-            --blur-strength: 3px;
+            --blur-strength: 5px;
         }
-        /* --- End of Theming --- */
-
+        
         body {
             font-family: 'GameBoyFont', sans-serif;
-            background-color: var(--bg-page); 
+            /* Allow body to be transparent for the background effect */
+            background-color: transparent; 
             color: var(--color-text-base);
             min-height: 100vh;
         }
         
         /* ------------------------------------- */
-        /* --- NEW CSS 3D CUBE ANIMATION --- */
+        /* --- NEW PURE CSS 3D CUBE FIELD --- */
         /* ------------------------------------- */
         #css-3d-background {
             position: fixed;
@@ -64,236 +59,143 @@
             height: 100%;
             z-index: -1; 
             overflow: hidden;
+            background-color: var(--bg-page);
 
-            /* Set up the 3D space */
-            perspective: 1000px;
+            /* Set up 3D perspective for the *scene* */
+            perspective: 1200px;
+            perspective-origin: 50% 50%; /* View from the center */
+
+            /* Radial Gradient to simulate the central glow/fog */
+            background: radial-gradient(circle at center, rgba(51, 120, 242, 0.1) 0%, var(--bg-page) 70%);
         }
 
-        .cube-container {
+        .cube-layer {
+            --size: 5px; 
+            
+            position: absolute;
+            /* Initial position is set using inline styles in the HTML for variety */
+            
+            width: var(--size);
+            height: var(--size);
+            
+            transform-style: preserve-3d;
+            
+            /* Animation applied to all layers */
+            animation: moveCube var(--duration) linear infinite;
+        }
+
+        /* Create the "wireframe" effect using pseudo-elements */
+        .cube-layer::before, .cube-layer::after {
+            content: '';
+            position: absolute;
             width: 100%;
             height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            
-            /* Center the cube visually */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .cube {
-            /* Cube Size */
-            --cube-size: 50vw; 
-            width: var(--cube-size);
-            height: var(--cube-size);
-            
-            transform-style: preserve-3d;
-            
-            /* Apply the continuous rotation */
-            animation: rotateCube 30s linear infinite; 
-        }
-
-        .face {
-            position: absolute;
-            width: var(--cube-size);
-            height: var(--cube-size);
-            
-            /* Wireframe appearance */
             border: 1px solid var(--color-primary-light);
-            background: rgba(255, 255, 255, 0.01); /* Very slight tint */
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); /* Subtle white glow */
+            /* Add a subtle glow */
+            box-shadow: 0 0 5px var(--color-primary-light);
+            opacity: 0.6;
+            background: rgba(51, 120, 242, 0.05); /* Very light tint */
+            transform-style: preserve-3d;
         }
 
-        /* Positioning the six faces of the cube */
-        .front  { transform: rotateY(  0deg) translateZ(calc(var(--cube-size) / 2)); }
-        .back   { transform: rotateY(180deg) translateZ(calc(var(--cube-size) / 2)); }
-        .right  { transform: rotateY( 90deg) translateZ(calc(var(--cube-size) / 2)); }
-        .left   { transform: rotateY(-90deg) translateZ(calc(var(--cube-size) / 2)); }
-        .top    { transform: rotateX( 90deg) translateZ(calc(var(--cube-size) / 2)); }
-        .bottom { transform: rotateX(-90deg) translateZ(calc(var(--cube-size) / 2)); }
-
-        @keyframes rotateCube {
-            from { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
-            to { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+        /* Position the pseudo-elements to suggest a cube/box shape */
+        .cube-layer::before {
+            transform: translateZ(calc(var(--size) / 2)) rotateX(45deg); 
         }
-        /* ------------------------------------- */
-        /* --- END CSS 3D CUBE ANIMATION --- */
-        /* ------------------------------------- */
-
-        /* --- Preloader Styles (The Intro Screen) --- */
-        #preloader {
-            position: fixed;
-            inset: 0; 
-            width: 100vw;
-            height: 100vh;
-            background-color: var(--bg-page); 
-            z-index: 9999; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
-            opacity: 1;
-            visibility: visible;
+        .cube-layer::after {
+            transform: translateZ(calc(var(--size) / -2)) rotateY(45deg);
         }
 
-        #preloader.loaded {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255, 255, 255, 0.2); 
-            border-top-color: var(--color-primary-light); 
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
+        /* The core animation: moves from far away (small, negative Z) to close (large, positive Z) */
+        @keyframes moveCube {
+            0% {
+                /* Start: Far away, very small, low opacity */
+                transform: translateZ(-1500px) scale(0.1) rotateX(0deg) rotateY(0deg); 
+                opacity: 0.1;
             }
-            to {
-                transform: rotate(360deg);
+            100% {
+                /* End: Close, large, high opacity */
+                transform: translateZ(100px) scale(1) rotateX(180deg) rotateY(360deg);
+                opacity: 0.8; 
             }
         }
-        /* --- End of Preloader Styles --- */
-        
-        /* --- Game Grid & Card Styles --- */
-        
+        /* ------------------------------------- */
+        /* --- END PURE CSS 3D CUBE FIELD --- */
+        /* ------------------------------------- */
+
+        /* --- Game Card Cube Appearance & Entrance Animation --- */
         .game-card {
             background-color: var(--bg-glass-card);
             backdrop-filter: blur(var(--blur-strength));
             -webkit-backdrop-filter: blur(var(--blur-strength));
             border: 1px solid var(--border-glass-light);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             transition: background-color 0.2s, opacity 0.8s, transform 0.8s;
 
             position: relative;
+            transform-style: preserve-3d;
+            transform-origin: center bottom;
             
-            /* Initial HIDDEN state for Entrance Animation */
             opacity: 0;
-            transform: translateY(20px); 
-            transition: opacity 0.5s ease-out, 
-                        transform 0.5s ease-out,
+            transform: translateZ(-200px) translateY(50px) rotateX(-90deg); 
+            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                         box-shadow 0.2s;
         }
 
-        /* Final VISIBLE state */
         .game-card.visible {
             opacity: 1;
-            transform: translateY(0); 
+            transform: translateZ(0) translateY(0) rotateX(0deg); 
         }
-
-        /* Removed old flicker effect on the card pseudo-element */
-        .game-card::before {
-            content: '';
-            position: absolute;
-            inset: 0; 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            border-radius: 0.5rem;
-            pointer-events: none;
-            z-index: 1;
-            animation: none; 
-            transform: none; 
-            background: none;
-        }
-
-        /* Hover effect */
-        .game-card:hover {
-            background-color: var(--bg-glass-card-hover);
-            transform: scale(1.05) translateY(-5px); 
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); 
-        }
-
-        /* Removed hover flicker on the card pseudo-element */
-        .game-card:hover::before {
-             animation: none; 
-             box-shadow: none;
-        }
-        /* --- End of Card Styles --- */
-
-        /* Glassmorphism classes and Tailwind overrides */
+        
+        /* Glassmorphism and Utility Classes (Kept as-is) */
         .glass-header {
             background-color: var(--bg-glass-header);
             backdrop-filter: blur(var(--blur-strength));
             -webkit-backdrop-filter: blur(var(--blur-strength));
             border-bottom: 1px solid var(--border-glass);
         }
-        
-        .glass-modal-container {
-            background-color: var(--bg-glass-modal);
-            backdrop-filter: blur(var(--blur-strength));
-            -webkit-backdrop-filter: blur(var(--blur-strength));
-            border: 1px solid var(--border-glass);
-        }
-        .glass-modal-header {
-            background-color: var(--bg-glass-modal-header);
-            border-bottom-color: var(--border-glass);
-        }
-
-        .control-btn {
-            padding: 8px;
-            border-radius: 9999px;
-            background-color: var(--bg-glass-controls);
-            color: var(--color-text-base);
-            transition-duration: 150ms;
-        }
-        .control-btn:hover {
-            background-color: var(--bg-glass-controls-hover);
-            color: white;
-        }
-        
-        #game-iframe {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Override Tailwind classes to use CSS variables */
         .text-cyan-400 { color: var(--color-primary-light) !important; }
-        .border-cyan-400 { border-color: var(--color-primary-light) !important; }
-        .hover\:text-cyan-400:hover { color: var(--color-primary-light) !important; }
-        .bg-cyan-500 { background-color: var(--color-primary) !important; }
-        .hover\:bg-cyan-400:hover { background-color: var(--color-primary-light) !important; }
-        .focus\:ring-cyan-500:focus { --tw-ring-color: var(--color-primary) !important; }
-        
         .text-gray-900 { color: var(--color-text-dark) !important; }
         .text-white { color: var(--color-text-white) !important; }
-        .text-gray-300 { color: var(--color-text-base) !important; }
-        .bg-gray-800 { background-color: var(--bg-glass-card) !important; }
-        .bg-gray-900 { background-color: var(--bg-page) !important; }
-        .border-gray-700 { border-color: var(--border-glass) !important; }
+        .bg-cyan-500 { background-color: var(--color-primary) !important; }
+        .hover\:bg-cyan-400:hover { background-color: var(--color-primary-light) !important; }
         
-        /* Utility class for screen readers */
-        .sr-only {
-          position: absolute;
-          width: 1px;
-          height: 1px;
-          padding: 0;
-          margin: -1px;
-          overflow: hidden;
-          clip: rect(0, 0, 0, 0);
-          white-space: nowrap;
-          border-width: 0;
-        }
-
     </style>
 </head>
 <body> 
     
     <div id="css-3d-background">
-        <div class="cube-container">
-            <div class="cube">
-                <div class="face front"></div>
-                <div class="face back"></div>
-                <div class="face right"></div>
-                <div class="face left"></div>
-                <div class="face top"></div>
-                <div class="face bottom"></div>
-            </div>
-        </div>
+        <div class="cube-layer" style="--duration: 15s; --size: 5px; top: 10%; left: 20%; animation-delay: 0s;"></div>
+        <div class="cube-layer" style="--duration: 18s; --size: 7px; top: 80%; left: 5%; animation-delay: -1s;"></div>
+        <div class="cube-layer" style="--duration: 12s; --size: 4px; top: 40%; left: 95%; animation-delay: -2s;"></div>
+        <div class="cube-layer" style="--duration: 20s; --size: 6px; top: 5%; left: 60%; animation-delay: -3s;"></div>
+        <div class="cube-layer" style="--duration: 14s; --size: 8px; top: 70%; left: 75%; animation-delay: -4s;"></div>
+        <div class="cube-layer" style="--duration: 16s; --size: 5px; top: 25%; left: 15%; animation-delay: -5s;"></div>
+        <div class="cube-layer" style="--duration: 19s; --size: 7px; top: 55%; left: 90%; animation-delay: -6s;"></div>
+        <div class="cube-layer" style="--duration: 13s; --size: 3px; top: 95%; left: 30%; animation-delay: -7s;"></div>
+        <div class="cube-layer" style="--duration: 17s; --size: 6px; top: 15%; left: 85%; animation-delay: -8s;"></div>
+        <div class="cube-layer" style="--duration: 15s; --size: 4px; top: 45%; left: 5%; animation-delay: -9s;"></div>
+        <div class="cube-layer" style="--duration: 18s; --size: 8px; top: 60%; left: 20%; animation-delay: -10s;"></div>
+        <div class="cube-layer" style="--duration: 12s; --size: 5px; top: 5%; left: 40%; animation-delay: -11s;"></div>
+        <div class="cube-layer" style="--duration: 14s; --size: 7px; top: 75%; left: 50%; animation-delay: -12s;"></div>
+        <div class="cube-layer" style="--duration: 16s; --size: 3px; top: 20%; left: 90%; animation-delay: -13s;"></div>
+        <div class="cube-layer" style="--duration: 19s; --size: 6px; top: 85%; left: 10%; animation-delay: -14s;"></div>
+        <div class="cube-layer" style="--duration: 13s; --size: 5px; top: 50%; left: 70%; animation-delay: -15s;"></div>
+        <div class="cube-layer" style="--duration: 17s; --size: 4px; top: 30%; left: 35%; animation-delay: -16s;"></div>
+        <div class="cube-layer" style="--duration: 20s; --size: 9px; top: 90%; left: 65%; animation-delay: -17s;"></div>
+        <div class="cube-layer" style="--duration: 15s; --size: 7px; top: 10%; left: 5%; animation-delay: -18s;"></div>
+        <div class="cube-layer" style="--duration: 18s; --size: 5px; top: 65%; left: 95%; animation-delay: -19s;"></div>
+        <div class="cube-layer" style="--duration: 12s; --size: 8px; top: 35%; left: 45%; animation-delay: -20s;"></div>
+        <div class="cube-layer" style="--duration: 14s; --size: 4px; top: 80%; left: 25%; animation-delay: -21s;"></div>
+        <div class="cube-layer" style="--duration: 16s; --size: 6px; top: 25%; left: 70%; animation-delay: -22s;"></div>
+        <div class="cube-layer" style="--duration: 19s; --size: 5px; top: 55%; left: 10%; animation-delay: -23s;"></div>
+        <div class="cube-layer" style="--duration: 13s; --size: 7px; top: 5%; left: 80%; animation-delay: -24s;"></div>
+        <div class="cube-layer" style="--duration: 17s; --size: 3px; top: 70%; left: 40%; animation-delay: -25s;"></div>
+        <div class="cube-layer" style="--duration: 20s; --size: 8px; top: 15%; left: 30%; animation-delay: -26s;"></div>
+        <div class="cube-layer" style="--duration: 15s; --size: 5px; top: 40%; left: 65%; animation-delay: -27s;"></div>
+        <div class="cube-layer" style="--duration: 18s; --size: 6px; top: 95%; left: 75%; animation-delay: -28s;"></div>
+        <div class="cube-layer" style="--duration: 12s; --size: 4px; top: 60%; left: 35%; animation-delay: -29s;"></div>
     </div>
     
     <div id="page-content" class="relative z-10">
@@ -307,6 +209,7 @@
         <audio id="hover-sound" src="/assets/SCPH-10000_00021.wav" preload="auto"></audio>
         <audio id="select-sound" src="/assets/SCPH-10000_00022.wav" preload="auto"></audio>
         <audio id="exit-sound" src="/assets/SCPH-10000_00024.wav" preload="auto"></audio>
+        
         <header class="sticky top-0 z-50 border-b border-gray-700 glass-header">
             <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
                 <div class="flex items-center">
@@ -805,13 +708,12 @@
             function showMessage(text, type = 'success') {
                 messageBox.textContent = text;
                 messageBox.classList.remove('bg-cyan-600', 'bg-red-600');
-                const successColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
-                const errorColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-dark').trim();
-
                 if (type === 'error') {
-                    messageBox.style.backgroundColor = errorColor;
+                    messageBox.classList.add('bg-red-600');
+                    messageBox.style.backgroundColor = 'var(--color-primary-dark)';
                 } else {
-                    messageBox.style.backgroundColor = successColor;
+                    messageBox.classList.add('bg-cyan-600');
+                    messageBox.style.backgroundColor = 'var(--color-primary)';
                 }
                 
                 messageBox.classList.remove('hidden');
@@ -836,9 +738,10 @@
             }
 
             // 2. Call intro sequence after the fade-out starts
-            setTimeout(startIntroSequence, 500);
+            setTimeout(startIntroSequence, 550);
         };
         
     </script>
-</body>
+    
+    </body>
 </html>
