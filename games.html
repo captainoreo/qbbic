@@ -582,7 +582,7 @@
             </div>
         </div>
 
-        <div id="message-box" class-></div>
+        <div id="message-box" class="hidden fixed bottom-5 right-5 z-[200] p-4 rounded-md text-white shadow-lg transition-opacity duration-300 opacity-0"></div>
 
     </div> <script>
         // --- Sound Element References (Global for all listeners) ---
@@ -818,6 +818,10 @@
             
             // Add blue fog, like the original PS2 background
             const fogColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-page').trim() || '#00001a';
+            
+            // FIX #1: Set the scene background to the fog color for a seamless blend
+            scene.background = new THREE.Color(fogColor); 
+            
             scene.fog = new THREE.Fog(fogColor, 10, 150); 
 
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -829,9 +833,14 @@
             });
             renderer.setSize(window.innerWidth, window.innerHeight);
 
+            // FIX #2A: Get the theme color before creating objects
+            const lightColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-light').trim() || '#66A0FF';
+
             // Create cubes
             const geometry = new THREE.BoxGeometry(1.5, 5, 1.5); // Taller cubes, like the source image
-            const material = new THREE.MeshLambertMaterial({ color: 0xeeeeee }); // Off-white/grey material
+            
+            // FIX #2B: Use MeshBasicMaterial with the blue theme color to match the unlit PS2 aesthetic
+            const material = new THREE.MeshBasicMaterial({ color: lightColor }); 
             
             const cubes = [];
             // Increase cube count for a denser field of view
@@ -857,7 +866,8 @@
             scene.add(ambientLight);
             
             // Use the primary blue color from CSS for the light spot effect
-            const lightColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-light').trim() || '#66A0FF';
+            // Note: This light will not affect the cubes since they are MeshBasicMaterial, 
+            // but it can still affect other objects if they were added later.
             const pointLight = new THREE.PointLight(lightColor, 2, 100);
             pointLight.position.set(0, 5, 20); // Position light near the camera center
             scene.add(pointLight);
@@ -878,6 +888,12 @@
                 if (camera.position.z < -50) {
                     camera.position.z = 50;
                 }
+
+                // FIX #3: Animate the cubes so they tumble
+                cubes.forEach(cube => {
+                    cube.rotation.x += 0.005;
+                    cube.rotation.y += 0.005;
+                });
 
                 renderer.render(scene, camera);
             }
