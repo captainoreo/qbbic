@@ -63,7 +63,6 @@
             font-family: 'GameBoyFont', sans-serif;
             
             /* Apply theme */
-            /* --- CHANGE 1: Made background transparent to see canvas --- */
             background-color: transparent; 
             /* background-image: var(--bg-image); */ /* <-- COMMENTED OUT to let 3D background show */
             background-size: var(--bg-size);
@@ -259,330 +258,332 @@
 <body> 
     <canvas id="3d-background"></canvas>
 
-    <div id="preloader">
-        <div class="spinner"></div>
-    </div>
-    <audio id="intro-sound" src="/assets/SCPH-10000_00015.wav" preload="auto"></audio>
-    <audio id="hover-sound" src="/assets/SCPH-10000_00021.wav" preload="auto"></audio>
-    <audio id="select-sound" src="/assets/SCPH-10000_00022.wav" preload="auto"></audio>
-    <audio id="exit-sound" src="/assets/SCPH-10000_00024.wav" preload="auto"></audio>
-    <header class="bg-gray-800 sticky top-0 z-50 border-b border-gray-700 glass-header">
-        <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-            <div class="flex items-center">
-                <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-white hover:text-cyan-400 transition duration-300">
-                    <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002 2v-5m-9-2a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z"/>
+    <div id="page-content" class="relative z-10">
+
+        <div id="preloader">
+            <div class="spinner"></div>
+        </div>
+        <audio id="intro-sound" src="/assets/SCPH-10000_00015.wav" preload="auto"></audio>
+        <audio id="hover-sound" src="/assets/SCPH-10000_00021.wav" preload="auto"></audio>
+        <audio id="select-sound" src="/assets/SCPH-10000_00022.wav" preload="auto"></audio>
+        <audio id="exit-sound" src="/assets/SCPH-10000_00024.wav" preload="auto"></audio>
+        <header class="bg-gray-800 sticky top-0 z-50 border-b border-gray-700 glass-header">
+            <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-white hover:text-cyan-400 transition duration-300">
+                        <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002 2v-5m-9-2a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z"/>
+                        </svg>
+                        <span>QB<span class="text-cyan-400">BIC</span></span>
+                    </a>
+                </div>
+                
+                <button id="mobile-menu-button" type="button" class="md:hidden text-white focus:outline-none absolute right-4 top-3">
+                    <span class="sr-only">Open menu</span>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
                     </svg>
-                    <span>QB<span class="text-cyan-400">BIC</span></span>
-                </a>
-            </div>
+                </button>
+                
+                <div class="hidden md:flex space-x-6 items-center">
+                    <a href="index.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Home</a>
+                    <a href="games.html" class="text-white border-b-2 border-cyan-400 transition duration-200 font-medium">Games</a>
+                    <a href="faq.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">FAQ</a>
+                    <a href="changelog.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Changelog</a>
+                    
+                </div>
+            </nav>
             
-            <button id="mobile-menu-button" type="button" class="md:hidden text-white focus:outline-none absolute right-4 top-3">
-                <span class="sr-only">Open menu</span>
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                </svg>
-            </button>
-            
-            <div class="hidden md:flex space-x-6 items-center">
-                <a href="index.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Home</a>
-                <a href="games.html" class="text-white border-b-2 border-cyan-400 transition duration-200 font-medium">Games</a>
-                <a href="faq.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">FAQ</a>
-                <a href="changelog.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Changelog</a>
-                
+            <div id="mobile-menu" class="md:hidden hidden bg-gray-800 px-4 pb-4 border-t border-gray-700">
+                <a href="index.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">Home</a>
+                <a href="games.html" class="block text-white border-l-2 border-cyan-400 py-2 pl-2 transition duration-200 border-b border-gray-700">Games</a>
+                <a href="faq.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">FAQ</a>
+                <a href="changelog.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">Changelog</a>
             </div>
-        </nav>
-        
-        <div id="mobile-menu" class="md:hidden hidden bg-gray-800 px-4 pb-4 border-t border-gray-700">
-            <a href="index.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">Home</a>
-            <a href="games.html" class="block text-white border-l-2 border-cyan-400 py-2 pl-2 transition duration-200 border-b border-gray-700">Games</a>
-            <a href="faq.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">FAQ</a>
-            <a href="changelog.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">Changelog</a>
-        </div>
-    </header>
+        </header>
 
-    <main>
-    <section class="py-8 sm:py-12">
-        <div class="container mx-auto px-4">
-            <h1 class="text-3xl font-bold text-center mb-10 text-white">
-                Full Game Catalog (100+ Games)
-            </h1>
+        <main>
+        <section class="py-8 sm:py-12">
+            <div class="container mx-auto px-4">
+                <h1 class="text-3xl font-bold text-center mb-10 text-white">
+                    Full Game Catalog (100+ Games)
+                </h1>
 
-            <div class="mb-10 max-w-lg mx-auto">
-                <input type="text" id="game-search-input" placeholder="Search for a game..." class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" style="background-color: var(--bg-glass-card); border-color: var(--border-glass-light);" />
-            </div>
-            
-            <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-                
-                <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/nikki.jpg" alt="Yume Nikki" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Yume Nikki</h3>
-                        <p class="text-gray-400 text-xs">Weirdness / Simulation</p>
-                        <button type="button" data-url="/games/clyumenikki.html" data-title="Yume Nikki" aria-label="Play Yume Nikki" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                    </div>
+                <div class="mb-10 max-w-lg mx-auto">
+                    <input type="text" id="game-search-input" placeholder="Search for a game..." class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" style="background-color: var(--bg-glass-card); border-color: var(--border-glass-light);" />
                 </div>
                 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/cookie.png" alt="Cookie Clicker" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Cookie Clicker</h3>
-                        <p class="text-gray-400 text-xs">Idle / Simulation</p>
-                        <button type="button" data-url="/games/Cookie Clicker.html" data-title="Cookie Clicker" aria-label="Play Cookie Clicker" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                    
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/nikki.jpg" alt="Yume Nikki" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Yume Nikki</h3>
+                            <p class="text-gray-400 text-xs">Weirdness / Simulation</p>
+                            <button type="button" data-url="/games/clyumenikki.html" data-title="Yume Nikki" aria-label="Play Yume Nikki" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
+                    
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/cookie.png" alt="Cookie Clicker" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Cookie Clicker</h3>
+                            <p class="text-gray-400 text-xs">Idle / Simulation</p>
+                            <button type="button" data-url="/games/Cookie Clicker.html" data-title="Cookie Clicker" aria-label="Play Cookie Clicker" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
+                    </div>
 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/doom1.jpg" alt="Doom 1" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Doom 1</h3>
-                        <p class="text-gray-400 text-xs">Survival / Shooter</p>
-                        <button type="button" data-url="/games/DOOM.html" data-title="Doom 1" aria-label="Play Doom 1" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/doom1.jpg" alt="Doom 1" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Doom 1</h3>
+                            <p class="text-gray-400 text-xs">Survival / Shooter</p>
+                            <button type="button" data-url="/games/DOOM.html" data-title="Doom 1" aria-label="Play Doom 1" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/doom2.png" alt="Doom 2" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Doom 2</h3>
-                        <p class="text-gray-400 text-xs">Survival / Shooter</p>
-                        <button type="button" data-url="/games/Doom 2.html" data-title="Doom 2" aria-label="Play Doom 2" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/doom2.png" alt="Doom 2" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Doom 2</h3>
+                            <p class="text-gray-400 text-xs">Survival / Shooter</p>
+                            <button type="button" data-url="/games/Doom 2.html" data-title="Doom 2" aria-label="Play Doom 2" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/factory.jpg" alt="Nubby's number factory" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Nubby's number factory</h3>
-                        <p class="text-gray-400 text-xs">Arcade / Endless</p>
-                        <button type="button" data-url="/games/Nubbys Number Factory.html" data-title="NNF" aria-label="Play Nubby's number factory" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/factory.jpg" alt="Nubby's number factory" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Nubby's number factory</h3>
+                            <p class="text-gray-400 text-xs">Arcade / Endless</p>
+                            <button type="button" data-url="/games/Nubbys Number Factory.html" data-title="NNF" aria-label="Play Nubby's number factory" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/pizzatower.jpg" alt="Pizza Tower" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Pizza Tower</h3>
-                        <p class="text-gray-400 text-xs">Fast Paced / Platformer</p>
-                        <button type="button" data-url="/games/Pizza Tower.html" data-title="Pizza Tower" aria-label="Play Pizza Tower" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/pizzatower.jpg" alt="Pizza Tower" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Pizza Tower</h3>
+                            <p class="text-gray-400 text-xs">Fast Paced / Platformer</p>
+                            <button type="button" data-url="/games/Pizza Tower.html" data-title="Pizza Tower" aria-label="Play Pizza Tower" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
-                <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/cavestory.png" alt="Cave Story" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Cave Story</h3>
-                        <p class="text-gray-400 text-xs">Platformer / Shooter</p>
-                        <button type="button" data-url="https://smmskm.vercel.app/" data-title="Cave Story" aria-label="Play Cave Story" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/cavestory.png" alt="Cave Story" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Cave Story</h3>
+                            <p class="text-gray-400 text-xs">Platformer / Shooter</p>
+                            <button type="button" data-url="https://smmskm.vercel.app/" data-title="Cave Story" aria-label="Play Cave Story" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
-                <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/572190-vqi8cznu-v4.jpg" alt="BFDIA5B" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">BFDIA5B</h3>
-                        <p class="text-gray-400 text-xs">Platformer / Puzzle</p>
-                        <button type="button" data-url="/games/clbfdia5b.html" data-title="BFDIA5b" aria-label="Play BFDIA5B" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/572190-vqi8cznu-v4.jpg" alt="BFDIA5B" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">BFDIA5B</h3>
+                            <p class="text-gray-400 text-xs">Platformer / Puzzle</p>
+                            <button type="button" data-url="/games/clbfdia5b.html" data-title="BFDIA5b" aria-label="Play BFDIA5B" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
-                <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/uncanny-cat-canny-cat.gif" alt="Uncanny Cat Golf" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Uncanny Cat Golf</h3>
-                        <p class="text-gray-400 text-xs">Golf</p>
-                        <button type="button" data-url="/games/cluncannycatgolf.html" data-title="Uncanny Cat Golf" aria-label="Play Uncanny Cat Golf" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/uncanny-cat-canny-cat.gif" alt="Uncanny Cat Golf" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Uncanny Cat Golf</h3>
+                            <p class="text-gray-400 text-xs">Golf</p>
+                            <button type="button" data-url="/games/cluncannycatgolf.html" data-title="Uncanny Cat Golf" aria-label="Play Uncanny Cat Golf" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
-                <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/ngon.png" alt="N-GON" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">N-GON</h3>
-                        <p class="text-gray-400 text-xs">Puzzle / Classic</p>
-                        <button type="button" data-url="/games/n-gon.html" data-title="N-GON" aria-label="Play N-GON" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/ngon.png" alt="N-GON" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">N-GON</h3>
+                            <p class="text-gray-400 text-xs">Puzzle / Classic</p>
+                            <button type="button" data-url="/games/n-gon.html" data-title="N-GON" aria-label="Play N-GON" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/hx2er6ahcrv11.gif" alt="Deltarune" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Deltarune</h3>
-                        <p class="text-gray-400 text-xs">RPG</p>
-                        <button type="button" data-url="https://deltacook.vercel.app/" data-title="Deltarune" aria-label="Play Deltarune" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/hx2er6ahcrv11.gif" alt="Deltarune" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Deltarune</h3>
+                            <p class="text-gray-400 text-xs">RPG</p>
+                            <button type="button" data-url="https://deltacook.vercel.app/" data-title="Deltarune" aria-label="Play Deltarune" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/2133.png" alt="Half-Life" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Half-Life</h3>
-                        <p class="text-gray-400 text-xs">Shooter</p>
-                        <button type="button" data-url="/games/Half Life.html" data-title="Half-life" aria-label="Play Half-Life" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/2133.png" alt="Half-Life" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Half-Life</h3>
+                            <p class="text-gray-400 text-xs">Shooter</p>
+                            <button type="button" data-url="/games/Half Life.html" data-title="Half-life" aria-label="Play Half-Life" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/knight.jpeg" alt="Hollow Knight" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Hollow Knight</h3>
-                        <p class="text-gray-400 text-xs">RPG/ Metroidvania</p>
-                        <button type="button" data-url="/games/Hollow Knight(1).html" data-title="Hollow Knight" aria-label="Play Hollow Knight" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/knight.jpeg" alt="Hollow Knight" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Hollow Knight</h3>
+                            <p class="text-gray-400 text-xs">RPG/ Metroidvania</p>
+                            <button type="button" data-url="/games/Hollow Knight(1).html" data-title="Hollow Knight" aria-label="Play Hollow Knight" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/Sony-playstation-parappa-the-rapper.png" alt="Parappa the Rapper" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Parappa the Rapper</h3>
-                        <p class="text-gray-400 text-xs">Rhythm</p>
-                        <button type="button" data-url="/games/clparappatherapperalt.html" data-title="Parappa the Rapper" aria-label="Play Parappa the Rapper" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/Sony-playstation-parappa-the-rapper.png" alt="Parappa the Rapper" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Parappa the Rapper</h3>
+                            <p class="text-gray-400 text-xs">Rhythm</p>
+                            <button type="button" data-url="/games/clparappatherapperalt.html" data-title="Parappa the Rapper" aria-label="Play Parappa the Rapper" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
 
-                 <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/remix.jpg" alt="Smash Remix" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Smash Remix</h3>
-                        <p class="text-gray-400 text-xs">Fighting</p>
-                        <button type="button" data-url="/games/clsmashremix.html" data-title="Smash Remix" aria-label="Play Smash Remix" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/remix.jpg" alt="Smash Remix" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Smash Remix</h3>
+                            <p class="text-gray-400 text-xs">Fighting</p>
+                            <button type="button" data-url="/games/clsmashremix.html" data-title="Smash Remix" aria-label="Play Smash Remix" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
 
-                  <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/585.webp" alt="Fallout" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Fallout</h3>
-                        <p class="text-gray-400 text-xs">Survival</p>
-                        <button type="button" data-url="/games/Fallout.html" data-title="Fallout" aria-label="Play Fallout" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/585.webp" alt="Fallout" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Fallout</h3>
+                            <p class="text-gray-400 text-xs">Survival</p>
+                            <button type="button" data-url="/games/Fallout.html" data-title="Fallout" aria-label="Play Fallout" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
-                
-                  <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/423.png" alt="Webfishing" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Webfishing</h3>
-                        <p class="text-gray-400 text-xs">Fishing / simulation</p>
-                        <button type="button" data-url="/games/WebFishing.html" data-title="Webfishing" aria-label="Play Webfishing" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/423.png" alt="Webfishing" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Webfishing</h3>
+                            <p class="text-gray-400 text-xs">Fishing / simulation</p>
+                            <button type="button" data-url="/games/WebFishing.html" data-title="Webfishing" aria-label="Play Webfishing" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
-                
-                  <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/212.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Cut the rope</h3>
-                        <p class="text-gray-400 text-xs">Puzzle</p>
-                        <button type="button" data-url="/games/Cut the Rope.html" data-title="Cut the rope" aria-label="Play Webfishing" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/212.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Cut the rope</h3>
+                            <p class="text-gray-400 text-xs">Puzzle</p>
+                            <button type="button" data-url="/games/Cut the Rope.html" data-title="Cut the rope" aria-label="Play Webfishing" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
 
-                
-                 <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/213.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Cut the rope time travel</h3>
-                        <p class="text-gray-400 text-xs">Puzzle</p>
-                        <button type="button" data-url="/games/Cut the Rope_ Time Travel.html" data-title="Cut the rope time travel" aria-label="Play Webfishing" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/213.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Cut the rope time travel</h3>
+                            <p class="text-gray-400 text-xs">Puzzle</p>
+                            <button type="button" data-url="/games/Cut the Rope_ Time Travel.html" data-title="Cut the rope time travel" aria-label="Play Webfishing" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
-                
-                   <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/214.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Cut the rope Holidays</h3>
-                        <p class="text-gray-400 text-xs">Puzzle</p>
-                        <button type="button" data-url="/games/Cut the Rope_ Holiday Gift.html" data-title="Cut the rope Holidays" aria-label="Play Webfishing" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/214.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Cut the rope Holidays</h3>
+                            <p class="text-gray-400 text-xs">Puzzle</p>
+                            <button type="button" data-url="/games/Cut the Rope_ Holiday Gift.html" data-title="Cut the rope Holidays" aria-label="Play Webfishing" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
 
-                
-                   <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/350.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">The Binding of isaac</h3>
-                        <p class="text-gray-400 text-xs">Puzzle</p>
-                        <button type="button" data-url="/games/Binding of Issac_ Wrath of the Lamb.html" data-title="The Binding of isaac" aria-label="Play Webfishing" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/350.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">The Binding of isaac</h3>
+                            <p class="text-gray-400 text-xs">Puzzle</p>
+                            <button type="button" data-url="/games/Binding of Issac_ Wrath of the Lamb.html" data-title="The Binding of isaac" aria-label="Play Webfishing" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
-                  <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/bunny.jpg" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Acid Bunny</h3>
-                        <p class="text-gray-400 text-xs">Puzzle / platformer</p>
-                        <button type="button" data-url="/games/acid bunny.html" data-title="Acid Bunny" aria-label="Play Webfishing" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/bunny.jpg" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Acid Bunny</h3>
+                            <p class="text-gray-400 text-xs">Puzzle / platformer</p>
+                            <button type="button" data-url="/games/acid bunny.html" data-title="Acid Bunny" aria-label="Play Webfishing" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
 
-                
-                   <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                    <img src="/assets/bunny2.jpg" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                    <div class="p-3">
-                        <h3 class="text-lg font-semibold text-white truncate">Acid Bunny 2</h3>
-                        <p class="text-gray-400 text-xs">Puzzle / platformer</p>
-                        <button type="button" data-url="/games/acidbunny2.html" data-title="Acid Bunny 2" aria-label="Play Webfishing" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                    
+                    <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                        <img src="/assets/bunny2.jpg" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white truncate">Acid Bunny 2</h3>
+                            <p class="text-gray-400 text-xs">Puzzle / platformer</p>
+                            <button type="button" data-url="/games/acidbunny2.html" data-title="Acid Bunny 2" aria-label="Play Webfishing" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                        </div>
                     </div>
-                </div>
 
+                </div> 
             </div> 
-        </div> 
-    </section>
-</main>
+        </section>
+    </main>
 
-    <footer class="bg-gray-800 border-t border-gray-700 mt-10 glass-header">
-        <div class="container mx-auto px-4 py-6 text-center">
-            <div class="flex justify-center space-x-6 mb-4">
-                <a href="index.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Home</a>
-                <a href="games.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Games</a>
-                <a href="faq.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">FAQ</a>
-                <a href="changelog.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Terms of Service</a>
+        <footer class="bg-gray-800 border-t border-gray-700 mt-10 glass-header">
+            <div class="container mx-auto px-4 py-6 text-center">
+                <div class="flex justify-center space-x-6 mb-4">
+                    <a href="index.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Home</a>
+                    <a href="games.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Games</a>
+                    <a href="faq.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">FAQ</a>
+                    <a href="changelog.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Terms of Service</a>
+                </div>
+                <p class="text-gray-500 text-xs">
+                    Copyright GameWorld © 2025. All rights reserved to respective owners.
+                </p>
             </div>
-            <p class="text-gray-500 text-xs">
-                Copyright GameWorld © 2025. All rights reserved to respective owners.
-            </p>
-        </div>
-    </footer>
+        </footer>
 
-    <div id="game-modal" class="fixed inset-0 bg-black bg-opacity-95 z-[100] hidden flex items-center justify-center p-2 sm:p-4 transition-opacity duration-300" 
-         role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
-        
-        <div class="w-full h-full max-w-7xl max-h-[95vh] flex flex-col bg-gray-950 rounded-xl overflow-hidden shadow-2xl glass-modal-container">
+        <div id="game-modal" class="fixed inset-0 bg-black bg-opacity-95 z-[100] hidden flex items-center justify-center p-2 sm:p-4 transition-opacity duration-300" 
+            role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
             
-            <div class="flex-shrink-0 bg-gray-800 p-3 flex justify-between items-center border-b border-gray-700 glass-modal-header">
-                <h2 id="game-modal-title" class="text-xl font-bold text-cyan-400 truncate">Game Title</h2>
-                <div class="flex space-x-2 items-center">
-                    
-                    <button id="open-new-tab-btn" type="button" class="control-btn" title="Open in New Tab">
-                        <span class="sr-only">Open in New Tab</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                    </button>
-                    
-                    <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloaking)">
-                        <span class="sr-only">Open in about:blank</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    </button>
+            <div class="w-full h-full max-w-7xl max-h-[95vh] flex flex-col bg-gray-950 rounded-xl overflow-hidden shadow-2xl glass-modal-container">
+                
+                <div class="flex-shrink-0 bg-gray-800 p-3 flex justify-between items-center border-b border-gray-700 glass-modal-header">
+                    <h2 id="game-modal-title" class="text-xl font-bold text-cyan-400 truncate">Game Title</h2>
+                    <div class="flex space-x-2 items-center">
+                        
+                        <button id="open-new-tab-btn" type="button" class="control-btn" title="Open in New Tab">
+                            <span class="sr-only">Open in New Tab</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        </button>
+                        
+                        <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloaking)">
+                            <span class="sr-only">Open in about:blank</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </button>
 
-                    <button id="fullscreen-btn" type="button" class="control-btn" title="Fullscreen Game">
-                        <span class="sr-only">Toggle Fullscreen</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m0 11v-4m0 4h-4m4 0l-5-5m-5 5v-4m-5 4h4m-4 0l5-5"></path></svg>
-                    </button>
+                        <button id="fullscreen-btn" type="button" class="control-btn" title="Fullscreen Game">
+                            <span class="sr-only">Toggle Fullscreen</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m0 11v-4m0 4h-4m4 0l-5-5m-5 5v-4m-5 4h4m-4 0l5-5"></path></svg>
+                        </button>
 
-                    <button id="copy-url-btn" type="button" class="control-btn" title="Copy Game URL (Share)">
-                        <span class="sr-only">Copy Game URL</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5z"></path></svg>
-                    </button>
+                        <button id="copy-url-btn" type="button" class="control-btn" title="Copy Game URL (Share)">
+                            <span class="sr-only">Copy Game URL</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5z"></path></svg>
+                        </button>
 
-                    <button id="close-game-modal-btn" type="button" class="control-btn bg-red-600 hover:bg-red-500 text-white" title="Close Player">
-                        <span class="sr-only">Close Game Player</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
+                        <button id="close-game-modal-btn" type="button" class="control-btn bg-red-600 hover:bg-red-500 text-white" title="Close Player">
+                            <span class="sr-only">Close Game Player</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex-grow relative bg-black">
+                    <iframe id="game-iframe" src="" frameborder="0" allowfullscreen class="w-full h-full"></iframe>
                 </div>
             </div>
-
-            <div class="flex-grow relative bg-black">
-                <iframe id="game-iframe" src="" frameborder="0" allowfullscreen class="w-full h-full"></iframe>
-            </div>
         </div>
-    </div>
 
-    <div id="message-box" class-></div>
+        <div id="message-box" class-></div>
 
-    <script>
+    </div> <script>
         // --- Sound Element References (Global for all listeners) ---
         const introSound = document.getElementById('intro-sound');
         const hoverSound = document.getElementById('hover-sound');
@@ -819,7 +820,7 @@
 
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             
-            /* --- CHANGE 2: Set alpha to false so the renderer has its own background --- */
+            /* Set alpha to false so the renderer has its own background color (fog) */
             const renderer = new THREE.WebGLRenderer({
                 canvas: document.getElementById('3d-background'),
                 alpha: false 
