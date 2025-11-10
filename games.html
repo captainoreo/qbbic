@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Qbbic</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         /* --- CUSTOM FONT DEFINITION (Applied Globally) --- */
         @font-face {
@@ -23,9 +22,9 @@
             --bg-size: cover;
             --bg-position: center;
 
-            --color-primary: #ffffff; 
-            --color-primary-light: #eeeeee;
-            --color-primary-dark: #888888;
+            --color-primary: #ffffff; /* Pure White */
+            --color-primary-light: #eeeeee; /* Light Gray */
+            --color-primary-dark: #888888; /* Darker Gray for subtle effects */
             
             --color-text-base: #ffffff;
             --color-text-white: #ffffff;
@@ -46,25 +45,21 @@
             --blur-strength: 3px;
         }
         /* --- End of Theming --- */
-
-        /* Styles for the 3D background canvas */
-        #3d-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1; 
+        
+        /* --- NEW LOCALIZED EFFECT KEYFRAMES --- */
+        @keyframes flicker {
+            0%, 100% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.2), 0 0 10px rgba(255, 255, 255, 0.05); }
+            50% { box-shadow: 0 0 8px rgba(255, 255, 255, 0.4), 0 0 15px rgba(255, 255, 255, 0.1); }
+            75% { box-shadow: 0 0 6px rgba(255, 255, 255, 0.3), 0 0 12px rgba(255, 255, 255, 0.08); }
         }
+        /* --- END NEW EFFECT --- */
 
         body {
             font-family: 'GameBoyFont', sans-serif;
-            background-color: transparent; 
-            background-size: var(--bg-size);
-            background-position: var(--bg-position);
-            background-attachment: fixed;
+            /* Now using solid black background */
+            background-color: var(--bg-page); 
             color: var(--color-text-base);
-            transition: background-image 0.5s ease-in-out;
+            min-height: 100vh;
         }
         
         /* --- Preloader Styles (The Intro Screen) --- */
@@ -73,7 +68,7 @@
             inset: 0; 
             width: 100vw;
             height: 100vh;
-            background-color: var(--bg-page); /* Pitch Black */
+            background-color: var(--bg-page); 
             z-index: 9999; 
             display: flex;
             flex-direction: column;
@@ -108,12 +103,8 @@
         }
         /* --- End of Preloader Styles --- */
         
-        /* --- Game Grid 3D Container --- */
-        #game-grid {
-            perspective: 1500px;
-        }
+        /* --- Game Grid & Card Styles --- */
         
-        /* --- Game Card Cube Appearance & Entrance Animation --- */
         .game-card {
             background-color: var(--bg-glass-card);
             backdrop-filter: blur(var(--blur-strength));
@@ -123,59 +114,56 @@
             transition: background-color 0.2s, opacity 0.8s, transform 0.8s;
 
             position: relative;
-            transform-style: preserve-3d;
-            transform-origin: center bottom;
+            /* Removed transform-style: preserve-3d */
             
+            /* Initial HIDDEN state for Entrance Animation */
             opacity: 0;
-            transform: translateZ(-200px) translateY(50px) rotateX(-90deg); 
-            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
-                        transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+            transform: translateY(20px); 
+            transition: opacity 0.5s ease-out, 
+                        transform 0.5s ease-out,
                         box-shadow 0.2s;
         }
 
+        /* Final VISIBLE state */
         .game-card.visible {
             opacity: 1;
-            transform: translateZ(0) translateY(0) rotateX(0deg); 
+            transform: translateY(0); 
         }
 
+        /* LOCALIZED FLICKER EFFECT on Cards */
         .game-card::before {
             content: '';
             position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
+            inset: 0; /* Cover the whole card */
             
-            background: rgba(255, 255, 255, 0.1); 
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(1px);
-            -webkit-backdrop-filter: blur(1px);
+            /* Clean white border */
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            
             border-radius: 0.5rem;
             pointer-events: none;
+            z-index: 1;
             
-            transform-origin: top left;
-            transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(1px); 
-            transition: transform 0.3s ease;
+            /* Apply the flicker animation */
+            animation: flicker 4s infinite alternate; 
+
+            /* Removed old 3D transforms */
+            transform: none; 
+            background: none;
         }
 
-        .game-card img {
-            position: relative;
-            z-index: 10; 
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        }
-
+        /* Hover effect */
         .game-card:hover {
             background-color: var(--bg-glass-card-hover);
-            transform: scale(1.03) translateZ(10px); 
+            transform: scale(1.05) translateY(-5px); 
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); 
         }
 
+        /* Hover effect on the flicker element (optional boost) */
         .game-card:hover::before {
-             background: rgba(255, 255, 255, 0.2); 
-             transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px); 
+             animation: flicker 0.2s infinite alternate; /* Faster flicker on hover */
+             box-shadow: 0 0 15px rgba(255, 255, 255, 0.6), 0 0 25px rgba(255, 255, 255, 0.2);
         }
-        /* --- End of Cube & Animation Styles --- */
-
+        /* --- End of Card Styles --- */
 
         /* Glassmorphism classes */
         .glass-header {
@@ -244,8 +232,6 @@
     </style>
 </head>
 <body> 
-    <canvas id="3d-background"></canvas>
-
     <div id="page-content" class="relative z-10">
 
         <div id="preloader" class="flex-col">
@@ -571,7 +557,7 @@
             </div>
         </div>
 
-        <div id="message-box" class-></div>
+        <div id="message-box" class></div>
 
     </div> <script>
         // --- Sound Element References (Global for all listeners) ---
@@ -582,9 +568,7 @@
 
         function playSound(audioElement) {
             if (audioElement) {
-                // Stop and rewind before playing to allow quick repeat (important for hover)
                 audioElement.currentTime = 0; 
-                // Play and catch the error, as browsers often block autoplay
                 audioElement.play().catch(e => { /* suppressed browser autoplay error */ });
             }
         }
@@ -738,7 +722,6 @@
             if (copyUrlBtn) {
                 copyUrlBtn.addEventListener('click', copyGameUrl);
             }
-            // Close button now calls the function that includes the exit sound
             if (closeModalBtn) {
                 closeModalBtn.addEventListener('click', closeGameModal);
             }
@@ -758,7 +741,6 @@
             function showMessage(text, type = 'success') {
                 messageBox.textContent = text;
                 messageBox.classList.remove('bg-cyan-600', 'bg-red-600');
-                // Use CSS variables for consistent theming
                 const successColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
                 const errorColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-dark').trim();
 
@@ -780,7 +762,7 @@
 
         }); // End of DOMContentLoaded
 
-        // --- Preloader & Intro Sound Logic ---
+        // --- Preloader & Intro Logic ---
         window.onload = () => {
             const preloader = document.getElementById('preloader');
             
@@ -789,101 +771,11 @@
                 preloader.classList.add('loaded'); 
             }
 
-            // 2. Call intro sequence 550ms after starting the fade-out
-            setTimeout(startIntroSequence, 550);
+            // 2. Call intro sequence after the fade-out starts
+            setTimeout(startIntroSequence, 500);
         };
-    </script>
-
-    <script>
-        function init3DBackground() {
-            if (typeof THREE === 'undefined') {
-                console.error("three.js is not loaded! Make sure the library is included.");
-                return;
-            }
-
-            const scene = new THREE.Scene();
-            
-            // Set fog color to pitch black theme variable
-            const fogColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-page').trim() || '#000000';
-            // Set Z-distance for fog to match new cube generation distance
-            scene.fog = new THREE.Fog(fogColor, 10, 200); 
-
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            
-            const renderer = new THREE.WebGLRenderer({
-                canvas: document.getElementById('3d-background'),
-                alpha: false 
-            });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-
-            // Create cubes
-            const geometry = new THREE.BoxGeometry(1.5, 5, 1.5); // Taller cubes
-            const material = new THREE.MeshLambertMaterial({ color: 0xffffff }); // Pure white material
-            
-            const cubes = [];
-            for (let i = 0; i < 150; i++) {
-                const cube = new THREE.Mesh(geometry, material);
-                
-                // MODIFIED: Greatly reduced X and Y spread (to 30) for a centered tunnel effect
-                cube.position.x = (Math.random() - 0.5) * 30;
-                cube.position.y = (Math.random() - 0.5) * 30;
-                
-                // MODIFIED: Initial Z-position spread further into the distance (from -50 to 150)
-                // This makes the objects appear to be rushing from far away
-                cube.position.z = Math.random() * 200 - 50; 
-
-                // Random rotation
-                cube.rotation.x = Math.random() * 2 * Math.PI;
-                cube.rotation.y = Math.random() * 2 * Math.PI;
-                
-                scene.add(cube);
-                cubes.push(cube);
-            }
-            
-            // Add light
-            const ambientLight = new THREE.AmbientLight(0x202020); // soft white ambient light
-            scene.add(ambientLight);
-            
-            const lightColorCSS = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-light').trim() || '#eeeeee';
-            const lightColorHex = parseInt(lightColorCSS.replace('#', ''), 16); 
-
-            // Point light (using white/light color)
-            const pointLight = new THREE.PointLight(lightColorHex, 2, 100);
-            pointLight.position.set(0, 5, 20); // Position light near the camera center
-            scene.add(pointLight);
-
-            camera.position.z = 25; // Start a comfortable distance back
-
-            // Animation loop
-            function animate() {
-                requestAnimationFrame(animate);
-                
-                // Slow camera rotation
-                camera.rotation.y += 0.00005; 
-                
-                // MODIFIED: Increased movement speed significantly (from 0.03 to 0.3) for the warp effect
-                camera.position.z -= 0.3;
-                
-                // MODIFIED: Loop point adjusted to match new Z range for a continuous, fast effect
-                if (camera.position.z < -150) {
-                    camera.position.z = 50; // Reset camera back to where cubes start being generated
-                }
-
-                renderer.render(scene, camera);
-            }
-
-            animate();
-
-            // Handle window resizing
-            window.addEventListener('resize', () => {
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-            });
-        }
         
-        // Start the 3D scene immediately so it runs behind the preloader (the intro).
-        setTimeout(init3DBackground, 100); 
+        // Removed Three.js script block.
     </script>
 </body>
 </html>
