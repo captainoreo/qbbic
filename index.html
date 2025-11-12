@@ -144,6 +144,8 @@
             -webkit-backdrop-filter: blur(var(--blur-strength));
             border-bottom: 1px solid var(--border-glass);
         }
+        
+        /* Note: Ideally, theme colors should be set in tailwind.config.js instead of overriding classes. */
         .text-cyan-400 { color: var(--color-primary-light) !important; }
         .text-gray-900 { color: var(--color-text-dark) !important; }
         .text-white { color: var(--color-text-white) !important; }
@@ -190,14 +192,14 @@
     <div id="page-content" class="relative z-10">
 
          <audio id="intro-sound" src="/assets/ps4-menu-intro.mp3" preload="auto"></audio>
-        <audio id="hover-sound" src="/assets/ps4-scroll-foward.mp3" preload="auto"></audio>
-        <audio id="select-sound" src="/assets/ps4-select-button.mp3" preload="auto"></audio>
-        <audio id="exit-sound" src="/assets/ps4-back-button.mp3" preload="auto"></audio>
+         <audio id="hover-sound" src="/assets/ps4-scroll-foward.mp3" preload="auto"></audio>
+         <audio id="select-sound" src="/assets/ps4-select-button.mp3" preload="auto"></audio>
+         <audio id="exit-sound" src="/assets/ps4-back-button.mp3" preload="auto"></audio>
         
         <header class="sticky top-0 z-50 border-b border-gray-700 glass-header">
             <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
                 <div class="flex items-center">
-                    <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-white hover:text-cyan-400 transition duration-300">
+                    <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-white hover:text-cyan-400 transition duration-300" aria-label="Qbbic Home">
                         <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2v-5m-9-2a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z"/>
                         </svg>
@@ -205,14 +207,14 @@
                     </a>
                 </div>
                 
-                <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none absolute right-4 top-3">
+                <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none absolute right-4 top-3" aria-label="Toggle navigation menu" aria-controls="mobile-menu" aria-expanded="false">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
                     </svg>
                 </button>
                 
                 <div class="hidden md:flex space-x-6 items-center">
-                    <a href="index.html" class="text-white border-b-2 border-cyan-400 transition duration-200 font-medium">Home</a>
+                    <a href="index.html" class="text-white border-b-2 border-cyan-400 transition duration-200 font-medium" aria-current="page">Home</a>
                     <a href="games.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Games</a>
                     <a href="faq.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">FAQ</a>
                     <a href="changelog.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Changelog</a>
@@ -220,7 +222,7 @@
             </nav>
             
             <div id="mobile-menu" class="md:hidden hidden bg-gray-800 px-4 pb-4 border-t border-gray-700">
-                <a href="index.html" class="block text-white border-l-2 border-cyan-400 py-2 pl-2 transition duration-200 border-b border-gray-700">Home</a>
+                <a href="index.html" class="block text-white border-l-2 border-cyan-400 py-2 pl-2 transition duration-200 border-b border-gray-700" aria-current="page">Home</a>
                 <a href="games.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">Games</a>
                 <a href="faq.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">FAQ</a>
                 <a href="changelog.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200">Changelog</a>
@@ -228,13 +230,13 @@
         </header>
 
         <main>
-            <section class="py-8 sm:py-12">
+            <section class="py-8 sm:py-12" role="region" aria-labelledby="featured-games-heading">
                 <div class="container mx-auto px-4">
-                    <h2 class="text-3xl font-bold text-center mb-8 text-white">
+                    <h2 id="featured-games-heading" class="text-3xl font-bold text-center mb-8 text-white">
                         Featured Games
                     </h2>
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div id="featured-games-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         
                         <div class="rounded-lg game-card overflow-hidden transition duration-200">
                             <img src="/assets/cookie.png" 
@@ -244,9 +246,11 @@
                             <div class="p-4">
                                 <h3 class="text-xl font-semibold mb-2 text-white">Rooftop Snipers</h3>
                                 <p class="text-gray-400 text-sm mb-4 line-clamp-2">Click on a cookie to buy upgrades</p>
-                                <a href="#" class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
+                                <button class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200"
+                                        data-title="Rooftop Snipers"
+                                        data-url="/games/rooftop-snipers/index.html">
                                     Play Now
-                                </a>
+                                </button>
                             </div>
                         </div>
 
@@ -258,9 +262,11 @@
                             <div class="p-4">
                                 <h3 class="text-xl font-semibold mb-2 text-white">Tube Jumpers</h3>
                                 <p class="text-gray-400 text-sm mb-4 line-clamp-2">The last one to stay on the tubes wins. Watch out for miscellaneous objects while watching your back.</p>
-                                <a href="#" class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
+                                <button class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200"
+                                        data-title="Tube Jumpers"
+                                        data-url="/games/tube-jumpers/index.html">
                                     Play Now
-                                </a>
+                                </button>
                             </div>
                         </div>
 
@@ -272,9 +278,11 @@
                             <div class="p-4">
                                 <h3 class="text-xl font-semibold mb-2 text-white">Slope</h3>
                                 <p class="text-gray-400 text-sm mb-4 line-clamp-2">Slope is the ultimate running game that will put your skills to the test, an all-time favorite of the internet!</p>
-                                <a href="#" class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
+                                <button class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200"
+                                        data-title="Slope"
+                                        data-url="/games/slope/index.html">
                                     Play Now
-                                </a>
+                                </button>
                             </div>
                         </div>
 
@@ -286,18 +294,20 @@
                             <div class="p-4">
                                 <h3 class="text-xl font-semibold mb-2 text-white">Stack</h3>
                                 <p class="text-gray-400 text-sm mb-4 line-clamp-2">Keep stacking up the blocks as high as you can! Just make sure you don't run out of blocks...</p>
-                                <a href="#" class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
+                                <button class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200"
+                                        data-title="Stack"
+                                        data-url="/games/stack/index.html">
                                     Play Now
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section class="py-12 sm:py-16 border-y border-gray-800 mt-6" style="border-color: var(--border-glass);">
+            <section class="py-12 sm:py-16 border-y border-gray-800 mt-6" style="border-color: var(--border-glass);" role="region" aria-labelledby="what-is-qbbic-heading">
                 <div class="container mx-auto px-4 max-w-4xl">
-                    <h2 class="text-3xl font-bold text-center mb-6 text-white">
+                    <h2 id="what-is-qbbic-heading" class="text-3xl font-bold text-center mb-6 text-white">
                         What is Qbbic?
                     </h2>
                     <div class="text-center text-lg text-gray-300 space-y-4">
@@ -311,9 +321,9 @@
                 </div>
             </section>
 
-            <section class="py-12 sm:py-16">
+            <section class="py-12 sm:py-16" role="region" aria-labelledby="testimonials-heading">
                 <div class="container mx-auto px-4">
-                    <h2 class="text-3xl font-bold text-center mb-10 text-white">
+                    <h2 id="testimonials-heading" class="text-3xl font-bold text-center mb-10 text-white">
                         What Users Have to Say
                     </h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -352,14 +362,49 @@
             </div>
         </footer>
 
-        <div id="message-box" class></div>
+        <div id="game-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div class="absolute inset-0" style="background-color: var(--bg-glass-modal);"></div>
+            
+            <div class="relative z-10 w-full max-w-6xl flex flex-col rounded-lg overflow-hidden border" style="border-color: var(--border-glass);">
+                
+                <div class="flex justify-between items-center p-3" style="background-color: var(--bg-glass-modal-header);">
+                    <h3 id="game-modal-title" class="text-xl font-bold text-white">Loading Game...</h3>
+                    <button id="close-game-modal-btn" class="text-white hover:text-cyan-400 transition-colors" aria-label="Close game modal">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                
+                <div class="relative w-full aspect-video bg-black">
+                    <iframe id="game-iframe" 
+                            src="about:blank" 
+                            frameborder="0" 
+                            class="absolute top-0 left-0 w-full h-full" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+                
+                <div class="flex flex-wrap gap-2 p-3" style="background-color: var(--bg-glass-controls);">
+                    <button id="fullscreen-btn" class="px-3 py-1 text-sm rounded-md font-bold text-gray-900 bg-cyan-500 hover:bg-cyan-400 transition-colors">Fullscreen</button>
+                    <button id="open-new-tab-btn" class="px-3 py-1 text-sm rounded-md font-bold text-gray-900 bg-cyan-500 hover:bg-cyan-400 transition-colors">Open in New Tab</button>
+                    <button id="open-blank-btn" class="px-3 py-1 text-sm rounded-md font-bold text-gray-900 bg-cyan-500 hover:bg-cyan-400 transition-colors">Open in about:blank</button>
+                    <button id="copy-url-btn" class="px-3 py-1 text-sm rounded-md font-bold text-gray-900 bg-cyan-500 hover:bg-cyan-400 transition-colors">Copy URL</button>
+                </div>
+            </div>
+        </div>
+        <div id="message-box" class="hidden"></div>
 
-    </div> <script>
+    </div> 
+    
+    <script>
         // --- Sound Element References (Global for all listeners) ---
         const hoverSound = document.getElementById('hover-sound');
         const selectSound = document.getElementById('select-sound');
         const exitSound = document.getElementById('exit-sound');
 
+        /**
+         * Plays a specified audio element, resetting it first.
+         * @param {HTMLAudioElement} audioElement The audio element to play
+         */
         function playSound(audioElement) {
             if (audioElement) {
                 audioElement.currentTime = 0; 
@@ -376,9 +421,10 @@
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             
-            const gameSearchInput = document.getElementById('game-search-input');
-            const gameGrid = document.getElementById('game-grid');
-            const allGameCards = document.querySelectorAll('.game-card');
+            // References for the featured games grid
+            const featuredGamesGrid = document.getElementById('featured-games-grid'); 
+
+            // References for Game Modal (these elements now exist in the HTML)
             const gameModal = document.getElementById('game-modal');
             const gameModalTitle = document.getElementById('game-modal-title');
             const gameIframe = document.getElementById('game-iframe');
@@ -390,7 +436,7 @@
             const messageBox = document.getElementById('message-box');
 
             // --- Hover Sound Setup ---
-            const hoverSelector = '.game-play-btn'; 
+            const hoverSelector = '.game-play-btn, .game-card'; // Added .game-card for card hover
             document.querySelectorAll(hoverSelector).forEach(el => {
                 el.addEventListener('mouseenter', () => playSound(hoverSound));
             });
@@ -398,6 +444,7 @@
             // --- Select/Click Sound Setup (using delegation) ---
             const clickSelector = 'a, button, .game-play-btn';
             document.body.addEventListener('click', (e) => {
+                // Don't play select sound on the "close" button, it has its own
                 if (e.target.closest(clickSelector) && e.target.closest('#close-game-modal-btn') === null) {
                     playSound(selectSound);
                 }
@@ -405,24 +452,17 @@
 
 
             // --- Mobile Menu ---
-            if (mobileMenuButton) {
+            if (mobileMenuButton && mobileMenu) {
                 mobileMenuButton.addEventListener('click', () => {
-                    mobileMenu.classList.toggle('hidden');
+                    const isHidden = mobileMenu.classList.toggle('hidden');
+                    // Update ARIA attribute for accessibility
+                    mobileMenuButton.setAttribute('aria-expanded', !isHidden);
                 });
             }
 
-            // --- Search Functionality ---
-            if (gameSearchInput) {
-                gameSearchInput.addEventListener('input', (e) => {
-                    const searchTerm = e.target.value.toLowerCase();
-                    allGameCards.forEach(card => {
-                        const title = card.querySelector('h3')?.textContent.toLowerCase();
-                        if (title) {
-                            card.style.display = title.includes(searchTerm) ? '' : 'none';
-                        }
-                    });
-                });
-            }
+            // --- Search Functionality (REMOVED) ---
+            // This logic was for a search input that does not exist on index.html.
+            // It is better suited for games.html.
 
             // --- Game Modal Logic ---
             function openGameModal(url, title) {
@@ -430,29 +470,34 @@
                 gameModalTitle.textContent = title;
                 gameIframe.src = url;
                 gameModal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; 
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
             }
             
             function closeGameModal() {
                 playSound(exitSound);
-                gameIframe.src = 'about:blank'; 
+                gameIframe.src = 'about:blank'; // Stop game from running in background
                 currentGameUrl = '';
                 gameModal.classList.add('hidden');
-                document.body.style.overflow = ''; 
+                document.body.style.overflow = ''; // Restore scrolling
             }
             
-            if (gameGrid) {
-                gameGrid.addEventListener('click', (e) => {
+            // Listen for clicks on the featured games grid
+            if (featuredGamesGrid) {
+                featuredGamesGrid.addEventListener('click', (e) => {
                     const playButton = e.target.closest('.game-play-btn');
                     if (playButton) {
                         const url = playButton.dataset.url;
                         const title = playButton.dataset.title;
                         if (url && title) {
                             openGameModal(url, title);
+                        } else {
+                            console.error('Game button is missing data-url or data-title');
                         }
                     }
                 });
             }
+            
+            // Modal Control Button Listeners
             if (openNewTabBtn) {
                 openNewTabBtn.addEventListener('click', () => {
                     window.open(currentGameUrl, '_blank');
@@ -493,6 +538,12 @@
             if (closeModalBtn) {
                 closeModalBtn.addEventListener('click', closeGameModal);
             }
+            
+            // --- Utility Functions ---
+            
+            /**
+             * Copies the current game URL to the clipboard.
+             */
             async function copyGameUrl() {
                 if (!navigator.clipboard) {
                     showMessage('Clipboard API not supported.', 'error');
@@ -506,6 +557,12 @@
                     showMessage('Could not copy URL.', 'error');
                 }
             }
+
+            /**
+             * Shows a toast-like message at the bottom of the screen.
+             * @param {string} text The message to display
+             * @param {'success' | 'error'} type The type of message
+             */
             function showMessage(text, type = 'success') {
                 if (!messageBox) return;
                 messageBox.textContent = text;
