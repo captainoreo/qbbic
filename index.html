@@ -230,81 +230,6 @@
         </header>
 
         <main>
-            <section class="py-8 sm:py-12" role="region" aria-labelledby="featured-games-heading">
-                <div class="container mx-auto px-4">
-                    <h2 id="featured-games-heading" class="text-3xl font-bold text-center mb-8 text-white">
-                        Featured Games
-                    </h2>
-                    
-                    <div id="featured-games-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        
-                        <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                            <img src="/assets/cookie.png" 
-                                 alt="Rooftop Snipers" 
-                                 class="w-full h-32 object-cover"
-                                 onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
-                            <div class="p-4">
-                                <h3 class="text-xl font-semibold mb-2 text-white">Rooftop Snipers</h3>
-                                <p class="text-gray-400 text-sm mb-4 line-clamp-2">Click on a cookie to buy upgrades</p>
-                                <button class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200"
-                                        data-title="Rooftop Snipers"
-                                        data-url="/games/rooftop-snipers/index.html">
-                                    Play Now
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                            <img src="https://placehold.co/400x200/222222/bbbbbb?text=TUBE+JUMPERS" 
-                                 alt="Tube Jumpers" 
-                                 class="w-full h-32 object-cover"
-                                 onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
-                            <div class="p-4">
-                                <h3 class="text-xl font-semibold mb-2 text-white">Tube Jumpers</h3>
-                                <p class="text-gray-400 text-sm mb-4 line-clamp-2">The last one to stay on the tubes wins. Watch out for miscellaneous objects while watching your back.</p>
-                                <button class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200"
-                                        data-title="Tube Jumpers"
-                                        data-url="/games/tube-jumpers/index.html">
-                                    Play Now
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                            <img src="https://placehold.co/400x200/222222/bbbbbb?text=SLOPE" 
-                                 alt="Slope" 
-                                 class="w-full h-32 object-cover"
-                                 onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
-                            <div class="p-4">
-                                <h3 class="text-xl font-semibold mb-2 text-white">Slope</h3>
-                                <p class="text-gray-400 text-sm mb-4 line-clamp-2">Slope is the ultimate running game that will put your skills to the test, an all-time favorite of the internet!</p>
-                                <button class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200"
-                                        data-title="Slope"
-                                        data-url="/games/slope/index.html">
-                                    Play Now
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="rounded-lg game-card overflow-hidden transition duration-200">
-                            <img src="https://placehold.co/400x200/222222/bbbbbb?text=STACK" 
-                                 alt="Stack" 
-                                 class="w-full h-32 object-cover"
-                                 onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
-                            <div class="p-4">
-                                <h3 class="text-xl font-semibold mb-2 text-white">Stack</h3>
-                                <p class="text-gray-400 text-sm mb-4 line-clamp-2">Keep stacking up the blocks as high as you can! Just make sure you don't run out of blocks...</p>
-                                <button class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200"
-                                        data-title="Stack"
-                                        data-url="/games/stack/index.html">
-                                    Play Now
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <section class="py-12 sm:py-16 border-y border-gray-800 mt-6" style="border-color: var(--border-glass);" role="region" aria-labelledby="what-is-qbbic-heading">
                 <div class="container mx-auto px-4 max-w-4xl">
                     <h2 id="what-is-qbbic-heading" class="text-3xl font-bold text-center mb-6 text-white">
@@ -421,9 +346,6 @@
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             
-            // References for the featured games grid
-            const featuredGamesGrid = document.getElementById('featured-games-grid'); 
-
             // References for Game Modal (these elements now exist in the HTML)
             const gameModal = document.getElementById('game-modal');
             const gameModalTitle = document.getElementById('game-modal-title');
@@ -460,11 +382,8 @@
                 });
             }
 
-            // --- Search Functionality (REMOVED) ---
-            // This logic was for a search input that does not exist on index.html.
-            // It is better suited for games.html.
-
             // --- Game Modal Logic ---
+            // (Functions are kept, but are no longer triggered on this page)
             function openGameModal(url, title) {
                 currentGameUrl = url;
                 gameModalTitle.textContent = title;
@@ -481,21 +400,7 @@
                 document.body.style.overflow = ''; // Restore scrolling
             }
             
-            // Listen for clicks on the featured games grid
-            if (featuredGamesGrid) {
-                featuredGamesGrid.addEventListener('click', (e) => {
-                    const playButton = e.target.closest('.game-play-btn');
-                    if (playButton) {
-                        const url = playButton.dataset.url;
-                        const title = playButton.dataset.title;
-                        if (url && title) {
-                            openGameModal(url, title);
-                        } else {
-                            console.error('Game button is missing data-url or data-title');
-                        }
-                    }
-                });
-            }
+            // --- EVENT LISTENER FOR FEATURED GAMES (REMOVED) ---
             
             // Modal Control Button Listeners
             if (openNewTabBtn) {
