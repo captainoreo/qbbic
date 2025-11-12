@@ -4,209 +4,532 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Qbbic</title>
-    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Inter font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* Apply Inter font and dark mode defaults */
+        /* --- CUSTOM FONT DEFINITION (Applied Globally) --- */
+        @font-face {
+            font-family: 'GameBoyFont';
+            src: url('/assets/Early GameBoy.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap; 
+        }
+        
+        /* --- CSS Variables for Theming (PS2-like Blue/Dark) --- */
+        :root {
+            --color-primary: #3378F2; /* PS2 Blue */
+            --color-primary-light: #66A0FF;
+            --color-primary-dark: #0050C0;
+            
+            --color-text-base: #ffffff;
+            --color-text-white: #ffffff;
+            --color-text-dark: #ffffff; 
+            
+            --bg-page: #00001a; /* Very dark blue for background */
+            --bg-glass-header: rgba(10, 10, 30, 0.6); 
+            --bg-glass-card: rgba(10, 10, 30, 0.5);
+            --bg-glass-card-hover: rgba(20, 20, 50, 0.7);
+            --bg-glass-modal: rgba(0, 0, 10, 0.9);
+            --bg-glass-modal-header: rgba(10, 10, 30, 0.7);
+            --bg-glass-controls: rgba(20, 20, 50, 0.7);
+            --bg-glass-controls-hover: rgba(51, 120, 242, 0.8);
+
+            --border-glass: rgba(51, 120, 242, 0.4);
+            --border-glass-light: rgba(51, 120, 242, 0.2);
+            
+            --blur-strength: 5px;
+        }
+        
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'GameBoyFont', sans-serif;
+            background-color: transparent; 
+            color: var(--color-text-base);
+            min-height: 100vh;
         }
-        /* Custom styles to achieve the minimalist game site look */
+        
+        /* ------------------------------------- */
+        /* --- PURE CSS 3D CUBE FIELD --- */
+        /* ------------------------------------- */
+        #css-3d-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; 
+            overflow: hidden;
+            background-color: var(--bg-page);
+
+            perspective: 1200px;
+            perspective-origin: 50% 50%;
+
+            /* Radial Gradient to simulate the central glow/fog */
+            background: radial-gradient(circle at center, rgba(51, 120, 242, 0.1) 0%, var(--bg-page) 70%);
+        }
+
+        .cube-layer {
+            --size: 5px; 
+            position: absolute;
+            width: var(--size);
+            height: var(--size);
+            transform-style: preserve-3d;
+            animation: moveCube var(--duration) linear infinite;
+        }
+
+        .cube-layer::before, .cube-layer::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 1px solid var(--color-primary-light);
+            box-shadow: 0 0 5px var(--color-primary-light);
+            opacity: 0.6;
+            background: rgba(51, 120, 242, 0.05);
+            transform-style: preserve-3d;
+        }
+
+        .cube-layer::before {
+            transform: translateZ(calc(var(--size) / 2)) rotateX(45deg); 
+        }
+        .cube-layer::after {
+            transform: translateZ(calc(var(--size) / -2)) rotateY(45deg);
+        }
+
+        @keyframes moveCube {
+            0% {
+                transform: translateZ(-1500px) scale(0.1) rotateX(0deg) rotateY(0deg); 
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateZ(100px) scale(1) rotateX(180deg) rotateY(360deg);
+                opacity: 0.8; 
+            }
+        }
+        /* ------------------------------------- */
+        /* --- END PURE CSS 3D CUBE FIELD --- */
+        /* ------------------------------------- */
+
+        /* --- Game Card Appearance (Now always visible) --- */
         .game-card {
+            background-color: var(--bg-glass-card);
+            backdrop-filter: blur(var(--blur-strength));
+            -webkit-backdrop-filter: blur(var(--blur-strength));
+            border: 1px solid var(--border-glass-light);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s; 
+            position: relative;
+            transform-style: preserve-d;
+            transform-origin: center bottom;
+            opacity: 1; 
+            transform: translateZ(0) translateY(0) rotateX(0deg); 
         }
+        
+        .game-card:hover {
+            background-color: var(--bg-glass-card-hover);
+            transform: scale(1.03) translateZ(10px); 
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); 
+        }
+
+        .game-card:hover::before {
+             background: rgba(51, 120, 242, 0.2); 
+             transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px); 
+        }
+        /* --- End of Cube & Animation Styles --- */
+
+        /* Glassmorphism and Utility Classes (Kept as-is) */
+        .glass-header {
+            background-color: var(--bg-glass-header);
+            backdrop-filter: blur(var(--blur-strength));
+            -webkit-backdrop-filter: blur(var(--blur-strength));
+            border-bottom: 1px solid var(--border-glass);
+        }
+        .text-cyan-400 { color: var(--color-primary-light) !important; }
+        .text-gray-900 { color: var(--color-text-dark) !important; }
+        .text-white { color: var(--color-text-white) !important; }
+        .bg-cyan-500 { background-color: var(--color-primary) !important; }
+        .hover\:bg-cyan-400:hover { background-color: var(--color-primary-light) !important; }
+        
     </style>
 </head>
-<!-- Swapping to a dark theme (bg-black) with white text -->
-<body class="bg-gray-900 text-white">
+<body> 
+    
+    <div id="css-3d-background">
+        <div class="cube-layer" style="--duration: 15s; --size: 5px; top: 10%; left: 20%; animation-delay: 0s;"></div>
+        <div class="cube-layer" style="--duration: 18s; --size: 7px; top: 80%; left: 5%; animation-delay: -1s;"></div>
+        <div class="cube-layer" style="--duration: 12s; --size: 4px; top: 40%; left: 95%; animation-delay: -2s;"></div>
+        <div class="cube-layer" style="--duration: 20s; --size: 6px; top: 5%; left: 60%; animation-delay: -3s;"></div>
+        <div class="cube-layer" style="--duration: 14s; --size: 8px; top: 70%; left: 75%; animation-delay: -4s;"></div>
+        <div class="cube-layer" style="--duration: 16s; --size: 5px; top: 25%; left: 15%; animation-delay: -5s;"></div>
+        <div class="cube-layer" style="--duration: 19s; --size: 7px; top: 55%; left: 90%; animation-delay: -6s;"></div>
+        <div class="cube-layer" style="--duration: 13s; --size: 3px; top: 95%; left: 30%; animation-delay: -7s;"></div>
+        <div class="cube-layer" style="--duration: 17s; --size: 6px; top: 15%; left: 85%; animation-delay: -8s;"></div>
+        <div class="cube-layer" style="--duration: 15s; --size: 4px; top: 45%; left: 5%; animation-delay: -9s;"></div>
+        <div class="cube-layer" style="--duration: 18s; --size: 8px; top: 60%; left: 20%; animation-delay: -10s;"></div>
+        <div class="cube-layer" style="--duration: 12s; --size: 5px; top: 5%; left: 40%; animation-delay: -11s;"></div>
+        <div class="cube-layer" style="--duration: 14s; --size: 7px; top: 75%; left: 50%; animation-delay: -12s;"></div>
+        <div class="cube-layer" style="--duration: 16s; --size: 3px; top: 20%; left: 90%; animation-delay: -13s;"></div>
+        <div class="cube-layer" style="--duration: 19s; --size: 6px; top: 85%; left: 10%; animation-delay: -14s;"></div>
+        <div class="cube-layer" style="--duration: 13s; --size: 5px; top: 50%; left: 70%; animation-delay: -15s;"></div>
+        <div class="cube-layer" style="--duration: 17s; --size: 4px; top: 30%; left: 35%; animation-delay: -16s;"></div>
+        <div class="cube-layer" style="--duration: 20s; --size: 9px; top: 90%; left: 65%; animation-delay: -17s;"></div>
+        <div class="cube-layer" style="--duration: 15s; --size: 7px; top: 10%; left: 5%; animation-delay: -18s;"></div>
+        <div class="cube-layer" style="--duration: 18s; --size: 5px; top: 65%; left: 95%; animation-delay: -19s;"></div>
+        <div class="cube-layer" style="--duration: 12s; --size: 8px; top: 35%; left: 45%; animation-delay: -20s;"></div>
+        <div class="cube-layer" style="--duration: 14s; --size: 4px; top: 80%; left: 25%; animation-delay: -21s;"></div>
+        <div class="cube-layer" style="--duration: 16s; --size: 6px; top: 25%; left: 70%; animation-delay: -22s;"></div>
+        <div class="cube-layer" style="--duration: 19s; --size: 5px; top: 55%; left: 10%; animation-delay: -23s;"></div>
+        <div class="cube-layer" style="--duration: 13s; --size: 7px; top: 5%; left: 80%; animation-delay: -24s;"></div>
+        <div class="cube-layer" style="--duration: 17s; --size: 3px; top: 70%; left: 40%; animation-delay: -25s;"></div>
+        <div class="cube-layer" style="--duration: 20s; --size: 8px; top: 15%; left: 30%; animation-delay: -26s;"></div>
+        <div class="cube-layer" style="--duration: 15s; --size: 5px; top: 40%; left: 65%; animation-delay: -27s;"></div>
+        <div class="cube-layer" style="--duration: 18s; --size: 6px; top: 95%; left: 75%; animation-delay: -28s;"></div>
+        <div class="cube-layer" style="--duration: 12s; --size: 4px; top: 60%; left: 35%; animation-delay: -29s;"></div>
+    </div>
+    
+    <div id="page-content" class="relative z-10">
 
-    <!-- Header / Navigation (Simple, Dark, Minimal) -->
-    <header class="bg-gray-800 sticky top-0 z-50 border-b border-gray-700">
-        <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-            <div class="flex items-center">
-                <!-- LOGO WITH ICON ADDED -->
-                <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-white hover:text-cyan-400 transition duration-300">
-                    <!-- Game Controller Icon -->
-                    <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2v-5m-9-2a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z"/>
-                    </svg>
-                    <!-- Logo Text -->
-                    <span>QB<span class="text-cyan-400">BIC</span></span>
-                </a>
-            </div>
-            
-            <!-- Mobile Menu Button (hidden on desktop) -->
-            <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none absolute right-4 top-3">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                </svg>
-            </button>
-            
-            <!-- Desktop Menu (Centered Links) - HOME ACTIVE -->
-            <div class="hidden md:flex space-x-6 items-center">
-                <a href="index.html" class="text-white border-b-2 border-cyan-400 transition duration-200 font-medium">Home</a>
-                <a href="games.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Games</a>
-                <a href="faq.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">FAQ</a>
-                <a href="changelog.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Changelog</a>
-            </div>
-        </nav>
+         <audio id="intro-sound" src="/assets/ps4-menu-intro.mp3" preload="auto"></audio>
+        <audio id="hover-sound" src="/assets/ps4-scroll-foward.mp3" preload="auto"></audio>
+        <audio id="select-sound" src="/assets/ps4-select-button.mp3" preload="auto"></audio>
+        <audio id="exit-sound" src="/assets/ps4-back-button.mp3" preload="auto"></audio>
         
-        <!-- Mobile Menu (hidden by default) -->
-        <div id="mobile-menu" class="md:hidden hidden bg-gray-800 px-4 pb-4 border-t border-gray-700">
-            <a href="index.html" class="block text-white border-l-2 border-cyan-400 py-2 pl-2 transition duration-200 border-b border-gray-700">Home</a>
-            <a href="games.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">Games</a>
-            <a href="faq.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">FAQ</a>
-            <a href="changelog.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200">Changelog</a>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main>
-        <!-- Featured Games Grid (Primary Content) -->
-        <section class="py-8 sm:py-12">
-            <div class="container mx-auto px-4">
-                <h2 class="text-3xl font-bold text-center mb-8 text-white">
-                    Featured Games
-                </h2>
+        <header class="sticky top-0 z-50 border-b border-gray-700 glass-header">
+            <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-white hover:text-cyan-400 transition duration-300">
+                        <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2v-5m-9-2a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z"/>
+                        </svg>
+                        <span>QB<span class="text-cyan-400">BIC</span></span>
+                    </a>
+                </div>
                 
-                <!-- Game Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none absolute right-4 top-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+                
+                <div class="hidden md:flex space-x-6 items-center">
+                    <a href="index.html" class="text-white border-b-2 border-cyan-400 transition duration-200 font-medium">Home</a>
+                    <a href="games.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Games</a>
+                    <a href="faq.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">FAQ</a>
+                    <a href="changelog.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Changelog</a>
+                </div>
+            </nav>
+            
+            <div id="mobile-menu" class="md:hidden hidden bg-gray-800 px-4 pb-4 border-t border-gray-700">
+                <a href="index.html" class="block text-white border-l-2 border-cyan-400 py-2 pl-2 transition duration-200 border-b border-gray-700">Home</a>
+                <a href="games.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">Games</a>
+                <a href="faq.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">FAQ</a>
+                <a href="changelog.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200">Changelog</a>
+            </div>
+        </header>
+
+        <main>
+            <section class="py-8 sm:py-12">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-3xl font-bold text-center mb-8 text-white">
+                        Featured Games
+                    </h2>
                     
-                    <!-- Game Card 1: Rooftop Snipers -->
-                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700">
-                        <img src="/assets/cookie.png" 
-                             alt="Rooftop Snipers" 
-                             class="w-full h-32 object-cover"
-                             onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
-                        <div class="p-4">
-                            <h3 class="text-xl font-semibold mb-2 text-white">Rooftop Snipers</h3>
-                            <p class="text-gray-400 text-sm mb-4 line-clamp-2">Click on a cookie to buy upgrades</p>
-                            <a href="#" class="block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
-                                Play Now
-                            </a>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        
+                        <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                            <img src="/assets/cookie.png" 
+                                 alt="Rooftop Snipers" 
+                                 class="w-full h-32 object-cover"
+                                 onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
+                            <div class="p-4">
+                                <h3 class="text-xl font-semibold mb-2 text-white">Rooftop Snipers</h3>
+                                <p class="text-gray-400 text-sm mb-4 line-clamp-2">Click on a cookie to buy upgrades</p>
+                                <a href="#" class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
+                                    Play Now
+                                </a>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Game Card 2: Tube Jumpers -->
-                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700">
-                        <img src="https://placehold.co/400x200/222222/bbbbbb?text=TUBE+JUMPERS" 
-                             alt="Tube Jumpers" 
-                             class="w-full h-32 object-cover"
-                             onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
-                        <div class="p-4">
-                            <h3 class="text-xl font-semibold mb-2 text-white">Tube Jumpers</h3>
-                            <p class="text-gray-400 text-sm mb-4 line-clamp-2">The last one to stay on the tubes wins. Watch out for miscellaneous objects while watching your back.</p>
-                            <a href="#" class="block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
-                                Play Now
-                            </a>
+                        <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                            <img src="https://placehold.co/400x200/222222/bbbbbb?text=TUBE+JUMPERS" 
+                                 alt="Tube Jumpers" 
+                                 class="w-full h-32 object-cover"
+                                 onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
+                            <div class="p-4">
+                                <h3 class="text-xl font-semibold mb-2 text-white">Tube Jumpers</h3>
+                                <p class="text-gray-400 text-sm mb-4 line-clamp-2">The last one to stay on the tubes wins. Watch out for miscellaneous objects while watching your back.</p>
+                                <a href="#" class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
+                                    Play Now
+                                </a>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Game Card 3: Slope -->
-                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700">
-                        <img src="https://placehold.co/400x200/222222/bbbbbb?text=SLOPE" 
-                             alt="Slope" 
-                             class="w-full h-32 object-cover"
-                             onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
-                        <div class="p-4">
-                            <h3 class="text-xl font-semibold mb-2 text-white">Slope</h3>
-                            <p class="text-gray-400 text-sm mb-4 line-clamp-2">Slope is the ultimate running game that will put your skills to the test, an all-time favorite of the internet!</p>
-                            <a href="#" class="block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
-                                Play Now
-                            </a>
+                        <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                            <img src="https://placehold.co/400x200/222222/bbbbbb?text=SLOPE" 
+                                 alt="Slope" 
+                                 class="w-full h-32 object-cover"
+                                 onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
+                            <div class="p-4">
+                                <h3 class="text-xl font-semibold mb-2 text-white">Slope</h3>
+                                <p class="text-gray-400 text-sm mb-4 line-clamp-2">Slope is the ultimate running game that will put your skills to the test, an all-time favorite of the internet!</p>
+                                <a href="#" class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
+                                    Play Now
+                                </a>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Game Card 4: Stack -->
-                    <div class="bg-gray-800 rounded-lg game-card overflow-hidden transition duration-200 hover:bg-gray-700">
-                        <img src="https://placehold.co/400x200/222222/bbbbbb?text=STACK" 
-                             alt="Stack" 
-                             class="w-full h-32 object-cover"
-                             onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
-                        <div class="p-4">
-                            <h3 class="text-xl font-semibold mb-2 text-white">Stack</h3>
-                            <p class="text-gray-400 text-sm mb-4 line-clamp-2">Keep stacking up the blocks as high as you can! Just make sure you don't run out of blocks...</p>
-                            <a href="#" class="block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
-                                Play Now
-                            </a>
+                        <div class="rounded-lg game-card overflow-hidden transition duration-200">
+                            <img src="https://placehold.co/400x200/222222/bbbbbb?text=STACK" 
+                                 alt="Stack" 
+                                 class="w-full h-32 object-cover"
+                                 onerror="this.src='https://placehold.co/400x200/222222/bbbbbb?text=Game+Image+Error'">
+                            <div class="p-4">
+                                <h3 class="text-xl font-semibold mb-2 text-white">Stack</h3>
+                                <p class="text-gray-400 text-sm mb-4 line-clamp-2">Keep stacking up the blocks as high as you can! Just make sure you don't run out of blocks...</p>
+                                <a href="#" class="game-play-btn block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-2 rounded-md transition duration-200">
+                                    Play Now
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- What is GameWorld Section -->
-        <section class="py-12 sm:py-16 bg-gray-950 border-y border-gray-800 mt-6">
-            <div class="container mx-auto px-4 max-w-4xl">
-                <h2 class="text-3xl font-bold text-center mb-6 text-white">
-                    What is GameWorld?
-                </h2>
-                <div class="text-center text-lg text-gray-300 space-y-4">
-                    <p>
-                        GameWorld is a site that serves as a hub for the best games on the internet, for free!
-                    </p>
-                    <p>
-                        Our focus is on bringing quality entertainment that you will enjoy. With a collection of over 100 games and counting, the options are endless. What are you waiting for? Go find one and start playing!
-                    </p>
+            <section class="py-12 sm:py-16 border-y border-gray-800 mt-6" style="border-color: var(--border-glass);">
+                <div class="container mx-auto px-4 max-w-4xl">
+                    <h2 class="text-3xl font-bold text-center mb-6 text-white">
+                        What is Qbbic?
+                    </h2>
+                    <div class="text-center text-lg text-gray-300 space-y-4">
+                        <p>
+                            Qbbic is a site that serves as a hub for the best games on the internet, for free!
+                        </p>
+                        <p>
+                            Our focus is on bringing quality entertainment that you will enjoy. With a collection of over 100 games and counting, the options are endless. What are you waiting for? Go find one and start playing!
+                        </p>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Testimonials/Community Section (Simplified) -->
-        <section class="py-12 sm:py-16">
-            <div class="container mx-auto px-4">
-                <h2 class="text-3xl font-bold text-center mb-10 text-white">
-                    What Users Have to Say
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    
-                    <!-- Testimonial 1 -->
-                    <div class="bg-gray-800 p-6 rounded-lg border-l-4 border-cyan-500 shadow-xl">
-                        <p class="text-gray-300 italic mb-4">"This website provides a vast variety of games and receives constant updates. Make sure to try out GameWorld today!"</p>
-                        <p class="font-semibold text-white">- Alpha</p>
-                    </div>
+            <section class="py-12 sm:py-16">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-3xl font-bold text-center mb-10 text-white">
+                        What Users Have to Say
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        <div class="game-card p-6 rounded-lg border-l-4 border-cyan-500 shadow-xl" style="border-left-color: var(--color-primary-light);">
+                            <p class="text-gray-300 italic mb-4">"This website provides a vast variety of games and receives constant updates. Make sure to try out Qbbic today!"</p>
+                            <p class="font-semibold text-white">- Alpha</p>
+                        </div>
 
-                    <!-- Testimonial 2 -->
-                    <div class="bg-gray-800 p-6 rounded-lg border-l-4 border-cyan-500 shadow-xl">
-                        <p class="text-gray-300 italic mb-4">"I use GameWorld everyday because of its diverse games that it offers. The website design is simple but nice and very easy to use."</p>
-                        <p class="font-semibold text-white">- Flamesawoken</p>
-                    </div>
-                    
-                    <!-- Testimonial 3 -->
-                    <div class="bg-gray-800 p-6 rounded-lg border-l-4 border-cyan-500 shadow-xl">
-                        <p class="text-gray-300 italic mb-4">"GameWorld is such a good website, they listen to their community about what games people want. Highly recommended!"</p>
-                        <p class="font-semibold text-white">- Locklyn</p>
-                    </div>
+                        <div class="game-card p-6 rounded-lg border-l-4 border-cyan-500 shadow-xl" style="border-left-color: var(--color-primary-light);">
+                            <p class="text-gray-300 italic mb-4">"I use Qbbic everyday because of its diverse games that it offers. The website design is simple but nice and very easy to use."</p>
+                            <p class="font-semibold text-white">- Flamesawoken</p>
+                        </div>
+                        
+                        <div class="game-card p-6 rounded-lg border-l-4 border-cyan-500 shadow-xl" style="border-left-color: var(--color-primary-light);">
+                            <p class="text-gray-300 italic mb-4">"Qbbic is such a good website, they listen to their community about what games people want. Highly recommended!"</p>
+                            <p class="font-semibold text-white">- Locklyn</p>
+                        </div>
 
+                    </div>
                 </div>
-            </div>
-        </section>
-    </main>
+            </section>
+        </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 border-t border-gray-700 mt-10">
-        <div class="container mx-auto px-4 py-6 text-center">
-            <div class="flex justify-center space-x-6 mb-4">
-                <a href="index.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Home</a>
-                <a href="games.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Games</a>
-                <a href="faq.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">FAQ</a>
-                <a href="changelog.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Terms of Service</a>
+        <footer class="border-t border-gray-700 mt-10 glass-header">
+            <div class="container mx-auto px-4 py-6 text-center">
+                <div class="flex justify-center space-x-6 mb-4">
+                    <a href="index.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Home</a>
+                    <a href="games.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Games</a>
+                    <a href="faq.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">FAQ</a>
+                    <a href="changelog.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Terms of Service</a>
+                </div>
+                <p class="text-gray-500 text-xs">
+                    Copyright Team Qbbic © 2025. All rights reserved to respective owners.
+                </p>
             </div>
-            <p class="text-gray-500 text-xs">
-                Copyright GameWorld © 2025. All rights reserved to respective owners.
-            </p>
-        </div>
-    </footer>
+        </footer>
 
-    <!-- Simple JS for Mobile Menu Toggle -->
-    <script>
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        });
+        <div id="message-box" class></div>
+
+    </div> <script>
+        // --- Sound Element References (Global for all listeners) ---
+        const hoverSound = document.getElementById('hover-sound');
+        const selectSound = document.getElementById('select-sound');
+        const exitSound = document.getElementById('exit-sound');
+
+        function playSound(audioElement) {
+            if (audioElement) {
+                audioElement.currentTime = 0; 
+                audioElement.play().catch(e => { /* suppressed browser autoplay error */ });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Globals ---
+            let currentGameUrl = '';
+
+            // --- Element References ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            const gameSearchInput = document.getElementById('game-search-input');
+            const gameGrid = document.getElementById('game-grid');
+            const allGameCards = document.querySelectorAll('.game-card');
+            const gameModal = document.getElementById('game-modal');
+            const gameModalTitle = document.getElementById('game-modal-title');
+            const gameIframe = document.getElementById('game-iframe');
+            const openNewTabBtn = document.getElementById('open-new-tab-btn');
+            const openBlankBtn = document.getElementById('open-blank-btn');
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            const copyUrlBtn = document.getElementById('copy-url-btn');
+            const closeModalBtn = document.getElementById('close-game-modal-btn');
+            const messageBox = document.getElementById('message-box');
+
+            // --- Hover Sound Setup ---
+            const hoverSelector = '.game-play-btn'; 
+            document.querySelectorAll(hoverSelector).forEach(el => {
+                el.addEventListener('mouseenter', () => playSound(hoverSound));
+            });
+
+            // --- Select/Click Sound Setup (using delegation) ---
+            const clickSelector = 'a, button, .game-play-btn';
+            document.body.addEventListener('click', (e) => {
+                if (e.target.closest(clickSelector) && e.target.closest('#close-game-modal-btn') === null) {
+                    playSound(selectSound);
+                }
+            });
+
+
+            // --- Mobile Menu ---
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // --- Search Functionality ---
+            if (gameSearchInput) {
+                gameSearchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    allGameCards.forEach(card => {
+                        const title = card.querySelector('h3')?.textContent.toLowerCase();
+                        if (title) {
+                            card.style.display = title.includes(searchTerm) ? '' : 'none';
+                        }
+                    });
+                });
+            }
+
+            // --- Game Modal Logic ---
+            function openGameModal(url, title) {
+                currentGameUrl = url;
+                gameModalTitle.textContent = title;
+                gameIframe.src = url;
+                gameModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; 
+            }
+            
+            function closeGameModal() {
+                playSound(exitSound);
+                gameIframe.src = 'about:blank'; 
+                currentGameUrl = '';
+                gameModal.classList.add('hidden');
+                document.body.style.overflow = ''; 
+            }
+            
+            if (gameGrid) {
+                gameGrid.addEventListener('click', (e) => {
+                    const playButton = e.target.closest('.game-play-btn');
+                    if (playButton) {
+                        const url = playButton.dataset.url;
+                        const title = playButton.dataset.title;
+                        if (url && title) {
+                            openGameModal(url, title);
+                        }
+                    }
+                });
+            }
+            if (openNewTabBtn) {
+                openNewTabBtn.addEventListener('click', () => {
+                    window.open(currentGameUrl, '_blank');
+                });
+            }
+            if (openBlankBtn) {
+                openBlankBtn.addEventListener('click', () => {
+                    const newWindow = window.open('about:blank', '_blank');
+                    if (newWindow) {
+                        newWindow.document.write(`
+                            <!DOCTYPE html>
+                            <html lang="en">
+                            <head><title>${gameModalTitle.textContent}</title><style>body, html { margin: 0; padding: 0; overflow: hidden; background: #000; }</style></head>
+                            <body>
+                                <iframe src="${currentGameUrl}" style="width: 100vw; height: 100vh; border: none;" allowfullscreen></iframe>
+                            </body>
+                            </html>
+                        `);
+                        newWindow.document.close();
+                    } else {
+                        showMessage("Popup blocked! Please allow popups.", 'error');
+                    }
+                });
+            }
+            if (fullscreenBtn) {
+                fullscreenBtn.addEventListener('click', () => {
+                    const requestFS = gameIframe.requestFullscreen || gameIframe.mozRequestFullScreen || gameIframe.webkitRequestFullscreen || gameIframe.msRequestFullscreen;
+                    if (requestFS) {
+                        requestFS.call(gameIframe);
+                    } else {
+                        showMessage("Fullscreen is not supported here.", 'error');
+                    }
+                });
+            }
+            if (copyUrlBtn) {
+                copyUrlBtn.addEventListener('click', copyGameUrl);
+            }
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', closeGameModal);
+            }
+            async function copyGameUrl() {
+                if (!navigator.clipboard) {
+                    showMessage('Clipboard API not supported.', 'error');
+                    return;
+                }
+                try {
+                    await navigator.clipboard.writeText(currentGameUrl);
+                    showMessage('Game URL copied!', 'success');
+                } catch (err) {
+                    console.error('Failed to copy: ', err);
+                    showMessage('Could not copy URL.', 'error');
+                }
+            }
+            function showMessage(text, type = 'success') {
+                if (!messageBox) return;
+                messageBox.textContent = text;
+                messageBox.classList.remove('bg-cyan-600', 'bg-red-600');
+                if (type === 'error') {
+                    messageBox.classList.add('bg-red-600');
+                    messageBox.style.backgroundColor = 'var(--color-primary-dark)';
+                } else {
+                    messageBox.classList.add('bg-cyan-600');
+                    messageBox.style.backgroundColor = 'var(--color-primary)';
+                }
+                
+                messageBox.classList.remove('hidden');
+                messageBox.classList.add('fixed', 'bottom-4', 'left-1/2', '-translate-x-1/2', 'px-4', 'py-2', 'rounded-lg', 'text-white', 'shadow-lg', 'transition-opacity', 'duration-300', 'z-[101]');
+                messageBox.style.opacity = '1';
+                
+                setTimeout(() => {
+                    messageBox.style.opacity = '0';
+                    setTimeout(() => messageBox.classList.add('hidden'), 300);
+                }, 3000);
+            }
+
+        }); // End of DOMContentLoaded
+        
     </script>
 </body>
 </html>
