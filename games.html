@@ -6,49 +6,56 @@
     <title>Qbbic</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* --- CUSTOM FONT DEFINITION (Applied Globally) --- */
-        @font-face {
-            font-family: 'GameBoyFont';
-            src: url('/assets/Early GameBoy.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap; 
-        }
+        /* --- CUSTOM FONT DEFINITION (Removed GameBoyFont) --- */
+        /* @font-face {
+                font-family: 'GameBoyFont';
+                src: url('/assets/Early GameBoy.ttf') format('truetype');
+                font-weight: normal;
+                font-style: normal;
+                font-display: swap; 
+            } 
+        */
         
-        /* --- CSS Variables for Theming (PS2-like Blue/Dark) --- */
+        /* --- CSS Variables for Theming (Frutiger Aero) --- */
         :root {
-            --color-primary: #3378F2; /* PS2 Blue */
-            --color-primary-light: #66A0FF;
-            --color-primary-dark: #0050C0;
+            /* Bright blues and greens */
+            --color-primary: #00a1ff; 
+            --color-primary-light: #40c4ff;
+            --color-primary-dark: #0077c0;
             
-            --color-text-base: #ffffff;
+            /* Dark text for readability on light backgrounds */
+            --color-text-base: #003366;
             --color-text-white: #ffffff;
-            --color-text-dark: #ffffff; 
+            --color-text-dark: #002244; 
             
-            --bg-page: #00001a; /* Very dark blue for background */
-            --bg-glass-header: rgba(10, 10, 30, 0.6); 
-            --bg-glass-card: rgba(10, 10, 30, 0.5);
-            --bg-glass-card-hover: rgba(20, 20, 50, 0.7);
-            --bg-glass-modal: rgba(0, 0, 10, 0.9);
-            --bg-glass-modal-header: rgba(10, 10, 30, 0.7);
-            --bg-glass-controls: rgba(20, 20, 50, 0.7);
-            --bg-glass-controls-hover: rgba(51, 120, 242, 0.8);
+            /* Background is now transparent to show image */
+            --bg-page: transparent; 
+            
+            /* "Aqua" / "Glass" cards are now light */
+            --bg-glass-header: rgba(255, 255, 255, 0.7); 
+            --bg-glass-card: rgba(255, 255, 255, 0.6);
+            --bg-glass-card-hover: rgba(255, 255, 255, 0.85);
+            --bg-glass-modal: rgba(240, 240, 255, 0.9);
+            --bg-glass-modal-header: rgba(255, 255, 255, 0.7);
+            --bg-glass-controls: rgba(255, 255, 255, 0.7);
+            --bg-glass-controls-hover: rgba(64, 196, 255, 0.8); /* Primary light color */
 
-            --border-glass: rgba(51, 120, 242, 0.4);
-            --border-glass-light: rgba(51, 120, 242, 0.2);
+            --border-glass: rgba(0, 161, 255, 0.4);
+            --border-glass-light: rgba(0, 161, 255, 0.2);
             
             --blur-strength: 5px;
         }
         
         body {
-            font-family: 'GameBoyFont', sans-serif;
-            background-color: transparent; 
+            /* Replaced 'GameBoyFont' with a clean, standard sans-serif stack */
+            font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            background-color: var(--color-primary); /* Fallback color */
             color: var(--color-text-base);
             min-height: 100vh;
         }
         
         /* ------------------------------------- */
-        /* --- PURE CSS 3D CUBE FIELD --- */
+        /* --- NEW FRUTIGER AERO BACKGROUND --- */
         /* ------------------------------------- */
         #css-3d-background {
             position: fixed;
@@ -58,148 +65,102 @@
             height: 100%;
             z-index: -1; 
             overflow: hidden;
-            background-color: var(--bg-page);
-
-            perspective: 1200px;
-            perspective-origin: 50% 50%;
-
-            /* Radial Gradient to simulate the central glow/fog */
-            background: radial-gradient(circle at center, rgba(51, 120, 242, 0.1) 0%, var(--bg-page) 70%);
-        }
-
-        .cube-layer {
-            --size: 5px; 
             
-            position: absolute;
+            /* Set the background image */
+            /* MAKE SURE THIS PATH IS CORRECT */
+            background-image: url('/assets/my-first-frutiger-aqua-design-v0-k43uamsafppe1.png');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
             
-            width: var(--size);
-            height: var(--size);
-            
-            transform-style: preserve-3d;
-            
-            animation: moveCube var(--duration) linear infinite;
+            /* Removed all 3D perspective and cube properties */
         }
 
-        /* Create the "wireframe" effect using pseudo-elements */
-        .cube-layer::before, .cube-layer::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 1px solid var(--color-primary-light);
-            box-shadow: 0 0 5px var(--color-primary-light);
-            opacity: 0.6;
-            background: rgba(51, 120, 242, 0.05);
-            transform-style: preserve-3d;
-        }
-
-        /* Position the pseudo-elements to suggest a cube/box shape */
-        .cube-layer::before {
-            transform: translateZ(calc(var(--size) / 2)) rotateX(45deg); 
-        }
-        .cube-layer::after {
-            transform: translateZ(calc(var(--size) / -2)) rotateY(45deg);
-        }
-
-        /* The core animation: moves from far away (small, negative Z) to close (large, positive Z) */
-        @keyframes moveCube {
-            0% {
-                /* Start: Far away, very small, low opacity */
-                transform: translateZ(-1500px) scale(0.1) rotateX(0deg) rotateY(0deg); 
-                opacity: 0.1;
-            }
-            100% {
-                /* End: Close, large, high opacity */
-                transform: translateZ(100px) scale(1) rotateX(180deg) rotateY(360deg);
-                opacity: 0.8; 
-            }
-        }
+        /* REMOVED: .cube-layer and @keyframes moveCube
+           All the styles for the 3D cube animation have been deleted.
+        */
         /* ------------------------------------- */
-        /* --- END PURE CSS 3D CUBE FIELD --- */
+        /* --- END FRUTIGER AERO BACKGROUND --- */
         /* ------------------------------------- */
 
-        /* --- Game Card Appearance (Now always visible) --- */
+        /* --- Game Card Appearance (Now light "aqua") --- */
         .game-card {
             background-color: var(--bg-glass-card);
             backdrop-filter: blur(var(--blur-strength));
             -webkit-backdrop-filter: blur(var(--blur-strength));
             border: 1px solid var(--border-glass-light);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            /* Simplify transition for hover effects only */
             transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s; 
-
             position: relative;
             transform-style: preserve-3d;
             transform-origin: center bottom;
-            
-            /* Initial state is now fully visible and non-transformed */
             opacity: 1; 
             transform: translateZ(0) translateY(0) rotateX(0deg); 
         }
-        
-        /* The .game-card.visible class is no longer needed/used */
 
         .game-card:hover {
             background-color: var(--bg-glass-card-hover);
             transform: scale(1.03) translateZ(10px); 
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); 
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
         }
 
         .game-card:hover::before {
-             background: rgba(51, 120, 242, 0.2); 
+             background: rgba(0, 161, 255, 0.2); /* Use primary color */
              transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px); 
         }
-        /* --- End of Cube & Animation Styles --- */
 
-        /* Glassmorphism and Utility Classes (Kept as-is) */
+        /* Glassmorphism and Utility Classes (Updated for new theme) */
         .glass-header {
             background-color: var(--bg-glass-header);
             backdrop-filter: blur(var(--blur-strength));
             -webkit-backdrop-filter: blur(var(--blur-strength));
             border-bottom: 1px solid var(--border-glass);
         }
-        .text-cyan-400 { color: var(--color-primary-light) !important; }
+        
+        /* Update text colors to work on the new light "glass" */
+        .game-card h3 { color: var(--color-text-dark); }
+        .game-card p { color: #004477; } /* A slightly lighter dark blue */
+        
+        h1 { color: var(--color-text-white); text-shadow: 0 1px 3px rgba(0,0,0,0.4); } /* White text for title */
+        
+        /* Update Tailwind overrides for new palette */
+        .text-cyan-400 { color: var(--color-primary-dark) !important; }
         .text-gray-900 { color: var(--color-text-dark) !important; }
         .text-white { color: var(--color-text-white) !important; }
         .bg-cyan-500 { background-color: var(--color-primary) !important; }
         .hover\:bg-cyan-400:hover { background-color: var(--color-primary-light) !important; }
+        
+        /* Update nav links for readability */
+        nav a {
+            color: var(--color-text-dark); /* Dark text on light header */
+            font-weight: bold;
+        }
+        nav a.hover\:text-white:hover {
+            color: var(--color-primary-dark) !important;
+        }
+        nav a.text-white { /* The active "Games" link */
+            color: var(--color-primary-dark) !important;
+            border-color: var(--color-primary-dark) !important;
+        }
+        nav .text-gray-300 {
+            color: var(--color-text-base) !important;
+        }
+        nav svg {
+            color: var(--color-primary-dark) !important;
+        }
+        nav span {
+            color: var(--color-text-dark) !important;
+        }
+        nav span .text-cyan-400 { /* The "BIC" in QBBIC */
+            color: var(--color-primary-dark) !important;
+        }
         
     </style>
 </head>
 <body> 
     
     <div id="css-3d-background">
-        <div class="cube-layer" style="--duration: 15s; --size: 5px; top: 10%; left: 20%; animation-delay: 0s;"></div>
-        <div class="cube-layer" style="--duration: 18s; --size: 7px; top: 80%; left: 5%; animation-delay: -1s;"></div>
-        <div class="cube-layer" style="--duration: 12s; --size: 4px; top: 40%; left: 95%; animation-delay: -2s;"></div>
-        <div class="cube-layer" style="--duration: 20s; --size: 6px; top: 5%; left: 60%; animation-delay: -3s;"></div>
-        <div class="cube-layer" style="--duration: 14s; --size: 8px; top: 70%; left: 75%; animation-delay: -4s;"></div>
-        <div class="cube-layer" style="--duration: 16s; --size: 5px; top: 25%; left: 15%; animation-delay: -5s;"></div>
-        <div class="cube-layer" style="--duration: 19s; --size: 7px; top: 55%; left: 90%; animation-delay: -6s;"></div>
-        <div class="cube-layer" style="--duration: 13s; --size: 3px; top: 95%; left: 30%; animation-delay: -7s;"></div>
-        <div class="cube-layer" style="--duration: 17s; --size: 6px; top: 15%; left: 85%; animation-delay: -8s;"></div>
-        <div class="cube-layer" style="--duration: 15s; --size: 4px; top: 45%; left: 5%; animation-delay: -9s;"></div>
-        <div class="cube-layer" style="--duration: 18s; --size: 8px; top: 60%; left: 20%; animation-delay: -10s;"></div>
-        <div class="cube-layer" style="--duration: 12s; --size: 5px; top: 5%; left: 40%; animation-delay: -11s;"></div>
-        <div class="cube-layer" style="--duration: 14s; --size: 7px; top: 75%; left: 50%; animation-delay: -12s;"></div>
-        <div class="cube-layer" style="--duration: 16s; --size: 3px; top: 20%; left: 90%; animation-delay: -13s;"></div>
-        <div class="cube-layer" style="--duration: 19s; --size: 6px; top: 85%; left: 10%; animation-delay: -14s;"></div>
-        <div class="cube-layer" style="--duration: 13s; --size: 5px; top: 50%; left: 70%; animation-delay: -15s;"></div>
-        <div class="cube-layer" style="--duration: 17s; --size: 4px; top: 30%; left: 35%; animation-delay: -16s;"></div>
-        <div class="cube-layer" style="--duration: 20s; --size: 9px; top: 90%; left: 65%; animation-delay: -17s;"></div>
-        <div class="cube-layer" style="--duration: 15s; --size: 7px; top: 10%; left: 5%; animation-delay: -18s;"></div>
-        <div class="cube-layer" style="--duration: 18s; --size: 5px; top: 65%; left: 95%; animation-delay: -19s;"></div>
-        <div class="cube-layer" style="--duration: 12s; --size: 8px; top: 35%; left: 45%; animation-delay: -20s;"></div>
-        <div class="cube-layer" style="--duration: 14s; --size: 4px; top: 80%; left: 25%; animation-delay: -21s;"></div>
-        <div class="cube-layer" style="--duration: 16s; --size: 6px; top: 25%; left: 70%; animation-delay: -22s;"></div>
-        <div class="cube-layer" style="--duration: 19s; --size: 5px; top: 55%; left: 10%; animation-delay: -23s;"></div>
-        <div class="cube-layer" style="--duration: 13s; --size: 7px; top: 5%; left: 80%; animation-delay: -24s;"></div>
-        <div class="cube-layer" style="--duration: 17s; --size: 3px; top: 70%; left: 40%; animation-delay: -25s;"></div>
-        <div class="cube-layer" style="--duration: 20s; --size: 8px; top: 15%; left: 30%; animation-delay: -26s;"></div>
-        <div class="cube-layer" style="--duration: 15s; --size: 5px; top: 40%; left: 65%; animation-delay: -27s;"></div>
-        <div class="cube-layer" style="--duration: 18s; --size: 6px; top: 95%; left: 75%; animation-delay: -28s;"></div>
-        <div class="cube-layer" style="--duration: 12s; --size: 4px; top: 60%; left: 35%; animation-delay: -29s;"></div>
-    </div>
+        </div>
     
     <div id="page-content" class="relative z-10">
 
@@ -251,7 +212,7 @@
                 </h1>
 
                 <div class="mb-10 max-w-lg mx-auto">
-                    <input type="text" id="game-search-input" placeholder="Search for a game..." class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" style="background-color: var(--bg-glass-card); border-color: var(--border-glass-light);" />
+                    <input type="text" id="game-search-input" placeholder="Search for a game..." class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" style="background-color: var(--bg-glass-card); border-color: var(--border-glass-light); color: var(--color-text-dark);" />
                 </div>
                 
                 <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
