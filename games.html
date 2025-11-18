@@ -630,11 +630,14 @@
 
         <footer class="border-t border-gray-700 mt-10 glass-footer">
             <div class="container mx-auto px-4 py-6 text-center">
+                
                 <div class="flex justify-center space-x-6 mb-4">
                     <a href="index.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Home</a>
                     <a href="games.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Games</a>
                     <a href="faq.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">FAQ</a>
-                    <a href="changelog.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Terms of Service</a>
+                    <a href="#" id="cloak-drive" class="text-gray-400 hover:text-cyan-400 transition duration-200">Google Drive</a>
+                    <a href="#" id="cloak-canvas" class="text-gray-400 hover:text-cyan-400 transition duration-200">Canvas</a>
+                    <a href="#" id="cloak-classroom" class="text-gray-400 hover:text-cyan-400 transition duration-200">Classroom</a>
                 </div>
                 <p class="text-gray-500 text-xs">
                     Copyright Team Qbbic © 2025. All rights reserved to respective owners.
@@ -666,10 +669,6 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m0 11v-4m0 4h-4m4 0l-5-5m-5 5v-4m-5 4h4m-4 0l5-5"></path></svg>
                         </button>
 
-                        <button id="download-game-btn" type="button" class="control-btn" title="Download Game (HTML)">
-                            <span class="sr-only">Download Game as HTML</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                        </button>
                         <button id="close-game-modal-btn" type="button" class="control-btn bg-red-600 hover:bg-red-500 text-white" title="Close Player">
                             <span class="sr-only">Close Game Player</span>
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -700,6 +699,32 @@
             }
         }
 
+        // === JAVASCRIPT MODIFICATION (1/4) ===
+        // --- New Tab Cloaking Functions ---
+        function setFavicon(url) {
+            let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+            link.type = 'image/x-icon';
+            link.rel = 'shortcut icon';
+            link.href = url;
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+
+        function cloakTab(preset) {
+            playSound(selectSound); // Play a sound on click
+            if (preset === 'drive') {
+                document.title = 'Google Drive';
+                setFavicon('https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png');
+            } else if (preset === 'canvas') {
+                document.title = 'Canvas';
+                setFavicon('https://www.instructure.com/themes/custom/instructure_canvas/favicon.ico');
+            } else if (preset === 'classroom') {
+                document.title = 'Classes';
+                setFavicon('https://ssl.gstatic.com/images/branding/product/1x/classroom_32dp.png');
+            }
+        }
+        // === END MODIFICATION ===
+
+
         // REMOVED: The startIntroSequence function
 
         // Wait for the DOM to be fully loaded before running scripts
@@ -724,26 +749,39 @@
             const openBlankBtn = document.getElementById('open-blank-btn');
             const fullscreenBtn = document.getElementById('fullscreen-btn');
             
-            // === JAVASCRIPT MODIFICATION (1/6) ===
-            // Renamed 'copyUrlBtn' to 'downloadBtn' and updated ID
-            const downloadBtn = document.getElementById('download-game-btn');
+            // === JAVASCRIPT MODIFICATION (2/4) ===
+            // Removed 'downloadBtn'
             
             const closeModalBtn = document.getElementById('close-game-modal-btn');
             
             const messageBox = document.getElementById('message-box');
 
+            // --- New Cloak Button References ---
+            const cloakDriveBtn = document.getElementById('cloak-drive');
+            const cloakCanvasBtn = document.getElementById('cloak-canvas');
+            const cloakClassroomBtn = document.getElementById('cloak-classroom');
+            // === END MODIFICATION ===
+
+
             // --- Hover Sound Setup ---
-            const hoverSelector = '.game-play-btn, .control-btn'; /* ADDED .control-btn */
+            const hoverSelector = '.game-play-btn, .control-btn';
             document.querySelectorAll(hoverSelector).forEach(el => {
                 el.addEventListener('mouseenter', () => playSound(hoverSound));
             });
 
             // --- Select/Click Sound Setup (using delegation) ---
-            const clickSelector = 'a, button, .game-play-btn, .control-btn'; /* ADDED .control-btn */
+            const clickSelector = 'a, button, .game-play-btn, .control-btn';
             document.body.addEventListener('click', (e) => {
-                if (e.target.closest(clickSelector) && e.target.closest('#close-game-modal-btn') === null) {
+                // Check if the click is on a cloaking button
+                const isCloakBtn = e.target.closest('#cloak-drive') || 
+                                   e.target.closest('#cloak-canvas') || 
+                                   e.target.closest('#cloak-classroom');
+
+                // If it's *not* a cloaking button and *not* the close modal button, play select sound
+                if (e.target.closest(clickSelector) && !isCloakBtn && e.target.closest('#close-game-modal-btn') === null) {
                     playSound(selectSound);
                 }
+                // Note: The cloak buttons play their sound inside the cloakTab() function
             });
 
 
@@ -775,13 +813,8 @@
                 gameModalTitle.textContent = title;
                 gameIframe.src = url;
 
-                // === JAVASCRIPT MODIFICATION (2/6) ===
-                // Show/hide the download button based on the game title
-                if (title.toLowerCase() === 'deltarune') {
-                    downloadBtn.style.display = 'none';
-                } else {
-                    downloadBtn.style.display = 'block'; // Or 'inline-block' or ''
-                }
+                // === JAVASCRIPT MODIFICATION (3/4) ===
+                // Removed the logic for hiding the download button
                 // === END MODIFICATION ===
 
                 // Animate in by removing the 'closed' utility classes
@@ -852,67 +885,34 @@
                 });
             }
 
-            // === JAVASCRIPT MODIFICATION (3/6) ===
-            // Replaced 'copyUrlBtn' listener with 'downloadBtn' listener
-            if (downloadBtn) {
-                downloadBtn.addEventListener('click', downloadGameAsHTML);
+            // === JAVASCRIPT MODIFICATION (4/4) ===
+            // Removed 'downloadBtn' listener and 'downloadGameAsHTML' function
+            
+            // --- Add Cloak Button Listeners ---
+            if (cloakDriveBtn) {
+                cloakDriveBtn.addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevent default link behavior
+                    cloakTab('drive');
+                });
+            }
+            if (cloakCanvasBtn) {
+                cloakCanvasBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    cloakTab('canvas');
+                });
+            }
+            if (cloakClassroomBtn) {
+                cloakClassroomBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    cloakTab('classroom');
+                });
             }
             // === END MODIFICATION ===
+
 
             if (closeModalBtn) {
                 closeModalBtn.addEventListener('click', closeGameModal);
             }
-            
-            // === JAVASCRIPT MODIFICATION (4/6) ===
-            // Removed the old 'copyGameUrl' function
-            // ... (function removed) ...
-            // === END MODIFICATION ===
-
-            // === JAVASCRIPT MODIFICATION (5/6) ===
-            // Added the new 'downloadGameAsHTML' function
-            function downloadGameAsHTML() {
-                const url = currentGameUrl;
-                const title = gameModalTitle.textContent;
-                
-                // Create the HTML content
-                const htmlContent = `
-                    <!DOCTYPE html>
-                    <html lang="en">
-                    <head>
-                        <title>${title}</title>
-                        <style>body, html { margin: 0; padding: 0; overflow: hidden; background: #000; }</style>
-                    </head>
-                    <body>
-                        <iframe src="${url}" style="width: 100vw; height: 100vh; border: none;" allowfullscreen></iframe>
-                    </body>
-                    </html>
-                `;
-                
-                // Create a blob
-                const blob = new Blob([htmlContent], { type: 'text/html' });
-                
-                // Create an anchor element
-                const a = document.createElement('a');
-                
-                // Set the href to the blob URL
-                const blobUrl = URL.createObjectURL(blob);
-                a.href = blobUrl;
-                
-                // Sanitize filename (replace spaces and special chars)
-                const filename = title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.html';
-                a.download = filename;
-                
-                // Click the anchor
-                document.body.appendChild(a); // Append to body to be clickable
-                a.click();
-                
-                // Clean up
-                document.body.removeChild(a); // Remove from body
-                URL.revokeObjectURL(blobUrl); // Free up memory
-                
-                showMessage('Downloading game HTML...', 'success');
-            }
-            // === END MODIFICATION ===
 
             function showMessage(text, type = 'success') {
                 messageBox.textContent = text;
