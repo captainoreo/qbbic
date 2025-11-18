@@ -52,8 +52,18 @@
             background-color: var(--color-primary); /* Fallback color */
             color: var(--color-text-base);
             min-height: 100vh;
+            /* === ADDED: Default Custom Cursor === */
+            cursor: url('/assets/Normal Select.cur'), auto;
         }
         
+        /* === ADDED: Custom Hover Cursor === */
+        a:hover,
+        button:hover,
+        .game-play-btn:hover,
+        .control-btn:hover {
+            cursor: url('/assets/Link Select.cur'), pointer;
+        }
+
         /* ------------------------------------- */
         /* --- NEW FRUTIGER AERO BACKGROUND --- */
         /* ------------------------------------- */
@@ -639,6 +649,7 @@
                     <a href="#" id="cloak-canvas" class="text-gray-400 hover:text-cyan-400 transition duration-200">Canvas</a>
                     <a href="#" id="cloak-classroom" class="text-gray-400 hover:text-cyan-400 transition duration-200">Classroom</a>
                 </div>
+
                 <p class="text-gray-500 text-xs">
                     Copyright Team Qbbic © 2025. All rights reserved to respective owners.
                 </p>
@@ -699,7 +710,6 @@
             }
         }
 
-        // === JAVASCRIPT MODIFICATION (1/4) ===
         // --- New Tab Cloaking Functions ---
         function setFavicon(url) {
             let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
@@ -722,7 +732,6 @@
                 setFavicon('https://ssl.gstatic.com/images/branding/product/1x/classroom_32dp.png');
             }
         }
-        // === END MODIFICATION ===
 
 
         // REMOVED: The startIntroSequence function
@@ -749,9 +758,6 @@
             const openBlankBtn = document.getElementById('open-blank-btn');
             const fullscreenBtn = document.getElementById('fullscreen-btn');
             
-            // === JAVASCRIPT MODIFICATION (2/4) ===
-            // Removed 'downloadBtn'
-            
             const closeModalBtn = document.getElementById('close-game-modal-btn');
             
             const messageBox = document.getElementById('message-box');
@@ -760,7 +766,6 @@
             const cloakDriveBtn = document.getElementById('cloak-drive');
             const cloakCanvasBtn = document.getElementById('cloak-canvas');
             const cloakClassroomBtn = document.getElementById('cloak-classroom');
-            // === END MODIFICATION ===
 
 
             // --- Hover Sound Setup ---
@@ -812,10 +817,6 @@
                 currentGameUrl = url;
                 gameModalTitle.textContent = title;
                 gameIframe.src = url;
-
-                // === JAVASCRIPT MODIFICATION (3/4) ===
-                // Removed the logic for hiding the download button
-                // === END MODIFICATION ===
 
                 // Animate in by removing the 'closed' utility classes
                 gameModal.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
@@ -885,8 +886,6 @@
                 });
             }
 
-            // === JAVASCRIPT MODIFICATION (4/4) ===
-            // Removed 'downloadBtn' listener and 'downloadGameAsHTML' function
             
             // --- Add Cloak Button Listeners ---
             if (cloakDriveBtn) {
@@ -907,7 +906,6 @@
                     cloakTab('classroom');
                 });
             }
-            // === END MODIFICATION ===
 
 
             if (closeModalBtn) {
