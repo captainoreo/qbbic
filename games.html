@@ -666,11 +666,10 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m0 11v-4m0 4h-4m4 0l-5-5m-5 5v-4m-5 4h4m-4 0l5-5"></path></svg>
                         </button>
 
-                        <button id="copy-url-btn" type="button" class="control-btn" title="Copy Game URL (Share)">
-                            <span class="sr-only">Copy Game URL</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5z"></path></svg>
+                        <button id="download-game-btn" type="button" class="control-btn" title="Download Game (HTML)">
+                            <span class="sr-only">Download Game as HTML</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         </button>
-
                         <button id="close-game-modal-btn" type="button" class="control-btn bg-red-600 hover:bg-red-500 text-white" title="Close Player">
                             <span class="sr-only">Close Game Player</span>
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -724,7 +723,11 @@
             const openNewTabBtn = document.getElementById('open-new-tab-btn');
             const openBlankBtn = document.getElementById('open-blank-btn');
             const fullscreenBtn = document.getElementById('fullscreen-btn');
-            const copyUrlBtn = document.getElementById('copy-url-btn');
+            
+            // === JAVASCRIPT MODIFICATION (1/6) ===
+            // Renamed 'copyUrlBtn' to 'downloadBtn' and updated ID
+            const downloadBtn = document.getElementById('download-game-btn');
+            
             const closeModalBtn = document.getElementById('close-game-modal-btn');
             
             const messageBox = document.getElementById('message-box');
@@ -771,6 +774,16 @@
                 currentGameUrl = url;
                 gameModalTitle.textContent = title;
                 gameIframe.src = url;
+
+                // === JAVASCRIPT MODIFICATION (2/6) ===
+                // Show/hide the download button based on the game title
+                if (title.toLowerCase() === 'deltarune') {
+                    downloadBtn.style.display = 'none';
+                } else {
+                    downloadBtn.style.display = 'block'; // Or 'inline-block' or ''
+                }
+                // === END MODIFICATION ===
+
                 // Animate in by removing the 'closed' utility classes
                 gameModal.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
                 document.body.style.overflow = 'hidden'; 
@@ -838,25 +851,69 @@
                     }
                 });
             }
-            if (copyUrlBtn) {
-                copyUrlBtn.addEventListener('click', copyGameUrl);
+
+            // === JAVASCRIPT MODIFICATION (3/6) ===
+            // Replaced 'copyUrlBtn' listener with 'downloadBtn' listener
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', downloadGameAsHTML);
             }
+            // === END MODIFICATION ===
+
             if (closeModalBtn) {
                 closeModalBtn.addEventListener('click', closeGameModal);
             }
-            async function copyGameUrl() {
-                if (!navigator.clipboard) {
-                    showMessage('Clipboard API not supported.', 'error');
-                    return;
-                }
-                try {
-                    await navigator.clipboard.writeText(currentGameUrl);
-                    showMessage('Game URL copied!', 'success');
-                } catch (err) {
-                    console.error('Failed to copy: ', err);
-                    showMessage('Could not copy URL.', 'error');
-                }
+            
+            // === JAVASCRIPT MODIFICATION (4/6) ===
+            // Removed the old 'copyGameUrl' function
+            // ... (function removed) ...
+            // === END MODIFICATION ===
+
+            // === JAVASCRIPT MODIFICATION (5/6) ===
+            // Added the new 'downloadGameAsHTML' function
+            function downloadGameAsHTML() {
+                const url = currentGameUrl;
+                const title = gameModalTitle.textContent;
+                
+                // Create the HTML content
+                const htmlContent = `
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <title>${title}</title>
+                        <style>body, html { margin: 0; padding: 0; overflow: hidden; background: #000; }</style>
+                    </head>
+                    <body>
+                        <iframe src="${url}" style="width: 100vw; height: 100vh; border: none;" allowfullscreen></iframe>
+                    </body>
+                    </html>
+                `;
+                
+                // Create a blob
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                
+                // Create an anchor element
+                const a = document.createElement('a');
+                
+                // Set the href to the blob URL
+                const blobUrl = URL.createObjectURL(blob);
+                a.href = blobUrl;
+                
+                // Sanitize filename (replace spaces and special chars)
+                const filename = title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.html';
+                a.download = filename;
+                
+                // Click the anchor
+                document.body.appendChild(a); // Append to body to be clickable
+                a.click();
+                
+                // Clean up
+                document.body.removeChild(a); // Remove from body
+                URL.revokeObjectURL(blobUrl); // Free up memory
+                
+                showMessage('Downloading game HTML...', 'success');
             }
+            // === END MODIFICATION ===
+
             function showMessage(text, type = 'success') {
                 messageBox.textContent = text;
                 messageBox.classList.remove('bg-cyan-600', 'bg-red-600');
