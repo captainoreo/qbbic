@@ -39,6 +39,36 @@
             --card-radius: 1.5rem;
         }
 
+        /* --- ANIMATIONS --- */
+        
+        /* 1. Floating Bubbles (Frutiger Aero) */
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-20vh) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* 2. Scrolling Grid (Wii / Virtual Boy) */
+        @keyframes scrollGrid {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 40px 40px; /* Must match background-size */
+            }
+        }
+
         /* --- WII THEME OVERRIDES --- */
         body[data-theme="wii"] {
             /* Light Gray / White aesthetic */
@@ -47,19 +77,46 @@
             --color-primary-dark: #555555;
             
             --color-text-base: #555555;
-            --color-text-white: #444444; /* Invert titles to dark */
+            --color-text-white: #444444; 
             --color-text-dark: #222222;
             
-            --bg-glass-header: #eeeeee; /* Solid opaque header */
-            --bg-glass-card: #ffffff; /* Solid white channels */
+            --bg-glass-header: #eeeeee; 
+            --bg-glass-card: #ffffff; 
             --bg-glass-card-hover: #ffffff;
             --bg-glass-modal: #ffffff;
             
             --border-glass: #cccccc;
             --border-glass-light: #dddddd;
             
-            --blur-strength: 0px; /* No blur on Wii theme */
+            --blur-strength: 0px; 
             --card-radius: 20px;
+        }
+
+        /* --- VIRTUAL BOY THEME OVERRIDES --- */
+        body[data-theme="virtual-boy"] {
+            --color-primary: #550000; 
+            --color-primary-light: #990000; 
+            --color-primary-dark: #330000; 
+            
+            --color-text-base: #ff0000; 
+            --color-text-white: #ff0000; 
+            --color-text-dark: #ff0000; 
+            
+            --bg-page: #000000; 
+            
+            --bg-glass-header: #110000; 
+            --bg-glass-card: #330000; 
+            --bg-glass-card-hover: #550000; 
+            --bg-glass-modal: #000000; 
+            --bg-glass-modal-header: #110000;
+            --bg-glass-controls: #550000;
+            --bg-glass-controls-hover: #990000;
+
+            --border-glass: #770000; 
+            --border-glass-light: #440000;
+            
+            --blur-strength: 0px; 
+            --card-radius: 0.25rem; 
         }
         
         body {
@@ -79,7 +136,7 @@
             cursor: url('/assets/Link Select.cur'), pointer;
         }
 
-        /* --- BACKGROUNDS --- */
+        /* --- BACKGROUNDS STYLING --- */
         #css-3d-background {
             position: fixed;
             top: 0;
@@ -88,23 +145,60 @@
             height: 100%;
             z-index: -1; 
             overflow: hidden;
-            /* Default Frutiger Background */
-            background-image: url('/assets/aqua.jpg');
-            background-size: cover;
-            background-position: center;
             transition: background 0.5s ease;
         }
 
-        /* Wii Background Pattern */
+        /* 1. Frutiger Aero Background (Static Image + Bubbles) */
+        body[data-theme="frutiger-aero"] #css-3d-background {
+            background-image: url('/assets/aqua.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Bubble Styling (Only visible in Frutiger) */
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.1));
+            box-shadow: 0 0 10px rgba(255,255,255,0.3), inset 0 0 10px rgba(255,255,255,0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatUp var(--speed) linear infinite;
+            animation-delay: var(--delay);
+            width: var(--size);
+            height: var(--size);
+            left: var(--pos);
+            opacity: 0; /* Hidden by default until animation starts */
+        }
+
+        /* Hide bubbles if not Frutiger Aero */
+        body:not([data-theme="frutiger-aero"]) .bubble-container {
+            display: none;
+        }
+
+        /* 2. Wii Background (Moving Gray Checkerboard) */
         body[data-theme="wii"] #css-3d-background {
-            background-image: none;
-            background-color: #dedede;
-            /* Simple CSS grid pattern to mimic Wii menu background */
+            background-color: #e0e0e0;
+            /* Create checkerboard pattern with gradients */
             background-image: 
-                linear-gradient(45deg, #d5d5d5 25%, transparent 25%, transparent 75%, #d5d5d5 75%, #d5d5d5),
-                linear-gradient(45deg, #d5d5d5 25%, transparent 25%, transparent 75%, #d5d5d5 75%, #d5d5d5);
-            background-size: 20px 20px;
-            background-position: 0 0, 10px 10px;
+                linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0),
+                linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            animation: scrollGrid 3s linear infinite;
+        }
+
+        /* 3. Virtual Boy Background (Moving Red/Black Checkerboard) */
+        body[data-theme="virtual-boy"] #css-3d-background {
+            background-color: #000000;
+            /* Dark red checkers on black */
+            background-image: 
+                linear-gradient(45deg, #220000 25%, transparent 25%, transparent 75%, #220000 75%, #220000),
+                linear-gradient(45deg, #220000 25%, transparent 25%, transparent 75%, #220000 75%, #220000);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            animation: scrollGrid 3s linear infinite;
         }
 
         /* --- CARD STYLES --- */
@@ -120,8 +214,8 @@
             overflow: hidden;
         }
 
-        /* Frutiger Aero Gloss Effect (Only in default theme) */
-        body:not([data-theme="wii"]) .game-card::before {
+        /* Frutiger Aero Gloss Effect */
+        body:not([data-theme="wii"]):not([data-theme="virtual-boy"]) .game-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -134,24 +228,30 @@
             border-radius: 1.5rem 1.5rem 0 0;
         }
 
-        /* Hover Effects */
         .game-card:hover {
             background-color: var(--bg-glass-card-hover);
             transform: scale(1.03); 
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
         }
 
-        /* Wii Specific Card Hover (Blue Outline) */
+        /* Wii Hover (Blue Outline) */
         body[data-theme="wii"] .game-card:hover {
-            /* The classic Wii blue outline glow */
             outline: 4px solid #40c4ff;
             box-shadow: 0 0 15px rgba(64, 196, 255, 0.6);
             transform: scale(1.05);
             border-color: #40c4ff;
         }
         
-        /* Frutiger Aero Reflection (Disable on Wii) */
-        body:not([data-theme="wii"]) .game-card:hover::after {
+        /* Virtual Boy Hover (Red Outline) */
+        body[data-theme="virtual-boy"] .game-card:hover {
+            outline: 2px solid var(--color-primary-light); 
+            box-shadow: 0 0 10px var(--color-primary-light); 
+            transform: scale(1.05);
+            border-color: var(--color-primary-light);
+        }
+
+        /* Frutiger Aero Reflection */
+        body:not([data-theme="wii"]):not([data-theme="virtual-boy"]) .game-card:hover::after {
              background: rgba(0, 161, 255, 0.2); 
              transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px);
              content: '';
@@ -194,18 +294,27 @@
             box-shadow: none;
             backdrop-filter: none;
         }
+        /* Virtual Boy Panel Overrides */
+        body[data-theme="virtual-boy"] .glass-main-panel {
+            background-color: #000000; 
+            border: 1px solid var(--border-glass);
+            box-shadow: none;
+            backdrop-filter: none;
+            border-radius: 0.5rem; 
+        }
 
         /* Text Colors */
         .game-card h3 { color: var(--color-text-dark); z-index: 2; position: relative; }
         .game-card p { color: #004477; z-index: 2; position: relative; }
         
-        /* Wii Text Overrides */
         body[data-theme="wii"] .game-card p { color: #888888; }
+        body[data-theme="virtual-boy"] .game-card p { color: #bb0000; } 
         
         h1 { color: var(--color-text-white); text-shadow: 0 1px 3px rgba(0,0,0,0.4); } 
         
-        /* Wii H1 Override */
         body[data-theme="wii"] h1 { text-shadow: none; color: #555555; }
+        body[data-theme="virtual-boy"] h1 { text-shadow: none; color: var(--color-text-white); }
+
 
         /* Button Styles */
         .bg-cyan-500 { 
@@ -233,6 +342,22 @@
             border-color: #00a1ff;
         }
 
+        /* Virtual Boy Button Override */
+        body[data-theme="virtual-boy"] .bg-cyan-500 {
+            background: var(--color-primary-light) !important; /* Bright red */
+            color: #000000 !important; /* Black text */
+            border: 1px solid var(--color-text-base); /* Bright red border */
+            text-shadow: none;
+            border-radius: 0.25rem;
+            font-weight: normal;
+        }
+        body[data-theme="virtual-boy"] .bg-cyan-500:hover {
+            background: var(--color-primary-light) !important; 
+            color: #000000 !important;
+            box-shadow: inset 0 0 5px #000000; 
+            border-color: #ff0000;
+        }
+
         /* Theme Selector Dropdown */
         #theme-select {
             background-color: var(--bg-glass-controls);
@@ -253,9 +378,149 @@
         body[data-theme="wii"] nav a.text-white { color: #00a1ff !important; border-color: #00a1ff !important; }
         body[data-theme="wii"] nav svg { color: #555555 !important; }
 
+        /* Virtual Boy Nav Links */
+        body[data-theme="virtual-boy"] nav a,
+        body[data-theme="virtual-boy"] nav span,
+        body[data-theme="virtual-boy"] nav svg {
+            color: var(--color-text-white) !important; 
+        }
+        body[data-theme="virtual-boy"] nav a:hover {
+            color: var(--color-primary-light) !important; 
+        }
+        body[data-theme="virtual-boy"] nav a.text-white { 
+            color: var(--color-primary-light) !important;
+            border-color: var(--color-primary-light) !important;
+        }
+
+        /* Modal Styles */
+        .glass-modal-container {
+            background-color: var(--bg-glass-modal);
+            backdrop-filter: blur(var(--blur-strength));
+            border-radius: var(--card-radius);
+        }
+        .glass-modal-header {
+            background-color: var(--bg-glass-modal-header);
+            backdrop-filter: blur(var(--blur-strength));
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
+        }
+        .control-btn:not(.bg-red-600) {
+            background-color: var(--bg-glass-controls);
+            color: var(--color-text-dark);
+            border: 1px solid var(--border-glass-light);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 0 1px 1px rgba(0,0,0,0.1);
+        }
+        .control-btn:not(.bg-red-600):hover {
+            background-color: var(--bg-glass-controls-hover);
+            color: var(--color-text-white);
+        }
+        .control-btn.bg-red-600 {
+            background-color: #ef4444; /* Default red */
+            color: white;
+        }
+        .control-btn.bg-red-600:hover {
+            background-color: #dc2626;
+        }
+
+        /* Wii Modal Overrides */
+        body[data-theme="wii"] .glass-modal-container {
+            background-color: #f8f8f8;
+            backdrop-filter: none;
+            border-radius: 0;
+        }
+        body[data-theme="wii"] .glass-modal-header {
+            background-color: #eeeeee;
+            backdrop-filter: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-color: #cccccc;
+        }
+        body[data-theme="wii"] .control-btn:not(.bg-red-600) {
+            background-color: #e0e0e0;
+            color: #555555;
+            border-color: #bbbbbb;
+            box-shadow: none;
+        }
+        body[data-theme="wii"] .control-btn:not(.bg-red-600):hover {
+            background-color: #c0c0c0;
+            color: #222222;
+        }
+        body[data-theme="wii"] .control-btn.bg-red-600 {
+            background-color: #ff3333;
+        }
+
+        /* Virtual Boy Modal Overrides */
+        body[data-theme="virtual-boy"] .glass-modal-container {
+            background-color: #000000;
+            backdrop-filter: none;
+            border-radius: 0; /* Sharp corners */
+            border: 2px solid var(--border-glass);
+        }
+        body[data-theme="virtual-boy"] .glass-modal-header {
+            background-color: #110000;
+            backdrop-filter: none;
+            box-shadow: none;
+            border-color: var(--border-glass);
+        }
+        body[data-theme="virtual-boy"] #game-modal-title {
+            color: var(--color-text-white) !important;
+        }
+        body[data-theme="virtual-boy"] .control-btn:not(.bg-red-600) {
+            background-color: #330000;
+            color: var(--color-text-white);
+            border-color: var(--border-glass);
+            box-shadow: none;
+        }
+        body[data-theme="virtual-boy"] .control-btn:not(.bg-red-600):hover {
+            background-color: #550000;
+            color: var(--color-primary-light);
+        }
+        body[data-theme="virtual-boy"] .control-btn.bg-red-600 {
+            background-color: #770000; 
+            border-color: var(--border-glass);
+            color: var(--color-text-white);
+        }
+        body[data-theme="virtual-boy"] .control-btn.bg-red-600:hover {
+            background-color: #ff0000; 
+        }
+
+        #game-search-input {
+            background-color: var(--bg-glass-card);
+            border-color: var(--border-glass-light);
+            color: var(--color-text-dark);
+        }
+        body[data-theme="wii"] #game-search-input {
+            background-color: #ffffff !important;
+            border-color: #cccccc !important;
+            color: #222222 !important;
+        }
+        body[data-theme="virtual-boy"] #game-search-input {
+            background-color: #110000 !important;
+            border-color: #770000 !important;
+            color: #ff0000 !important;
+            border-radius: 0.25rem !important;
+        }
     </style>
 </head>
-<body data-theme="frutiger-aero"> <div id="css-3d-background"></div>
+<body data-theme="frutiger-aero"> 
+    
+    <div id="css-3d-background">
+        <div class="bubble-container">
+            <div class="bubble" style="--size: 40px; --pos: 10%; --speed: 8s; --delay: 0s;"></div>
+            <div class="bubble" style="--size: 60px; --pos: 30%; --speed: 12s; --delay: 2s;"></div>
+            <div class="bubble" style="--size: 30px; --pos: 50%; --speed: 10s; --delay: 4s;"></div>
+            <div class="bubble" style="--size: 50px; --pos: 70%; --speed: 15s; --delay: 1s;"></div>
+            <div class="bubble" style="--size: 80px; --pos: 90%; --speed: 20s; --delay: 0.5s;"></div>
+            <div class="bubble" style="--size: 45px; --pos: 15%; --speed: 11s; --delay: 5s;"></div>
+            <div class="bubble" style="--size: 55px; --pos: 35%; --speed: 13s; --delay: 3s;"></div>
+            <div class="bubble" style="--size: 25px; --pos: 55%; --speed: 9s; --delay: 6s;"></div>
+            <div class="bubble" style="--size: 65px; --pos: 75%; --speed: 16s; --delay: 2.5s;"></div>
+            <div class="bubble" style="--size: 35px; --pos: 95%; --speed: 10s; --delay: 1.5s;"></div>
+            <div class="bubble" style="--size: 50px; --pos: 5%; --speed: 14s; --delay: 7s;"></div>
+            <div class="bubble" style="--size: 70px; --pos: 25%; --speed: 18s; --delay: 3.5s;"></div>
+            <div class="bubble" style="--size: 40px; --pos: 45%; --speed: 11s; --delay: 0.2s;"></div>
+            <div class="bubble" style="--size: 60px; --pos: 65%; --speed: 13s; --delay: 4.5s;"></div>
+            <div class="bubble" style="--size: 30px; --pos: 85%; --speed: 9s; --delay: 2s;"></div>
+        </div>
+    </div>
     
     <div id="page-content" class="relative z-10">
 
@@ -283,6 +548,7 @@
                     <select id="theme-select" title="Change Theme">
                         <option value="frutiger-aero">Frutiger Aero</option>
                         <option value="wii">Wii Channels</option>
+                        <option value="virtual-boy">Virtual Boy</option>
                     </select>
                 </div>
             </nav>
@@ -297,7 +563,7 @@
                     </h1>
 
                     <div class="mb-10 max-w-lg mx-auto">
-                        <input type="text" id="game-search-input" placeholder="Search for a game..." class="w-full p-3 rounded-2xl bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" style="background-color: var(--bg-glass-card); border-color: var(--border-glass-light); color: var(--color-text-dark);" />
+                        <input type="text" id="game-search-input" placeholder="Search for a game..." class="w-full p-3 rounded-2xl bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" />
                     </div>
                     
                     <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
@@ -778,15 +1044,12 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // --- THEME SWITCHER LOGIC ---
             const themeSelect = document.getElementById('theme-select');
             const savedTheme = localStorage.getItem('qbbic-theme') || 'frutiger-aero';
             
-            // Apply saved theme on load
             document.body.setAttribute('data-theme', savedTheme);
             if(themeSelect) themeSelect.value = savedTheme;
 
-            // Listen for changes
             if(themeSelect) {
                 themeSelect.addEventListener('change', (e) => {
                     const newTheme = e.target.value;
@@ -795,7 +1058,6 @@
                     playSound(selectSound);
                 });
             }
-            // -----------------------------
 
             let currentGameUrl = '';
 
@@ -814,12 +1076,10 @@
             const closeModalBtn = document.getElementById('close-game-modal-btn');
             const messageBox = document.getElementById('message-box');
 
-            // Cloak buttons
             const cloakDriveBtn = document.getElementById('cloak-drive');
             const cloakCanvasBtn = document.getElementById('cloak-canvas');
             const cloakClassroomBtn = document.getElementById('cloak-classroom');
 
-            // Sound Events
             const hoverSelector = '.game-play-btn, .control-btn, a, select';
             document.querySelectorAll(hoverSelector).forEach(el => {
                 el.addEventListener('mouseenter', () => playSound(hoverSound));
@@ -835,7 +1095,6 @@
                 }
             });
 
-            // Search
             if (gameSearchInput) {
                 gameSearchInput.addEventListener('input', (e) => {
                     const searchTerm = e.target.value.toLowerCase();
@@ -848,7 +1107,6 @@
                 });
             }
 
-            // Modal Logic
             function openGameModal(url, title) {
                 currentGameUrl = url;
                 gameModalTitle.textContent = title;
