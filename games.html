@@ -37,6 +37,9 @@
             
             /* Card Border Radius */
             --card-radius: 1.5rem;
+
+            /* Music Toggle Icon Color */
+            --color-icon-base: #40c4ff;
         }
 
         /* --- ANIMATIONS --- */
@@ -90,6 +93,8 @@
             
             --blur-strength: 0px; 
             --card-radius: 20px;
+
+            --color-icon-base: #555555;
         }
 
         /* --- VIRTUAL BOY THEME OVERRIDES --- */
@@ -117,6 +122,8 @@
             
             --blur-strength: 0px; 
             --card-radius: 0.25rem; 
+
+            --color-icon-base: #ff0000;
         }
         
         body {
@@ -369,14 +376,18 @@
             font-weight: bold;
         }
         
-        /* Nav Links */
+        /* Nav Links and Controls */
         nav a { color: var(--color-text-dark); font-weight: bold; }
         nav a.text-white { color: var(--color-text-white) !important; }
+
+        .nav-icon { color: var(--color-icon-base); transition: color 0.2s ease; }
+        .nav-icon:hover { color: var(--color-primary-light); }
         
         body[data-theme="wii"] nav a { color: #555555 !important; }
         body[data-theme="wii"] nav a:hover { color: #00a1ff !important; }
         body[data-theme="wii"] nav a.text-white { color: #00a1ff !important; border-color: #00a1ff !important; }
         body[data-theme="wii"] nav svg { color: #555555 !important; }
+        body[data-theme="wii"] .nav-icon:hover { color: #00a1ff; }
 
         /* Virtual Boy Nav Links */
         body[data-theme="virtual-boy"] nav a,
@@ -390,6 +401,12 @@
         body[data-theme="virtual-boy"] nav a.text-white { 
             color: var(--color-primary-light) !important;
             border-color: var(--color-primary-light) !important;
+        }
+        body[data-theme="virtual-boy"] .nav-icon {
+            color: var(--color-text-white) !important;
+        }
+        body[data-theme="virtual-boy"] .nav-icon:hover {
+            color: var(--color-primary-light) !important;
         }
 
         /* Modal Styles */
@@ -524,6 +541,7 @@
     
     <div id="page-content" class="relative z-10">
 
+        <audio id="background-music" src="/assets/ambient_track.mp3" loop preload="auto"></audio>
         <audio id="hover-sound" src="/assets/Sample_0016.wav" preload="auto"></audio>
         <audio id="select-sound" src="/assets/Sample_0000.wav" preload="auto"></audio>
         <audio id="exit-sound" src="/assets/Sample_0001.wav" preload="auto"></audio>
@@ -545,6 +563,15 @@
                     <a href="faq.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">FAQ</a>
                     <a href="changelog.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Changelog</a>
                     
+                    <button id="music-toggle-btn" class="flex items-center p-2 rounded-full nav-icon transition duration-200" title="Toggle Music">
+                        <svg id="music-icon-on" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                        </svg>
+                        <svg id="music-icon-off" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4.2 3.2L1.6 5.8l2.6 2.6c-.02.13-.03.26-.03.4 0 2.21 1.79 4 4 4s4-1.79 4-4V7h4V3h-6zm14.4 0L17 4.8l-1.2 1.2c.4.3.7.7 1 1s.6.8.8 1.3.3 1 .3 1.5c0 2.21-1.79 4-4 4s-4-1.79-4-4v-.4l-2-2v2.4c0 1.25.43 2.4.92 3.39l-1.4 1.4c-.45-.6-.73-1.3-.84-2.07h-1.6c.14 1.2.66 2.3 1.45 3.3l-2.4 2.4 2.6 2.6L20.8 5.8l-2.6-2.6z"/>
+                        </svg>
+                    </button>
+
                     <select id="theme-select" title="Change Theme">
                         <option value="frutiger-aero">Frutiger Aero</option>
                         <option value="wii">Wii Channels</option>
@@ -980,7 +1007,8 @@
                         
                         <button id="open-new-tab-btn" type="button" class="control-btn" title="Open in New Tab">
                             <span class="sr-only">Open in New Tab</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4m-9-2a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z"/>
+                        </svg>
                         </button>
                         
                         <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloaking)">
@@ -1010,6 +1038,11 @@
 
     </div> 
     <script>
+        const backgroundMusic = document.getElementById('background-music');
+        const musicToggleButton = document.getElementById('music-toggle-btn');
+        const musicIconOn = document.getElementById('music-icon-on');
+        const musicIconOff = document.getElementById('music-icon-off');
+
         const hoverSound = document.getElementById('hover-sound');
         const selectSound = document.getElementById('select-sound');
         const exitSound = document.getElementById('exit-sound');
@@ -1017,7 +1050,36 @@
         function playSound(audioElement) {
             if (audioElement) {
                 audioElement.currentTime = 0; 
-                audioElement.play().catch(e => { });
+                audioElement.play().catch(e => { 
+                    // Autoplay restriction handler: If music is explicitly paused by the user, 
+                    // we re-attempt to play sound effects on user interaction.
+                });
+            }
+        }
+
+        function updateMusicIcon(is_playing) {
+            if (is_playing) {
+                musicIconOn.classList.remove('hidden');
+                musicIconOff.classList.add('hidden');
+            } else {
+                musicIconOn.classList.add('hidden');
+                musicIconOff.classList.remove('hidden');
+            }
+        }
+        
+        function toggleMusic() {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play().then(() => {
+                    localStorage.setItem('qbbic-music-state', 'playing');
+                    updateMusicIcon(true);
+                }).catch(e => {
+                    // This often happens if the user hasn't interacted with the page yet.
+                    console.log('Autoplay blocked. Will try again on first interaction.');
+                });
+            } else {
+                backgroundMusic.pause();
+                localStorage.setItem('qbbic-music-state', 'paused');
+                updateMusicIcon(false);
             }
         }
 
@@ -1050,6 +1112,22 @@
             document.body.setAttribute('data-theme', savedTheme);
             if(themeSelect) themeSelect.value = savedTheme;
 
+            // --- MUSIC INITIALIZATION ---
+            const musicState = localStorage.getItem('qbbic-music-state') || 'paused';
+            if (musicState === 'playing') {
+                 // Try to play the music automatically
+                backgroundMusic.play().then(() => {
+                    updateMusicIcon(true);
+                }).catch(e => {
+                    // Failed due to browser restrictions. Keep state as 'paused' initially.
+                    console.log('Autoplay blocked. User must interact to start music.');
+                    updateMusicIcon(false);
+                    localStorage.setItem('qbbic-music-state', 'paused');
+                });
+            } else {
+                updateMusicIcon(false);
+            }
+
             if(themeSelect) {
                 themeSelect.addEventListener('change', (e) => {
                     const newTheme = e.target.value;
@@ -1058,7 +1136,10 @@
                     playSound(selectSound);
                 });
             }
-
+            if (musicToggleButton) {
+                musicToggleButton.addEventListener('click', toggleMusic);
+            }
+            
             let currentGameUrl = '';
 
             const gameSearchInput = document.getElementById('game-search-input');
@@ -1080,7 +1161,8 @@
             const cloakCanvasBtn = document.getElementById('cloak-canvas');
             const cloakClassroomBtn = document.getElementById('cloak-classroom');
 
-            const hoverSelector = '.game-play-btn, .control-btn, a, select';
+            // --- SOUND EFFECTS / HOVER LOGIC ---
+            const hoverSelector = '.game-play-btn, .control-btn, a, select, #music-toggle-btn';
             document.querySelectorAll(hoverSelector).forEach(el => {
                 el.addEventListener('mouseenter', () => playSound(hoverSound));
             });
@@ -1090,7 +1172,9 @@
                 const isCloakBtn = e.target.closest('#cloak-drive') || 
                                    e.target.closest('#cloak-canvas') || 
                                    e.target.closest('#cloak-classroom');
-                if (e.target.closest(clickSelector) && !isCloakBtn && e.target.closest('#close-game-modal-btn') === null) {
+                const isMusicBtn = e.target.closest('#music-toggle-btn');
+                
+                if (e.target.closest(clickSelector) && !isCloakBtn && !isMusicBtn && e.target.closest('#close-game-modal-btn') === null) {
                     playSound(selectSound);
                 }
             });
@@ -1113,6 +1197,11 @@
                 gameIframe.src = url;
                 gameModal.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
                 document.body.style.overflow = 'hidden'; 
+                
+                // Pause background music when a game modal is opened
+                if (!backgroundMusic.paused) {
+                    backgroundMusic.pause();
+                }
             }
             
             function closeGameModal() {
@@ -1121,7 +1210,12 @@
                 setTimeout(() => {
                     gameIframe.src = 'about:blank'; 
                     currentGameUrl = '';
-                    document.body.style.overflow = ''; 
+                    document.body.style.overflow = '';
+                    
+                    // Resume background music if it was previously playing
+                    if (localStorage.getItem('qbbic-music-state') === 'playing') {
+                        backgroundMusic.play().catch(e => {}); 
+                    }
                 }, 300); 
             }
             
