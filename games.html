@@ -5,23 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Qbbic</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Architects+Daughter&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
     <style>
-        /* --- CSS Variables for Theming (Frutiger Aero - DEFAULT) --- */
+        /* --- 1. GLOBAL VARIABLES & SCROLLBARS --- */
         :root {
-            /* Bright blues and greens */
             --color-primary: #00a1ff; 
             --color-primary-light: #40c4ff;
             --color-primary-dark: #0077c0;
-            
-            /* Dark text for readability on light backgrounds */
             --color-text-base: #003366;
             --color-text-white: #ffffff;
             --color-text-dark: #002244; 
-            
-            /* Background is transparent to show image */
             --bg-page: transparent; 
-            
-            /* "Aqua" / "Glass" cards are now light */
             --bg-glass-header: rgba(255, 255, 255, 0.7); 
             --bg-glass-card: rgba(255, 255, 255, 0.6);
             --bg-glass-card-hover: rgba(255, 255, 255, 0.85);
@@ -29,225 +24,163 @@
             --bg-glass-modal-header: rgba(255, 255, 255, 0.7);
             --bg-glass-controls: rgba(255, 255, 255, 0.7);
             --bg-glass-controls-hover: rgba(64, 196, 255, 0.8); 
-
             --border-glass: rgba(0, 161, 255, 0.4);
             --border-glass-light: rgba(0, 161, 255, 0.2);
-            
             --blur-strength: 5px;
-            
-            /* Card Border Radius */
             --card-radius: 1.5rem;
-            
-            /* Font */
             --font-main: Arial, 'Helvetica Neue', Helvetica, sans-serif;
         }
 
-        /* --- ANIMATIONS --- */
-        
-        @keyframes floatUp {
-            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
-            10% { opacity: 0.7; }
-            90% { opacity: 0.7; }
-            100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
-        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 12px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 6px; border: 2px solid rgba(255,255,255,0.5); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--color-primary-dark); }
 
-        @keyframes scrollGrid {
-            0% { background-position: 0 0; }
-            100% { background-position: 40px 40px; }
-        }
+        /* --- 2. ANIMATIONS --- */
+        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); opacity: 0; } 10% { opacity: 0.7; } 90% { opacity: 0.7; } 100% { transform: translateY(-20vh) scale(1.2); opacity: 0; } }
+        @keyframes scrollGrid { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }
+        @keyframes rainbowMadness { 0% { filter: hue-rotate(0deg) contrast(1.2); } 50% { filter: hue-rotate(180deg) contrast(2); } 100% { filter: hue-rotate(360deg) contrast(1.2); } }
+        @keyframes shakeHard { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
+        @keyframes spinWild { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
+        @keyframes scanline { 0% { background-position: 0 0; } 100% { background-position: 0 100%; } }
+        @keyframes matrixRain { 0% { background-position: 0% 0%; } 100% { background-position: 0% 100%; } }
+        @keyframes flicker { 0% { opacity: 0.9; } 50% { opacity: 1; } 100% { opacity: 0.95; } }
 
-        @keyframes rainbowMadness {
-            0% { filter: hue-rotate(0deg) contrast(1.2); }
-            50% { filter: hue-rotate(180deg) contrast(2); }
-            100% { filter: hue-rotate(360deg) contrast(1.2); }
-        }
+        /* --- 3. THEME DEFINITIONS --- */
 
-        @keyframes shakeHard {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
-        }
-        
-        @keyframes spinWild {
-            0% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(180deg) scale(1.2); }
-            100% { transform: rotate(360deg) scale(1); }
-        }
-        
-        @keyframes scanline {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 100%; }
-        }
+        /* Existing Themes (Condensed) */
+        body[data-theme="wii"] { --color-primary: #888888; --color-primary-light: #aaaaaa; --color-primary-dark: #555555; --bg-glass-header: #eeeeee; --bg-glass-card: #ffffff; --card-radius: 20px; --blur-strength: 0px; }
+        body[data-theme="virtual-boy"] { --color-primary: #550000; --color-primary-light: #990000; --color-text-base: #ff0000; --bg-page: #000; --bg-glass-card: #330000; --card-radius: 0.25rem; --blur-strength: 0px; }
+        body[data-theme="please-dont"] { --color-primary: #ff00ff; --bg-glass-card: yellow; --font-main: "Comic Sans MS", cursive; cursor: help !important; animation: rainbowMadness 3s infinite linear; }
+        body[data-theme="cyberpunk"] { --color-primary: #0f0f1a; --color-primary-light: #00f3ff; --color-text-base: #00f3ff; --bg-page: #050510; --bg-glass-card: rgba(15,15,26,0.8); --border-glass: #00f3ff; --blur-strength: 0px; --font-main: 'Courier New', monospace; }
+        body[data-theme="classic"] { --color-primary: #c0c0c0; --bg-page: #008080; --bg-glass-card: #c0c0c0; --font-main: Tahoma, sans-serif; --card-radius: 0px; --blur-strength: 0px; }
+        body[data-theme="terminal"] { --color-primary: #000; --color-primary-light: #00ff00; --color-text-base: #00ff00; --bg-page: #000; --bg-glass-card: #000; --border-glass: #00ff00; --font-main: 'Courier New', monospace; --blur-strength: 0px; }
+        body[data-theme="retro-handheld"] { --color-primary: #8bac0f; --color-primary-light: #9bbc0f; --color-text-base: #0f380f; --bg-page: #9bbc0f; --bg-glass-card: #9bbc0f; --card-radius: 4px; --font-main: 'Courier New', monospace; --blur-strength: 0px; }
+        body[data-theme="vaporwave"] { --color-primary: #ff71ce; --color-primary-light: #01cdfe; --bg-page: #2b2146; --bg-glass-card: rgba(255,255,255,0.1); --border-glass: #ff71ce; --blur-strength: 10px; }
+        body[data-theme="graduation"] { --color-primary: #6b3fa0; --color-primary-light: #ff0099; --bg-page: #6b3fa0; --bg-glass-card: rgba(255,255,255,0.15); --border-glass: #ff0099; --blur-strength: 8px; }
+        body[data-theme="ksg"] { --color-primary: #f5a479; --color-text-base: #2b5e7d; --bg-page: #f5a479; --bg-glass-card: rgba(255,255,255,0.4); --blur-strength: 15px; }
+        body[data-theme="demon-days"] { --color-primary: #111; --color-text-base: #fff; --bg-page: #111; --bg-glass-card: #fff; --card-radius: 0; --font-main: Impact, sans-serif; --blur-strength: 0px; }
+        body[data-theme="igor"] { --color-primary: #f2a2ba; --color-text-base: #000; --bg-page: #f2a2ba; --bg-glass-card: #000; --card-radius: 0; --font-main: Arial, sans-serif; --blur-strength: 0px; }
 
-        /* --- EXISTING THEMES --- */
-        
-        body[data-theme="wii"] {
-            --color-primary: #888888; --color-primary-light: #aaaaaa; --color-primary-dark: #555555;
-            --color-text-base: #555555; --color-text-white: #444444; --color-text-dark: #222222;
-            --bg-glass-header: #eeeeee; --bg-glass-card: #ffffff; --bg-glass-card-hover: #ffffff;
-            --bg-glass-modal: #ffffff; --border-glass: #cccccc; --border-glass-light: #dddddd;
-            --blur-strength: 0px; --card-radius: 20px;
-        }
+        /* --- NEW THEMES --- */
 
-        body[data-theme="virtual-boy"] {
-            --color-primary: #550000; --color-primary-light: #990000; --color-primary-dark: #330000;
-            --color-text-base: #ff0000; --color-text-white: #ff0000; --color-text-dark: #ff0000;
-            --bg-page: #000000; --bg-glass-header: #110000; --bg-glass-card: #330000;
-            --bg-glass-card-hover: #550000; --bg-glass-modal: #000000; --bg-glass-modal-header: #110000;
-            --bg-glass-controls: #550000; --bg-glass-controls-hover: #990000;
-            --border-glass: #770000; --border-glass-light: #440000; --blur-strength: 0px; --card-radius: 0.25rem; 
-        }
-
-        body[data-theme="please-dont"] {
-            --color-primary: #ff00ff; --color-primary-light: #00ff00; --color-primary-dark: #ffff00;
-            --color-text-base: #000000; --color-text-white: #ffff00; --color-text-dark: #000000;
-            --bg-glass-header: rgba(255, 0, 255, 0.8); --bg-glass-card: rgba(255, 255, 0, 0.8);
-            --bg-glass-card-hover: rgba(0, 255, 255, 0.9); --bg-glass-modal: rgba(0, 0, 0, 0.9);
-            --border-glass: #000000; --font-main: "Comic Sans MS", "Comic Sans", cursive;
-            cursor: help !important; animation: rainbowMadness 3s infinite linear;
-        }
-
-        body[data-theme="cyberpunk"] {
-            --color-primary: #0f0f1a; --color-primary-light: #00f3ff; --color-primary-dark: #7b00ff; 
-            --color-text-base: #00f3ff; --color-text-white: #ffffff; --color-text-dark: #e0e0e0;
-            --bg-page: #050510; --bg-glass-header: rgba(15, 15, 26, 0.95); --bg-glass-card: rgba(15, 15, 26, 0.8);
-            --bg-glass-card-hover: rgba(30, 30, 60, 0.95); --bg-glass-modal: #050510;
-            --bg-glass-modal-header: #1a1a2e; --bg-glass-controls: rgba(30, 30, 60, 0.8);
-            --bg-glass-controls-hover: #7b00ff; --border-glass: #00f3ff; --border-glass-light: rgba(0, 243, 255, 0.3);
-            --blur-strength: 0px; --card-radius: 0px; --font-main: 'Courier New', Courier, monospace;
-        }
-
-        body[data-theme="classic"] {
-            --color-primary: #c0c0c0; --color-primary-light: #ffffff; --color-primary-dark: #808080;
-            --color-text-base: #000000; --color-text-white: #000000; --color-text-dark: #000000;
-            --bg-page: #008080; --bg-glass-header: #c0c0c0; --bg-glass-card: #c0c0c0;
-            --bg-glass-card-hover: #c0c0c0; --bg-glass-modal: #c0c0c0; --bg-glass-modal-header: #000080;
-            --bg-glass-controls: #c0c0c0; --bg-glass-controls-hover: #c0c0c0;
-            --border-glass: #ffffff; --border-glass-light: #808080; --blur-strength: 0px;
-            --card-radius: 0px; --font-main: Tahoma, sans-serif;
-        }
-
-        body[data-theme="terminal"] {
-            --color-primary: #000000; --color-primary-light: #00ff00; --color-primary-dark: #003300;
-            --color-text-base: #00ff00; --color-text-white: #00ff00; --color-text-dark: #00ff00;
-            --bg-page: #000000; --bg-glass-header: #000000; --bg-glass-card: #000000;
-            --bg-glass-card-hover: #001100; --bg-glass-modal: #000000; --bg-glass-modal-header: #001100;
-            --bg-glass-controls: #000000; --bg-glass-controls-hover: #003300;
-            --border-glass: #00ff00; --border-glass-light: #005500; --blur-strength: 0px;
-            --card-radius: 0px; --font-main: 'Courier New', Courier, monospace;
-        }
-
-        body[data-theme="retro-handheld"] {
-            --color-primary: #8bac0f; --color-primary-light: #9bbc0f; --color-primary-dark: #306230;
-            --color-text-base: #0f380f; --color-text-white: #0f380f; --color-text-dark: #0f380f;
-            --bg-page: #9bbc0f; --bg-glass-header: #8bac0f; --bg-glass-card: #9bbc0f;
-            --bg-glass-card-hover: #8bac0f; --bg-glass-modal: #9bbc0f; --bg-glass-modal-header: #8bac0f;
-            --bg-glass-controls: #9bbc0f; --bg-glass-controls-hover: #306230;
-            --border-glass: #0f380f; --border-glass-light: #306230; --blur-strength: 0px;
-            --card-radius: 4px; --font-main: 'Courier New', monospace;
-        }
-
-        body[data-theme="vaporwave"] {
-            --color-primary: #ff71ce; --color-primary-light: #01cdfe; --color-primary-dark: #b967ff;
-            --color-text-base: #ffffff; --color-text-white: #ffffff; --color-text-dark: #01cdfe;
-            --bg-page: #2b2146; --bg-glass-header: rgba(43, 33, 70, 0.8); --bg-glass-card: rgba(255, 255, 255, 0.1);
-            --bg-glass-card-hover: rgba(255, 113, 206, 0.3); --bg-glass-modal: rgba(43, 33, 70, 0.95);
-            --bg-glass-modal-header: rgba(185, 103, 255, 0.5); --bg-glass-controls: rgba(1, 205, 254, 0.5);
-            --bg-glass-controls-hover: #ff71ce; --border-glass: #ff71ce; --border-glass-light: #b967ff;
-            --blur-strength: 10px; --card-radius: 0px; --font-main: Arial, sans-serif;
-        }
-
-        /* --- NEW ALBUM THEMES --- */
-
-        /* 1. GRADUATION (Kanye West) */
-        body[data-theme="graduation"] {
-            --color-primary: #6b3fa0; /* Purple Sky */
-            --color-primary-light: #ff0099; /* Hot Pink Text */
-            --color-primary-dark: #4c2a75;
+        /* 1. MINECRAFT */
+        body[data-theme="minecraft"] {
+            --color-primary: #795548; /* Dirt */
+            --color-primary-light: #4CAF50; /* Grass */
+            --color-primary-dark: #3E2723;
             --color-text-base: #ffffff;
             --color-text-white: #ffffff;
-            --color-text-dark: #ffffff; /* Force white text on cards */
-            --bg-page: #6b3fa0;
-            --bg-glass-header: rgba(107, 63, 160, 0.8);
-            --bg-glass-card: rgba(255, 255, 255, 0.15);
-            --bg-glass-card-hover: rgba(255, 0, 153, 0.2);
-            --bg-glass-modal: rgba(76, 42, 117, 0.95);
-            --bg-glass-modal-header: rgba(255, 0, 153, 0.3);
-            --bg-glass-controls: rgba(255, 255, 255, 0.2);
-            --bg-glass-controls-hover: #ff0099;
-            --border-glass: #ff0099; /* Hot Pink Borders */
-            --border-glass-light: rgba(255, 0, 153, 0.4);
-            --blur-strength: 8px;
-            --card-radius: 1rem;
+            --color-text-dark: #ddd;
+            --bg-page: #795548;
+            --bg-glass-header: rgba(62, 39, 35, 0.9);
+            --bg-glass-card: rgba(100, 100, 100, 0.85); /* Stone */
+            --bg-glass-card-hover: rgba(120, 120, 120, 0.95);
+            --bg-glass-modal: rgba(0, 0, 0, 0.8);
+            --bg-glass-modal-header: #5d4037;
+            --bg-glass-controls: #555;
+            --bg-glass-controls-hover: #777;
+            --border-glass: #000;
+            --border-glass-light: #222;
+            --blur-strength: 0px;
+            --card-radius: 0px;
+            --font-main: 'VT323', monospace;
         }
 
-        /* 2. KIDS SEE GHOSTS (Kid Cudi & Kanye) */
-        body[data-theme="ksg"] {
-            --color-primary: #f5a479; /* Peach/Orange */
-            --color-primary-light: #ffb6c1; /* Pink */
-            --color-primary-dark: #2b5e7d; /* Deep Blue */
-            --color-text-base: #2b5e7d; /* Dark text for contrast */
-            --color-text-white: #2b5e7d; 
-            --color-text-dark: #2b5e7d;
-            --bg-page: #f5a479;
-            --bg-glass-header: rgba(255, 255, 255, 0.5);
-            --bg-glass-card: rgba(255, 255, 255, 0.4);
-            --bg-glass-card-hover: rgba(255, 255, 255, 0.7);
-            --bg-glass-modal: rgba(255, 240, 230, 0.95);
-            --bg-glass-modal-header: rgba(245, 164, 121, 0.3);
-            --bg-glass-controls: rgba(255, 255, 255, 0.5);
-            --bg-glass-controls-hover: #f5a479;
-            --border-glass: #f5a479;
-            --border-glass-light: #ffb6c1;
-            --blur-strength: 15px; /* Water color dream feel */
-            --card-radius: 2rem;
-        }
-
-        /* 3. DEMON DAYS (Gorillaz) */
-        body[data-theme="demon-days"] {
-            --color-primary: #111111; /* Black */
-            --color-primary-light: #ffffff; /* White */
-            --color-primary-dark: #333333;
-            --color-text-base: #ffffff; /* White text on page */
+        /* 2. BLUEPRINT */
+        body[data-theme="blueprint"] {
+            --color-primary: #0044cc; 
+            --color-primary-light: #ffffff; 
+            --color-primary-dark: #002288;
+            --color-text-base: #ffffff;
             --color-text-white: #ffffff;
-            --color-text-dark: #000000; /* Black text on cards */
-            --bg-page: #111111;
-            --bg-glass-header: #111111;
-            --bg-glass-card: #ffffff; /* Stark White Cards */
-            --bg-glass-card-hover: #dddddd;
-            --bg-glass-modal: #111111;
-            --bg-glass-modal-header: #ffffff;
-            --bg-glass-controls: #333333;
-            --bg-glass-controls-hover: #ffffff;
+            --color-text-dark: #ffffff;
+            --bg-page: #0044cc;
+            --bg-glass-header: rgba(0, 68, 204, 0.9);
+            --bg-glass-card: transparent;
+            --bg-glass-card-hover: rgba(255, 255, 255, 0.1);
+            --bg-glass-modal: #0044cc;
+            --bg-glass-modal-header: #003399;
+            --bg-glass-controls: transparent;
+            --bg-glass-controls-hover: rgba(255,255,255,0.2);
             --border-glass: #ffffff;
-            --border-glass-light: #555555;
+            --border-glass-light: rgba(255, 255, 255, 0.5);
             --blur-strength: 0px;
-            --card-radius: 0px; /* Sharp edges */
+            --card-radius: 0px;
+            --font-main: 'Architects Daughter', cursive;
         }
 
-        /* 4. IGOR (Tyler, the Creator) */
-        body[data-theme="igor"] {
-            --color-primary: #f2a2ba; /* IGOR Pink */
-            --color-primary-light: #000000; /* Black */
-            --color-primary-dark: #d16b8b;
-            --color-text-base: #000000;
-            --color-text-white: #000000;
-            --color-text-dark: #ffffff; /* White text on black cards */
-            --bg-page: #f2a2ba;
-            --bg-glass-header: rgba(242, 162, 186, 0.9);
-            --bg-glass-card: #000000; /* Black Cards */
-            --bg-glass-card-hover: #222222;
+        /* 3. MATRIX */
+        body[data-theme="matrix"] {
+            --color-primary: #000000;
+            --color-primary-light: #00FF41; /* Matrix Green */
+            --color-primary-dark: #003B00;
+            --color-text-base: #00FF41;
+            --color-text-white: #00FF41;
+            --color-text-dark: #00FF41;
+            --bg-page: #000000;
+            --bg-glass-header: rgba(0, 20, 0, 0.9);
+            --bg-glass-card: rgba(0, 10, 0, 0.8);
+            --bg-glass-card-hover: rgba(0, 50, 0, 0.9);
             --bg-glass-modal: #000000;
-            --bg-glass-modal-header: #f2a2ba;
-            --bg-glass-controls: #000000;
-            --bg-glass-controls-hover: #333333;
-            --border-glass: #000000;
-            --border-glass-light: #000000;
-            --blur-strength: 0px;
-            --card-radius: 0px; /* Sharp edges */
+            --bg-glass-modal-header: #003B00;
+            --bg-glass-controls: #000;
+            --bg-glass-controls-hover: #003B00;
+            --border-glass: #008F11;
+            --border-glass-light: #00FF41;
+            --blur-strength: 2px;
+            --card-radius: 0px;
+            --font-main: 'Courier New', monospace;
         }
-        
+
+        /* 4. NOIR */
+        body[data-theme="noir"] {
+            --color-primary: #1a1a1a;
+            --color-primary-light: #ffffff;
+            --color-primary-dark: #000000;
+            --color-text-base: #e0e0e0;
+            --color-text-white: #ffffff;
+            --color-text-dark: #cccccc;
+            --bg-page: #111;
+            --bg-glass-header: rgba(0, 0, 0, 0.8);
+            --bg-glass-card: rgba(30, 30, 30, 0.7);
+            --bg-glass-card-hover: rgba(50, 50, 50, 0.9);
+            --bg-glass-modal: #000;
+            --bg-glass-modal-header: #222;
+            --bg-glass-controls: #333;
+            --bg-glass-controls-hover: #555;
+            --border-glass: #666;
+            --border-glass-light: #333;
+            --blur-strength: 0px;
+            --card-radius: 2px;
+            --font-main: 'Times New Roman', Times, serif;
+        }
+
+        /* 5. WINDOWS XP */
+        body[data-theme="windows-xp"] {
+            --color-primary: #0055EA; /* Luna Blue */
+            --color-primary-light: #6699FF;
+            --color-primary-dark: #003399;
+            --color-text-base: #000000;
+            --color-text-white: #ffffff;
+            --color-text-dark: #000000;
+            --bg-page: #5D9B43; /* Bliss Green */
+            --bg-glass-header: linear-gradient(to bottom, #245EDC, #0038A8);
+            --bg-glass-card: #ffffff;
+            --bg-glass-card-hover: #f0f0f0;
+            --bg-glass-modal: #ECE9D8; /* XP Beige */
+            --bg-glass-modal-header: linear-gradient(to bottom, #245EDC, #0038A8);
+            --bg-glass-controls: #ffffff;
+            --bg-glass-controls-hover: #ECE9D8;
+            --border-glass: #0038A8;
+            --border-glass-light: #0055EA;
+            --blur-strength: 0px;
+            --card-radius: 5px 5px 0 0;
+            --font-main: Tahoma, sans-serif;
+        }
+
+        /* --- BODY BASE --- */
         body {
             font-family: var(--font-main);
             background-color: var(--color-primary); 
@@ -256,66 +189,54 @@
             cursor: url('/assets/Normal Select.cur'), auto;
             transition: color 0.3s, background-color 0.3s;
         }
+        a:hover, button:hover, .game-play-btn:hover, .control-btn:hover, select:hover { cursor: url('/assets/Link Select.cur'), pointer; }
+
+        /* --- BACKGROUND LOGIC --- */
+        #css-3d-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; transition: background 0.5s ease; }
         
-        a:hover,
-        button:hover,
-        .game-play-btn:hover,
-        .control-btn:hover,
-        select:hover {
-            cursor: url('/assets/Link Select.cur'), pointer;
-        }
-
-        /* --- BACKGROUNDS STYLING --- */
-        #css-3d-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1; 
-            overflow: hidden;
-            transition: background 0.5s ease;
-        }
-
-        /* Backgrounds for Existing Themes */
+        /* Existing Backgrounds */
         body[data-theme="frutiger-aero"] #css-3d-background { background-image: url('/assets/aqua.jpg'); background-size: cover; background-position: center; }
-        body[data-theme="wii"] #css-3d-background { background-color: #e0e0e0; background-image: linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0), linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0); background-size: 40px 40px; background-position: 0 0, 20px 20px; animation: scrollGrid 3s linear infinite; }
-        body[data-theme="virtual-boy"] #css-3d-background { background-color: #000000; background-image: linear-gradient(45deg, #220000 25%, transparent 25%, transparent 75%, #220000 75%, #220000), linear-gradient(45deg, #220000 25%, transparent 25%, transparent 75%, #220000 75%, #220000); background-size: 40px 40px; background-position: 0 0, 20px 20px; animation: scrollGrid 3s linear infinite; }
-        body[data-theme="please-dont"] #css-3d-background { background: repeating-linear-gradient(45deg, #606dbc, #606dbc 10px, #465298 10px, #465298 20px); background-size: 100% 100%; animation: scrollGrid 0.2s linear infinite; }
-        body[data-theme="cyberpunk"] #css-3d-background { background-color: #050510; background-image: linear-gradient(rgba(0, 243, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.1) 1px, transparent 1px); background-size: 40px 40px; box-shadow: inset 0 0 150px #000; }
-        body[data-theme="classic"] #css-3d-background { background-color: #008080; }
-        body[data-theme="terminal"] #css-3d-background { background-color: #000000; background-image: linear-gradient(rgba(0, 255, 0, 0.03) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 3px, 6px 100%; animation: scanline 10s linear infinite; }
-        body[data-theme="retro-handheld"] #css-3d-background { background-color: #9bbc0f; background-image: linear-gradient(transparent 95%, #8bac0f 95%), linear-gradient(90deg, transparent 95%, #8bac0f 95%); background-size: 4px 4px; }
-        body[data-theme="vaporwave"] #css-3d-background { background: linear-gradient(to bottom, #2b2146, #c77dff); }
-
-        /* Backgrounds for New Themes */
-        body[data-theme="graduation"] #css-3d-background {
-            background: linear-gradient(to bottom, #8A2BE2, #DA70D6); /* Purple Sky Gradient */
-        }
-        body[data-theme="ksg"] #css-3d-background {
-            background: linear-gradient(to bottom, #ff9a76, #ffc7a2, #a2c7ff, #5e88fc); /* Sunset to Blue Gradient */
-        }
-        body[data-theme="demon-days"] #css-3d-background {
-            background-color: #111111; /* Pitch Black */
-        }
-        body[data-theme="igor"] #css-3d-background {
-            background-color: #f2a2ba; /* IGOR Pink */
-        }
-
-        /* Bubble Styling (Only visible in Frutiger) */
-        .bubble {
-            position: absolute; bottom: -100px; background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.1));
-            box-shadow: 0 0 10px rgba(255,255,255,0.3), inset 0 0 10px rgba(255,255,255,0.3); border-radius: 50%;
-            pointer-events: none; z-index: 0; animation: floatUp var(--speed) linear infinite;
-            animation-delay: var(--delay); width: var(--size); height: var(--size); left: var(--pos); opacity: 0; 
-        }
         body:not([data-theme="frutiger-aero"]) .bubble-container { display: none; }
+        
+        /* New Theme Backgrounds */
+        body[data-theme="minecraft"] #css-3d-background {
+            background-color: #795548;
+            background-image: linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037), 
+                              linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+        }
+        body[data-theme="blueprint"] #css-3d-background {
+            background-color: #0044cc;
+            background-image: linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        body[data-theme="matrix"] #css-3d-background {
+            background-color: black;
+            background-image: linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px);
+            background-size: 100% 20px;
+            animation: matrixRain 2s linear infinite;
+        }
+        body[data-theme="noir"] #css-3d-background {
+            background-color: #111;
+            background-image: radial-gradient(circle, #333 1px, transparent 1px);
+            background-size: 20px 20px;
+            filter: grayscale(100%) contrast(120%);
+        }
+        body[data-theme="windows-xp"] #css-3d-background {
+            background: linear-gradient(to bottom, #5D9B43 0%, #82C05E 100%); /* Simplified Bliss Hill */
+        }
 
-        /* --- CARD STYLES --- */
+        /* --- UI COMPONENTS --- */
+        .glass-header { background-color: var(--bg-glass-header); backdrop-filter: blur(var(--blur-strength)); border-bottom: 1px solid var(--border-glass); box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3); }
+        .glass-footer { background-color: var(--bg-glass-header); backdrop-filter: blur(var(--blur-strength)); border-top: 1px solid var(--border-glass); }
+        .glass-main-panel { background-color: var(--bg-glass-card); backdrop-filter: blur(var(--blur-strength)); border: 1px solid var(--border-glass-light); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); border-radius: var(--card-radius); padding: 1rem; }
+
+        /* Card Styles & Overrides */
         .game-card {
             background-color: var(--bg-glass-card);
             backdrop-filter: blur(var(--blur-strength));
-            -webkit-backdrop-filter: blur(var(--blur-strength));
             border: 1px solid var(--border-glass-light);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             transition: all 0.2s ease; 
@@ -323,187 +244,51 @@
             border-radius: var(--card-radius);
             overflow: hidden;
         }
+        .game-card:hover { transform: scale(1.03); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); }
 
-        /* Frutiger Aero Gloss Effect */
-        body[data-theme="frutiger-aero"] .game-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 112px; z-index: 1;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 100%);
-            pointer-events: none; border-radius: 1.5rem 1.5rem 0 0;
+        /* Minecraft Override */
+        body[data-theme="minecraft"] .game-card { border: 4px solid #000; box-shadow: 4px 4px 0 #000; }
+        body[data-theme="minecraft"] .game-card:hover { transform: translateY(-2px); box-shadow: 6px 6px 0 #000; }
+        body[data-theme="minecraft"] .bg-cyan-500 { background: #757575 !important; border: 2px solid #fff; border-bottom-color: #555; border-right-color: #555; color: #fff !important; border-radius: 0; }
+        
+        /* Blueprint Override */
+        body[data-theme="blueprint"] .game-card { border: 2px dashed #fff; }
+        body[data-theme="blueprint"] .game-card img { filter: grayscale(100%) blueprint(100%); /* Not real filter, but looks cool */ opacity: 0.8; }
+        body[data-theme="blueprint"] .game-card:hover { transform: rotate(1deg); background: rgba(0, 68, 204, 0.5); }
+
+        /* Matrix Override */
+        body[data-theme="matrix"] .game-card { border: 1px solid #00FF41; box-shadow: 0 0 5px #00FF41; }
+        body[data-theme="matrix"] .game-card:hover { background: #001100; box-shadow: 0 0 15px #00FF41; }
+        
+        /* Windows XP Override */
+        body[data-theme="windows-xp"] .game-card { border-radius: 5px 5px 0 0; border: 2px solid #0038A8; }
+        body[data-theme="windows-xp"] .game-card h3 { color: #000; }
+        body[data-theme="windows-xp"] .bg-cyan-500 { background: linear-gradient(to bottom, #fff, #ece9d8) !important; color: #000 !important; border: 1px solid #0038A8; border-radius: 3px; }
+
+        /* --- INPUTS & CONTROLS --- */
+        #theme-select, #song-select, #game-search-input {
+            background-color: var(--bg-glass-controls);
+            color: var(--color-text-dark);
+            border: 1px solid var(--border-glass-light);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            outline: none;
+            font-weight: bold;
         }
-        body[data-theme="frutiger-aero"] .game-card:hover::after {
-             background: rgba(0, 161, 255, 0.2); transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px);
-             content: ''; position: absolute; bottom: -15px; left: 10%; width: 80%; height: 50px; 
-             opacity: 0.8; transition: all 0.3s ease;
+        /* Toast Notification */
+        #toast-notification {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background-color: var(--color-primary); color: var(--color-text-white);
+            padding: 12px 24px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000;
+            font-weight: bold; border: 2px solid rgba(255,255,255,0.3); text-align: center;
         }
+        #toast-notification.show { transform: translateX(-50%) translateY(0); }
 
-        .game-card:hover {
-            background-color: var(--bg-glass-card-hover);
-            transform: scale(1.03); 
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
-        }
-
-        /* Theme Specific Card Overrides */
-        body[data-theme="wii"] .game-card:hover { outline: 4px solid #40c4ff; box-shadow: 0 0 15px rgba(64, 196, 255, 0.6); transform: scale(1.05); border-color: #40c4ff; }
-        body[data-theme="virtual-boy"] .game-card:hover { outline: 2px solid var(--color-primary-light); box-shadow: 0 0 10px var(--color-primary-light); transform: scale(1.05); border-color: var(--color-primary-light); }
-        body[data-theme="please-dont"] .game-card { border: 3px dashed #000; animation: shakeHard 2s infinite; border-radius: 0 !important; }
-        body[data-theme="please-dont"] .game-card:hover { animation: spinWild 1s linear infinite; background-color: #ff00ff; outline: 5px dotted yellow; }
-        body[data-theme="cyberpunk"] .game-card:hover { box-shadow: 0 0 15px var(--color-primary-light), inset 0 0 10px var(--color-primary-dark); border-color: var(--color-primary-light); }
-        body[data-theme="classic"] .game-card { border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080; box-shadow: 1px 1px 0 #000; transform: none !important; }
-        body[data-theme="terminal"] .game-card { border: 1px solid #00ff00; }
-        body[data-theme="terminal"] .game-card:hover { background-color: #001100; box-shadow: 0 0 8px #00ff00; }
-        body[data-theme="retro-handheld"] .game-card img { filter: grayscale(1) sepia(1) saturate(3) hue-rotate(50deg) contrast(0.8); }
-        body[data-theme="retro-handheld"] .game-card:hover { border: 2px solid #0f380f; transform: translate(2px, 2px); box-shadow: none; }
-        body[data-theme="vaporwave"] .game-card { border: 1px solid #ff71ce; }
-        body[data-theme="vaporwave"] .game-card:hover { box-shadow: 4px 4px 0px #01cdfe; border-color: #01cdfe; }
-        
-        /* New Theme Card Overrides */
-        body[data-theme="graduation"] .game-card { border: 2px solid #ff0099; }
-        body[data-theme="graduation"] .game-card:hover { box-shadow: 0 0 15px #ff0099; transform: scale(1.05); }
-        body[data-theme="demon-days"] .game-card { border: none; }
-        body[data-theme="demon-days"] .game-card:hover { transform: none; filter: invert(1); }
-        body[data-theme="igor"] .game-card { border: none; }
-        body[data-theme="igor"] .game-card:hover { transform: rotate(1deg) scale(1.02); box-shadow: 5px 5px 0px #000000; }
-
-        /* --- LAYOUT COMPONENTS --- */
-        .glass-header { background-color: var(--bg-glass-header); backdrop-filter: blur(var(--blur-strength)); border-bottom: 1px solid var(--border-glass); box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3); }
-        .glass-footer { background-color: var(--bg-glass-header); backdrop-filter: blur(var(--blur-strength)); border-top: 1px solid var(--border-glass); }
-        .glass-main-panel { background-color: var(--bg-glass-card); backdrop-filter: blur(var(--blur-strength)); border: 1px solid var(--border-glass-light); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); border-radius: var(--card-radius); padding: 1rem; }
-
-        /* Panel Overrides */
-        body[data-theme="wii"] .glass-main-panel { background-color: transparent; border: none; box-shadow: none; backdrop-filter: none; }
-        body[data-theme="virtual-boy"] .glass-main-panel { background-color: #000000; border: 1px solid var(--border-glass); box-shadow: none; backdrop-filter: none; border-radius: 0.5rem; }
-        body[data-theme="classic"] .glass-header, body[data-theme="classic"] .glass-footer, body[data-theme="classic"] .glass-main-panel { border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080; }
-        
-        body[data-theme="demon-days"] .glass-main-panel { border: none; box-shadow: none; background: transparent; }
-        body[data-theme="igor"] .glass-main-panel { border: 2px solid #000; box-shadow: 8px 8px 0px #000; border-radius: 0; }
-
-        /* Text Colors */
-        .game-card h3 { color: var(--color-text-dark); z-index: 2; position: relative; }
-        .game-card p { color: #004477; z-index: 2; position: relative; }
-        
-        body[data-theme="wii"] .game-card p { color: #888888; }
-        body[data-theme="virtual-boy"] .game-card p { color: #bb0000; } 
-        body[data-theme="please-dont"] .game-card h3 { color: blue; text-transform: uppercase; }
-        body[data-theme="cyberpunk"] .game-card p { color: #e0e0e0; }
-        body[data-theme="classic"] .game-card p { color: #000000; }
-        body[data-theme="terminal"] .game-card p { color: #00ff00; }
-        body[data-theme="retro-handheld"] .game-card p { color: #0f380f; }
-        body[data-theme="vaporwave"] .game-card p { color: #01cdfe; }
-        
-        body[data-theme="graduation"] .game-card h3, body[data-theme="graduation"] .game-card p { color: #ffffff; text-shadow: 0 1px 2px #6b3fa0; }
-        body[data-theme="ksg"] .game-card h3, body[data-theme="ksg"] .game-card p { color: #2b5e7d; }
-        body[data-theme="demon-days"] .game-card h3, body[data-theme="demon-days"] .game-card p { color: #000000; font-weight: bold; }
-        body[data-theme="igor"] .game-card h3, body[data-theme="igor"] .game-card p { color: #ffffff; }
-        
-        h1 { color: var(--color-text-white); text-shadow: 0 1px 3px rgba(0,0,0,0.4); } 
-        body[data-theme="wii"] h1 { text-shadow: none; color: #555555; }
-        body[data-theme="virtual-boy"] h1 { text-shadow: none; color: var(--color-text-white); }
-        body[data-theme="please-dont"] h1 { color: #ff0000; text-decoration: underline wavy blue; }
-        body[data-theme="classic"] h1 { color: #000000; text-shadow: none; background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 5px; }
-        body[data-theme="terminal"] h1 { text-shadow: 0 0 5px #00ff00; }
-        
-        body[data-theme="graduation"] h1 { color: #ff0099; font-weight: 900; text-transform: uppercase; text-shadow: 2px 2px 0px #ffffff; }
-        body[data-theme="ksg"] h1 { color: #2b5e7d; font-style: italic; }
-        body[data-theme="demon-days"] h1 { font-family: Impact, sans-serif; letter-spacing: 2px; }
-        body[data-theme="igor"] h1 { color: #000000; font-weight: 900; text-transform: uppercase; font-size: 4rem; line-height: 1; }
-        
-        /* Button Styles */
-        .bg-cyan-500 { 
-            background-color: var(--color-primary) !important; 
-            background-image: linear-gradient(to bottom, var(--color-primary-light), var(--color-primary)) !important;
-            box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 0 1px 1px rgba(0,0,0,0.1);
-            border: 1px solid var(--color-primary-dark);
-            text-shadow: 0 1px 0 rgba(0,0,0,0.1);
-            font-weight: bold; z-index: 2; position: relative; 
-        }
-
-        /* Theme Button Overrides */
-        body[data-theme="wii"] .bg-cyan-500 { background: #ffffff !important; color: #555555 !important; border: 1px solid #bbbbbb; text-shadow: none; border-radius: 20px; }
-        body[data-theme="wii"] .bg-cyan-500:hover { background: #eeeeee !important; color: #00a1ff !important; border-color: #00a1ff; }
-        body[data-theme="virtual-boy"] .bg-cyan-500 { background: var(--color-primary-light) !important; color: #000000 !important; border: 1px solid var(--color-text-base); text-shadow: none; border-radius: 0.25rem; font-weight: normal; }
-        body[data-theme="virtual-boy"] .bg-cyan-500:hover { background: var(--color-primary-light) !important; color: #000000 !important; box-shadow: inset 0 0 5px #000000; border-color: #ff0000; }
-        body[data-theme="please-dont"] .bg-cyan-500 { background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet) !important; color: white !important; border: 2px solid black; animation: shakeHard 5s infinite; }
-        body[data-theme="cyberpunk"] .bg-cyan-500 { background: transparent !important; border: 1px solid var(--color-primary-light); color: var(--color-primary-light) !important; box-shadow: 0 0 5px var(--color-primary-light); }
-        body[data-theme="cyberpunk"] .bg-cyan-500:hover { background: var(--color-primary-light) !important; color: #000 !important; box-shadow: 0 0 15px var(--color-primary-light); }
-        body[data-theme="classic"] .bg-cyan-500 { background: #c0c0c0 !important; color: black !important; border: 2px solid; border-color: #fff #808080 #808080 #fff; box-shadow: none; }
-        body[data-theme="classic"] .bg-cyan-500:active { border-color: #808080 #fff #fff #808080; }
-        body[data-theme="terminal"] .bg-cyan-500 { background: black !important; border: 1px solid #00ff00; color: #00ff00 !important; box-shadow: none; }
-        body[data-theme="terminal"] .bg-cyan-500:hover { background: #00ff00 !important; color: black !important; }
-        body[data-theme="retro-handheld"] .bg-cyan-500 { background: #306230 !important; color: #9bbc0f !important; border: 2px solid #0f380f; box-shadow: none; }
-
-        body[data-theme="graduation"] .bg-cyan-500 { background: #ff0099 !important; color: #fff !important; border: 2px solid #ffffff; border-radius: 10px; }
-        body[data-theme="ksg"] .bg-cyan-500 { background: #f5a479 !important; color: #2b5e7d !important; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        body[data-theme="demon-days"] .bg-cyan-500 { background: #000000 !important; color: #ffffff !important; border-radius: 0; border: none; }
-        body[data-theme="igor"] .bg-cyan-500 { background: #000000 !important; color: #f2a2ba !important; border: none; border-radius: 0; }
-        
-        /* Selector Dropdowns */
-        #theme-select, #song-select { background-color: var(--bg-glass-controls); color: var(--color-text-dark); border: 1px solid var(--border-glass-light); padding: 0.5rem; border-radius: 0.5rem; outline: none; font-weight: bold; }
-        body[data-theme="wii"] select { background-color: #ffffff; border-color: #bbbbbb; color: #555555; }
-        body[data-theme="virtual-boy"] select { background-color: #110000; border-color: #770000; color: #ff0000; }
-        body[data-theme="cyberpunk"] select { background-color: #000; color: var(--color-primary-light); border: 1px solid var(--color-primary-light); }
-        body[data-theme="classic"] select { background-color: #c0c0c0; color: black; border-radius: 0; }
-        body[data-theme="terminal"] select { background-color: #000; color: #00ff00; border: 1px solid #00ff00; border-radius: 0; font-family: 'Courier New', monospace; }
-        
-        body[data-theme="graduation"] select { background-color: #4c2a75; color: #fff; border: 1px solid #ff0099; }
-        body[data-theme="demon-days"] select { background-color: #000; color: #fff; border: 1px solid #fff; border-radius: 0; }
-        body[data-theme="igor"] select { background-color: #000; color: #f2a2ba; border: none; border-radius: 0; }
-
-        /* Nav Links */
-        nav a { color: var(--color-text-dark); font-weight: bold; }
-        nav a.text-white { color: var(--color-text-white) !important; }
-        
-        body[data-theme="wii"] nav a { color: #555555 !important; }
-        body[data-theme="wii"] nav a:hover { color: #00a1ff !important; }
-        body[data-theme="wii"] nav a.text-white { color: #00a1ff !important; border-color: #00a1ff !important; }
-        body[data-theme="virtual-boy"] nav a, body[data-theme="virtual-boy"] nav span, body[data-theme="virtual-boy"] nav svg { color: var(--color-text-white) !important; }
-        body[data-theme="virtual-boy"] nav a:hover { color: var(--color-primary-light) !important; }
-        body[data-theme="cyberpunk"] nav a.text-white { color: var(--color-primary-light) !important; text-shadow: 0 0 5px var(--color-primary-light); }
-        body[data-theme="terminal"] nav a { text-transform: uppercase; }
-        body[data-theme="terminal"] nav a:hover { background: #00ff00; color: black !important; }
-        
-        body[data-theme="graduation"] nav a { color: #ff0099 !important; }
-        body[data-theme="graduation"] nav a.text-white { color: #ffffff !important; border-color: #ff0099 !important; }
-        body[data-theme="demon-days"] nav a, body[data-theme="demon-days"] nav svg { color: #ffffff !important; }
-        body[data-theme="igor"] nav a { color: #000000 !important; text-transform: uppercase; }
-
-        /* Modal Styles */
+        /* Modal */
         .glass-modal-container { background-color: var(--bg-glass-modal); backdrop-filter: blur(var(--blur-strength)); border-radius: var(--card-radius); }
-        .glass-modal-header { background-color: var(--bg-glass-modal-header); backdrop-filter: blur(var(--blur-strength)); box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3); }
-        .control-btn:not(.bg-red-600) { background-color: var(--bg-glass-controls); color: var(--color-text-dark); border: 1px solid var(--border-glass-light); box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 0 1px 1px rgba(0,0,0,0.1); }
-        .control-btn:not(.bg-red-600):hover { background-color: var(--bg-glass-controls-hover); color: var(--color-text-white); }
-        .control-btn.bg-red-600 { background-color: #ef4444; color: white; }
-        .control-btn.bg-red-600:hover { background-color: #dc2626; }
-
-        /* Modal Theme Overrides */
-        body[data-theme="wii"] .glass-modal-container { background-color: #f8f8f8; backdrop-filter: none; border-radius: 0; }
-        body[data-theme="wii"] .glass-modal-header { background-color: #eeeeee; backdrop-filter: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-color: #cccccc; }
-        body[data-theme="wii"] .control-btn:not(.bg-red-600) { background-color: #e0e0e0; color: #555555; border-color: #bbbbbb; box-shadow: none; }
-        body[data-theme="virtual-boy"] .glass-modal-container { background-color: #000000; backdrop-filter: none; border-radius: 0; border: 2px solid var(--border-glass); }
-        body[data-theme="virtual-boy"] .glass-modal-header { background-color: #110000; backdrop-filter: none; box-shadow: none; border-color: var(--border-glass); }
-        body[data-theme="virtual-boy"] #game-modal-title { color: var(--color-text-white) !important; }
-        body[data-theme="virtual-boy"] .control-btn:not(.bg-red-600) { background-color: #330000; color: var(--color-text-white); border-color: var(--border-glass); box-shadow: none; }
-        body[data-theme="classic"] .glass-modal-container { border: 2px solid; border-color: #fff #808080 #808080 #fff; backdrop-filter: none; }
-        body[data-theme="classic"] .glass-modal-header { border-bottom: none; background: linear-gradient(to right, #000080, #1084d0); color: white; }
-        body[data-theme="classic"] #game-modal-title { color: white !important; font-size: 14px; }
-        body[data-theme="classic"] .control-btn { border-radius: 0; border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080; }
-        body[data-theme="terminal"] .glass-modal-container { border: 1px solid #00ff00; }
-        body[data-theme="terminal"] .control-btn { border-radius: 0; border: 1px solid #00ff00; background: black; color: #00ff00; box-shadow: none; }
-        body[data-theme="terminal"] .control-btn:hover { background: #00ff00; color: black; }
+        .glass-modal-header { background-color: var(--bg-glass-modal-header); backdrop-filter: blur(var(--blur-strength)); }
         
-        body[data-theme="demon-days"] .glass-modal-container { border: 1px solid #fff; }
-        body[data-theme="demon-days"] #game-modal-title { color: #fff; }
-        body[data-theme="igor"] .glass-modal-container { border: 2px solid #000; box-shadow: 10px 10px 0 #000; }
-        body[data-theme="igor"] #game-modal-title { color: #f2a2ba !important; font-weight: 900; text-transform: uppercase; }
-        body[data-theme="igor"] .control-btn { border: none; border-radius: 0; background: #222; color: #fff; }
-
-        #game-search-input { background-color: var(--bg-glass-card); border-color: var(--border-glass-light); color: var(--color-text-dark); }
-        body[data-theme="wii"] #game-search-input { background-color: #ffffff !important; border-color: #cccccc !important; color: #222222 !important; }
-        body[data-theme="virtual-boy"] #game-search-input { background-color: #110000 !important; border-color: #770000 !important; color: #ff0000 !important; border-radius: 0.25rem !important; }
-        body[data-theme="cyberpunk"] #game-search-input { background-color: #000 !important; border: 1px solid var(--color-primary-light) !important; color: var(--color-primary-light) !important; }
-        body[data-theme="classic"] #game-search-input { background-color: #fff !important; border-radius: 0; color: black !important; }
-        body[data-theme="terminal"] #game-search-input { background-color: #000 !important; border: 1px solid #00ff00 !important; color: #00ff00 !important; border-radius: 0; font-family: 'Courier New', monospace; }
-        body[data-theme="igor"] #game-search-input { background-color: #000 !important; color: #fff !important; border: none !important; border-radius: 0 !important; }
-        body[data-theme="demon-days"] #game-search-input { background-color: #000 !important; color: #fff !important; border: 1px solid #fff !important; border-radius: 0 !important; }
     </style>
 </head>
 <body data-theme="frutiger-aero"> 
@@ -515,25 +300,15 @@
             <div class="bubble" style="--size: 30px; --pos: 50%; --speed: 10s; --delay: 4s;"></div>
             <div class="bubble" style="--size: 50px; --pos: 70%; --speed: 15s; --delay: 1s;"></div>
             <div class="bubble" style="--size: 80px; --pos: 90%; --speed: 20s; --delay: 0.5s;"></div>
-            <div class="bubble" style="--size: 45px; --pos: 15%; --speed: 11s; --delay: 5s;"></div>
-            <div class="bubble" style="--size: 55px; --pos: 35%; --speed: 13s; --delay: 3s;"></div>
-            <div class="bubble" style="--size: 25px; --pos: 55%; --speed: 9s; --delay: 6s;"></div>
-            <div class="bubble" style="--size: 65px; --pos: 75%; --speed: 16s; --delay: 2.5s;"></div>
-            <div class="bubble" style="--size: 35px; --pos: 95%; --speed: 10s; --delay: 1.5s;"></div>
-            <div class="bubble" style="--size: 50px; --pos: 5%; --speed: 14s; --delay: 7s;"></div>
-            <div class="bubble" style="--size: 70px; --pos: 25%; --speed: 18s; --delay: 3.5s;"></div>
-            <div class="bubble" style="--size: 40px; --pos: 45%; --speed: 11s; --delay: 0.2s;"></div>
-            <div class="bubble" style="--size: 60px; --pos: 65%; --speed: 13s; --delay: 4.5s;"></div>
-            <div class="bubble" style="--size: 30px; --pos: 85%; --speed: 9s; --delay: 2s;"></div>
         </div>
     </div>
     
     <div id="page-content" class="relative z-10">
-
         <audio id="hover-sound" src="/assets/Sample_0016.wav" preload="auto"></audio>
         <audio id="select-sound" src="/assets/Sample_0000.wav" preload="auto"></audio>
         <audio id="exit-sound" src="/assets/Sample_0001.wav" preload="auto"></audio>
         <audio id="background-music" loop preload="auto"></audio>
+
         <header class="sticky top-0 z-50 border-b border-gray-700 glass-header">
             <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
                 <div class="flex items-center">
@@ -561,6 +336,11 @@
                         <option value="frutiger-aero">Frutiger Aero</option>
                         <option value="wii">Wii Channels</option>
                         <option value="virtual-boy">Virtual Boy</option>
+                        <option value="minecraft">Minecraft</option>
+                        <option value="blueprint">Blueprint</option>
+                        <option value="matrix">The Matrix</option>
+                        <option value="noir">L.A. Noir</option>
+                        <option value="windows-xp">Windows XP</option>
                         <option value="please-dont">Please don't...</option>
                         <option value="cyberpunk">Cyberpunk Neon</option>
                         <option value="classic">Classic OS (Win95)</option>
@@ -585,58 +365,52 @@
                     </h1>
 
                     <div class="mb-10 max-w-lg mx-auto">
-                        <input type="text" id="game-search-input" placeholder="Search for a game..." class="w-full p-3 rounded-2xl bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+                        <input type="text" id="game-search-input" placeholder="Search for a game..." class="w-full p-3 rounded-2xl bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow duration-300" />
                     </div>
                     
                     <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-                        
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/nikki.jpg" alt="Yume Nikki" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/nikki.jpg" alt="Yume Nikki" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Yume Nikki</h3>
                                 <p class="text-xs">Weirdness / Simulation</p>
                                 <button type="button" data-url="/games/clyumenikki.html" data-title="Yume Nikki" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                        
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/cookie.png" alt="Cookie Clicker" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/cookie.png" alt="Cookie Clicker" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Cookie Clicker</h3>
                                 <p class="text-xs">Idle / Simulation</p>
                                 <button type="button" data-url="/games/Cookie Clicker.html" data-title="Cookie Clicker" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/doom1.jpg" alt="Doom 1" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/doom1.jpg" alt="Doom 1" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Doom 1</h3>
                                 <p class="text-xs">Survival / Shooter</p>
                                 <button type="button" data-url="/games/DOOM.html" data-title="Doom 1" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                        
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/doom2.png" alt="Doom 2" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/doom2.png" alt="Doom 2" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Doom 2</h3>
                                 <p class="text-xs">Survival / Shooter</p>
                                 <button type="button" data-url="/games/Doom 2.html" data-title="Doom 2" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/factory.jpg" alt="Nubby's number factory" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/factory.jpg" alt="Nubby's number factory" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Nubby's number factory</h3>
                                 <p class="text-xs">Arcade / Endless</p>
                                 <button type="button" data-url="/games/Nubbys Number Factory.html" data-title="NNF" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/pizzatower.jpg" alt="Pizza Tower" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/pizzatower.jpg" alt="Pizza Tower" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Pizza Tower</h3>
                                 <p class="text-xs">Fast Paced / Platformer</p>
@@ -644,7 +418,7 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/cavestory.png" alt="Cave Story" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/cavestory.png" alt="Cave Story" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Cave Story</h3>
                                 <p class="text-xs">Platformer / Shooter</p>
@@ -652,7 +426,7 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/572190-vqi8cznu-v4.jpg" alt="BFDIA5B" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/572190-vqi8cznu-v4.jpg" alt="BFDIA5B" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">BFDIA5B</h3>
                                 <p class="text-xs">Platformer / Puzzle</p>
@@ -660,7 +434,7 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/uncanny-cat-canny-cat.gif" alt="Uncanny Cat Golf" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/uncanny-cat-canny-cat.gif" alt="Uncanny Cat Golf" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Uncanny Cat Golf</h3>
                                 <p class="text-xs">Golf</p>
@@ -668,187 +442,167 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/ngon.png" alt="N-GON" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/ngon.png" alt="N-GON" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">N-GON</h3>
                                 <p class="text-xs">Puzzle / Classic</p>
                                 <button type="button" data-url="/games/n-gon.html" data-title="N-GON" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/hx2er6ahcrv11.gif" alt="Deltarune" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/hx2er6ahcrv11.gif" alt="Deltarune" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Deltarune</h3>
                                 <p class="text-xs">RPG</p>
                                 <button type="button" data-url="https://deltacook.vercel.app/" data-title="Deltarune" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/2133.png" alt="Half-Life" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/2133.png" alt="Half-Life" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Half-Life</h3>
                                 <p class="text-xs">Shooter</p>
                                 <button type="button" data-url="/games/Half Life.html" data-title="Half-life" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/knight.jpeg" alt="Hollow Knight" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/knight.jpeg" alt="Hollow Knight" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Hollow Knight</h3>
                                 <p class="text-xs">RPG/ Metroidvania</p>
                                 <button type="button" data-url="/games/Hollow Knight(1).html" data-title="Hollow Knight" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/Sony-playstation-parappa-the-rapper.png" alt="Parappa the Rapper" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/Sony-playstation-parappa-the-rapper.png" alt="Parappa the Rapper" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Parappa the Rapper</h3>
                                 <p class="text-xs">Rhythm</p>
                                 <button type="button" data-url="/games/clparappatherapperalt.html" data-title="Parappa the Rapper" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/remix.jpg" alt="Smash Remix" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/remix.jpg" alt="Smash Remix" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Smash Remix</h3>
                                 <p class="text-xs">Fighting</p>
                                 <button type="button" data-url="/games/clsmashremix.html" data-title="Smash Remix" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/585.webp" alt="Fallout" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/585.webp" alt="Fallout" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Fallout</h3>
                                 <p class="text-xs">Survival</p>
                                 <button type="button" data-url="/games/Fallout.html" data-title="Fallout" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                        
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/423.png" alt="Webfishing" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/423.png" alt="Webfishing" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Webfishing</h3>
                                 <p class="text-xs">Fishing / simulation</p>
                                 <button type="button" data-url="/games/WebFishing.html" data-title="Webfishing" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                        
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/kindergarten.jpg" alt="Kindergarten" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/kindergarten.jpg" alt="Kindergarten" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Kindergarten</h3>
                                 <p class="text-xs">Puzzle / Horror</p>
                                 <button type="button" data-url="/games/Kindergarten.html" data-title="Kindergarten" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/kindergarten2.jpg" alt="Kindergarten 2" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/kindergarten2.jpg" alt="Kindergarten 2" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Kindergarten 2</h3>
                                 <p class="text-xs">Puzzle / Horror</p>
                                 <button type="button" data-url="/games/Kindergarten 2.html" data-title="Kindergarten 2" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/kindergarten3.jpg" alt="Kindergarten 3" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/kindergarten3.jpg" alt="Kindergarten 3" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Kindergarten 3</h3>
                                 <p class="text-xs">Puzzle / Horror</p>
                                 <button type="button" data-url="/games/Kindergarten 3.html" data-title="Kindergarten 3" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                        
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/kirbyadventure.jpg" alt="Kirby's Adventure" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/kirbyadventure.jpg" alt="Kirby's Adventure" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Kirby's Adventure</h3>
                                 <p class="text-xs">Platformer</p>
                                 <button type="button" data-url="/games/Kirbys Adventure.html" data-title="Kirby's Adventure" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/pacman.jpg" alt="Pac-Man" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/pacman.jpg" alt="Pac-Man" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Pac-Man</h3>
                                 <p class="text-xs">Arcade</p>
                                 <button type="button" data-url="/games/Pacman.html" data-title="Pac-Man" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                        
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/350.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/350.png" alt="The Binding of isaac" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">The Binding of isaac</h3>
                                 <p class="text-xs">Puzzle</p>
                                 <button type="button" data-url="/games/cltboilambeternal.html" data-title="The Binding of isaac" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                        
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/IMG_6019.jpeg" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/IMG_6019.jpeg" alt="Dadish" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Dadish</h3>
                                 <p class="text-xs">Puzzle</p>
                                 <button type="button" data-url="/games/Dadish.html" data-title="Dadish" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/IMG_6020.jpeg" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/IMG_6020.jpeg" alt="Dadish 2" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Dadish 2</h3>
                                 <p class="text-xs">Puzzle</p>
                                 <button type="button" data-url="/games/Dadish 2.html" data-title="Dadish 2" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/IMG_6021.jpeg" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/IMG_6021.jpeg" alt="Dadish 3" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Dadish 3</h3>
                                 <p class="text-xs">Puzzle</p>
                                 <button type="button" data-url="/games/Dadish 3.html" data-title="Dadish 3" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                        
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/IMG_6022.jpeg" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/IMG_6022.jpeg" alt="Dadish 3D" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Dadish 3D</h3>
                                 <p class="text-xs">Puzzle</p>
                                 <button type="button" data-url="/games/Dadish 3D.html" data-title="Dadish 3D" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/IMG_6027.jpeg" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/IMG_6027.jpeg" alt="Godzilla Domination" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Godzilla Domination</h3>
                                 <p class="text-xs">Fighter</p>
                                 <button type="button" data-url="/games/clgoldensun.html" data-title="Godzilla Domination" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/IMG_6034.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/IMG_6034.png" alt="Mario's Mystery Meat" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Mario's Mystery Meat</h3>
                                 <p class="text-xs">Platformer</p>
                                 <button type="button" data-url="/games/clmariosmysterymeat.html" data-title="Mario's Mystery Meat" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/IMG_6033.jpeg" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/IMG_6033.jpeg" alt="Donkey kong 64" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Donkey kong 64</h3>
                                 <p class="text-xs">Platformer / Shooter</p>
@@ -856,7 +610,7 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/IMG_6060.jpeg" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/IMG_6060.jpeg" alt="Cheese chompers 3d" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Cheese chompers 3d</h3>
                                 <p class="text-xs">Platformer / Shooter</p>
@@ -864,122 +618,111 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/686592.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/686592.png" alt="Postal" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Postal</h3>
                                 <p class="text-xs">Shooter</p>
                                 <button type="button" data-url="/games/Postal.html" data-title="Postal" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/IMG_6121.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/IMG_6121.png" alt="I wanna be the guy" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">I wanna be the guy</h3>
                                 <p class="text-xs">Rage game</p>
                                 <button type="button" data-url="/games/cliwbtg.html" data-title="IWBTG" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/undertale-pixel-art.gif" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="game-card overflow-hidden transition duration-200">
+                            <img src="/assets/undertale-pixel-art.gif" alt="Undertale" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Undertale</h3>
                                 <p class="text-xs">Bullet hell / RPG</p>
                                 <button type="button" data-url="/games/clundertale.html" data-title="Undertale" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/Balatro_cover.jpg" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="game-card overflow-hidden transition duration-200">
+                            <img src="/assets/Balatro_cover.jpg" alt="Balatro" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Balatro</h3>
                                 <p class="text-xs">Poker</p>
                                 <button type="button" data-url="/games/Balatro.html" data-title="Balatro" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/IMG_6142.jpeg" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/IMG_6142.jpeg" alt="Monkey Mart" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Monkey Mart</h3>
                                 <p class="text-xs">Simulator</p>
                                 <button type="button" data-url="/games/clmonkeymart.html" data-title="Monkey Mart" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                        
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/Plantsvs.ZombiesNintendoDS.png" alt="rope" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/Plantsvs.ZombiesNintendoDS.png" alt="Plants Vs Zombies" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Plants Vs Zombies</h3>
                                 <p class="text-xs">Tower Defense</p>
                                 <button type="button" data-url="/games/pvz.html" data-title="PVZ" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/ctgp.jpg" alt="CTGP Nitro" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/ctgp.jpg" alt="CTGP Nitro" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">CTGP Nitro</h3>
                                 <p class="text-xs">Racing</p>
                                 <button type="button" data-url="/games/clctgpnitro.html" data-title="CTGP Nitro" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/squeak.png" alt="Kirby Squeak Squad" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/squeak.png" alt="Kirby Squeak Squad" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Kirby Squeak Squad</h3>
                                 <p class="text-xs">Platformer</p>
                                 <button type="button" data-url="/games/clkirbysqueaksquad.html" data-title="Kirby Squeak Squad" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/ultra.jpg" alt="Kirby Super Star Ultra" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/ultra.jpg" alt="Kirby Super Star Ultra" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Kirby Super Star Ultra</h3>
                                 <p class="text-xs">Platformer</p>
                                 <button type="button" data-url="/games/clkirbysuperstarultra.html" data-title="Kirby Super Star Ultra" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/gta2.jpg" alt="Grand Theft Auto 2" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/gta2.jpg" alt="Grand Theft Auto 2" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Grand Theft Auto 2</h3>
                                 <p class="text-xs">Action / Open World</p>
                                 <button type="button" data-url="/games/clgta2alt.html" data-title="Grand Theft Auto 2" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/gta1.jpg" alt="Grand Theft Auto" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/gta1.jpg" alt="Grand Theft Auto" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Grand Theft Auto</h3>
                                 <p class="text-xs">Action / Open World</p>
                                 <button type="button" data-url="/games/clgtaalty.html" data-title="Grand Theft Auto" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/oot.jpg" alt="Zelda: Ocarina of Time" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/oot.jpg" alt="Zelda: Ocarina of Time" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Zelda: Ocarina of Time</h3>
                                 <p class="text-xs">Adventure / RPG</p>
                                 <button type="button" data-url="/games/clocarinaoftime.html" data-title="Zelda: Ocarina of Time" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/majora.jpg" alt="Zelda: Majora's Mask" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/majora.jpg" alt="Zelda: Majora's Mask" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Zelda: Majora's Mask</h3>
                                 <p class="text-xs">Adventure / RPG</p>
                                 <button type="button" data-url="/games/clmajorasmask.html" data-title="Zelda: Majora's Mask" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/drmario.jpg" alt="Dr. Mario" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/drmario.jpg" alt="Dr. Mario" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Dr. Mario</h3>
                                 <p class="text-xs">Puzzle</p>
@@ -987,7 +730,7 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/340.png" alt="Learn to fly" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/340.png" alt="Learn to fly" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Learn to fly</h3>
                                 <p class="text-xs">Puzzle</p>
@@ -995,7 +738,7 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/341.png" alt="Learn to fly 2" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/341.png" alt="Learn to fly 2" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Learn to fly 2</h3>
                                 <p class="text-xs">Puzzle</p>
@@ -1003,7 +746,7 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/342.png" alt="Learn to fly 3" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/342.png" alt="Learn to fly 3" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Learn to fly 3</h3>
                                 <p class="text-xs">Puzzle</p>
@@ -1011,7 +754,7 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/343.png" alt="Learn to fly idle" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/343.png" alt="Learn to fly idle" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Learn to fly idle</h3>
                                 <p class="text-xs">Puzzle</p>
@@ -1019,33 +762,33 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/become.png" alt="We Become What We Behold" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/become.png" alt="We Become What We Behold" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">We Become What We Behold</h3>
                                 <p class="text-xs">Puzzle</p>
                                 <button type="button" data-url="/games/clwebecomewhatwebehold.html" data-title="We Become What We Behold" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/ristar.jpeg" alt="Ristar" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/ristar.jpeg" alt="Ristar" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Ristar</h3>
                                 <p class="text-xs">Platformer</p>
                                 <button type="button" data-url="/games/ristar.html" data-title="Ristar" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/headdy.jpg" alt="Dynamite Headdy" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <img src="/assets/headdy.jpg" alt="Dynamite Headdy" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Dynamite Headdy</h3>
                                 <p class="text-xs">Platformer</p>
                                 <button type="button" data-url="/games/cldynamiteheaddy.html" data-title="Dynamite Headdy" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
-                    </div> </div> </div> </section>
+                    </div> 
+                </div> 
+            </div> 
+        </section>
         </main>
 
         <footer class="border-t border-gray-700 mt-10 glass-footer">
@@ -1064,115 +807,72 @@
             </div>
         </footer>
 
-        <div id="game-modal" class="fixed inset-0 bg-black bg-opacity-95 z-[100] flex items-center justify-center p-2 sm:p-4 transition-all duration-300 opacity-0 pointer-events-none scale-95" 
-            role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
-            
+        <div id="game-modal" class="fixed inset-0 bg-black bg-opacity-95 z-[100] flex items-center justify-center p-2 sm:p-4 transition-all duration-300 opacity-0 pointer-events-none scale-95" role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
             <div class="w-full h-full max-w-7xl max-h-[95vh] flex flex-col bg-gray-950 rounded-2xl overflow-hidden shadow-2xl glass-modal-container">
-                
                 <div class="flex-shrink-0 p-3 flex justify-between items-center border-b border-gray-700 glass-modal-header">
                     <h2 id="game-modal-title" class="text-xl font-bold text-cyan-400 truncate">Game Title</h2>
                     <div class="flex space-x-2 items-center">
-                        
-                        <button id="open-new-tab-btn" type="button" class="control-btn" title="Open in New Tab">
-                            <span class="sr-only">Open in New Tab</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                        </button>
-                        
-                        <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloaking)">
-                            <span class="sr-only">Open in about:blank</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        </button>
-
-                        <button id="fullscreen-btn" type="button" class="control-btn" title="Fullscreen Game">
-                            <span class="sr-only">Toggle Fullscreen</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m0 11v-4m0 4h-4m4 0l-5-5m-5 5v-4m-5 4h4m-4 0l5-5"></path></svg>
-                        </button>
-
-                        <button id="close-game-modal-btn" type="button" class="control-btn bg-red-600 hover:bg-red-500 text-white" title="Close Player">
-                            <span class="sr-only">Close Game Player</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                        </button>
+                        <button id="open-new-tab-btn" type="button" class="control-btn" title="Open in New Tab"><span class="sr-only">Open in New Tab</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></button>
+                        <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloaking)"><span class="sr-only">Open in about:blank</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></button>
+                        <button id="fullscreen-btn" type="button" class="control-btn" title="Fullscreen Game"><span class="sr-only">Toggle Fullscreen</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m0 11v-4m0 4h-4m4 0l-5-5m-5 5v-4m-5 4h4m-4 0l5-5"></path></svg></button>
+                        <button id="close-game-modal-btn" type="button" class="control-btn bg-red-600 hover:bg-red-500 text-white" title="Close Player"><span class="sr-only">Close Game Player</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                     </div>
                 </div>
-
                 <div class="flex-grow relative bg-black">
                     <iframe id="game-iframe" src="" frameborder="0" allowfullscreen class="w-full h-full"></iframe>
                 </div>
             </div>
         </div>
 
-        <div id="message-box"></div>
+        <div id="toast-notification">Notification</div>
 
     </div> 
+
     <script>
-        const hoverSound = document.getElementById('hover-sound');
-        const selectSound = document.getElementById('select-sound');
-        const exitSound = document.getElementById('exit-sound');
-        // NEW BGM ELEMENTS
-        const backgroundMusic = document.getElementById('background-music');
-        const songSelect = document.getElementById('song-select');
-        const BGM_STORAGE_KEY = 'qbbic-bgm';
-        let hasUserInteracted = false;
-        // END NEW BGM ELEMENTS
-
-        function setAndPlayBGM(url) {
-            if (url && url !== 'none') {
-                backgroundMusic.src = url;
-                backgroundMusic.volume = 0.4; // Set a low volume for background music
-                
-                // Attempt to play. This is necessary because most browsers block autoplay.
-                // We rely on the first user interaction (via playSound) to trigger the actual playback.
-                backgroundMusic.play().catch(e => {
-                    console.warn("Autoplay blocked/failed. Will try after first user interaction.", e);
-                });
-            } else {
-                backgroundMusic.pause();
-                backgroundMusic.src = '';
-            }
-        }
-
-        function playSound(audioElement) {
-            if (audioElement) {
-                audioElement.currentTime = 0; 
-                audioElement.play().catch(e => { });
-            }
-
-            // Attempt to play BGM after the first user gesture (playing a sound effect)
-            if (!hasUserInteracted && backgroundMusic.src && backgroundMusic.paused) {
-                backgroundMusic.play().then(() => {
-                    hasUserInteracted = true;
-                }).catch(e => {
-                    // Fails silently if browser still blocks it
-                });
-            }
-        }
-
-        function setFavicon(url) {
-            let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-            link.type = 'image/x-icon';
-            link.rel = 'shortcut icon';
-            link.href = url;
-            document.getElementsByTagName('head')[0].appendChild(link);
-        }
-
-        function cloakTab(preset) {
-            playSound(selectSound); 
-            if (preset === 'drive') {
-                document.title = 'Google Drive';
-                setFavicon('https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png');
-            } else if (preset === 'canvas') {
-                document.title = 'Canvas';
-                setFavicon('https://www.instructure.com/themes/custom/instructure_canvas/favicon.ico');
-            } else if (preset === 'classroom') {
-                document.title = 'Classes';
-                setFavicon('https://ssl.gstatic.com/images/branding/product/1x/classroom_32dp.png');
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
+            const hoverSound = document.getElementById('hover-sound');
+            const selectSound = document.getElementById('select-sound');
+            const exitSound = document.getElementById('exit-sound');
+            const backgroundMusic = document.getElementById('background-music');
+            const songSelect = document.getElementById('song-select');
             const themeSelect = document.getElementById('theme-select');
+            const BGM_STORAGE_KEY = 'qbbic-bgm';
+            let hasUserInteracted = false;
+
+            /* --- TOAST NOTIFICATION SYSTEM --- */
+            const toast = document.getElementById('toast-notification');
+            let toastTimeout;
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2500);
+            }
+
+            /* --- SOUND & THEME LOGIC --- */
+            function setAndPlayBGM(url) {
+                if (url && url !== 'none') {
+                    backgroundMusic.src = url;
+                    backgroundMusic.volume = 0.4;
+                    backgroundMusic.play().catch(e => console.warn("Autoplay blocked until interaction"));
+                } else {
+                    backgroundMusic.pause();
+                    backgroundMusic.src = '';
+                }
+            }
+
+            function playSound(audioElement) {
+                if (audioElement) {
+                    audioElement.currentTime = 0; 
+                    audioElement.play().catch(() => {});
+                }
+                if (!hasUserInteracted && backgroundMusic.src && backgroundMusic.paused) {
+                    backgroundMusic.play().then(() => { hasUserInteracted = true; }).catch(() => {});
+                }
+            }
+
+            /* --- THEME HANDLING --- */
             const savedTheme = localStorage.getItem('qbbic-theme') || 'frutiger-aero';
-            
             document.body.setAttribute('data-theme', savedTheme);
             if(themeSelect) themeSelect.value = savedTheme;
 
@@ -1182,67 +882,59 @@
                     document.body.setAttribute('data-theme', newTheme);
                     localStorage.setItem('qbbic-theme', newTheme);
                     playSound(selectSound);
+                    showToast(`Theme changed to ${e.target.options[e.target.selectedIndex].text}`);
                 });
             }
 
-            // NEW BGM LOGIC START
+            /* --- BGM HANDLING --- */
             const savedBGM = localStorage.getItem(BGM_STORAGE_KEY) || 'none';
-
             if(songSelect) {
-                // Set the dropdown to the saved value
                 songSelect.value = savedBGM;
-
-                // Load the saved BGM source on startup
-                if (savedBGM !== 'none') {
-                    setAndPlayBGM(savedBGM); // Attempts to play, will resume on user interaction
-                }
-
-                // Listener: Handle change and persistence
+                if (savedBGM !== 'none') setAndPlayBGM(savedBGM);
+                
                 songSelect.addEventListener('change', (e) => {
                     const newSongUrl = e.target.value;
                     localStorage.setItem(BGM_STORAGE_KEY, newSongUrl);
                     setAndPlayBGM(newSongUrl);
-                    playSound(selectSound); 
+                    playSound(selectSound);
+                    showToast(newSongUrl === 'none' ? "Music Muted" : "Playing Music");
                 });
             }
-            // NEW BGM LOGIC END
 
-            let currentGameUrl = '';
+            /* --- CLOAKING --- */
+            function setFavicon(url) {
+                let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+                link.type = 'image/x-icon'; link.rel = 'shortcut icon'; link.href = url;
+                document.getElementsByTagName('head')[0].appendChild(link);
+            }
 
-            const gameSearchInput = document.getElementById('game-search-input');
-            const gameGrid = document.getElementById('game-grid');
-            const allGameCards = document.querySelectorAll('.game-card');
-
-            const gameModal = document.getElementById('game-modal');
-            const gameModalTitle = document.getElementById('game-modal-title');
-            const gameIframe = document.getElementById('game-iframe');
-            
-            const openNewTabBtn = document.getElementById('open-new-tab-btn');
-            const openBlankBtn = document.getElementById('open-blank-btn');
-            const fullscreenBtn = document.getElementById('fullscreen-btn');
-            
-            const closeModalBtn = document.getElementById('close-game-modal-btn');
-            const messageBox = document.getElementById('message-box');
-
-            const cloakDriveBtn = document.getElementById('cloak-drive');
-            const cloakCanvasBtn = document.getElementById('cloak-canvas');
-            const cloakClassroomBtn = document.getElementById('cloak-classroom');
-
-            const hoverSelector = '.game-play-btn, .control-btn, a, select';
-            document.querySelectorAll(hoverSelector).forEach(el => {
-                el.addEventListener('mouseenter', () => playSound(hoverSound));
-            });
-
-            const clickSelector = 'a, button, .game-play-btn, .control-btn';
-            document.body.addEventListener('click', (e) => {
-                const isCloakBtn = e.target.closest('#cloak-drive') || 
-                                   e.target.closest('#cloak-canvas') || 
-                                   e.target.closest('#cloak-classroom');
-                if (e.target.closest(clickSelector) && !isCloakBtn && e.target.closest('#close-game-modal-btn') === null) {
-                    playSound(selectSound);
+            function cloakTab(preset) {
+                playSound(selectSound);
+                let name = "";
+                if (preset === 'drive') {
+                    document.title = 'Google Drive';
+                    setFavicon('https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png');
+                    name = "Google Drive";
+                } else if (preset === 'canvas') {
+                    document.title = 'Canvas';
+                    setFavicon('https://www.instructure.com/themes/custom/instructure_canvas/favicon.ico');
+                    name = "Canvas";
+                } else if (preset === 'classroom') {
+                    document.title = 'Classes';
+                    setFavicon('https://ssl.gstatic.com/images/branding/product/1x/classroom_32dp.png');
+                    name = "Google Classroom";
                 }
-            });
+                showToast(`Tab cloaked as ${name}`);
+            }
 
+            document.getElementById('cloak-drive')?.addEventListener('click', (e) => { e.preventDefault(); cloakTab('drive'); });
+            document.getElementById('cloak-canvas')?.addEventListener('click', (e) => { e.preventDefault(); cloakTab('canvas'); });
+            document.getElementById('cloak-classroom')?.addEventListener('click', (e) => { e.preventDefault(); cloakTab('classroom'); });
+
+            /* --- SEARCH FUNCTIONALITY --- */
+            const gameSearchInput = document.getElementById('game-search-input');
+            const allGameCards = document.querySelectorAll('.game-card');
+            
             if (gameSearchInput) {
                 gameSearchInput.addEventListener('input', (e) => {
                     const searchTerm = e.target.value.toLowerCase();
@@ -1254,6 +946,12 @@
                     });
                 });
             }
+
+            /* --- MODAL & GAMEPLAY --- */
+            const gameModal = document.getElementById('game-modal');
+            const gameModalTitle = document.getElementById('game-modal-title');
+            const gameIframe = document.getElementById('game-iframe');
+            let currentGameUrl = '';
 
             function openGameModal(url, title) {
                 currentGameUrl = url;
@@ -1272,41 +970,42 @@
                     document.body.style.overflow = ''; 
                 }, 300); 
             }
-            
-            if (gameGrid) {
-                gameGrid.addEventListener('click', (e) => {
-                    const playButton = e.target.closest('.game-play-btn');
-                    if (playButton) {
-                        const url = playButton.dataset.url;
-                        const title = playButton.dataset.title;
-                        if (url && title) openGameModal(url, title);
-                    }
-                });
-            }
-            if (openNewTabBtn) {
-                openNewTabBtn.addEventListener('click', () => window.open(currentGameUrl, '_blank'));
-            }
-            if (openBlankBtn) {
-                openBlankBtn.addEventListener('click', () => {
-                    const newWindow = window.open('about:blank', '_blank');
-                    if (newWindow) {
-                        newWindow.document.write(`<!DOCTYPE html><html lang="en"><head><title>${gameModalTitle.textContent}</title><style>body, html { margin: 0; padding: 0; overflow: hidden; background: #000; }</style></head><body><iframe src="${currentGameUrl}" style="width: 100vw; height: 100vh; border: none;" allowfullscreen></iframe></body></html>`);
-                        newWindow.document.close();
-                    }
-                });
-            }
-            if (fullscreenBtn) {
-                fullscreenBtn.addEventListener('click', () => {
-                    const requestFS = gameIframe.requestFullscreen || gameIframe.mozRequestFullScreen || gameIframe.webkitRequestFullscreen || gameIframe.msRequestFullscreen;
-                    if (requestFS) requestFS.call(gameIframe);
-                });
-            }
 
-            if (cloakDriveBtn) cloakDriveBtn.addEventListener('click', (e) => { e.preventDefault(); cloakTab('drive'); });
-            if (cloakCanvasBtn) cloakCanvasBtn.addEventListener('click', (e) => { e.preventDefault(); cloakTab('canvas'); });
-            if (cloakClassroomBtn) cloakClassroomBtn.addEventListener('click', (e) => { e.preventDefault(); cloakTab('classroom'); });
+            document.getElementById('game-grid')?.addEventListener('click', (e) => {
+                const playButton = e.target.closest('.game-play-btn');
+                if (playButton) {
+                    const url = playButton.dataset.url;
+                    const title = playButton.dataset.title;
+                    if (url && title) openGameModal(url, title);
+                }
+            });
 
-            if (closeModalBtn) closeModalBtn.addEventListener('click', closeGameModal);
+            document.getElementById('open-new-tab-btn')?.addEventListener('click', () => window.open(currentGameUrl, '_blank'));
+            document.getElementById('open-blank-btn')?.addEventListener('click', () => {
+                const newWindow = window.open('about:blank', '_blank');
+                if (newWindow) {
+                    newWindow.document.write(`<!DOCTYPE html><html lang="en"><head><title>${gameModalTitle.textContent}</title><style>body, html { margin: 0; padding: 0; overflow: hidden; background: #000; }</style></head><body><iframe src="${currentGameUrl}" style="width: 100vw; height: 100vh; border: none;" allowfullscreen></iframe></body></html>`);
+                    newWindow.document.close();
+                }
+            });
+            document.getElementById('fullscreen-btn')?.addEventListener('click', () => {
+                const requestFS = gameIframe.requestFullscreen || gameIframe.mozRequestFullScreen || gameIframe.webkitRequestFullscreen || gameIframe.msRequestFullscreen;
+                if (requestFS) requestFS.call(gameIframe);
+            });
+            document.getElementById('close-game-modal-btn')?.addEventListener('click', closeGameModal);
+
+            /* --- UI SOUNDS --- */
+            const hoverSelector = '.game-play-btn, .control-btn, a, select';
+            document.querySelectorAll(hoverSelector).forEach(el => {
+                el.addEventListener('mouseenter', () => playSound(hoverSound));
+            });
+            document.body.addEventListener('click', (e) => {
+                const isCloakBtn = e.target.closest('#cloak-drive, #cloak-canvas, #cloak-classroom');
+                const isClickable = e.target.closest('a, button, .game-play-btn, .control-btn');
+                if (isClickable && !isCloakBtn && !e.target.closest('#close-game-modal-btn')) {
+                    playSound(selectSound);
+                }
+            });
         });
     </script>
 </body>
