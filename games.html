@@ -69,6 +69,33 @@
             }
         }
 
+        /* 3. CHAOS ANIMATIONS (Please Don't) */
+        @keyframes rainbowMadness {
+            0% { filter: hue-rotate(0deg) contrast(1.2); }
+            50% { filter: hue-rotate(180deg) contrast(2); }
+            100% { filter: hue-rotate(360deg) contrast(1.2); }
+        }
+
+        @keyframes shakeHard {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        
+        @keyframes spinWild {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
         /* --- WII THEME OVERRIDES --- */
         body[data-theme="wii"] {
             /* Light Gray / White aesthetic */
@@ -118,6 +145,28 @@
             --blur-strength: 0px; 
             --card-radius: 0.25rem; 
         }
+
+        /* --- "PLEASE DON'T" THEME OVERRIDES --- */
+        body[data-theme="please-dont"] {
+            --color-primary: #ff00ff; 
+            --color-primary-light: #00ff00;
+            --color-primary-dark: #ffff00;
+            
+            --color-text-base: #000000;
+            --color-text-white: #ffff00;
+            --color-text-dark: #000000;
+            
+            --bg-glass-header: rgba(255, 0, 255, 0.8);
+            --bg-glass-card: rgba(255, 255, 0, 0.8);
+            --bg-glass-card-hover: rgba(0, 255, 255, 0.9);
+            --bg-glass-modal: rgba(0, 0, 0, 0.9);
+            
+            --border-glass: #000000;
+            
+            font-family: "Comic Sans MS", "Comic Sans", cursive;
+            cursor: help !important;
+            animation: rainbowMadness 3s infinite linear;
+        }
         
         body {
             font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
@@ -148,7 +197,7 @@
             transition: background 0.5s ease;
         }
 
-        /* 1. Frutiger Aero Background (Static Image + Bubbles) */
+        /* 1. Frutiger Aero Background */
         body[data-theme="frutiger-aero"] #css-3d-background {
             background-image: url('/assets/aqua.jpg');
             background-size: cover;
@@ -169,18 +218,16 @@
             width: var(--size);
             height: var(--size);
             left: var(--pos);
-            opacity: 0; /* Hidden by default until animation starts */
+            opacity: 0; 
         }
 
-        /* Hide bubbles if not Frutiger Aero */
         body:not([data-theme="frutiger-aero"]) .bubble-container {
             display: none;
         }
 
-        /* 2. Wii Background (Moving Gray Checkerboard) */
+        /* 2. Wii Background */
         body[data-theme="wii"] #css-3d-background {
             background-color: #e0e0e0;
-            /* Create checkerboard pattern with gradients */
             background-image: 
                 linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0),
                 linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0);
@@ -189,16 +236,28 @@
             animation: scrollGrid 3s linear infinite;
         }
 
-        /* 3. Virtual Boy Background (Moving Red/Black Checkerboard) */
+        /* 3. Virtual Boy Background */
         body[data-theme="virtual-boy"] #css-3d-background {
             background-color: #000000;
-            /* Dark red checkers on black */
             background-image: 
                 linear-gradient(45deg, #220000 25%, transparent 25%, transparent 75%, #220000 75%, #220000),
                 linear-gradient(45deg, #220000 25%, transparent 25%, transparent 75%, #220000 75%, #220000);
             background-size: 40px 40px;
             background-position: 0 0, 20px 20px;
             animation: scrollGrid 3s linear infinite;
+        }
+
+        /* 4. Please Don't Background (Chaotic Grid) */
+        body[data-theme="please-dont"] #css-3d-background {
+            background: repeating-linear-gradient(
+                45deg,
+                #606dbc,
+                #606dbc 10px,
+                #465298 10px,
+                #465298 20px
+            );
+            background-size: 100% 100%;
+            animation: scrollGrid 0.2s linear infinite; /* SUPER FAST */
         }
 
         /* --- CARD STYLES --- */
@@ -215,7 +274,7 @@
         }
 
         /* Frutiger Aero Gloss Effect */
-        body:not([data-theme="wii"]):not([data-theme="virtual-boy"]) .game-card::before {
+        body:not([data-theme="wii"]):not([data-theme="virtual-boy"]):not([data-theme="please-dont"]) .game-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -250,8 +309,20 @@
             border-color: var(--color-primary-light);
         }
 
+        /* Please Don't Hover (Chaos) */
+        body[data-theme="please-dont"] .game-card {
+            border: 3px dashed #000;
+            animation: shakeHard 2s infinite;
+            border-radius: 0 !important;
+        }
+        body[data-theme="please-dont"] .game-card:hover {
+            animation: spinWild 1s linear infinite;
+            background-color: #ff00ff;
+            outline: 5px dotted yellow;
+        }
+
         /* Frutiger Aero Reflection */
-        body:not([data-theme="wii"]):not([data-theme="virtual-boy"]) .game-card:hover::after {
+        body:not([data-theme="wii"]):not([data-theme="virtual-boy"]):not([data-theme="please-dont"]) .game-card:hover::after {
              background: rgba(0, 161, 255, 0.2); 
              transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px);
              content: '';
@@ -309,11 +380,13 @@
         
         body[data-theme="wii"] .game-card p { color: #888888; }
         body[data-theme="virtual-boy"] .game-card p { color: #bb0000; } 
+        body[data-theme="please-dont"] .game-card h3 { color: blue; text-transform: uppercase; }
         
         h1 { color: var(--color-text-white); text-shadow: 0 1px 3px rgba(0,0,0,0.4); } 
         
         body[data-theme="wii"] h1 { text-shadow: none; color: #555555; }
         body[data-theme="virtual-boy"] h1 { text-shadow: none; color: var(--color-text-white); }
+        body[data-theme="please-dont"] h1 { color: #ff0000; text-decoration: underline wavy blue; }
 
 
         /* Button Styles */
@@ -356,6 +429,14 @@
             color: #000000 !important;
             box-shadow: inset 0 0 5px #000000; 
             border-color: #ff0000;
+        }
+
+        /* Please Don't Button Override */
+        body[data-theme="please-dont"] .bg-cyan-500 {
+             background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet) !important;
+             color: white !important;
+             border: 2px solid black;
+             animation: shakeHard 5s infinite;
         }
 
         /* Theme Selector Dropdown */
@@ -572,6 +653,7 @@
                         <option value="frutiger-aero">Frutiger Aero</option>
                         <option value="wii">Wii Channels</option>
                         <option value="virtual-boy">Virtual Boy</option>
+                        <option value="please-dont">Please don't...</option>
                     </select>
                 </div>
             </nav>
@@ -969,7 +1051,7 @@
                                 <button type="button" data-url="/games/cldrmario(1).html" data-title="Dr. Mario" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                          <div class="game-card overflow-hidden transition duration-200">
+                        <div class="game-card overflow-hidden transition duration-200">
                             <img src="/assets/340.png" alt="Learn to fly" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Learn to fly</h3>
@@ -977,7 +1059,7 @@
                                 <button type="button" data-url="/games/cllearntofly.html" data-title="Learn to fly" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                          <div class="game-card overflow-hidden transition duration-200">
+                        <div class="game-card overflow-hidden transition duration-200">
                             <img src="/assets/341.png" alt="Learn to fly 2" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Learn to fly 2</h3>
@@ -985,7 +1067,7 @@
                                 <button type="button" data-url="/games/cllearntofly2.html" data-title="Learn to fly 2" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                          <div class="game-card overflow-hidden transition duration-200">
+                        <div class="game-card overflow-hidden transition duration-200">
                             <img src="/assets/342.png" alt="Learn to fly 3" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Learn to fly 3</h3>
@@ -993,7 +1075,7 @@
                                 <button type="button" data-url="/games/cllearntofly3.html" data-title="Learn to fly 3" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                          <div class="game-card overflow-hidden transition duration-200">
+                        <div class="game-card overflow-hidden transition duration-200">
                             <img src="/assets/343.png" alt="Learn to fly idle" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Learn to fly idle</h3>
@@ -1001,7 +1083,7 @@
                                 <button type="button" data-url="/games/cllearntoflyidle.html" data-title="Learn to fly idle" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                          <div class="game-card overflow-hidden transition duration-200">
+                        <div class="game-card overflow-hidden transition duration-200">
                             <img src="/assets/become.png" alt="We Become What We Behold" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">We Become What We Behold</h3>
@@ -1009,30 +1091,27 @@
                                 <button type="button" data-url="/games/clwebecomewhatwebehold.html" data-title="We Become What We Behold" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                          </div>
-                          <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/ristar.jpeg" alt="We Become What We Behold" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+
+                        <div class="game-card overflow-hidden transition duration-200">
+                            <img src="/assets/ristar.jpeg" alt="Ristar" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Ristar</h3>
                                 <p class="text-xs">Platformer</p>
-                                <button type="button" data-url="/games/ristar.html" data-title="We Become What We Behold" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                            </div>
-                        </div>
-                      </div>
-                          <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/headdy.jpg" alt="We Become What We Behold" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
-                            <div class="p-3">
-                                <h3 class="text-lg font-semibold truncate">Dynamite headdy</h3>
-                                <p class="text-xs">Platformer</p>
-                                <button type="button" data-url="/games/cldynamiteheaddy.html" data-title="We Become What We Behold" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                                <button type="button" data-url="/games/ristar.html" data-title="Ristar" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
 
-                    </div> 
-                </div> 
-            </div> 
-        </section>
-    </main>
+                        <div class="game-card overflow-hidden transition duration-200">
+                            <img src="/assets/headdy.jpg" alt="Dynamite Headdy" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                            <div class="p-3">
+                                <h3 class="text-lg font-semibold truncate">Dynamite Headdy</h3>
+                                <p class="text-xs">Platformer</p>
+                                <button type="button" data-url="/games/cldynamiteheaddy.html" data-title="Dynamite Headdy" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                            </div>
+                        </div>
+
+                    </div> </div> </div> </section>
+        </main>
 
         <footer class="border-t border-gray-700 mt-10 glass-footer">
             <div class="container mx-auto px-4 py-6 text-center">
@@ -1087,7 +1166,7 @@
             </div>
         </div>
 
-        <div id="message-box" class></div>
+        <div id="message-box"></div>
 
     </div> 
     <script>
