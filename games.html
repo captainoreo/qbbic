@@ -37,39 +37,25 @@
             
             /* Card Border Radius */
             --card-radius: 1.5rem;
+            
+            /* Font */
+            --font-main: Arial, 'Helvetica Neue', Helvetica, sans-serif;
         }
 
         /* --- ANIMATIONS --- */
         
-        /* 1. Floating Bubbles (Frutiger Aero) */
         @keyframes floatUp {
-            0% {
-                transform: translateY(100vh) scale(0.5);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.7;
-            }
-            90% {
-                opacity: 0.7;
-            }
-            100% {
-                transform: translateY(-20vh) scale(1.2);
-                opacity: 0;
-            }
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.7; }
+            100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
         }
 
-        /* 2. Scrolling Grid (Wii / Virtual Boy) */
         @keyframes scrollGrid {
-            0% {
-                background-position: 0 0;
-            }
-            100% {
-                background-position: 40px 40px; /* Must match background-size */
-            }
+            0% { background-position: 0 0; }
+            100% { background-position: 40px 40px; }
         }
 
-        /* 3. CHAOS ANIMATIONS (Please Don't) */
         @keyframes rainbowMadness {
             0% { filter: hue-rotate(0deg) contrast(1.2); }
             50% { filter: hue-rotate(180deg) contrast(2); }
@@ -79,14 +65,7 @@
         @keyframes shakeHard {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
             50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
             100% { transform: translate(1px, -2px) rotate(-1deg); }
         }
         
@@ -95,42 +74,39 @@
             50% { transform: rotate(180deg) scale(1.2); }
             100% { transform: rotate(360deg) scale(1); }
         }
+        
+        @keyframes scanline {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
+        }
 
-        /* --- WII THEME OVERRIDES --- */
+        /* --- THEME 2: WII --- */
         body[data-theme="wii"] {
-            /* Light Gray / White aesthetic */
             --color-primary: #888888; 
             --color-primary-light: #aaaaaa;
             --color-primary-dark: #555555;
-            
             --color-text-base: #555555;
             --color-text-white: #444444; 
             --color-text-dark: #222222;
-            
             --bg-glass-header: #eeeeee; 
             --bg-glass-card: #ffffff; 
             --bg-glass-card-hover: #ffffff;
             --bg-glass-modal: #ffffff;
-            
             --border-glass: #cccccc;
             --border-glass-light: #dddddd;
-            
             --blur-strength: 0px; 
             --card-radius: 20px;
         }
 
-        /* --- VIRTUAL BOY THEME OVERRIDES --- */
+        /* --- THEME 3: VIRTUAL BOY --- */
         body[data-theme="virtual-boy"] {
             --color-primary: #550000; 
             --color-primary-light: #990000; 
             --color-primary-dark: #330000; 
-            
             --color-text-base: #ff0000; 
             --color-text-white: #ff0000; 
             --color-text-dark: #ff0000; 
-            
             --bg-page: #000000; 
-            
             --bg-glass-header: #110000; 
             --bg-glass-card: #330000; 
             --bg-glass-card-hover: #550000; 
@@ -138,38 +114,148 @@
             --bg-glass-modal-header: #110000;
             --bg-glass-controls: #550000;
             --bg-glass-controls-hover: #990000;
-
             --border-glass: #770000; 
             --border-glass-light: #440000;
-            
             --blur-strength: 0px; 
             --card-radius: 0.25rem; 
         }
 
-        /* --- "PLEASE DON'T" THEME OVERRIDES --- */
+        /* --- THEME 4: PLEASE DON'T --- */
         body[data-theme="please-dont"] {
             --color-primary: #ff00ff; 
             --color-primary-light: #00ff00;
             --color-primary-dark: #ffff00;
-            
             --color-text-base: #000000;
             --color-text-white: #ffff00;
             --color-text-dark: #000000;
-            
             --bg-glass-header: rgba(255, 0, 255, 0.8);
             --bg-glass-card: rgba(255, 255, 0, 0.8);
             --bg-glass-card-hover: rgba(0, 255, 255, 0.9);
             --bg-glass-modal: rgba(0, 0, 0, 0.9);
-            
             --border-glass: #000000;
-            
-            font-family: "Comic Sans MS", "Comic Sans", cursive;
+            --font-main: "Comic Sans MS", "Comic Sans", cursive;
             cursor: help !important;
             animation: rainbowMadness 3s infinite linear;
         }
+
+        /* --- THEME 5: CYBERPUNK NEON --- */
+        body[data-theme="cyberpunk"] {
+            --color-primary: #0f0f1a; 
+            --color-primary-light: #00f3ff; 
+            --color-primary-dark: #7b00ff; 
+            --color-text-base: #00f3ff;
+            --color-text-white: #ffffff;
+            --color-text-dark: #e0e0e0;
+            --bg-page: #050510;
+            --bg-glass-header: rgba(15, 15, 26, 0.95);
+            --bg-glass-card: rgba(15, 15, 26, 0.8);
+            --bg-glass-card-hover: rgba(30, 30, 60, 0.95);
+            --bg-glass-modal: #050510;
+            --bg-glass-modal-header: #1a1a2e;
+            --bg-glass-controls: rgba(30, 30, 60, 0.8);
+            --bg-glass-controls-hover: #7b00ff;
+            --border-glass: #00f3ff;
+            --border-glass-light: rgba(0, 243, 255, 0.3);
+            --blur-strength: 0px;
+            --card-radius: 0px;
+            --font-main: 'Courier New', Courier, monospace;
+        }
+
+        /* --- THEME 6: CLASSIC OS (Win95) --- */
+        body[data-theme="classic"] {
+            --color-primary: #c0c0c0;
+            --color-primary-light: #ffffff;
+            --color-primary-dark: #808080;
+            --color-text-base: #000000;
+            --color-text-white: #000000; 
+            --color-text-dark: #000000;
+            --bg-page: #008080;
+            --bg-glass-header: #c0c0c0;
+            --bg-glass-card: #c0c0c0;
+            --bg-glass-card-hover: #c0c0c0;
+            --bg-glass-modal: #c0c0c0;
+            --bg-glass-modal-header: #000080; /* Classic Blue Title Bar */
+            --bg-glass-controls: #c0c0c0;
+            --bg-glass-controls-hover: #c0c0c0;
+            --border-glass: #ffffff; /* Used for highlight */
+            --border-glass-light: #808080; /* Used for shadow */
+            --blur-strength: 0px;
+            --card-radius: 0px;
+            --font-main: Tahoma, sans-serif;
+        }
+
+        /* --- THEME 7: TERMINAL (Hacker) --- */
+        body[data-theme="terminal"] {
+            --color-primary: #000000;
+            --color-primary-light: #00ff00;
+            --color-primary-dark: #003300;
+            --color-text-base: #00ff00;
+            --color-text-white: #00ff00;
+            --color-text-dark: #00ff00;
+            --bg-page: #000000;
+            --bg-glass-header: #000000;
+            --bg-glass-card: #000000;
+            --bg-glass-card-hover: #001100;
+            --bg-glass-modal: #000000;
+            --bg-glass-modal-header: #001100;
+            --bg-glass-controls: #000000;
+            --bg-glass-controls-hover: #003300;
+            --border-glass: #00ff00;
+            --border-glass-light: #005500;
+            --blur-strength: 0px;
+            --card-radius: 0px;
+            --font-main: 'Courier New', Courier, monospace;
+        }
+
+        /* --- THEME 8: RETRO HANDHELD (GB) --- */
+        body[data-theme="retro-handheld"] {
+            /* 4 Shades of Green */
+            --color-primary: #8bac0f;
+            --color-primary-light: #9bbc0f;
+            --color-primary-dark: #306230;
+            --color-text-base: #0f380f;
+            --color-text-white: #0f380f;
+            --color-text-dark: #0f380f;
+            --bg-page: #9bbc0f;
+            --bg-glass-header: #8bac0f;
+            --bg-glass-card: #9bbc0f;
+            --bg-glass-card-hover: #8bac0f;
+            --bg-glass-modal: #9bbc0f;
+            --bg-glass-modal-header: #8bac0f;
+            --bg-glass-controls: #9bbc0f;
+            --bg-glass-controls-hover: #306230;
+            --border-glass: #0f380f;
+            --border-glass-light: #306230;
+            --blur-strength: 0px;
+            --card-radius: 4px;
+            --font-main: 'Courier New', monospace;
+        }
+
+        /* --- THEME 9: VAPORWAVE --- */
+        body[data-theme="vaporwave"] {
+            --color-primary: #ff71ce; /* Pink */
+            --color-primary-light: #01cdfe; /* Cyan */
+            --color-primary-dark: #b967ff; /* Purple */
+            --color-text-base: #ffffff;
+            --color-text-white: #ffffff;
+            --color-text-dark: #01cdfe;
+            --bg-page: #2b2146;
+            --bg-glass-header: rgba(43, 33, 70, 0.8);
+            --bg-glass-card: rgba(255, 255, 255, 0.1);
+            --bg-glass-card-hover: rgba(255, 113, 206, 0.3);
+            --bg-glass-modal: rgba(43, 33, 70, 0.95);
+            --bg-glass-modal-header: rgba(185, 103, 255, 0.5);
+            --bg-glass-controls: rgba(1, 205, 254, 0.5);
+            --bg-glass-controls-hover: #ff71ce;
+            --border-glass: #ff71ce;
+            --border-glass-light: #b967ff;
+            --blur-strength: 10px;
+            --card-radius: 0px;
+            --font-main: Arial, sans-serif;
+        }
         
         body {
-            font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            font-family: var(--font-main);
             background-color: var(--color-primary); 
             color: var(--color-text-base);
             min-height: 100vh;
@@ -220,10 +306,7 @@
             left: var(--pos);
             opacity: 0; 
         }
-
-        body:not([data-theme="frutiger-aero"]) .bubble-container {
-            display: none;
-        }
+        body:not([data-theme="frutiger-aero"]) .bubble-container { display: none; }
 
         /* 2. Wii Background */
         body[data-theme="wii"] #css-3d-background {
@@ -247,18 +330,49 @@
             animation: scrollGrid 3s linear infinite;
         }
 
-        /* 4. Please Don't Background (Chaotic Grid) */
+        /* 4. Please Don't Background */
         body[data-theme="please-dont"] #css-3d-background {
-            background: repeating-linear-gradient(
-                45deg,
-                #606dbc,
-                #606dbc 10px,
-                #465298 10px,
-                #465298 20px
-            );
+            background: repeating-linear-gradient(45deg, #606dbc, #606dbc 10px, #465298 10px, #465298 20px);
             background-size: 100% 100%;
-            animation: scrollGrid 0.2s linear infinite; /* SUPER FAST */
+            animation: scrollGrid 0.2s linear infinite; 
         }
+
+        /* 5. Cyberpunk Background */
+        body[data-theme="cyberpunk"] #css-3d-background {
+             background-color: #050510;
+             background-image: linear-gradient(rgba(0, 243, 255, 0.1) 1px, transparent 1px),
+             linear-gradient(90deg, rgba(0, 243, 255, 0.1) 1px, transparent 1px);
+             background-size: 40px 40px;
+             box-shadow: inset 0 0 150px #000;
+        }
+
+        /* 6. Classic OS Background */
+        body[data-theme="classic"] #css-3d-background {
+            background-color: #008080; 
+        }
+
+        /* 7. Terminal Background */
+        body[data-theme="terminal"] #css-3d-background {
+            background-color: #000000;
+            background-image: linear-gradient(rgba(0, 255, 0, 0.03) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 3px, 6px 100%;
+            animation: scanline 10s linear infinite;
+        }
+
+        /* 8. Retro Handheld Background */
+        body[data-theme="retro-handheld"] #css-3d-background {
+            background-color: #9bbc0f;
+            background-image: 
+                linear-gradient(transparent 95%, #8bac0f 95%),
+                linear-gradient(90deg, transparent 95%, #8bac0f 95%);
+            background-size: 4px 4px;
+        }
+
+        /* 9. Vaporwave Background */
+        body[data-theme="vaporwave"] #css-3d-background {
+            background: linear-gradient(to bottom, #2b2146, #c77dff);
+        }
+
 
         /* --- CARD STYLES --- */
         .game-card {
@@ -273,18 +387,22 @@
             overflow: hidden;
         }
 
-        /* Frutiger Aero Gloss Effect */
-        body:not([data-theme="wii"]):not([data-theme="virtual-boy"]):not([data-theme="please-dont"]) .game-card::before {
+        /* Frutiger Aero Gloss Effect (Specific to Frutiger) */
+        body[data-theme="frutiger-aero"] .game-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 112px; 
             z-index: 1;
             background: linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 100%);
             pointer-events: none;
             border-radius: 1.5rem 1.5rem 0 0;
+        }
+        body[data-theme="frutiger-aero"] .game-card:hover::after {
+             background: rgba(0, 161, 255, 0.2); 
+             transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px);
+             content: ''; position: absolute; bottom: -15px; left: 10%; width: 80%; height: 50px; 
+             opacity: 0.8; transition: all 0.3s ease;
         }
 
         .game-card:hover {
@@ -293,7 +411,7 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
         }
 
-        /* Wii Hover (Blue Outline) */
+        /* Wii Hover */
         body[data-theme="wii"] .game-card:hover {
             outline: 4px solid #40c4ff;
             box-shadow: 0 0 15px rgba(64, 196, 255, 0.6);
@@ -301,7 +419,7 @@
             border-color: #40c4ff;
         }
         
-        /* Virtual Boy Hover (Red Outline) */
+        /* Virtual Boy Hover */
         body[data-theme="virtual-boy"] .game-card:hover {
             outline: 2px solid var(--color-primary-light); 
             box-shadow: 0 0 10px var(--color-primary-light); 
@@ -309,7 +427,7 @@
             border-color: var(--color-primary-light);
         }
 
-        /* Please Don't Hover (Chaos) */
+        /* Please Don't Hover */
         body[data-theme="please-dont"] .game-card {
             border: 3px dashed #000;
             animation: shakeHard 2s infinite;
@@ -321,19 +439,58 @@
             outline: 5px dotted yellow;
         }
 
-        /* Frutiger Aero Reflection */
-        body:not([data-theme="wii"]):not([data-theme="virtual-boy"]):not([data-theme="please-dont"]) .game-card:hover::after {
-             background: rgba(0, 161, 255, 0.2); 
-             transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px);
-             content: '';
-             position: absolute;
-             bottom: -15px; 
-             left: 10%;
-             width: 80%;
-             height: 50px; 
-             opacity: 0.8;
-             transition: all 0.3s ease;
+        /* Cyberpunk Hover */
+        body[data-theme="cyberpunk"] .game-card:hover {
+            box-shadow: 0 0 15px var(--color-primary-light), inset 0 0 10px var(--color-primary-dark);
+            border-color: var(--color-primary-light);
         }
+
+        /* Classic OS Bevels */
+        body[data-theme="classic"] .game-card,
+        body[data-theme="classic"] .glass-header,
+        body[data-theme="classic"] .glass-footer,
+        body[data-theme="classic"] .control-btn,
+        body[data-theme="classic"] #game-search-input,
+        body[data-theme="classic"] select,
+        body[data-theme="classic"] .bg-cyan-500 {
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #808080;
+            border-bottom: 2px solid #808080;
+            box-shadow: 1px 1px 0 #000;
+            transform: none !important;
+        }
+        body[data-theme="classic"] .glass-main-panel {
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #808080;
+            border-bottom: 2px solid #808080;
+        }
+        body[data-theme="classic"] .glass-modal-header {
+            background: linear-gradient(to right, #000080, #1084d0);
+            color: white;
+            padding: 4px 8px;
+        }
+        body[data-theme="classic"] #game-modal-title { color: white !important; font-size: 14px; }
+        body[data-theme="classic"] nav a.text-white { color: #000000 !important; }
+
+        /* Terminal Hover */
+        body[data-theme="terminal"] .game-card { border: 1px solid #00ff00; }
+        body[data-theme="terminal"] .game-card:hover { background-color: #001100; box-shadow: 0 0 8px #00ff00; }
+        
+        /* Retro Handheld Image Filter */
+        body[data-theme="retro-handheld"] .game-card img {
+            filter: grayscale(1) sepia(1) saturate(3) hue-rotate(50deg) contrast(0.8);
+        }
+        body[data-theme="retro-handheld"] .game-card:hover {
+            border: 2px solid #0f380f;
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+
+        /* Vaporwave */
+        body[data-theme="vaporwave"] .game-card { border: 1px solid #ff71ce; }
+        body[data-theme="vaporwave"] .game-card:hover { box-shadow: 4px 4px 0px #01cdfe; border-color: #01cdfe; }
 
         /* --- LAYOUT COMPONENTS --- */
         .glass-header {
@@ -358,21 +515,9 @@
             padding: 1rem;
         }
 
-        /* Wii Panel Overrides */
-        body[data-theme="wii"] .glass-main-panel {
-            background-color: transparent;
-            border: none;
-            box-shadow: none;
-            backdrop-filter: none;
-        }
-        /* Virtual Boy Panel Overrides */
-        body[data-theme="virtual-boy"] .glass-main-panel {
-            background-color: #000000; 
-            border: 1px solid var(--border-glass);
-            box-shadow: none;
-            backdrop-filter: none;
-            border-radius: 0.5rem; 
-        }
+        /* Theme Specific Panel Overrides */
+        body[data-theme="wii"] .glass-main-panel { background-color: transparent; border: none; box-shadow: none; backdrop-filter: none; }
+        body[data-theme="virtual-boy"] .glass-main-panel { background-color: #000000; border: 1px solid var(--border-glass); box-shadow: none; backdrop-filter: none; border-radius: 0.5rem; }
 
         /* Text Colors */
         .game-card h3 { color: var(--color-text-dark); z-index: 2; position: relative; }
@@ -381,14 +526,19 @@
         body[data-theme="wii"] .game-card p { color: #888888; }
         body[data-theme="virtual-boy"] .game-card p { color: #bb0000; } 
         body[data-theme="please-dont"] .game-card h3 { color: blue; text-transform: uppercase; }
+        body[data-theme="cyberpunk"] .game-card p { color: #e0e0e0; }
+        body[data-theme="classic"] .game-card p { color: #000000; }
+        body[data-theme="terminal"] .game-card p { color: #00ff00; }
+        body[data-theme="retro-handheld"] .game-card p { color: #0f380f; }
+        body[data-theme="vaporwave"] .game-card p { color: #01cdfe; }
         
         h1 { color: var(--color-text-white); text-shadow: 0 1px 3px rgba(0,0,0,0.4); } 
-        
         body[data-theme="wii"] h1 { text-shadow: none; color: #555555; }
         body[data-theme="virtual-boy"] h1 { text-shadow: none; color: var(--color-text-white); }
         body[data-theme="please-dont"] h1 { color: #ff0000; text-decoration: underline wavy blue; }
-
-
+        body[data-theme="classic"] h1 { color: #000000; text-shadow: none; background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 5px; }
+        body[data-theme="terminal"] h1 { text-shadow: 0 0 5px #00ff00; }
+        
         /* Button Styles */
         .bg-cyan-500 { 
             background-color: var(--color-primary) !important; 
@@ -401,44 +551,26 @@
             position: relative; 
         }
 
-        /* Wii Button Override */
-        body[data-theme="wii"] .bg-cyan-500 {
-            background: #ffffff !important;
-            color: #555555 !important;
-            border: 1px solid #bbbbbb;
-            text-shadow: none;
-            border-radius: 20px; /* Lozenge shape */
-        }
-        body[data-theme="wii"] .bg-cyan-500:hover {
-            background: #eeeeee !important;
-            color: #00a1ff !important; /* Blue text on hover */
-            border-color: #00a1ff;
-        }
+        /* Theme Button Overrides */
+        body[data-theme="wii"] .bg-cyan-500 { background: #ffffff !important; color: #555555 !important; border: 1px solid #bbbbbb; text-shadow: none; border-radius: 20px; }
+        body[data-theme="wii"] .bg-cyan-500:hover { background: #eeeeee !important; color: #00a1ff !important; border-color: #00a1ff; }
 
-        /* Virtual Boy Button Override */
-        body[data-theme="virtual-boy"] .bg-cyan-500 {
-            background: var(--color-primary-light) !important; /* Bright red */
-            color: #000000 !important; /* Black text */
-            border: 1px solid var(--color-text-base); /* Bright red border */
-            text-shadow: none;
-            border-radius: 0.25rem;
-            font-weight: normal;
-        }
-        body[data-theme="virtual-boy"] .bg-cyan-500:hover {
-            background: var(--color-primary-light) !important; 
-            color: #000000 !important;
-            box-shadow: inset 0 0 5px #000000; 
-            border-color: #ff0000;
-        }
+        body[data-theme="virtual-boy"] .bg-cyan-500 { background: var(--color-primary-light) !important; color: #000000 !important; border: 1px solid var(--color-text-base); text-shadow: none; border-radius: 0.25rem; font-weight: normal; }
+        body[data-theme="virtual-boy"] .bg-cyan-500:hover { background: var(--color-primary-light) !important; color: #000000 !important; box-shadow: inset 0 0 5px #000000; border-color: #ff0000; }
 
-        /* Please Don't Button Override */
-        body[data-theme="please-dont"] .bg-cyan-500 {
-             background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet) !important;
-             color: white !important;
-             border: 2px solid black;
-             animation: shakeHard 5s infinite;
-        }
+        body[data-theme="please-dont"] .bg-cyan-500 { background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet) !important; color: white !important; border: 2px solid black; animation: shakeHard 5s infinite; }
+        
+        body[data-theme="cyberpunk"] .bg-cyan-500 { background: transparent !important; border: 1px solid var(--color-primary-light); color: var(--color-primary-light) !important; box-shadow: 0 0 5px var(--color-primary-light); }
+        body[data-theme="cyberpunk"] .bg-cyan-500:hover { background: var(--color-primary-light) !important; color: #000 !important; box-shadow: 0 0 15px var(--color-primary-light); }
 
+        body[data-theme="classic"] .bg-cyan-500 { background: #c0c0c0 !important; color: black !important; border: 2px solid; border-color: #fff #808080 #808080 #fff; box-shadow: none; }
+        body[data-theme="classic"] .bg-cyan-500:active { border-color: #808080 #fff #fff #808080; }
+
+        body[data-theme="terminal"] .bg-cyan-500 { background: black !important; border: 1px solid #00ff00; color: #00ff00 !important; box-shadow: none; }
+        body[data-theme="terminal"] .bg-cyan-500:hover { background: #00ff00 !important; color: black !important; }
+
+        body[data-theme="retro-handheld"] .bg-cyan-500 { background: #306230 !important; color: #9bbc0f !important; border: 2px solid #0f380f; box-shadow: none; }
+        
         /* Theme Selector Dropdown */
         #theme-select,
         #song-select {
@@ -451,21 +583,12 @@
             font-weight: bold;
         }
         
-        /* Wii Override for Selectors */
-        body[data-theme="wii"] #theme-select,
-        body[data-theme="wii"] #song-select {
-            background-color: #ffffff;
-            border-color: #bbbbbb;
-            color: #555555;
-        }
-        
-        /* Virtual Boy Override for Selectors */
-        body[data-theme="virtual-boy"] #theme-select,
-        body[data-theme="virtual-boy"] #song-select {
-            background-color: #110000; 
-            border-color: #770000; 
-            color: #ff0000;
-        }
+        /* Select Overrides */
+        body[data-theme="wii"] select { background-color: #ffffff; border-color: #bbbbbb; color: #555555; }
+        body[data-theme="virtual-boy"] select { background-color: #110000; border-color: #770000; color: #ff0000; }
+        body[data-theme="cyberpunk"] select { background-color: #000; color: var(--color-primary-light); border: 1px solid var(--color-primary-light); }
+        body[data-theme="classic"] select { background-color: #c0c0c0; color: black; border-radius: 0; }
+        body[data-theme="terminal"] select { background-color: #000; color: #00ff00; border: 1px solid #00ff00; border-radius: 0; }
 
         /* Nav Links */
         nav a { color: var(--color-text-dark); font-weight: bold; }
@@ -474,21 +597,13 @@
         body[data-theme="wii"] nav a { color: #555555 !important; }
         body[data-theme="wii"] nav a:hover { color: #00a1ff !important; }
         body[data-theme="wii"] nav a.text-white { color: #00a1ff !important; border-color: #00a1ff !important; }
-        body[data-theme="wii"] nav svg { color: #555555 !important; }
-
-        /* Virtual Boy Nav Links */
-        body[data-theme="virtual-boy"] nav a,
-        body[data-theme="virtual-boy"] nav span,
-        body[data-theme="virtual-boy"] nav svg {
-            color: var(--color-text-white) !important; 
-        }
-        body[data-theme="virtual-boy"] nav a:hover {
-            color: var(--color-primary-light) !important; 
-        }
-        body[data-theme="virtual-boy"] nav a.text-white { 
-            color: var(--color-primary-light) !important;
-            border-color: var(--color-primary-light) !important;
-        }
+        
+        body[data-theme="virtual-boy"] nav a, body[data-theme="virtual-boy"] nav span, body[data-theme="virtual-boy"] nav svg { color: var(--color-text-white) !important; }
+        body[data-theme="virtual-boy"] nav a:hover { color: var(--color-primary-light) !important; }
+        
+        body[data-theme="cyberpunk"] nav a.text-white { color: var(--color-primary-light) !important; text-shadow: 0 0 5px var(--color-primary-light); }
+        body[data-theme="terminal"] nav a { text-transform: uppercase; }
+        body[data-theme="terminal"] nav a:hover { background: #00ff00; color: black !important; }
 
         /* Modal Styles */
         .glass-modal-container {
@@ -519,83 +634,34 @@
             background-color: #dc2626;
         }
 
-        /* Wii Modal Overrides */
-        body[data-theme="wii"] .glass-modal-container {
-            background-color: #f8f8f8;
-            backdrop-filter: none;
-            border-radius: 0;
-        }
-        body[data-theme="wii"] .glass-modal-header {
-            background-color: #eeeeee;
-            backdrop-filter: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border-color: #cccccc;
-        }
-        body[data-theme="wii"] .control-btn:not(.bg-red-600) {
-            background-color: #e0e0e0;
-            color: #555555;
-            border-color: #bbbbbb;
-            box-shadow: none;
-        }
-        body[data-theme="wii"] .control-btn:not(.bg-red-600):hover {
-            background-color: #c0c0c0;
-            color: #222222;
-        }
-        body[data-theme="wii"] .control-btn.bg-red-600 {
-            background-color: #ff3333;
-        }
+        /* Modal Theme Overrides */
+        body[data-theme="wii"] .glass-modal-container { background-color: #f8f8f8; backdrop-filter: none; border-radius: 0; }
+        body[data-theme="wii"] .glass-modal-header { background-color: #eeeeee; backdrop-filter: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-color: #cccccc; }
+        body[data-theme="wii"] .control-btn:not(.bg-red-600) { background-color: #e0e0e0; color: #555555; border-color: #bbbbbb; box-shadow: none; }
+        
+        body[data-theme="virtual-boy"] .glass-modal-container { background-color: #000000; backdrop-filter: none; border-radius: 0; border: 2px solid var(--border-glass); }
+        body[data-theme="virtual-boy"] .glass-modal-header { background-color: #110000; backdrop-filter: none; box-shadow: none; border-color: var(--border-glass); }
+        body[data-theme="virtual-boy"] #game-modal-title { color: var(--color-text-white) !important; }
+        body[data-theme="virtual-boy"] .control-btn:not(.bg-red-600) { background-color: #330000; color: var(--color-text-white); border-color: var(--border-glass); box-shadow: none; }
 
-        /* Virtual Boy Modal Overrides */
-        body[data-theme="virtual-boy"] .glass-modal-container {
-            background-color: #000000;
-            backdrop-filter: none;
-            border-radius: 0; /* Sharp corners */
-            border: 2px solid var(--border-glass);
-        }
-        body[data-theme="virtual-boy"] .glass-modal-header {
-            background-color: #110000;
-            backdrop-filter: none;
-            box-shadow: none;
-            border-color: var(--border-glass);
-        }
-        body[data-theme="virtual-boy"] #game-modal-title {
-            color: var(--color-text-white) !important;
-        }
-        body[data-theme="virtual-boy"] .control-btn:not(.bg-red-600) {
-            background-color: #330000;
-            color: var(--color-text-white);
-            border-color: var(--border-glass);
-            box-shadow: none;
-        }
-        body[data-theme="virtual-boy"] .control-btn:not(.bg-red-600):hover {
-            background-color: #550000;
-            color: var(--color-primary-light);
-        }
-        body[data-theme="virtual-boy"] .control-btn.bg-red-600 {
-            background-color: #770000; 
-            border-color: var(--border-glass);
-            color: var(--color-text-white);
-        }
-        body[data-theme="virtual-boy"] .control-btn.bg-red-600:hover {
-            background-color: #ff0000; 
-        }
+        body[data-theme="classic"] .glass-modal-container { border: 2px solid; border-color: #fff #808080 #808080 #fff; backdrop-filter: none; }
+        body[data-theme="classic"] .glass-modal-header { border-bottom: none; }
+        body[data-theme="classic"] .control-btn { border-radius: 0; }
+
+        body[data-theme="terminal"] .glass-modal-container { border: 1px solid #00ff00; }
+        body[data-theme="terminal"] .control-btn { border-radius: 0; border: 1px solid #00ff00; background: black; color: #00ff00; box-shadow: none; }
+        body[data-theme="terminal"] .control-btn:hover { background: #00ff00; color: black; }
 
         #game-search-input {
             background-color: var(--bg-glass-card);
             border-color: var(--border-glass-light);
             color: var(--color-text-dark);
         }
-        body[data-theme="wii"] #game-search-input {
-            background-color: #ffffff !important;
-            border-color: #cccccc !important;
-            color: #222222 !important;
-        }
-        body[data-theme="virtual-boy"] #game-search-input {
-            background-color: #110000 !important;
-            border-color: #770000 !important;
-            color: #ff0000 !important;
-            border-radius: 0.25rem !important;
-        }
+        body[data-theme="wii"] #game-search-input { background-color: #ffffff !important; border-color: #cccccc !important; color: #222222 !important; }
+        body[data-theme="virtual-boy"] #game-search-input { background-color: #110000 !important; border-color: #770000 !important; color: #ff0000 !important; border-radius: 0.25rem !important; }
+        body[data-theme="cyberpunk"] #game-search-input { background-color: #000 !important; border: 1px solid var(--color-primary-light) !important; color: var(--color-primary-light) !important; }
+        body[data-theme="classic"] #game-search-input { background-color: #fff !important; border-radius: 0; color: black !important; }
+        body[data-theme="terminal"] #game-search-input { background-color: #000 !important; border: 1px solid #00ff00 !important; color: #00ff00 !important; border-radius: 0; font-family: 'Courier New', monospace; }
     </style>
 </head>
 <body data-theme="frutiger-aero"> 
@@ -654,6 +720,11 @@
                         <option value="wii">Wii Channels</option>
                         <option value="virtual-boy">Virtual Boy</option>
                         <option value="please-dont">Please don't...</option>
+                        <option value="cyberpunk">Cyberpunk Neon</option>
+                        <option value="classic">Classic OS (Win95)</option>
+                        <option value="terminal">Terminal (Hacker)</option>
+                        <option value="retro-handheld">Retro Handheld (GB)</option>
+                        <option value="vaporwave">Vaporwave</option>
                     </select>
                 </div>
             </nav>
