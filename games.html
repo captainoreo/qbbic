@@ -10,6 +10,7 @@
     <style>
         /* --- 1. GLOBAL VARIABLES & SCROLLBARS --- */
         :root {
+            /* Frutiger Aero (Default) Variables */
             --color-primary: #00a1ff; 
             --color-primary-light: #40c4ff;
             --color-primary-dark: #0077c0;
@@ -22,11 +23,11 @@
             --bg-glass-card-hover: rgba(255, 255, 255, 0.85);
             --bg-glass-modal: rgba(240, 240, 255, 0.9);
             --bg-glass-modal-header: rgba(255, 255, 255, 0.7);
-            --bg-glass-controls: rgba(255, 255, 255, 0.7);
-            --bg-glass-controls-hover: rgba(64, 196, 255, 0.8); 
+            --bg-glass-controls: rgba(255, 255, 255, 0.5);
+            --bg-glass-controls-hover: rgba(255, 255, 255, 0.8); 
             --border-glass: rgba(0, 161, 255, 0.4);
             --border-glass-light: rgba(0, 161, 255, 0.2);
-            --blur-strength: 5px;
+            --blur-strength: 10px;
             --card-radius: 1.5rem;
             --font-main: Arial, 'Helvetica Neue', Helvetica, sans-serif;
         }
@@ -40,30 +41,9 @@
         /* --- 2. ANIMATIONS --- */
         @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); opacity: 0; } 10% { opacity: 0.7; } 90% { opacity: 0.7; } 100% { transform: translateY(-20vh) scale(1.2); opacity: 0; } }
         @keyframes scrollGrid { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }
-        @keyframes rainbowMadness { 0% { filter: hue-rotate(0deg) contrast(1.2); } 50% { filter: hue-rotate(180deg) contrast(2); } 100% { filter: hue-rotate(360deg) contrast(1.2); } }
-        @keyframes shakeHard { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
-        @keyframes spinWild { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
-        @keyframes scanline { 0% { background-position: 0 0; } 100% { background-position: 0 100%; } }
         @keyframes matrixRain { 0% { background-position: 0% 0%; } 100% { background-position: 0% 100%; } }
-        @keyframes flicker { 0% { opacity: 0.9; } 50% { opacity: 1; } 100% { opacity: 0.95; } }
 
         /* --- 3. THEME DEFINITIONS --- */
-
-        /* Existing Themes (Condensed) */
-        body[data-theme="wii"] { --color-primary: #888888; --color-primary-light: #aaaaaa; --color-primary-dark: #555555; --bg-glass-header: #eeeeee; --bg-glass-card: #ffffff; --card-radius: 20px; --blur-strength: 0px; }
-        body[data-theme="virtual-boy"] { --color-primary: #550000; --color-primary-light: #990000; --color-text-base: #ff0000; --bg-page: #000; --bg-glass-card: #330000; --card-radius: 0.25rem; --blur-strength: 0px; }
-        body[data-theme="please-dont"] { --color-primary: #ff00ff; --bg-glass-card: yellow; --font-main: "Comic Sans MS", cursive; cursor: help !important; animation: rainbowMadness 3s infinite linear; }
-        body[data-theme="cyberpunk"] { --color-primary: #0f0f1a; --color-primary-light: #00f3ff; --color-text-base: #00f3ff; --bg-page: #050510; --bg-glass-card: rgba(15,15,26,0.8); --border-glass: #00f3ff; --blur-strength: 0px; --font-main: 'Courier New', monospace; }
-        body[data-theme="classic"] { --color-primary: #c0c0c0; --bg-page: #008080; --bg-glass-card: #c0c0c0; --font-main: Tahoma, sans-serif; --card-radius: 0px; --blur-strength: 0px; }
-        body[data-theme="terminal"] { --color-primary: #000; --color-primary-light: #00ff00; --color-text-base: #00ff00; --bg-page: #000; --bg-glass-card: #000; --border-glass: #00ff00; --font-main: 'Courier New', monospace; --blur-strength: 0px; }
-        body[data-theme="retro-handheld"] { --color-primary: #8bac0f; --color-primary-light: #9bbc0f; --color-text-base: #0f380f; --bg-page: #9bbc0f; --bg-glass-card: #9bbc0f; --card-radius: 4px; --font-main: 'Courier New', monospace; --blur-strength: 0px; }
-        body[data-theme="vaporwave"] { --color-primary: #ff71ce; --color-primary-light: #01cdfe; --bg-page: #2b2146; --bg-glass-card: rgba(255,255,255,0.1); --border-glass: #ff71ce; --blur-strength: 10px; }
-        body[data-theme="graduation"] { --color-primary: #6b3fa0; --color-primary-light: #ff0099; --bg-page: #6b3fa0; --bg-glass-card: rgba(255,255,255,0.15); --border-glass: #ff0099; --blur-strength: 8px; }
-        body[data-theme="ksg"] { --color-primary: #f5a479; --color-text-base: #2b5e7d; --bg-page: #f5a479; --bg-glass-card: rgba(255,255,255,0.4); --blur-strength: 15px; }
-        body[data-theme="demon-days"] { --color-primary: #111; --color-text-base: #fff; --bg-page: #111; --bg-glass-card: #fff; --card-radius: 0; --font-main: Impact, sans-serif; --blur-strength: 0px; }
-        body[data-theme="igor"] { --color-primary: #f2a2ba; --color-text-base: #000; --bg-page: #f2a2ba; --bg-glass-card: #000; --card-radius: 0; --font-main: Arial, sans-serif; --blur-strength: 0px; }
-
-        /* --- NEW THEMES --- */
 
         /* 1. MINECRAFT */
         body[data-theme="minecraft"] {
@@ -102,7 +82,7 @@
             --bg-glass-card-hover: rgba(255, 255, 255, 0.1);
             --bg-glass-modal: #0044cc;
             --bg-glass-modal-header: #003399;
-            --bg-glass-controls: transparent;
+            --bg-glass-controls: rgba(0, 68, 204, 0.5);
             --bg-glass-controls-hover: rgba(255,255,255,0.2);
             --border-glass: #ffffff;
             --border-glass-light: rgba(255, 255, 255, 0.5);
@@ -134,49 +114,26 @@
             --font-main: 'Courier New', monospace;
         }
 
-        /* 4. NOIR */
-        body[data-theme="noir"] {
-            --color-primary: #1a1a1a;
+        /* 4. WINDOWS 95 (Classic) */
+        body[data-theme="classic"] {
+            --color-primary: #c0c0c0;
             --color-primary-light: #ffffff;
-            --color-primary-dark: #000000;
-            --color-text-base: #e0e0e0;
-            --color-text-white: #ffffff;
-            --color-text-dark: #cccccc;
-            --bg-page: #111;
-            --bg-glass-header: rgba(0, 0, 0, 0.8);
-            --bg-glass-card: rgba(30, 30, 30, 0.7);
-            --bg-glass-card-hover: rgba(50, 50, 50, 0.9);
-            --bg-glass-modal: #000;
-            --bg-glass-modal-header: #222;
-            --bg-glass-controls: #333;
-            --bg-glass-controls-hover: #555;
-            --border-glass: #666;
-            --border-glass-light: #333;
-            --blur-strength: 0px;
-            --card-radius: 2px;
-            --font-main: 'Times New Roman', Times, serif;
-        }
-
-        /* 5. WINDOWS XP */
-        body[data-theme="windows-xp"] {
-            --color-primary: #0055EA; /* Luna Blue */
-            --color-primary-light: #6699FF;
-            --color-primary-dark: #003399;
+            --color-primary-dark: #808080;
             --color-text-base: #000000;
-            --color-text-white: #ffffff;
+            --color-text-white: #000000; 
             --color-text-dark: #000000;
-            --bg-page: #5D9B43; /* Bliss Green */
-            --bg-glass-header: linear-gradient(to bottom, #245EDC, #0038A8);
-            --bg-glass-card: #ffffff;
-            --bg-glass-card-hover: #f0f0f0;
-            --bg-glass-modal: #ECE9D8; /* XP Beige */
-            --bg-glass-modal-header: linear-gradient(to bottom, #245EDC, #0038A8);
-            --bg-glass-controls: #ffffff;
-            --bg-glass-controls-hover: #ECE9D8;
-            --border-glass: #0038A8;
-            --border-glass-light: #0055EA;
+            --bg-page: #008080;
+            --bg-glass-header: #c0c0c0;
+            --bg-glass-card: #c0c0c0;
+            --bg-glass-card-hover: #c0c0c0;
+            --bg-glass-modal: #c0c0c0;
+            --bg-glass-modal-header: #000080; /* Classic Blue Title Bar */
+            --bg-glass-controls: #c0c0c0;
+            --bg-glass-controls-hover: #c0c0c0;
+            --border-glass: #ffffff;
+            --border-glass-light: #808080;
             --blur-strength: 0px;
-            --card-radius: 5px 5px 0 0;
+            --card-radius: 0px;
             --font-main: Tahoma, sans-serif;
         }
 
@@ -189,16 +146,16 @@
             cursor: url('/assets/Normal Select.cur'), auto;
             transition: color 0.3s, background-color 0.3s;
         }
-        a:hover, button:hover, .game-play-btn:hover, .control-btn:hover, select:hover { cursor: url('/assets/Link Select.cur'), pointer; }
+        a:hover, button:hover, .game-play-btn:hover, .control-btn:hover { cursor: url('/assets/Link Select.cur'), pointer; }
 
         /* --- BACKGROUND LOGIC --- */
         #css-3d-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; transition: background 0.5s ease; }
         
-        /* Existing Backgrounds */
+        /* Frutiger Aero Background */
         body[data-theme="frutiger-aero"] #css-3d-background { background-image: url('/assets/aqua.jpg'); background-size: cover; background-position: center; }
         body:not([data-theme="frutiger-aero"]) .bubble-container { display: none; }
         
-        /* New Theme Backgrounds */
+        /* Minecraft Background */
         body[data-theme="minecraft"] #css-3d-background {
             background-color: #795548;
             background-image: linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037), 
@@ -206,26 +163,31 @@
             background-size: 60px 60px;
             background-position: 0 0, 30px 30px;
         }
+        /* Blueprint Background */
         body[data-theme="blueprint"] #css-3d-background {
             background-color: #0044cc;
             background-image: linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px);
             background-size: 20px 20px;
         }
+        /* Matrix Background */
         body[data-theme="matrix"] #css-3d-background {
             background-color: black;
             background-image: linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px);
             background-size: 100% 20px;
             animation: matrixRain 2s linear infinite;
         }
-        body[data-theme="noir"] #css-3d-background {
-            background-color: #111;
-            background-image: radial-gradient(circle, #333 1px, transparent 1px);
-            background-size: 20px 20px;
-            filter: grayscale(100%) contrast(120%);
+        /* Windows 95 Background */
+        body[data-theme="classic"] #css-3d-background {
+            background-color: #008080; 
         }
-        body[data-theme="windows-xp"] #css-3d-background {
-            background: linear-gradient(to bottom, #5D9B43 0%, #82C05E 100%); /* Simplified Bliss Hill */
+
+        /* Bubble Styling */
+        .bubble {
+            position: absolute; bottom: -100px; background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.1));
+            box-shadow: 0 0 10px rgba(255,255,255,0.3), inset 0 0 10px rgba(255,255,255,0.3); border-radius: 50%;
+            pointer-events: none; z-index: 0; animation: floatUp var(--speed) linear infinite;
+            animation-delay: var(--delay); width: var(--size); height: var(--size); left: var(--pos); opacity: 0; 
         }
 
         /* --- UI COMPONENTS --- */
@@ -233,7 +195,7 @@
         .glass-footer { background-color: var(--bg-glass-header); backdrop-filter: blur(var(--blur-strength)); border-top: 1px solid var(--border-glass); }
         .glass-main-panel { background-color: var(--bg-glass-card); backdrop-filter: blur(var(--blur-strength)); border: 1px solid var(--border-glass-light); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); border-radius: var(--card-radius); padding: 1rem; }
 
-        /* Card Styles & Overrides */
+        /* Card Styles */
         .game-card {
             background-color: var(--bg-glass-card);
             backdrop-filter: blur(var(--blur-strength));
@@ -246,6 +208,18 @@
         }
         .game-card:hover { transform: scale(1.03); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); }
 
+        /* Frutiger Aero Gloss */
+        body[data-theme="frutiger-aero"] .game-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 112px; z-index: 1;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 100%);
+            pointer-events: none; border-radius: 1.5rem 1.5rem 0 0;
+        }
+        body[data-theme="frutiger-aero"] .game-card:hover::after {
+             background: rgba(0, 161, 255, 0.2); transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px);
+             content: ''; position: absolute; bottom: -15px; left: 10%; width: 80%; height: 50px; 
+             opacity: 0.8; transition: all 0.3s ease;
+        }
+
         /* Minecraft Override */
         body[data-theme="minecraft"] .game-card { border: 4px solid #000; box-shadow: 4px 4px 0 #000; }
         body[data-theme="minecraft"] .game-card:hover { transform: translateY(-2px); box-shadow: 6px 6px 0 #000; }
@@ -253,28 +227,79 @@
         
         /* Blueprint Override */
         body[data-theme="blueprint"] .game-card { border: 2px dashed #fff; }
-        body[data-theme="blueprint"] .game-card img { filter: grayscale(100%) blueprint(100%); /* Not real filter, but looks cool */ opacity: 0.8; }
+        body[data-theme="blueprint"] .game-card img { filter: grayscale(100%) opacity(0.8); }
         body[data-theme="blueprint"] .game-card:hover { transform: rotate(1deg); background: rgba(0, 68, 204, 0.5); }
 
         /* Matrix Override */
         body[data-theme="matrix"] .game-card { border: 1px solid #00FF41; box-shadow: 0 0 5px #00FF41; }
         body[data-theme="matrix"] .game-card:hover { background: #001100; box-shadow: 0 0 15px #00FF41; }
         
-        /* Windows XP Override */
-        body[data-theme="windows-xp"] .game-card { border-radius: 5px 5px 0 0; border: 2px solid #0038A8; }
-        body[data-theme="windows-xp"] .game-card h3 { color: #000; }
-        body[data-theme="windows-xp"] .bg-cyan-500 { background: linear-gradient(to bottom, #fff, #ece9d8) !important; color: #000 !important; border: 1px solid #0038A8; border-radius: 3px; }
+        /* Classic (Win95) Bevels */
+        body[data-theme="classic"] .game-card, body[data-theme="classic"] .glass-header, body[data-theme="classic"] .glass-footer, body[data-theme="classic"] .glass-main-panel, body[data-theme="classic"] .control-btn, body[data-theme="classic"] #game-search-input, body[data-theme="classic"] select, body[data-theme="classic"] .bg-cyan-500 {
+            border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080;
+            box-shadow: 1px 1px 0 #000; transform: none !important;
+        }
+        body[data-theme="classic"] .glass-modal-header { background: linear-gradient(to right, #000080, #1084d0); color: white; padding: 4px 8px; }
+        body[data-theme="classic"] .glass-modal-container { border: 2px solid #fff; border-right-color: #808080; border-bottom-color: #808080; backdrop-filter: none; }
+        body[data-theme="classic"] .glass-modal-header { border-bottom: none; }
+        body[data-theme="classic"] h1 { color: #000; background: #c0c0c0; border: 2px solid #fff; border-right-color: #808080; border-bottom-color: #808080; padding: 5px; text-shadow: none; }
+        body[data-theme="classic"] nav a.text-white { color: #000 !important; }
+        body[data-theme="classic"] .bg-cyan-500 { background: #c0c0c0 !important; color: black !important; box-shadow: none; }
+        body[data-theme="classic"] .bg-cyan-500:active { border-color: #808080 #fff #fff #808080; }
 
-        /* --- INPUTS & CONTROLS --- */
-        #theme-select, #song-select, #game-search-input {
+        /* Text Colors */
+        .game-card h3 { color: var(--color-text-dark); z-index: 2; position: relative; }
+        .game-card p { color: #004477; z-index: 2; position: relative; }
+        h1 { color: var(--color-text-white); text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+        body[data-theme="classic"] .game-card p { color: #000; }
+        body[data-theme="matrix"] .game-card p { color: #00FF41; }
+
+        /* Button Styles */
+        .bg-cyan-500 { 
+            background-color: var(--color-primary) !important; 
+            background-image: linear-gradient(to bottom, var(--color-primary-light), var(--color-primary)) !important;
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 0 1px 1px rgba(0,0,0,0.1);
+            border: 1px solid var(--color-primary-dark);
+            text-shadow: 0 1px 0 rgba(0,0,0,0.1);
+            font-weight: bold; z-index: 2; position: relative; 
+        }
+        body[data-theme="matrix"] .bg-cyan-500 { background: black !important; border: 1px solid #00FF41; color: #00FF41 !important; box-shadow: none; }
+        body[data-theme="matrix"] .bg-cyan-500:hover { background: #00FF41 !important; color: black !important; }
+
+        /* --- NEW USER FRIENDLY SELECTORS --- */
+        /* Styling the select to look like a nice button */
+        .custom-select {
             background-color: var(--bg-glass-controls);
             color: var(--color-text-dark);
             border: 1px solid var(--border-glass-light);
-            padding: 0.5rem;
-            border-radius: 0.5rem;
+            padding: 0.5rem 2rem 0.5rem 1rem; /* Right padding for arrow */
+            border-radius: 9999px; /* Pill shape */
             outline: none;
             font-weight: bold;
+            appearance: none; /* Remove default arrow */
+            -webkit-appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
+        .custom-select:hover {
+            background-color: var(--bg-glass-controls-hover);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        #game-search-input {
+            background-color: var(--bg-glass-card);
+            border: 1px solid var(--border-glass-light);
+            color: var(--color-text-dark);
+        }
+
+        /* Theme specific input overrides */
+        body[data-theme="classic"] .custom-select, body[data-theme="classic"] #game-search-input { background-color: #fff; border-radius: 0; color: black; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='black' viewBox='0 0 20 20'%3e%3cpath d='M7 7l3-3 3 3m0 6l-3 3-3-3' stroke='black' stroke-width='2'/%3e%3c/svg%3e"); box-shadow: none; border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080;}
+        body[data-theme="matrix"] .custom-select, body[data-theme="matrix"] #game-search-input { background-color: #000; color: #00FF41; border: 1px solid #00FF41; border-radius: 0; background-image: none; }
+
         /* Toast Notification */
         #toast-notification {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
@@ -288,6 +313,10 @@
         /* Modal */
         .glass-modal-container { background-color: var(--bg-glass-modal); backdrop-filter: blur(var(--blur-strength)); border-radius: var(--card-radius); }
         .glass-modal-header { background-color: var(--bg-glass-modal-header); backdrop-filter: blur(var(--blur-strength)); }
+        .control-btn:not(.bg-red-600) { background-color: var(--bg-glass-controls); color: var(--color-text-dark); border: 1px solid var(--border-glass-light); }
+        .control-btn.bg-red-600 { background-color: #ef4444; color: white; }
+        body[data-theme="matrix"] .glass-modal-container { border: 1px solid #00FF41; }
+        body[data-theme="matrix"] .control-btn { border-radius: 0; border: 1px solid #00FF41; background: black; color: #00FF41; }
         
     </style>
 </head>
@@ -300,6 +329,16 @@
             <div class="bubble" style="--size: 30px; --pos: 50%; --speed: 10s; --delay: 4s;"></div>
             <div class="bubble" style="--size: 50px; --pos: 70%; --speed: 15s; --delay: 1s;"></div>
             <div class="bubble" style="--size: 80px; --pos: 90%; --speed: 20s; --delay: 0.5s;"></div>
+            <div class="bubble" style="--size: 45px; --pos: 15%; --speed: 11s; --delay: 5s;"></div>
+            <div class="bubble" style="--size: 55px; --pos: 35%; --speed: 13s; --delay: 3s;"></div>
+            <div class="bubble" style="--size: 25px; --pos: 55%; --speed: 9s; --delay: 6s;"></div>
+            <div class="bubble" style="--size: 65px; --pos: 75%; --speed: 16s; --delay: 2.5s;"></div>
+            <div class="bubble" style="--size: 35px; --pos: 95%; --speed: 10s; --delay: 1.5s;"></div>
+            <div class="bubble" style="--size: 50px; --pos: 5%; --speed: 14s; --delay: 7s;"></div>
+            <div class="bubble" style="--size: 70px; --pos: 25%; --speed: 18s; --delay: 3.5s;"></div>
+            <div class="bubble" style="--size: 40px; --pos: 45%; --speed: 11s; --delay: 0.2s;"></div>
+            <div class="bubble" style="--size: 60px; --pos: 65%; --speed: 13s; --delay: 4.5s;"></div>
+            <div class="bubble" style="--size: 30px; --pos: 85%; --speed: 9s; --delay: 2s;"></div>
         </div>
     </div>
     
@@ -326,31 +365,18 @@
                     <a href="faq.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">FAQ</a>
                     <a href="changelog.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Changelog</a>
                     
-                    <select id="song-select" title="Change Background Music">
-                        <option value="none">No Song (Default)</option>
-                        <option value="/assets/Wii U OST - Mii Maker (Mii Editor).flac">Wii U OST - Mii Maker (Mii Editor)</option>
-                        <option value="/assets/Droopy likes your face.flac">Droopy likes your face</option>
-                        <option value="/assets/Nintendo 3DS - Amiibo Settings - Main Theme.flac">Nintendo 3DS - Amiibo Settings - Main Theme</option>
+                    <select id="song-select" class="custom-select" title="Change Background Music">
+                        <option value="none">🎵 Music: Off</option>
+                        <option value="/assets/Wii U OST - Mii Maker (Mii Editor).flac">🎵 Wii U Mii Maker</option>
+                        <option value="/assets/Droopy likes your face.flac">🎵 Droopy likes your face</option>
+                        <option value="/assets/Nintendo 3DS - Amiibo Settings - Main Theme.flac">🎵 3DS Amiibo</option>
                     </select>
-                    <select id="theme-select" title="Change Theme">
-                        <option value="frutiger-aero">Frutiger Aero</option>
-                        <option value="wii">Wii Channels</option>
-                        <option value="virtual-boy">Virtual Boy</option>
-                        <option value="minecraft">Minecraft</option>
-                        <option value="blueprint">Blueprint</option>
-                        <option value="matrix">The Matrix</option>
-                        <option value="noir">L.A. Noir</option>
-                        <option value="windows-xp">Windows XP</option>
-                        <option value="please-dont">Please don't...</option>
-                        <option value="cyberpunk">Cyberpunk Neon</option>
-                        <option value="classic">Classic OS (Win95)</option>
-                        <option value="terminal">Terminal (Hacker)</option>
-                        <option value="retro-handheld">Retro Handheld (GB)</option>
-                        <option value="vaporwave">Vaporwave</option>
-                        <option value="graduation">Graduation</option>
-                        <option value="ksg">Kids See Ghosts</option>
-                        <option value="demon-days">Demon Days</option>
-                        <option value="igor">IGOR</option>
+                    <select id="theme-select" class="custom-select" title="Change Theme">
+                        <option value="frutiger-aero">🫧 Frutiger Aero</option>
+                        <option value="minecraft">🧱 Minecraft</option>
+                        <option value="blueprint">📐 Blueprint</option>
+                        <option value="matrix">🟢 The Matrix</option>
+                        <option value="classic">💾 Windows 95</option>
                     </select>
                 </div>
             </nav>
@@ -882,7 +908,7 @@
                     document.body.setAttribute('data-theme', newTheme);
                     localStorage.setItem('qbbic-theme', newTheme);
                     playSound(selectSound);
-                    showToast(`Theme changed to ${e.target.options[e.target.selectedIndex].text}`);
+                    showToast(`Theme changed to ${e.target.options[e.target.selectedIndex].text.replace(/^[^\w]+/, '')}`); // Regex removes emoji for cleaner toast text if desired, or keep full text
                 });
             }
 
