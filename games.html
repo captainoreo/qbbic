@@ -45,13 +45,13 @@
 
         /* --- 3. THEME DEFINITIONS --- */
 
-        /* 0. BLANK SLATE (New) */
+        /* 0. BLANK SLATE */
         body[data-theme="blank-slate"] {
             --color-primary: #f0f0f0; 
             --color-primary-light: #ffffff; 
             --color-primary-dark: #cccccc;
             --color-text-base: #333333;
-            --color-text-white: #000000; /* Inverted for light theme */
+            --color-text-white: #000000; 
             --color-text-dark: #000000;
             --bg-page: #ffffff;
             --bg-glass-header: #f8f8f8;
@@ -70,42 +70,94 @@
 
         /* 1. MINECRAFT */
         body[data-theme="minecraft"] {
-            --color-primary: #795548; --color-primary-light: #4CAF50; --color-primary-dark: #3E2723;
-            --color-text-base: #ffffff; --color-text-white: #ffffff; --color-text-dark: #ddd;
-            --bg-page: #795548; --bg-glass-header: rgba(62, 39, 35, 0.9); --bg-glass-card: rgba(100, 100, 100, 0.85);
-            --bg-glass-card-hover: rgba(120, 120, 120, 0.95); --bg-glass-modal: rgba(0, 0, 0, 0.8);
-            --bg-glass-modal-header: #5d4037; --bg-glass-controls: #555; --bg-glass-controls-hover: #777;
-            --border-glass: #000; --border-glass-light: #222; --blur-strength: 0px; --card-radius: 0px; --font-main: 'VT323', monospace;
+            --color-primary: #795548; /* Dirt */
+            --color-primary-light: #4CAF50; /* Grass */
+            --color-primary-dark: #3E2723;
+            --color-text-base: #ffffff;
+            --color-text-white: #ffffff;
+            --color-text-dark: #ddd;
+            --bg-page: #795548;
+            --bg-glass-header: rgba(62, 39, 35, 0.9);
+            --bg-glass-card: rgba(100, 100, 100, 0.85); /* Stone */
+            --bg-glass-card-hover: rgba(120, 120, 120, 0.95);
+            --bg-glass-modal: rgba(0, 0, 0, 0.8);
+            --bg-glass-modal-header: #5d4037;
+            --bg-glass-controls: #555;
+            --bg-glass-controls-hover: #777;
+            --border-glass: #000;
+            --border-glass-light: #222;
+            --blur-strength: 0px;
+            --card-radius: 0px;
+            --font-main: 'VT323', monospace;
         }
 
         /* 2. BLUEPRINT */
         body[data-theme="blueprint"] {
-            --color-primary: #0044cc; --color-primary-light: #ffffff; --color-primary-dark: #002288;
-            --color-text-base: #ffffff; --color-text-white: #ffffff; --color-text-dark: #ffffff;
-            --bg-page: #0044cc; --bg-glass-header: rgba(0, 68, 204, 0.9); --bg-glass-card: transparent;
-            --bg-glass-card-hover: rgba(255, 255, 255, 0.1); --bg-glass-modal: #0044cc; --bg-glass-modal-header: #003399;
-            --bg-glass-controls: rgba(0, 68, 204, 0.5); --bg-glass-controls-hover: rgba(255,255,255,0.2);
-            --border-glass: #ffffff; --border-glass-light: rgba(255, 255, 255, 0.5); --blur-strength: 0px; --card-radius: 0px; --font-main: 'Architects Daughter', cursive;
+            --color-primary: #0044cc; 
+            --color-primary-light: #ffffff; 
+            --color-primary-dark: #002288;
+            --color-text-base: #ffffff;
+            --color-text-white: #ffffff;
+            --color-text-dark: #ffffff;
+            --bg-page: #0044cc;
+            --bg-glass-header: rgba(0, 68, 204, 0.9);
+            --bg-glass-card: transparent;
+            --bg-glass-card-hover: rgba(255, 255, 255, 0.1);
+            --bg-glass-modal: #0044cc;
+            --bg-glass-modal-header: #003399;
+            --bg-glass-controls: rgba(0, 68, 204, 0.5);
+            --bg-glass-controls-hover: rgba(255,255,255,0.2);
+            --border-glass: #ffffff;
+            --border-glass-light: rgba(255, 255, 255, 0.5);
+            --blur-strength: 0px;
+            --card-radius: 0px;
+            --font-main: 'Architects Daughter', cursive;
         }
 
         /* 3. MATRIX */
         body[data-theme="matrix"] {
-            --color-primary: #000000; --color-primary-light: #00FF41; --color-primary-dark: #003B00;
-            --color-text-base: #00FF41; --color-text-white: #00FF41; --color-text-dark: #00FF41;
-            --bg-page: #000000; --bg-glass-header: rgba(0, 20, 0, 0.9); --bg-glass-card: rgba(0, 10, 0, 0.8);
-            --bg-glass-card-hover: rgba(0, 50, 0, 0.9); --bg-glass-modal: #000000; --bg-glass-modal-header: #003B00;
-            --bg-glass-controls: #000; --bg-glass-controls-hover: #003B00; --border-glass: #008F11; --border-glass-light: #00FF41;
-            --blur-strength: 2px; --card-radius: 0px; --font-main: 'Courier New', monospace;
+            --color-primary: #000000;
+            --color-primary-light: #00FF41; /* Matrix Green */
+            --color-primary-dark: #003B00;
+            --color-text-base: #00FF41;
+            --color-text-white: #00FF41;
+            --color-text-dark: #00FF41;
+            --bg-page: #000000;
+            --bg-glass-header: rgba(0, 20, 0, 0.9);
+            --bg-glass-card: rgba(0, 10, 0, 0.8);
+            --bg-glass-card-hover: rgba(0, 50, 0, 0.9);
+            --bg-glass-modal: #000000;
+            --bg-glass-modal-header: #003B00;
+            --bg-glass-controls: #000;
+            --bg-glass-controls-hover: #003B00;
+            --border-glass: #008F11;
+            --border-glass-light: #00FF41;
+            --blur-strength: 2px;
+            --card-radius: 0px;
+            --font-main: 'Courier New', monospace;
         }
 
         /* 4. WINDOWS 95 */
         body[data-theme="classic"] {
-            --color-primary: #c0c0c0; --color-primary-light: #ffffff; --color-primary-dark: #808080;
-            --color-text-base: #000000; --color-text-white: #000000; --color-text-dark: #000000;
-            --bg-page: #008080; --bg-glass-header: #c0c0c0; --bg-glass-card: #c0c0c0;
-            --bg-glass-card-hover: #c0c0c0; --bg-glass-modal: #c0c0c0; --bg-glass-modal-header: #000080;
-            --bg-glass-controls: #c0c0c0; --bg-glass-controls-hover: #c0c0c0; --border-glass: #ffffff; --border-glass-light: #808080;
-            --blur-strength: 0px; --card-radius: 0px; --font-main: Tahoma, sans-serif;
+            --color-primary: #c0c0c0;
+            --color-primary-light: #ffffff;
+            --color-primary-dark: #808080;
+            --color-text-base: #000000;
+            --color-text-white: #000000; 
+            --color-text-dark: #000000;
+            --bg-page: #008080;
+            --bg-glass-header: #c0c0c0;
+            --bg-glass-card: #c0c0c0;
+            --bg-glass-card-hover: #c0c0c0;
+            --bg-glass-modal: #c0c0c0;
+            --bg-glass-modal-header: #000080;
+            --bg-glass-controls: #c0c0c0;
+            --bg-glass-controls-hover: #c0c0c0;
+            --border-glass: #ffffff;
+            --border-glass-light: #808080;
+            --blur-strength: 0px;
+            --card-radius: 0px;
+            --font-main: Tahoma, sans-serif;
         }
 
         /* --- BODY BASE --- */
@@ -854,7 +906,7 @@
             const themeMusicMap = {
                 'blank-slate': 'none',
                 'frutiger-aero': '/assets/Wii U OST - Mii Maker (Mii Editor).flac',
-                'minecraft': '/assets/Nintendo 3DS - Amiibo Settings - Main Theme.flac',
+                'minecraft': '/assets/Droopy likes your face.flac', // CHANGED
                 'blueprint': 'none',
                 'matrix': '/assets/Droopy likes your face.flac',
                 'classic': 'none'
