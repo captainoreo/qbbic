@@ -45,96 +45,67 @@
 
         /* --- 3. THEME DEFINITIONS --- */
 
+        /* 0. BLANK SLATE (New) */
+        body[data-theme="blank-slate"] {
+            --color-primary: #f0f0f0; 
+            --color-primary-light: #ffffff; 
+            --color-primary-dark: #cccccc;
+            --color-text-base: #333333;
+            --color-text-white: #000000; /* Inverted for light theme */
+            --color-text-dark: #000000;
+            --bg-page: #ffffff;
+            --bg-glass-header: #f8f8f8;
+            --bg-glass-card: #ffffff;
+            --bg-glass-card-hover: #f0f0f0;
+            --bg-glass-modal: #ffffff;
+            --bg-glass-modal-header: #f8f8f8;
+            --bg-glass-controls: #eeeeee;
+            --bg-glass-controls-hover: #dddddd;
+            --border-glass: #cccccc;
+            --border-glass-light: #eeeeee;
+            --blur-strength: 0px;
+            --card-radius: 4px;
+            --font-main: system-ui, -apple-system, sans-serif;
+        }
+
         /* 1. MINECRAFT */
         body[data-theme="minecraft"] {
-            --color-primary: #795548; /* Dirt */
-            --color-primary-light: #4CAF50; /* Grass */
-            --color-primary-dark: #3E2723;
-            --color-text-base: #ffffff;
-            --color-text-white: #ffffff;
-            --color-text-dark: #ddd;
-            --bg-page: #795548;
-            --bg-glass-header: rgba(62, 39, 35, 0.9);
-            --bg-glass-card: rgba(100, 100, 100, 0.85); /* Stone */
-            --bg-glass-card-hover: rgba(120, 120, 120, 0.95);
-            --bg-glass-modal: rgba(0, 0, 0, 0.8);
-            --bg-glass-modal-header: #5d4037;
-            --bg-glass-controls: #555;
-            --bg-glass-controls-hover: #777;
-            --border-glass: #000;
-            --border-glass-light: #222;
-            --blur-strength: 0px;
-            --card-radius: 0px;
-            --font-main: 'VT323', monospace;
+            --color-primary: #795548; --color-primary-light: #4CAF50; --color-primary-dark: #3E2723;
+            --color-text-base: #ffffff; --color-text-white: #ffffff; --color-text-dark: #ddd;
+            --bg-page: #795548; --bg-glass-header: rgba(62, 39, 35, 0.9); --bg-glass-card: rgba(100, 100, 100, 0.85);
+            --bg-glass-card-hover: rgba(120, 120, 120, 0.95); --bg-glass-modal: rgba(0, 0, 0, 0.8);
+            --bg-glass-modal-header: #5d4037; --bg-glass-controls: #555; --bg-glass-controls-hover: #777;
+            --border-glass: #000; --border-glass-light: #222; --blur-strength: 0px; --card-radius: 0px; --font-main: 'VT323', monospace;
         }
 
         /* 2. BLUEPRINT */
         body[data-theme="blueprint"] {
-            --color-primary: #0044cc; 
-            --color-primary-light: #ffffff; 
-            --color-primary-dark: #002288;
-            --color-text-base: #ffffff;
-            --color-text-white: #ffffff;
-            --color-text-dark: #ffffff;
-            --bg-page: #0044cc;
-            --bg-glass-header: rgba(0, 68, 204, 0.9);
-            --bg-glass-card: transparent;
-            --bg-glass-card-hover: rgba(255, 255, 255, 0.1);
-            --bg-glass-modal: #0044cc;
-            --bg-glass-modal-header: #003399;
-            --bg-glass-controls: rgba(0, 68, 204, 0.5);
-            --bg-glass-controls-hover: rgba(255,255,255,0.2);
-            --border-glass: #ffffff;
-            --border-glass-light: rgba(255, 255, 255, 0.5);
-            --blur-strength: 0px;
-            --card-radius: 0px;
-            --font-main: 'Architects Daughter', cursive;
+            --color-primary: #0044cc; --color-primary-light: #ffffff; --color-primary-dark: #002288;
+            --color-text-base: #ffffff; --color-text-white: #ffffff; --color-text-dark: #ffffff;
+            --bg-page: #0044cc; --bg-glass-header: rgba(0, 68, 204, 0.9); --bg-glass-card: transparent;
+            --bg-glass-card-hover: rgba(255, 255, 255, 0.1); --bg-glass-modal: #0044cc; --bg-glass-modal-header: #003399;
+            --bg-glass-controls: rgba(0, 68, 204, 0.5); --bg-glass-controls-hover: rgba(255,255,255,0.2);
+            --border-glass: #ffffff; --border-glass-light: rgba(255, 255, 255, 0.5); --blur-strength: 0px; --card-radius: 0px; --font-main: 'Architects Daughter', cursive;
         }
 
         /* 3. MATRIX */
         body[data-theme="matrix"] {
-            --color-primary: #000000;
-            --color-primary-light: #00FF41; /* Matrix Green */
-            --color-primary-dark: #003B00;
-            --color-text-base: #00FF41;
-            --color-text-white: #00FF41;
-            --color-text-dark: #00FF41;
-            --bg-page: #000000;
-            --bg-glass-header: rgba(0, 20, 0, 0.9);
-            --bg-glass-card: rgba(0, 10, 0, 0.8);
-            --bg-glass-card-hover: rgba(0, 50, 0, 0.9);
-            --bg-glass-modal: #000000;
-            --bg-glass-modal-header: #003B00;
-            --bg-glass-controls: #000;
-            --bg-glass-controls-hover: #003B00;
-            --border-glass: #008F11;
-            --border-glass-light: #00FF41;
-            --blur-strength: 2px;
-            --card-radius: 0px;
-            --font-main: 'Courier New', monospace;
+            --color-primary: #000000; --color-primary-light: #00FF41; --color-primary-dark: #003B00;
+            --color-text-base: #00FF41; --color-text-white: #00FF41; --color-text-dark: #00FF41;
+            --bg-page: #000000; --bg-glass-header: rgba(0, 20, 0, 0.9); --bg-glass-card: rgba(0, 10, 0, 0.8);
+            --bg-glass-card-hover: rgba(0, 50, 0, 0.9); --bg-glass-modal: #000000; --bg-glass-modal-header: #003B00;
+            --bg-glass-controls: #000; --bg-glass-controls-hover: #003B00; --border-glass: #008F11; --border-glass-light: #00FF41;
+            --blur-strength: 2px; --card-radius: 0px; --font-main: 'Courier New', monospace;
         }
 
-        /* 4. WINDOWS 95 (Classic) */
+        /* 4. WINDOWS 95 */
         body[data-theme="classic"] {
-            --color-primary: #c0c0c0;
-            --color-primary-light: #ffffff;
-            --color-primary-dark: #808080;
-            --color-text-base: #000000;
-            --color-text-white: #000000; 
-            --color-text-dark: #000000;
-            --bg-page: #008080;
-            --bg-glass-header: #c0c0c0;
-            --bg-glass-card: #c0c0c0;
-            --bg-glass-card-hover: #c0c0c0;
-            --bg-glass-modal: #c0c0c0;
-            --bg-glass-modal-header: #000080; /* Classic Blue Title Bar */
-            --bg-glass-controls: #c0c0c0;
-            --bg-glass-controls-hover: #c0c0c0;
-            --border-glass: #ffffff;
-            --border-glass-light: #808080;
-            --blur-strength: 0px;
-            --card-radius: 0px;
-            --font-main: Tahoma, sans-serif;
+            --color-primary: #c0c0c0; --color-primary-light: #ffffff; --color-primary-dark: #808080;
+            --color-text-base: #000000; --color-text-white: #000000; --color-text-dark: #000000;
+            --bg-page: #008080; --bg-glass-header: #c0c0c0; --bg-glass-card: #c0c0c0;
+            --bg-glass-card-hover: #c0c0c0; --bg-glass-modal: #c0c0c0; --bg-glass-modal-header: #000080;
+            --bg-glass-controls: #c0c0c0; --bg-glass-controls-hover: #c0c0c0; --border-glass: #ffffff; --border-glass-light: #808080;
+            --blur-strength: 0px; --card-radius: 0px; --font-main: Tahoma, sans-serif;
         }
 
         /* --- BODY BASE --- */
@@ -151,38 +122,15 @@
         /* --- BACKGROUND LOGIC --- */
         #css-3d-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; transition: background 0.5s ease; }
         
-        /* Frutiger Aero Background */
+        /* Backgrounds */
+        body[data-theme="blank-slate"] #css-3d-background { background: #ffffff; }
         body[data-theme="frutiger-aero"] #css-3d-background { background-image: url('/assets/aqua.jpg'); background-size: cover; background-position: center; }
-        body:not([data-theme="frutiger-aero"]) .bubble-container { display: none; }
-        
-        /* Minecraft Background */
-        body[data-theme="minecraft"] #css-3d-background {
-            background-color: #795548;
-            background-image: linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037), 
-                              linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037);
-            background-size: 60px 60px;
-            background-position: 0 0, 30px 30px;
-        }
-        /* Blueprint Background */
-        body[data-theme="blueprint"] #css-3d-background {
-            background-color: #0044cc;
-            background-image: linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-        /* Matrix Background */
-        body[data-theme="matrix"] #css-3d-background {
-            background-color: black;
-            background-image: linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px);
-            background-size: 100% 20px;
-            animation: matrixRain 2s linear infinite;
-        }
-        /* Windows 95 Background */
-        body[data-theme="classic"] #css-3d-background {
-            background-color: #008080; 
-        }
+        body[data-theme="minecraft"] #css-3d-background { background-color: #795548; background-image: linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037), linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037); background-size: 60px 60px; background-position: 0 0, 30px 30px; }
+        body[data-theme="blueprint"] #css-3d-background { background-color: #0044cc; background-image: linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px); background-size: 20px 20px; }
+        body[data-theme="matrix"] #css-3d-background { background-color: black; background-image: linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px); background-size: 100% 20px; animation: matrixRain 2s linear infinite; }
+        body[data-theme="classic"] #css-3d-background { background-color: #008080; }
 
-        /* Bubble Styling */
+        body:not([data-theme="frutiger-aero"]) .bubble-container { display: none; }
         .bubble {
             position: absolute; bottom: -100px; background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.1));
             box-shadow: 0 0 10px rgba(255,255,255,0.3), inset 0 0 10px rgba(255,255,255,0.3); border-radius: 50%;
@@ -208,7 +156,13 @@
         }
         .game-card:hover { transform: scale(1.03); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); }
 
-        /* Frutiger Aero Gloss */
+        /* Theme Overrides */
+        body[data-theme="blank-slate"] .game-card { border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        body[data-theme="blank-slate"] .game-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        body[data-theme="blank-slate"] h1 { color: #333; text-shadow: none; }
+        body[data-theme="blank-slate"] .bg-cyan-500 { background: #f0f0f0 !important; border: 1px solid #ccc; color: #333 !important; box-shadow: none; }
+        body[data-theme="blank-slate"] .bg-cyan-500:hover { background: #e0e0e0 !important; }
+
         body[data-theme="frutiger-aero"] .game-card::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; height: 112px; z-index: 1;
             background: linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 100%);
@@ -216,25 +170,20 @@
         }
         body[data-theme="frutiger-aero"] .game-card:hover::after {
              background: rgba(0, 161, 255, 0.2); transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px);
-             content: ''; position: absolute; bottom: -15px; left: 10%; width: 80%; height: 50px; 
-             opacity: 0.8; transition: all 0.3s ease;
+             content: ''; position: absolute; bottom: -15px; left: 10%; width: 80%; height: 50px; opacity: 0.8; transition: all 0.3s ease;
         }
 
-        /* Minecraft Override */
         body[data-theme="minecraft"] .game-card { border: 4px solid #000; box-shadow: 4px 4px 0 #000; }
         body[data-theme="minecraft"] .game-card:hover { transform: translateY(-2px); box-shadow: 6px 6px 0 #000; }
         body[data-theme="minecraft"] .bg-cyan-500 { background: #757575 !important; border: 2px solid #fff; border-bottom-color: #555; border-right-color: #555; color: #fff !important; border-radius: 0; }
         
-        /* Blueprint Override */
         body[data-theme="blueprint"] .game-card { border: 2px dashed #fff; }
         body[data-theme="blueprint"] .game-card img { filter: grayscale(100%) opacity(0.8); }
         body[data-theme="blueprint"] .game-card:hover { transform: rotate(1deg); background: rgba(0, 68, 204, 0.5); }
 
-        /* Matrix Override */
         body[data-theme="matrix"] .game-card { border: 1px solid #00FF41; box-shadow: 0 0 5px #00FF41; }
         body[data-theme="matrix"] .game-card:hover { background: #001100; box-shadow: 0 0 15px #00FF41; }
         
-        /* Classic (Win95) Bevels */
         body[data-theme="classic"] .game-card, body[data-theme="classic"] .glass-header, body[data-theme="classic"] .glass-footer, body[data-theme="classic"] .glass-main-panel, body[data-theme="classic"] .control-btn, body[data-theme="classic"] #game-search-input, body[data-theme="classic"] select, body[data-theme="classic"] .bg-cyan-500 {
             border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080;
             box-shadow: 1px 1px 0 #000; transform: none !important;
@@ -242,6 +191,7 @@
         body[data-theme="classic"] .glass-modal-header { background: linear-gradient(to right, #000080, #1084d0); color: white; padding: 4px 8px; }
         body[data-theme="classic"] .glass-modal-container { border: 2px solid #fff; border-right-color: #808080; border-bottom-color: #808080; backdrop-filter: none; }
         body[data-theme="classic"] .glass-modal-header { border-bottom: none; }
+        body[data-theme="classic"] #game-modal-title { color: white !important; font-size: 14px; }
         body[data-theme="classic"] h1 { color: #000; background: #c0c0c0; border: 2px solid #fff; border-right-color: #808080; border-bottom-color: #808080; padding: 5px; text-shadow: none; }
         body[data-theme="classic"] nav a.text-white { color: #000 !important; }
         body[data-theme="classic"] .bg-cyan-500 { background: #c0c0c0 !important; color: black !important; box-shadow: none; }
@@ -253,6 +203,7 @@
         h1 { color: var(--color-text-white); text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
         body[data-theme="classic"] .game-card p { color: #000; }
         body[data-theme="matrix"] .game-card p { color: #00FF41; }
+        body[data-theme="blank-slate"] .game-card p { color: #666; }
 
         /* Button Styles */
         .bg-cyan-500 { 
@@ -266,17 +217,17 @@
         body[data-theme="matrix"] .bg-cyan-500 { background: black !important; border: 1px solid #00FF41; color: #00FF41 !important; box-shadow: none; }
         body[data-theme="matrix"] .bg-cyan-500:hover { background: #00FF41 !important; color: black !important; }
 
-        /* --- NEW USER FRIENDLY SELECTORS --- */
-        /* Styling the select to look like a nice button */
+        /* --- INPUTS & CONTROLS --- */
+        /* User Friendly Selector Style */
         .custom-select {
             background-color: var(--bg-glass-controls);
             color: var(--color-text-dark);
             border: 1px solid var(--border-glass-light);
-            padding: 0.5rem 2rem 0.5rem 1rem; /* Right padding for arrow */
-            border-radius: 9999px; /* Pill shape */
+            padding: 0.5rem 2rem 0.5rem 1rem; 
+            border-radius: 9999px; 
             outline: none;
             font-weight: bold;
-            appearance: none; /* Remove default arrow */
+            appearance: none; 
             -webkit-appearance: none;
             cursor: pointer;
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
@@ -297,6 +248,7 @@
         }
 
         /* Theme specific input overrides */
+        body[data-theme="blank-slate"] .custom-select, body[data-theme="blank-slate"] #game-search-input { background-color: #fff; border-color: #ccc; color: #333; box-shadow: none; }
         body[data-theme="classic"] .custom-select, body[data-theme="classic"] #game-search-input { background-color: #fff; border-radius: 0; color: black; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='black' viewBox='0 0 20 20'%3e%3cpath d='M7 7l3-3 3 3m0 6l-3 3-3-3' stroke='black' stroke-width='2'/%3e%3c/svg%3e"); box-shadow: none; border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080;}
         body[data-theme="matrix"] .custom-select, body[data-theme="matrix"] #game-search-input { background-color: #000; color: #00FF41; border: 1px solid #00FF41; border-radius: 0; background-image: none; }
 
@@ -320,7 +272,7 @@
         
     </style>
 </head>
-<body data-theme="frutiger-aero"> 
+<body data-theme="blank-slate"> 
     
     <div id="css-3d-background">
         <div class="bubble-container">
@@ -372,6 +324,7 @@
                         <option value="/assets/Nintendo 3DS - Amiibo Settings - Main Theme.flac">🎵 3DS Amiibo</option>
                     </select>
                     <select id="theme-select" class="custom-select" title="Change Theme">
+                        <option value="blank-slate">⬜ Blank Slate</option>
                         <option value="frutiger-aero">🫧 Frutiger Aero</option>
                         <option value="minecraft">🧱 Minecraft</option>
                         <option value="blueprint">📐 Blueprint</option>
@@ -897,8 +850,18 @@
                 }
             }
 
+            /* --- THEME MAPPING --- */
+            const themeMusicMap = {
+                'blank-slate': 'none',
+                'frutiger-aero': '/assets/Wii U OST - Mii Maker (Mii Editor).flac',
+                'minecraft': '/assets/Nintendo 3DS - Amiibo Settings - Main Theme.flac',
+                'blueprint': 'none',
+                'matrix': '/assets/Droopy likes your face.flac',
+                'classic': 'none'
+            };
+
             /* --- THEME HANDLING --- */
-            const savedTheme = localStorage.getItem('qbbic-theme') || 'frutiger-aero';
+            const savedTheme = localStorage.getItem('qbbic-theme') || 'blank-slate';
             document.body.setAttribute('data-theme', savedTheme);
             if(themeSelect) themeSelect.value = savedTheme;
 
@@ -908,7 +871,16 @@
                     document.body.setAttribute('data-theme', newTheme);
                     localStorage.setItem('qbbic-theme', newTheme);
                     playSound(selectSound);
-                    showToast(`Theme changed to ${e.target.options[e.target.selectedIndex].text.replace(/^[^\w]+/, '')}`); // Regex removes emoji for cleaner toast text if desired, or keep full text
+                    showToast(`Theme changed to ${e.target.options[e.target.selectedIndex].text.replace(/^[^\w]+/, '')}`); 
+                    
+                    // Auto-Switch Music based on Theme
+                    const newSong = themeMusicMap[newTheme];
+                    if(newSong !== undefined && songSelect) {
+                        songSelect.value = newSong;
+                        localStorage.setItem(BGM_STORAGE_KEY, newSong);
+                        setAndPlayBGM(newSong);
+                        // showToast(`Theme music applied: ${newSong === 'none' ? 'Silent' : 'Playing'}`);
+                    }
                 });
             }
 
