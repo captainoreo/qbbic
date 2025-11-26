@@ -160,6 +160,29 @@
             --font-main: Tahoma, sans-serif;
         }
 
+        /* 5. WINDOWS XP */
+        body[data-theme="windows-xp"] {
+            --color-primary: #0058e2; /* XP Blue */
+            --color-primary-light: #3b76f5;
+            --color-primary-dark: #003399;
+            --color-text-base: #000000;
+            --color-text-white: #ffffff; 
+            --color-text-dark: #000000;
+            --bg-page: #3B5998; /* XP Desktop Blue */
+            --bg-glass-header: linear-gradient(to bottom, #245edb 0%, #3b76f5 100%);
+            --bg-glass-card: #ece9d8; /* XP Window BG */
+            --bg-glass-card-hover: #f5f4f0;
+            --bg-glass-modal: #ece9d8;
+            --bg-glass-modal-header: linear-gradient(to right, #0058e2, #3b76f5);
+            --bg-glass-controls: #f0f0f0;
+            --bg-glass-controls-hover: #f5f5f5;
+            --border-glass: #0a246a;
+            --border-glass-light: #a0a0a0;
+            --blur-strength: 0px;
+            --card-radius: 6px;
+            --font-main: Tahoma, 'Geneva', sans-serif;
+        }
+
         /* --- BODY BASE --- */
         body {
             font-family: var(--font-main);
@@ -181,6 +204,8 @@
         body[data-theme="blueprint"] #css-3d-background { background-color: #0044cc; background-image: linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px); background-size: 20px 20px; }
         body[data-theme="matrix"] #css-3d-background { background-color: black; background-image: linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px); background-size: 100% 20px; animation: matrixRain 2s linear infinite; }
         body[data-theme="classic"] #css-3d-background { background-color: #008080; }
+        body[data-theme="windows-xp"] #css-3d-background { background: #3B5998 url('https://placehold.co/1920x1080/3B5998/3B5998?text='); /* Placeholder for Bliss-like background, using solid XP blue */ background-size: cover; background-position: center; }
+
 
         body:not([data-theme="frutiger-aero"]) .bubble-container { display: none; }
         .bubble {
@@ -248,6 +273,81 @@
         body[data-theme="classic"] nav a.text-white { color: #000 !important; }
         body[data-theme="classic"] .bg-cyan-500 { background: #c0c0c0 !important; color: black !important; box-shadow: none; }
         body[data-theme="classic"] .bg-cyan-500:active { border-color: #808080 #fff #fff #808080; }
+
+        /* XP Overrides */
+        body[data-theme="windows-xp"] .glass-header {
+            background: var(--bg-glass-header);
+            border-bottom: 1px solid var(--border-glass);
+            box-shadow: none;
+        }
+        body[data-theme="windows-xp"] .glass-main-panel {
+            border: 1px solid var(--border-glass-light);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+        body[data-theme="windows-xp"] .game-card {
+            border: 1px solid var(--border-glass-light);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transform: none !important; /* Disable hover transform */
+        }
+        body[data-theme="windows-xp"] .game-card:hover {
+            background: var(--bg-glass-card-hover);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        body[data-theme="windows-xp"] .bg-cyan-500 {
+            background: linear-gradient(to bottom, #f9f9f9 0%, #e3e3e3 100%) !important;
+            border: 1px solid #003399 !important;
+            color: #000 !important;
+            box-shadow: none;
+            border-radius: 4px;
+            text-shadow: none;
+        }
+        body[data-theme="windows-xp"] .bg-cyan-500:hover {
+            background: linear-gradient(to bottom, #fff 0%, #e9e9e9 100%) !important;
+            border-color: #0058e2 !important;
+        }
+        body[data-theme="windows-xp"] .glass-modal-header {
+            background: var(--bg-glass-modal-header);
+            color: white;
+            padding: 4px 8px;
+            border-bottom: 1px solid var(--border-glass);
+            border-radius: 6px 6px 0 0;
+        }
+        body[data-theme="windows-xp"] #game-modal-title {
+            color: white !important;
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 1px 1px #0a246a;
+        }
+        body[data-theme="windows-xp"] .glass-modal-container {
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            backdrop-filter: none;
+        }
+        body[data-theme="windows-xp"] .control-btn {
+            background: linear-gradient(to bottom, #f9f9f9 0%, #e3e3e3 100%);
+            border: 1px solid #a0a0a0;
+            color: #000;
+            border-radius: 4px;
+        }
+        body[data-theme="windows-xp"] .control-btn:hover {
+             background: linear-gradient(to bottom, #fff 0%, #e9e9e9 100%);
+             border-color: #0058e2;
+        }
+        body[data-theme="windows-xp"] .control-btn.bg-red-600 {
+            background: #e11d48; /* A bit more modern red */
+        }
+        body[data-theme="windows-xp"] .custom-select, 
+        body[data-theme="windows-xp"] #game-search-input {
+            background-color: #fff;
+            border: 1px solid var(--border-glass-light);
+            border-radius: 4px;
+            color: #000;
+        }
+        body[data-theme="windows-xp"] h1 {
+            color: var(--color-text-dark);
+            text-shadow: none;
+        }
+        body[data-theme="windows-xp"] .game-card p { color: #333; }
 
         /* Text Colors */
         .game-card h3 { color: var(--color-text-dark); z-index: 2; position: relative; }
@@ -382,6 +482,7 @@
                         <option value="blueprint">📐 Blueprint</option>
                         <option value="matrix">🟢 The Matrix</option>
                         <option value="classic">💾 Windows 95</option>
+                        <option value="windows-xp">🏞️ Windows XP</option>
                     </select>
                 </div>
             </nav>
@@ -538,7 +639,7 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/garten1.png" alt="Kindergarten" class="w-full h-28 object-cover transition duration-200" loading="lazy">
+                            <img src="/assets/kindergarten.jpg" alt="Kindergarten" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Kindergarten</h3>
                                 <p class="text-xs">Puzzle / Horror</p>
@@ -546,7 +647,7 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/garten2.png" alt="Kindergarten 2" class="w-full h-28 object-cover transition duration-200" loading="lazy">
+                            <img src="/assets/kindergarten2.jpg" alt="Kindergarten 2" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Kindergarten 2</h3>
                                 <p class="text-xs">Puzzle / Horror</p>
@@ -554,7 +655,7 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/garten3.png" alt="Kindergarten 3" class="w-full h-28 object-cover transition duration-200" loading="lazy">
+                            <img src="/assets/kindergarten3.jpg" alt="Kindergarten 3" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Kindergarten 3</h3>
                                 <p class="text-xs">Puzzle / Horror</p>
@@ -562,7 +663,7 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/kirby.png" alt="Kirby's Adventure" class="w-full h-28 object-cover transition duration-200" loading="lazy">
+                            <img src="/assets/kirbyadventure.jpg" alt="Kirby's Adventure" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Kirby's Adventure</h3>
                                 <p class="text-xs">Platformer</p>
@@ -570,7 +671,7 @@
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/pacman.png" alt="Pac-Man" class="w-full h-28 object-cover transition duration-200" loading="lazy">
+                            <img src="/assets/pacman.jpg" alt="Pac-Man" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Pac-Man</h3>
                                 <p class="text-xs">Arcade</p>
@@ -821,78 +922,83 @@
 
                         <!-- Mario 64 Start -->
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/IMG_6233.jpeg" alt="Mario 64" class="w-full h-28 object-cover transition duration-200" loading="lazy">
+                            <img src="/assets/mario64.jpg" alt="Mario 64" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Mario 64</h3>
                                 <p class="text-xs">Platformer / 3D</p>
-                                <button type="button" data-url="https://mariosixty.vercel.app/sm64/index.html" data-title="Mario 64" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                                <button type="button" data-url="/games/mario64.html" data-title="Mario 64" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
+                        <!-- Mario 64 End -->
+
+                        <!-- FNAF Games Start -->
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/FNaF1.jpg" alt="FNAF 1" class="w-full h-28 object-cover transition duration-200" loading="lazy">
+                            <img src="/assets/fnaf1.jpg" alt="FNAF 1" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">FNAF 1</h3>
                                 <p class="text-xs">Horror / Survival</p>
-                                <button type="button" data-url="/games/clFNAF.html" data-title="FNAF 1" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                                <button type="button" data-url="/games/fnaf1.html" data-title="FNAF 1" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/FNAF 2.png" alt="FNAF 2" class="w-full h-28 object-cover transition duration-200" loading="lazy">
+                            <img src="/assets/fnaf2.jpg" alt="FNAF 2" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">FNAF 2</h3>
                                 <p class="text-xs">Horror / Survival</p>
-                                <button type="button" data-url="/games/clFNAF2.html" data-title="FNAF 2" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                                <button type="button" data-url="/games/fnaf2.html" data-title="FNAF 2" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/FNaF3.png" alt="FNAF 3" class="w-full h-28 object-cover transition duration-200" loading="lazy">
+                            <img src="/assets/fnaf3.jpg" alt="FNAF 3" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">FNAF 3</h3>
                                 <p class="text-xs">Horror / Survival</p>
-                                <button type="button" data-url="/games/clFNAF3.html" data-title="FNAF 3" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                                <button type="button" data-url="/games/fnaf3.html" data-title="FNAF 3" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/Fnaf4.png" alt="FNAF 4" class="w-full h-28 object-cover transition duration-200" loading="lazy">
+                            <img src="/assets/fnaf4.jpg" alt="FNAF 4" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">FNAF 4</h3>
                                 <p class="text-xs">Horror / Survival</p>
-                                <button type="button" data-url="/games/clFNAF4.html" data-title="FNAF 4" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                                <button type="button" data-url="/games/fnaf4.html" data-title="FNAF 4" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/FNaFWorld.png" alt="FNAF World" class="w-full h-28 object-cover transition duration-200" loading="lazy">
+                            <img src="/assets/fnafworld.jpg" alt="FNAF World" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">FNAF World</h3>
                                 <p class="text-xs">RPG</p>
-                                <button type="button" data-url="/games/clfnafworldd.html" data-title="FNAF World" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                                <button type="button" data-url="/games/fnafworld.html" data-title="FNAF World" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/fnafsl.png" alt="FNAF: Sister Location" class="w-full h-28 object-cover transition duration-200" loading="lazy">
+                            <img src="/assets/fnafsl.jpg" alt="FNAF: Sister Location" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">FNAF: Sister Location</h3>
                                 <p class="text-xs">Horror / Survival</p>
-                                <button type="button" data-url="/games/clfnafsl.html" data-title="FNAF: Sister Location" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                                <button type="button" data-url="/games/fnafsl.html" data-title="FNAF: Sister Location" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
                          <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/FFPS.png" alt="Freddy Fazbear's Pizzeria Simulator" class="w-full h-28 object-cover transition duration-200" loading="lazy">
+                            <img src="/assets/fnafpizzasim.jpg" alt="Freddy Fazbear's Pizzeria Simulator" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Pizzeria Simulator</h3>
                                 <p class="text-xs">Horror / Simulation</p>
-                                <button type="button" data-url="/games/clfnafps.html" data-title="Freddy Fazbear's Pizzeria Simulator" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                                <button type="button" data-url="/games/fnafpizzasim.html" data-title="Freddy Fazbear's Pizzeria Simulator" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
                         <!-- Five Nights at Candy's 1 Start -->
                         <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/FNAC1ICON.png" alt="Five Nights at Candy's 1" class="w-full h-28 object-cover transition duration-200" loading="lazy">
+                            <img src="/assets/fnac1.jpg" alt="Five Nights at Candy's 1" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
                                 <h3 class="text-lg font-semibold truncate">Five Nights at Candy's 1</h3>
                                 <p class="text-xs">Horror / Fan Game</p>
-                                <button type="button" data-url="/games/clfnac1.html" data-title="Five Nights at Candy's 1" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                                <button type="button" data-url="/games/fnac1.html" data-title="Five Nights at Candy's 1" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
+                        <!-- Five Nights at Candy's 1 End -->
+                        <!-- FNAF Games End -->
                     </div> 
                 </div> 
             </div> 
@@ -989,7 +1095,8 @@
                 'minecraft': '/assets/Droopy likes your face.flac', // CHANGED
                 'blueprint': 'none',
                 'matrix': '/assets/Droopy likes your face.flac',
-                'classic': 'none'
+                'classic': 'none',
+                'windows-xp': 'none' /* No XP music available */
             };
 
             /* --- THEME HANDLING --- */
