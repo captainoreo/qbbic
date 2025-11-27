@@ -3,285 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qbbic</title>
+    <title>Qbbic - Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Architects+Daughter&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
     <style>
-        /* --- CUSTOM FONT DEFINITION (Removed GameBoyFont) --- */
-        /* @font-face {
-                font-family: 'GameBoyFont';
-                src: url('/assets/Early GameBoy.ttf') format('truetype');
-                font-weight: normal;
-                font-style: normal;
-                font-display: swap; 
-            } 
-        */
-        
-        /* --- CSS Variables for Theming (Frutiger Aero) --- */
+        /* --- 1. GLOBAL VARIABLES & SCROLLBARS --- */
         :root {
-            /* Bright blues and greens */
+            /* Frutiger Aero (Default) Variables */
             --color-primary: #00a1ff; 
             --color-primary-light: #40c4ff;
             --color-primary-dark: #0077c0;
-            
-            /* Dark text for readability on light backgrounds */
             --color-text-base: #003366;
             --color-text-white: #ffffff;
             --color-text-dark: #002244; 
-            
-            /* Background is now transparent to show image */
             --bg-page: transparent; 
-            
-            /* "Aqua" / "Glass" cards are now light */
             --bg-glass-header: rgba(255, 255, 255, 0.7); 
             --bg-glass-card: rgba(255, 255, 255, 0.6);
             --bg-glass-card-hover: rgba(255, 255, 255, 0.85);
             --bg-glass-modal: rgba(240, 240, 255, 0.9);
             --bg-glass-modal-header: rgba(255, 255, 255, 0.7);
-            --bg-glass-controls: rgba(255, 255, 255, 0.7);
-            --bg-glass-controls-hover: rgba(64, 196, 255, 0.8); /* Primary light color */
-
+            --bg-glass-controls: rgba(255, 255, 255, 0.5);
+            --bg-glass-controls-hover: rgba(255, 255, 255, 0.8); 
             --border-glass: rgba(0, 161, 255, 0.4);
             --border-glass-light: rgba(0, 161, 255, 0.2);
-            
-            --blur-strength: 5px;
+            --blur-strength: 10px;
+            --card-radius: 1.5rem;
+            --font-main: Arial, 'Helvetica Neue', Helvetica, sans-serif;
         }
-        
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 12px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 6px; border: 2px solid rgba(255,255,255,0.5); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--color-primary-dark); }
+
+        /* --- 2. ANIMATIONS --- */
+        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); opacity: 0; } 10% { opacity: 0.7; } 90% { opacity: 0.7; } 100% { transform: translateY(-20vh) scale(1.2); opacity: 0; } }
+        @keyframes scrollGrid { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }
+        @keyframes matrixRain { 0% { background-position: 0% 0%; } 100% { background-position: 0% 100%; } }
+
+        /* --- 3. THEME DEFINITIONS --- */
+
+        /* 0. BLANK SLATE */
+        body[data-theme="blank-slate"] {
+            --color-primary: #f0f0f0; 
+            --color-primary-light: #ffffff; 
+            --color-primary-dark: #cccccc;
+            --color-text-base: #333333;
+            --color-text-white: #000000; 
+            --color-text-dark: #000000;
+            --bg-page: #ffffff;
+            --bg-glass-header: #f8f8f8;
+            --bg-glass-card: #ffffff;
+            --bg-glass-card-hover: #f0f0f0;
+            --bg-glass-modal: #ffffff;
+            --bg-glass-modal-header: #f8f8f8;
+            --bg-glass-controls: #eeeeee;
+            --bg-glass-controls-hover: #dddddd;
+            --border-glass: #cccccc;
+            --border-glass-light: #eeeeee;
+            --blur-strength: 0px;
+            --card-radius: 4px;
+            --font-main: system-ui, -apple-system, sans-serif;
+        }
+
+        /* 1. MINECRAFT */
+        body[data-theme="minecraft"] {
+            --color-primary: #795548; /* Dirt */
+            --color-primary-light: #4CAF50; /* Grass */
+            --color-primary-dark: #3E2723;
+            --color-text-base: #ffffff;
+            --color-text-white: #ffffff;
+            --color-text-dark: #ddd;
+            --bg-page: #795548;
+            --bg-glass-header: rgba(62, 39, 35, 0.9);
+            --bg-glass-card: rgba(100, 100, 100, 0.85); /* Stone */
+            --bg-glass-card-hover: rgba(120, 120, 120, 0.95);
+            --bg-glass-modal: rgba(0, 0, 0, 0.8);
+            --bg-glass-modal-header: #5d4037;
+            --bg-glass-controls: #555;
+            --bg-glass-controls-hover: #777;
+            --border-glass: #000;
+            --border-glass-light: #222;
+            --blur-strength: 0px;
+            --card-radius: 0px;
+            --font-main: 'VT323', monospace;
+        }
+
+        /* 2. BLUEPRINT */
+        body[data-theme="blueprint"] {
+            --color-primary: #0044cc; 
+            --color-primary-light: #ffffff; 
+            --color-primary-dark: #002288;
+            --color-text-base: #ffffff;
+            --color-text-white: #ffffff;
+            --color-text-dark: #ffffff;
+            --bg-page: #0044cc;
+            --bg-glass-header: rgba(0, 68, 204, 0.9);
+            --bg-glass-card: transparent;
+            --bg-glass-card-hover: rgba(255, 255, 255, 0.1);
+            --bg-glass-modal: #0044cc;
+            --bg-glass-modal-header: #003399;
+            --bg-glass-controls: rgba(0, 68, 204, 0.5);
+            --bg-glass-controls-hover: rgba(255,255,255,0.2);
+            --border-glass: #ffffff;
+            --border-glass-light: rgba(255, 255, 255, 0.5);
+            --blur-strength: 0px;
+            --card-radius: 0px;
+            --font-main: 'Architects Daughter', cursive;
+        }
+
+        /* 3. MATRIX */
+        body[data-theme="matrix"] {
+            --color-primary: #000000;
+            --color-primary-light: #00FF41; /* Matrix Green */
+            --color-primary-dark: #003B00;
+            --color-text-base: #00FF41;
+            --color-text-white: #00FF41;
+            --color-text-dark: #00FF41;
+            --bg-page: #000000;
+            --bg-glass-header: rgba(0, 20, 0, 0.9);
+            --bg-glass-card: rgba(0, 10, 0, 0.8);
+            --bg-glass-card-hover: rgba(0, 50, 0, 0.9);
+            --bg-glass-modal: #000000;
+            --bg-glass-modal-header: #003B00;
+            --bg-glass-controls: #000;
+            --bg-glass-controls-hover: #003B00;
+            --border-glass: #008F11;
+            --border-glass-light: #00FF41;
+            --blur-strength: 2px;
+            --card-radius: 0px;
+            --font-main: 'Courier New', monospace;
+        }
+
+        /* 4. WINDOWS 95 */
+        body[data-theme="classic"] {
+            --color-primary: #c0c0c0;
+            --color-primary-light: #ffffff;
+            --color-primary-dark: #808080;
+            --color-text-base: #000000;
+            --color-text-white: #000000; 
+            --color-text-dark: #000000;
+            --bg-page: #008080;
+            --bg-glass-header: #c0c0c0;
+            --bg-glass-card: #c0c0c0;
+            --bg-glass-card-hover: #c0c0c0;
+            --bg-glass-modal: #c0c0c0;
+            --bg-glass-modal-header: #000080;
+            --bg-glass-controls: #c0c0c0;
+            --bg-glass-controls-hover: #c0c0c0;
+            --border-glass: #ffffff;
+            --border-glass-light: #808080;
+            --blur-strength: 0px;
+            --card-radius: 0px;
+            --font-main: Tahoma, sans-serif;
+        }
+
+        /* --- BODY BASE --- */
         body {
-            /* Replaced 'GameBoyFont' with a clean, standard sans-serif stack */
-            font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
-            background-color: var(--color-primary); /* Fallback color */
+            font-family: var(--font-main);
+            background-color: var(--color-primary); 
             color: var(--color-text-base);
             min-height: 100vh;
+            cursor: url('/assets/Normal Select.cur'), auto;
+            transition: color 0.3s, background-color 0.3s;
         }
+        a:hover, button:hover, .game-play-btn:hover, .control-btn:hover { cursor: url('/assets/Link Select.cur'), pointer; }
+
+        /* --- BACKGROUND LOGIC --- */
+        #css-3d-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; transition: background 0.5s ease; }
         
-        /* ------------------------------------- */
-        /* --- NEW FRUTIGER AERO BACKGROUND --- */
-        /* ------------------------------------- */
-        #css-3d-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1; 
-            overflow: hidden;
-            
-            /* Set the background image */
-            /* MAKE SURE THIS PATH IS CORRECT */
-            background-image: url('/assets/aqua.jpg');
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
-            
-            /* Removed all 3D perspective and cube properties */
+        /* Backgrounds */
+        body[data-theme="blank-slate"] #css-3d-background { background: #ffffff; }
+        body[data-theme="frutiger-aero"] #css-3d-background { background-image: url('/assets/aqua.jpg'); background-size: cover; background-position: center; }
+        body[data-theme="minecraft"] #css-3d-background { background-color: #795548; background-image: linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037), linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037); background-size: 60px 60px; background-position: 0 0, 30px 30px; }
+        body[data-theme="blueprint"] #css-3d-background { background-color: #0044cc; background-image: linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px); background-size: 20px 20px; }
+        body[data-theme="matrix"] #css-3d-background { background-color: black; background-image: linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px); background-size: 100% 20px; animation: matrixRain 2s linear infinite; }
+        body[data-theme="classic"] #css-3d-background { background-color: #008080; }
+
+        body:not([data-theme="frutiger-aero"]) .bubble-container { display: none; }
+        .bubble {
+            position: absolute; bottom: -100px; background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.1));
+            box-shadow: 0 0 10px rgba(255,255,255,0.3), inset 0 0 10px rgba(255,255,255,0.3); border-radius: 50%;
+            pointer-events: none; z-index: 0; animation: floatUp var(--speed) linear infinite;
+            animation-delay: var(--delay); width: var(--size); height: var(--size); left: var(--pos); opacity: 0; 
         }
 
-        /* REMOVED: .cube-layer and @keyframes moveCube */
-        
-        /* ------------------------------------- */
-        /* --- END FRUTIGER AERO BACKGROUND --- */
-        /* ------------------------------------- */
+        /* --- UI COMPONENTS --- */
+        .glass-header { background-color: var(--bg-glass-header); backdrop-filter: blur(var(--blur-strength)); border-bottom: 1px solid var(--border-glass); box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3); }
+        .glass-footer { background-color: var(--bg-glass-header); backdrop-filter: blur(var(--blur-strength)); border-top: 1px solid var(--border-glass); }
+        .glass-main-panel { background-color: var(--bg-glass-card); backdrop-filter: blur(var(--blur-strength)); border: 1px solid var(--border-glass-light); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); border-radius: var(--card-radius); padding: 1rem; }
 
-        /* --- Game Card Appearance (Now light "aqua") --- */
+        /* Card Styles */
         .game-card {
             background-color: var(--bg-glass-card);
             backdrop-filter: blur(var(--blur-strength));
-            -webkit-backdrop-filter: blur(var(--blur-strength));
             border: 1px solid var(--border-glass-light);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease; 
             position: relative;
-            transform-style: preserve-3d;
-            transform-origin: center bottom;
-            opacity: 1; 
-            transform: translateZ(0) translateY(0) rotateX(0deg); 
-            border-radius: 1.5rem; /* Match new bubbly design */
+            border-radius: var(--card-radius);
+            overflow: hidden;
         }
+        .game-card:hover { transform: scale(1.03); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); }
 
-        /* --- NEW: Permanent gloss "icon" effect on cards (for thumbnail image area) --- */
-        .game-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 112px; /* h-28 is 112px */
-            z-index: 1;
+        /* Theme Overrides */
+        body[data-theme="blank-slate"] .game-card { border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        body[data-theme="blank-slate"] .game-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        body[data-theme="blank-slate"] h1, body[data-theme="blank-slate"] h2 { color: #333; text-shadow: none; }
+        body[data-theme="blank-slate"] .bg-cyan-500 { background: #f0f0f0 !important; border: 1px solid #ccc; color: #333 !important; box-shadow: none; }
+        body[data-theme="blank-slate"] .bg-cyan-500:hover { background: #e0e0e0 !important; }
+
+        body[data-theme="frutiger-aero"] .game-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 112px; z-index: 1;
             background: linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 100%);
-            pointer-events: none;
-            /* Match the new bubbly shape */
-            border-radius: 1.5rem 1.5rem 0 0; /* 24px */
+            pointer-events: none; border-radius: 1.5rem 1.5rem 0 0;
+        }
+        body[data-theme="frutiger-aero"] .game-card:hover::after {
+             background: rgba(0, 161, 255, 0.2); transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px);
+             content: ''; position: absolute; bottom: -15px; left: 10%; width: 80%; height: 50px; opacity: 0.8; transition: all 0.3s ease;
         }
 
-
-        .game-card:hover {
-            background-color: var(--bg-glass-card-hover);
-            transform: scale(1.03) translateZ(10px); 
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
-        }
-
-        /* --- UPDATED: Reflection now uses ::after --- */
-        .game-card:hover::after {
-             background: rgba(0, 161, 255, 0.2); /* Use primary color */
-             transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px);
-             /* Properties to make it visible */
-             content: '';
-             position: absolute;
-             bottom: -15px; 
-             left: 10%;
-             width: 80%;
-             height: 50px; 
-             opacity: 0.8;
-             transition: all 0.3s ease;
-        }
-
-        /* Glassmorphism and Utility Classes (Updated for new theme) */
+        body[data-theme="minecraft"] .game-card { border: 4px solid #000; box-shadow: 4px 4px 0 #000; }
+        body[data-theme="minecraft"] .game-card:hover { transform: translateY(-2px); box-shadow: 6px 6px 0 #000; }
+        body[data-theme="minecraft"] .bg-cyan-500 { background: #757575 !important; border: 2px solid #fff; border-bottom-color: #555; border-right-color: #555; color: #fff !important; border-radius: 0; }
         
-        /* --- UPDATED: Glossy Header Style --- */
-        .glass-header {
-            background-color: var(--bg-glass-header);
-            backdrop-filter: blur(var(--blur-strength));
-            -webkit-backdrop-filter: blur(var(--blur-strength));
-            border-bottom: 1px solid var(--border-glass);
-            /* Add gloss effect: a subtle white inner shadow at the top */
-            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
-        }
-        
-        /* --- NEW: Glossy Footer Style --- */
-        .glass-footer {
-            background-color: var(--bg-glass-header);
-            backdrop-filter: blur(var(--blur-strength));
-            -webkit-backdrop-filter: blur(var(--blur-strength));
-            border-top: 1px solid var(--border-glass);
-            /* Add gloss effect: a subtle white inner shadow at the bottom */
-            box-shadow: inset 0 -1px 1px rgba(255, 255, 255, 0.3);
-        }
-        
-        /* --- NEW: Main Glass Panel (for general content areas) --- */
-        .glass-main-panel {
-            background-color: var(--bg-glass-card);
-            backdrop-filter: blur(var(--blur-strength));
-            -webkit-backdrop-filter: blur(var(--blur-strength));
-            border: 1px solid var(--border-glass-light);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 1.5rem; /* 24px, matches "bubbly" cards */
-            padding: 1rem 1rem 1.5rem; /* 16px/24px */
-        }
-        @media (min-width: 640px) {
-            .glass-main-panel {
-                padding: 1.5rem 2rem 2rem; /* 24px/32px */
-            }
-        }
+        body[data-theme="blueprint"] .game-card { border: 2px dashed #fff; }
+        body[data-theme="blueprint"] .game-card img { filter: grayscale(100%) opacity(0.8); }
+        body[data-theme="blueprint"] .game-card:hover { transform: rotate(1deg); background: rgba(0, 68, 204, 0.5); }
 
+        body[data-theme="matrix"] .game-card { border: 1px solid #00FF41; box-shadow: 0 0 5px #00FF41; }
+        body[data-theme="matrix"] .game-card:hover { background: #001100; box-shadow: 0 0 15px #00FF41; }
+        
+        body[data-theme="classic"] .game-card, body[data-theme="classic"] .glass-header, body[data-theme="classic"] .glass-footer, body[data-theme="classic"] .glass-main-panel, body[data-theme="classic"] .control-btn, body[data-theme="classic"] #game-search-input, body[data-theme="classic"] select, body[data-theme="classic"] .bg-cyan-500 {
+            border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080;
+            box-shadow: 1px 1px 0 #000; transform: none !important;
+        }
+        body[data-theme="classic"] .glass-modal-header { background: linear-gradient(to right, #000080, #1084d0); color: white; padding: 4px 8px; }
+        body[data-theme="classic"] .glass-modal-container { border: 2px solid #fff; border-right-color: #808080; border-bottom-color: #808080; backdrop-filter: none; }
+        body[data-theme="classic"] .glass-modal-header { border-bottom: none; }
+        body[data-theme="classic"] #game-modal-title { color: white !important; font-size: 14px; }
+        body[data-theme="classic"] h1, body[data-theme="classic"] h2 { color: #000; background: #c0c0c0; border: 2px solid #fff; border-right-color: #808080; border-bottom-color: #808080; padding: 5px; text-shadow: none; }
+        body[data-theme="classic"] nav a.text-white { color: #000 !important; }
+        body[data-theme="classic"] .bg-cyan-500 { background: #c0c0c0 !important; color: black !important; box-shadow: none; }
+        body[data-theme="classic"] .bg-cyan-500:active { border-color: #808080 #fff #fff #808080; }
 
-        /* --- NEW: Glossy Modal Header Style --- */
-        .glass-modal-header {
-            background-color: var(--bg-glass-modal-header);
-            backdrop-filter: blur(var(--blur-strength));
-            -webkit-backdrop-filter: blur(var(--blur-strength));
-            /* Add gloss effect: a subtle white inner shadow at the top */
-            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
-            /* border-bottom: 1px solid var(--border-glass); */ /* Removed, as HTML already has one */
-        }
+        /* Text Colors */
+        .game-card h3 { color: var(--color-text-dark); z-index: 2; position: relative; }
+        .game-card p { color: #004477; z-index: 2; position: relative; }
+        h1, h2 { color: var(--color-text-white); text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+        body[data-theme="classic"] .game-card p { color: #000; }
+        body[data-theme="matrix"] .game-card p { color: #00FF41; }
+        body[data-theme="blank-slate"] .game-card p { color: #666; }
 
-        /* --- NEW: Glossy Modal Control Button Style --- */
-        .control-btn:not(.bg-red-600) {
-            background-color: var(--bg-glass-controls);
-            color: var(--color-text-dark);
-            padding: 0.5rem;
-            border-radius: 0.375rem; /* 6px */
-            border: 1px solid var(--border-glass-light);
-            box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 0 1px 1px rgba(0,0,0,0.1);
-            transition: background-color 0.2s, box-shadow 0.2s, color 0.2s;
-        }
-        .control-btn:not(.bg-red-600):hover {
-            background-color: var(--bg-glass-controls-hover);
-            color: var(--color-text-white);
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 1px 0 rgba(255,255,255,0.1);
-        }
-        /* Add matching padding/shadow to the close button */
-        .control-btn.bg-red-600 {
-            padding: 0.5rem;
-            border-radius: 0.375rem; /* 6px */
-            box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 0 1px 1px rgba(0,0,0,0.1);
-        }
-
-        
-        /* Update text colors to work on the new light "glass" */
-        /* Used for testimonial names/game titles in the new theme */
-        .game-card h3 { color: var(--color-text-dark); z-index: 2; position: relative; } 
-        /* Used for testimonial text/game descriptions in the new theme */
-        .game-card p { color: #004477; z-index: 2; position: relative; } 
-        
-        /* Used for main H1 titles on the page - they stay white/light on the aqua background */
-        h1 { color: var(--color-text-white); text-shadow: 0 1px 3px rgba(0,0,0,0.4); } 
-        
-        /* Update Tailwind overrides for new palette */
-        .text-cyan-400 { color: var(--color-primary-dark) !important; }
-        .text-gray-900 { color: var(--color-text-dark) !important; }
-        .text-white { color: var(--color-text-white) !important; }
-        
-        /* --- UPDATED: Glossy "Play" Button Style --- */
+        /* Button Styles */
         .bg-cyan-500 { 
             background-color: var(--color-primary) !important; 
-            /* Add a top-to-bottom gradient */
             background-image: linear-gradient(to bottom, var(--color-primary-light), var(--color-primary)) !important;
-            /* Add a subtle "pressed" look */
             box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 0 1px 1px rgba(0,0,0,0.1);
             border: 1px solid var(--color-primary-dark);
             text-shadow: 0 1px 0 rgba(0,0,0,0.1);
-            font-weight: bold; /* Make text bolder */
-            z-index: 2; /* Ensure it's above the gloss */
-            position: relative; /* Ensure it's above the gloss */
+            font-weight: bold; z-index: 2; position: relative; 
         }
-        .hover\:bg-cyan-400:hover { 
-            background-color: var(--color-primary-light) !important; 
-            /* Invert gradient slightly on hover */
-            background-image: linear-gradient(to bottom, var(--color-primary), var(--color-primary-light)) !important;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 1px 0 rgba(255,255,255,0.1);
-            border: 1px solid var(--color-primary-dark);
-            font-weight: bold; /* Make text bolder */
+        body[data-theme="matrix"] .bg-cyan-500 { background: black !important; border: 1px solid #00FF41; color: #00FF41 !important; box-shadow: none; }
+        body[data-theme="matrix"] .bg-cyan-500:hover { background: #00FF41 !important; color: black !important; }
+
+        /* --- INPUTS & CONTROLS --- */
+        /* User Friendly Selector Style */
+        .custom-select {
+            background-color: var(--bg-glass-controls);
+            color: var(--color-text-dark);
+            border: 1px solid var(--border-glass-light);
+            padding: 0.5rem 2rem 0.5rem 1rem; 
+            border-radius: 9999px; 
+            outline: none;
+            font-weight: bold;
+            appearance: none; 
+            -webkit-appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .custom-select:hover {
+            background-color: var(--bg-glass-controls-hover);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
-        /* Update nav links for readability (light header) */
-        nav a {
-            color: var(--color-text-dark); /* Dark text on light header */
-            font-weight: bold;
+        /* Theme specific input overrides */
+        body[data-theme="blank-slate"] .custom-select { background-color: #fff; border-color: #ccc; color: #333; box-shadow: none; }
+        body[data-theme="classic"] .custom-select { background-color: #fff; border-radius: 0; color: black; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='black' viewBox='0 0 20 20'%3e%3cpath d='M7 7l3-3 3 3m0 6l-3 3-3-3' stroke='black' stroke-width='2'/%3e%3c/svg%3e"); box-shadow: none; border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080;}
+        body[data-theme="matrix"] .custom-select { background-color: #000; color: #00FF41; border: 1px solid #00FF41; border-radius: 0; background-image: none; }
+
+        /* Toast Notification */
+        #toast-notification {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background-color: var(--color-primary); color: var(--color-text-white);
+            padding: 12px 24px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000;
+            font-weight: bold; border: 2px solid rgba(255,255,255,0.3); text-align: center;
         }
-        nav a.hover\:text-white:hover {
-            color: var(--color-primary-dark) !important;
-        }
-        nav a.text-white { /* The active "Home" link */
-            color: var(--color-primary-dark) !important;
-            border-color: var(--color-primary-dark) !important;
-        }
-        nav .text-gray-300 {
-            color: var(--color-text-base) !important;
-        }
-        nav svg {
-            color: var(--color-primary-dark) !important;
-        }
-        nav span {
-            color: var(--color-text-dark) !important;
-        }
-        nav span .text-cyan-400 { /* The "BIC" in QBBIC */
-            color: var(--color-primary-dark) !important;
-        }
+        #toast-notification.show { transform: translateX(-50%) translateY(0); }
+
+        /* Modal */
+        .glass-modal-container { background-color: var(--bg-glass-modal); backdrop-filter: blur(var(--blur-strength)); border-radius: var(--card-radius); }
+        .glass-modal-header { background-color: var(--bg-glass-modal-header); backdrop-filter: blur(var(--blur-strength)); }
+        .control-btn:not(.bg-red-600) { background-color: var(--bg-glass-controls); color: var(--color-text-dark); border: 1px solid var(--border-glass-light); }
+        .control-btn.bg-red-600 { background-color: #ef4444; color: white; }
+        body[data-theme="matrix"] .glass-modal-container { border: 1px solid #00FF41; }
+        body[data-theme="matrix"] .control-btn { border-radius: 0; border: 1px solid #00FF41; background: black; color: #00FF41; }
         
     </style>
 </head>
-<body> 
+<body data-theme="blank-slate"> 
     
     <div id="css-3d-background">
+        <div class="bubble-container">
+            <div class="bubble" style="--size: 40px; --pos: 10%; --speed: 8s; --delay: 0s;"></div>
+            <div class="bubble" style="--size: 60px; --pos: 30%; --speed: 12s; --delay: 2s;"></div>
+            <div class="bubble" style="--size: 30px; --pos: 50%; --speed: 10s; --delay: 4s;"></div>
+            <div class="bubble" style="--size: 50px; --pos: 70%; --speed: 15s; --delay: 1s;"></div>
+            <div class="bubble" style="--size: 80px; --pos: 90%; --speed: 20s; --delay: 0.5s;"></div>
+            <div class="bubble" style="--size: 45px; --pos: 15%; --speed: 11s; --delay: 5s;"></div>
+            <div class="bubble" style="--size: 55px; --pos: 35%; --speed: 13s; --delay: 3s;"></div>
+            <div class="bubble" style="--size: 25px; --pos: 55%; --speed: 9s; --delay: 6s;"></div>
+            <div class="bubble" style="--size: 65px; --pos: 75%; --speed: 16s; --delay: 2.5s;"></div>
+            <div class="bubble" style="--size: 35px; --pos: 95%; --speed: 10s; --delay: 1.5s;"></div>
+            <div class="bubble" style="--size: 50px; --pos: 5%; --speed: 14s; --delay: 7s;"></div>
+            <div class="bubble" style="--size: 70px; --pos: 25%; --speed: 18s; --delay: 3.5s;"></div>
+            <div class="bubble" style="--size: 40px; --pos: 45%; --speed: 11s; --delay: 0.2s;"></div>
+            <div class="bubble" style="--size: 60px; --pos: 65%; --speed: 13s; --delay: 4.5s;"></div>
+            <div class="bubble" style="--size: 30px; --pos: 85%; --speed: 9s; --delay: 2s;"></div>
         </div>
+    </div>
     
     <div id="page-content" class="relative z-10">
-
-        <audio id="intro-sound" src="/assets/ps4-menu-intro.mp3" preload="auto"></audio>
         <audio id="hover-sound" src="/assets/Sample_0016.wav" preload="auto"></audio>
         <audio id="select-sound" src="/assets/Sample_0000.wav" preload="auto"></audio>
         <audio id="exit-sound" src="/assets/Sample_0001.wav" preload="auto"></audio>
-        
+        <audio id="background-music" loop preload="auto"></audio>
+
         <header class="sticky top-0 z-50 border-b border-gray-700 glass-header">
             <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
                 <div class="flex items-center">
@@ -293,169 +358,171 @@
                     </a>
                 </div>
                 
-                <button id="mobile-menu-button" type="button" class="md:hidden text-white focus:outline-none absolute right-4 top-3">
-                    <span class="sr-only">Open menu</span>
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                    </svg>
-                </button>
-                
                 <div class="hidden md:flex space-x-6 items-center">
                     <a href="index.html" class="text-white border-b-2 border-cyan-400 transition duration-200 font-medium">Home</a>
                     <a href="games.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Games</a>
                     <a href="faq.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">FAQ</a>
                     <a href="changelog.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Changelog</a>
-                    <a href="https//:feelineready.vercel.app" class="text-gray-300 hover:text-white transition duration-200 font-medium">Also try feeline</a>
                     
+                    <select id="song-select" class="custom-select" title="Change Background Music">
+                        <option value="none">🎵 Music: Off</option>
+                        <option value="/assets/Wii U OST - Mii Maker (Mii Editor).flac">🎵 Wii U Mii Maker</option>
+                        <option value="/assets/Droopy likes your face.flac">🎵 Droopy likes your face</option>
+                        <option value="/assets/Sleepville - Little Man Legends.mp3">🎵 Sleepville - Little Man Legends</option>
+                    </select>
+                    <select id="theme-select" class="custom-select" title="Change Theme">
+                        <option value="blank-slate">⬜ Blank Slate</option>
+                        <option value="frutiger-aero">🫧 Frutiger Aero</option>
+                        <option value="minecraft">🧱 Minecraft</option>
+                        <option value="blueprint">📐 Blueprint</option>
+                        <option value="matrix">🟢 The Matrix</option>
+                        <option value="classic">💾 Windows 95</option>
+                    </select>
                 </div>
             </nav>
-            
-            <div id="mobile-menu" class="md:hidden hidden bg-gray-800 px-4 pb-4 border-t border-gray-700">
-                <a href="index.html" class="block text-white border-l-2 border-cyan-400 py-2 pl-2 transition duration-200 border-b border-gray-700">Home</a>
-                <a href="games.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">Games</a>
-                <a href="faq.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">FAQ</a>
-                <a href="changelog.html" class="block text-gray-300 hover:text-white py-2 pl-2 transition duration-200 border-b border-gray-700">Changelog</a>
-            </div>
         </header>
 
         <main>
-            <section class="py-12 sm:py-16" role="region" aria-labelledby="featured-heading">
-                <div class="container mx-auto px-4">
-                    <h2 id="featured-heading" class="text-3xl font-bold text-center mb-10 text-white">
+        <section class="py-8 sm:py-12">
+            <div class="container mx-auto">
+                <div class="glass-main-panel mx-4 mb-10">
+                    <h2 class="text-3xl font-bold text-center mb-10 text-white">
                         Featured Games
                     </h2>
                     <div id="featured-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
                         
-                        <div class="rounded-2xl game-card overflow-hidden transition duration-200">
-                            <img src="/assets/nikki.jpg" alt="Yume Nikki" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="game-card overflow-hidden transition duration-200">
+                            <img src="/assets/nikki.jpg" alt="Yume Nikki" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
-                                <h3 class="text-lg font-semibold text-white truncate">Yume Nikki</h3>
-                                <p class="text-gray-400 text-xs">Weirdness / Simulation</p>
-                                <button type="button" data-url="/games/clyumenikki.html" data-title="Yume Nikki" aria-label="Play Yume Nikki" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                                <h3 class="text-lg font-semibold truncate">Yume Nikki</h3>
+                                <p class="text-xs">Weirdness / Simulation</p>
+                                <button type="button" data-url="/games/clyumenikki.html" data-title="Yume Nikki" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
                         
-                        <div class="rounded-2xl game-card overflow-hidden transition duration-200">
-                            <img src="/assets/cookie.png" alt="Cookie Clicker" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="game-card overflow-hidden transition duration-200">
+                            <img src="/assets/cookie.png" alt="Cookie Clicker" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
-                                <h3 class="text-lg font-semibold text-white truncate">Cookie Clicker</h3>
-                                <p class="text-gray-400 text-xs">Idle / Simulation</p>
-                                <button type="button" data-url="/games/Cookie Clicker.html" data-title="Cookie Clicker" aria-label="Play Cookie Clicker" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                                <h3 class="text-lg font-semibold truncate">Cookie Clicker</h3>
+                                <p class="text-xs">Idle / Simulation</p>
+                                <button type="button" data-url="/games/Cookie Clicker.html" data-title="Cookie Clicker" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
 
-                        <div class="rounded-2xl game-card overflow-hidden transition duration-200">
-                            <img src="/assets/doom1.jpg" alt="Doom 1" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="game-card overflow-hidden transition duration-200">
+                            <img src="/assets/doom1.jpg" alt="Doom 1" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
-                                <h3 class="text-lg font-semibold text-white truncate">Doom 1</h3>
-                                <p class="text-gray-400 text-xs">Survival / Shooter</p>
-                                <button type="button" data-url="/games/DOOM.html" data-title="Doom 1" aria-label="Play Doom 1" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                                <h3 class="text-lg font-semibold truncate">Doom 1</h3>
+                                <p class="text-xs">Survival / Shooter</p>
+                                <button type="button" data-url="/games/DOOM.html" data-title="Doom 1" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
                         
-                        <div class="rounded-2xl game-card overflow-hidden transition duration-200">
-                            <img src="/assets/doom2.png" alt="Doom 2" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="game-card overflow-hidden transition duration-200">
+                            <img src="/assets/doom2.png" alt="Doom 2" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
-                                <h3 class="text-lg font-semibold text-white truncate">Doom 2</h3>
-                                <p class="text-gray-400 text-xs">Survival / Shooter</p>
-                                <button type="button" data-url="/games/Doom 2.html" data-title="Doom 2" aria-label="Play Doom 2" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                                <h3 class="text-lg font-semibold truncate">Doom 2</h3>
+                                <p class="text-xs">Survival / Shooter</p>
+                                <button type="button" data-url="/games/Doom 2.html" data-title="Doom 2" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
 
-                        <div class="rounded-2xl game-card overflow-hidden transition duration-200">
-                            <img src="/assets/factory.jpg" alt="Nubby's number factory" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="game-card overflow-hidden transition duration-200">
+                            <img src="/assets/factory.jpg" alt="Nubby's number factory" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
-                                <h3 class="text-lg font-semibold text-white truncate">Nubby's number factory</h3>
-                                <p class="text-gray-400 text-xs">Arcade / Endless</p>
-                                <button type="button" data-url="/games/Nubbys Number Factory.html" data-title="NNF" aria-label="Play Nubby's number factory" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
+                                <h3 class="text-lg font-semibold truncate">Nubby's number factory</h3>
+                                <p class="text-xs">Arcade / Endless</p>
+                                <button type="button" data-url="/games/Nubbys Number Factory.html" data-title="NNF" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-
                     </div>
                     <div class="text-center mt-10">
-                        <a href="games.html" class="inline-block px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold rounded-lg text-lg transition duration-200 shadow-lg">
+                        <a href="games.html" class="inline-block px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold rounded-lg text-lg transition duration-200">
                             View All Games
                         </a>
                     </div>
                 </div>
-            </section>
-            
-            <section class="py-12 sm:py-16" role="region" aria-labelledby="whats-new-heading">
-                <div class="container mx-auto px-4">
-                    <h2 id="whats-new-heading" class="text-3xl font-bold text-center mb-10 text-white">
+
+                <div class="glass-main-panel mx-4 mb-10">
+                    <h2 class="text-3xl font-bold text-center mb-10 text-white">
                         What's New
                     </h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         
-                        <div class="rounded-2xl game-card overflow-hidden transition duration-200">
-                            <img src="/assets/half-life-card.png" alt="Half-Life" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="game-card overflow-hidden transition duration-200">
+                            <img src="/assets/half-life-card.png" alt="Half-Life" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
-                                <h3 class="text-lg font-semibold text-white truncate">Half-Life</h3>
-                                <p class="text-gray-400 text-xs">New to the collection</p>
+                                <h3 class="text-lg font-semibold truncate">Half-Life</h3>
+                                <p class="text-xs">New to the collection</p>
                             </div>
                         </div>
                         
-                        <div class="rounded-2xl game-card overflow-hidden transition duration-200">
-                            <img src="/assets/tetris-card.png" alt="Tetris" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="game-card overflow-hidden transition duration-200">
+                            <img src="/assets/tetris-card.png" alt="Tetris" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
-                                <h3 class="text-lg font-semibold text-white truncate">Tetris</h3>
-                                <p class="text-gray-400 text-xs">New to the collection</p>
+                                <h3 class="text-lg font-semibold truncate">Tetris</h3>
+                                <p class="text-xs">New to the collection</p>
                             </div>
                         </div>
                         
-                        <div class="rounded-2xl game-card overflow-hidden transition duration-200">
-                            <img src="/assets/dadish-3d-card.png" alt="Dadish 3D" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="game-card overflow-hidden transition duration-200">
+                            <img src="/assets/dadish-3d-card.png" alt="Dadish 3D" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
-                                <h3 class="text-lg font-semibold text-white truncate">Dadish 3D</h3>
-                                <p class="text-gray-400 text-xs">New to the collection</p>
+                                <h3 class="text-lg font-semibold truncate">Dadish 3D</h3>
+                                <p class="text-xs">New to the collection</p>
                             </div>
                         </div>
 
-                        <div class="rounded-2xl game-card overflow-hidden transition duration-200">
-                            <img src="/assets/postal-card.png" alt="Postal" class="w-full h-28 object-cover transition duration-200" loading="lazy" decoding="async">
+                        <div class="game-card overflow-hidden transition duration-200">
+                            <img src="/assets/postal-card.png" alt="Postal" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
-                                <h3 class="text-lg font-semibold text-white truncate">Postal</h3>
-                                <p class="text-gray-400 text-xs">New to the collection</p>
+                                <h3 class="text-lg font-semibold truncate">Postal</h3>
+                                <p class="text-xs">New to the collection</p>
                             </div>
                         </div>
-                        
                     </div>
                 </div>
-            </section>
 
-            <section class="py-12 sm:py-16" role="region" aria-labelledby="about-heading">
-                <div class="container mx-auto px-4">
-                    <div class="glass-main-panel mx-auto max-w-4xl"> 
-                        <h2 id="about-heading" class="text-3xl font-bold text-center mb-6 text-gray-900"> What is Qbbic? 
-                        </h2> 
-                        <div class="text-center text-lg text-gray-700 space-y-4"> <p> Qbbic is a site that serves as a hub for the best games on the internet, for free! </p> 
-                            <p> Our focus is on bringing quality entertainment that you will enjoy. With a collection of over 100 games and counting, the options are endless. What are you waiting for? Go find one and start playing! </p> 
+                <div class="glass-main-panel mx-4 mb-10 max-w-4xl mx-auto"> 
+                    <h2 class="text-3xl font-bold text-center mb-6 text-white"> What is Qbbic? 
+                    </h2> 
+                    <div class="text-center text-lg text-gray-700 space-y-4"> 
+                        <p class="text-white"> Qbbic is a site that serves as a hub for the best games on the internet, for free! </p> 
+                        <p class="text-white"> Our focus is on bringing quality entertainment that you will enjoy. With a collection of over 100 games and counting, the options are endless. What are you waiting for? Go find one and start playing! </p> 
+                    </div> 
+                </div>
+
+                <div class="glass-main-panel mx-4"> 
+                    <h2 class="text-3xl font-bold text-center mb-10 text-white"> What Users Have to Say </h2> 
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6"> 
+                        <div class="game-card p-6"> 
+                            <p class="italic mb-4">"Diddy Kong!!!"</p> 
+                            <p class="font-semibold">- MonkeyJimmy</p> 
                         </div> 
-                    </div>
-                </div>
-            </section>
-
-            <section class="py-12 sm:py-16" role="region" aria-labelledby="testimonials-heading"> 
-                <div class="container mx-auto px-4"> 
-                    <h2 id="testimonials-heading" class="text-3xl font-bold text-center mb-10 text-gray-900"> What Users Have to Say </h2> <div class="grid grid-cols-1 md:grid-cols-3 gap-6"> 
-                        <div class="game-card p-6 rounded-lg border-l-4 border-cyan-500 shadow-xl" style="border-left-color: var(--color-primary-light);"> 
-                            <p class="text-gray-700 italic mb-4">"Diddy Kong!!!"</p> <p class="font-semibold text-gray-900">- MonkeyJimmy</p> </div> 
-                        <div class="game-card p-6 rounded-lg border-l-4 border-cyan-500 shadow-xl" style="border-left-color: var(--color-primary-light);"> 
-                            <p class="text-gray-700 italic mb-4">"I only use this site when i'm bored as hell"</p> <p class="font-semibold text-gray-900">- Chicken king</p> </div> 
-                        <div class="game-card p-6 rounded-lg border-l-4 border-cyan-500 shadow-xl" style="border-left-color: var(--color-primary-light);"> 
-                            <p class="text-gray-700 italic mb-4">"I like the game where you beat up godzilla"</p> <p class="font-semibold text-gray-900">- Dylan</p> </div> 
+                        <div class="game-card p-6"> 
+                            <p class="italic mb-4">"I only use this site when i'm bored as hell"</p> 
+                            <p class="font-semibold">- Chicken king</p> 
+                        </div> 
+                        <div class="game-card p-6"> 
+                            <p class="italic mb-4">"I like the game where you beat up godzilla"</p> 
+                            <p class="font-semibold">- Dylan</p> 
+                        </div> 
                     </div> 
                 </div> 
-            </section>
+
+            </div> 
+        </section>
         </main>
-        
-        <footer class="border-t border-gray-700 mt-10 glass-footer"> 
+
+        <footer class="border-t border-gray-700 mt-10 glass-footer">
             <div class="container mx-auto px-4 py-6 text-center">
                 <div class="flex justify-center space-x-6 mb-4">
                     <a href="index.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Home</a>
                     <a href="games.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Games</a>
                     <a href="faq.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">FAQ</a>
-                    <a href="changelog.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Terms of Service</a>
+                    <a href="#" id="cloak-drive" class="text-gray-400 hover:text-cyan-400 transition duration-200">Google Drive</a>
+                    <a href="#" id="cloak-canvas" class="text-gray-400 hover:text-cyan-400 transition duration-200">Canvas</a>
+                    <a href="#" id="cloak-classroom" class="text-gray-400 hover:text-cyan-400 transition duration-200">Classroom</a>
                 </div>
                 <p class="text-gray-500 text-xs">
                     Copyright Team Qbbic © 2025. All rights reserved to respective owners.
@@ -463,225 +530,231 @@
             </div>
         </footer>
 
-        <div id="game-modal" class="fixed inset-0 bg-black bg-opacity-95 z-[100] hidden flex items-center justify-center p-2 sm:p-4 transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
-            <div class="w-full h-full max-w-7xl max-h-[95vh] flex flex-col bg-gray-950 rounded-2xl overflow-hidden shadow-2xl" style="background-color: var(--bg-glass-modal);">
-                
-                <div class="flex-shrink-0 p-3 sm:p-4 flex justify-between items-center border-b border-gray-700 glass-modal-header">
-                    <h2 id="game-modal-title" class="text-xl font-bold text-white text-gray-900">Game Title</h2>
-                    <div class="flex space-x-2">
-                        <button id="fullscreen-btn" aria-label="Toggle Fullscreen" class="control-btn px-3 py-1 text-sm rounded-md font-bold transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5M11 20H6a2 2 0 01-2-2v-5m9 7h5a2 2 0 002-2v-5m-7 7l-5-5"></path></svg>
-                        </button>
-                        <button id="close-game-modal-btn" aria-label="Close Game" class="control-btn bg-red-600 hover:bg-red-700 text-white font-bold transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                        </button>
+        <div id="game-modal" class="fixed inset-0 bg-black bg-opacity-95 z-[100] flex items-center justify-center p-2 sm:p-4 transition-all duration-300 opacity-0 pointer-events-none scale-95" role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
+            <div class="w-full h-full max-w-7xl max-h-[95vh] flex flex-col bg-gray-950 rounded-2xl overflow-hidden shadow-2xl glass-modal-container">
+                <div class="flex-shrink-0 p-3 flex justify-between items-center border-b border-gray-700 glass-modal-header">
+                    <h2 id="game-modal-title" class="text-xl font-bold text-cyan-400 truncate">Game Title</h2>
+                    <div class="flex space-x-2 items-center">
+                        <button id="reload-game-btn" type="button" class="control-btn" title="Reload Game"><span class="sr-only">Reload Game</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8C17 5.23858 14.7614 3 12 3C9.23858 3 7 5.23858 7 8M17 8V11M17 8H20M7 8H4M7 8V11M12 21C14.7614 21 17 18.7614 17 16C17 13.2386 14.7614 11 12 11C9.23858 11 7 13.2386 7 16C7 18.7614 9.23858 21 12 21Z" transform="rotate(90 12 12)"></path></svg></button>
+                        <button id="open-new-tab-btn" type="button" class="control-btn" title="Open in New Tab"><span class="sr-only">Open in New Tab</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></button>
+                        <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloaking)"><span class="sr-only">Open in about:blank</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></button>
+                        <button id="fullscreen-btn" type="button" class="control-btn" title="Fullscreen Game"><span class="sr-only">Toggle Fullscreen</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m0 11v-4m0 4h-4m4 0l-5-5m-5 5v-4m-5 4h4m-4 0l5-5"></path></svg></button>
+                        <button id="close-game-modal-btn" type="button" class="control-btn bg-red-600 hover:bg-red-500 text-white" title="Close Player"><span class="sr-only">Close Game Player</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                     </div>
                 </div>
-                
-                <div class="flex-grow relative">
-                    <iframe id="game-iframe" class="w-full h-full bg-black" src="" frameborder="0" allowfullscreen allow="gamepad; geolocation; microphone; camera"></iframe>
+                <div class="flex-grow relative bg-black">
+                    <iframe id="game-iframe" src="" frameborder="0" allowfullscreen class="w-full h-full"></iframe>
                 </div>
-
-                <div class="flex-shrink-0 p-3 sm:p-4 flex flex-col sm:flex-row justify-between items-center border-t border-gray-700 glass-modal-header">
-                    <p class="text-gray-400 text-xs mb-2 sm:mb-0 sm:mr-4">Having trouble? Try opening in a new tab.</p>
-                    <div class="flex space-x-2">
-                        <button id="open-new-tab-btn" class="control-btn px-3 py-1 text-sm rounded-md font-bold transition-colors">New Tab</button>
-                        <button id="open-blank-btn" class="control-btn px-3 py-1 text-sm rounded-md font-bold transition-colors">Open in about:blank</button>
-                        <button id="copy-url-btn" class="control-btn px-3 py-1 text-sm rounded-md font-bold bg-cyan-500 hover:bg-cyan-400 text-gray-900 transition-colors">Copy URL</button>
-                    </div>
-                </div>
-
             </div>
         </div>
-        
-        <div id="message-box" class="hidden"></div>
-        
-    </div>
+
+        <div id="toast-notification">Notification</div>
+
+    </div> 
 
     <script>
-        // --- Sound Element References (Global for all listeners) ---
-        // NOTE: New sound assets from games.html are used
-        const hoverSound = document.getElementById('hover-sound');
-        const selectSound = document.getElementById('select-sound');
-        const exitSound = document.getElementById('exit-sound');
-        
-        /**
-         * Plays a specified audio element, resetting it first.
-         * @param {HTMLAudioElement} audioElement The audio element to play
-         */
-        function playSound(audioElement) {
-            if (audioElement) {
-                audioElement.currentTime = 0;
-                audioElement.play().catch(e => { /* suppressed browser autoplay error */ });
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Globals ---
-            let currentGameUrl = '';
+            const hoverSound = document.getElementById('hover-sound');
+            const selectSound = document.getElementById('select-sound');
+            const exitSound = document.getElementById('exit-sound');
+            const backgroundMusic = document.getElementById('background-music');
+            const songSelect = document.getElementById('song-select');
+            const themeSelect = document.getElementById('theme-select');
+            const BGM_STORAGE_KEY = 'qbbic-bgm';
+            let hasUserInteracted = false;
+            let wasMusicPlaying = false; 
 
-            // --- Element References ---
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
+            /* --- TOAST NOTIFICATION SYSTEM --- */
+            const toast = document.getElementById('toast-notification');
+            let toastTimeout;
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2500);
+            }
+
+            /* --- SOUND & THEME LOGIC --- */
+            function setAndPlayBGM(url) {
+                if (url && url !== 'none') {
+                    backgroundMusic.src = url;
+                    backgroundMusic.volume = 0.4;
+                    backgroundMusic.play().catch(e => console.warn("Autoplay blocked until interaction"));
+                } else {
+                    backgroundMusic.pause();
+                    backgroundMusic.src = '';
+                }
+            }
+
+            function playSound(audioElement) {
+                if (audioElement) {
+                    audioElement.currentTime = 0; 
+                    audioElement.play().catch(() => {});
+                }
+                if (!hasUserInteracted && backgroundMusic.src && backgroundMusic.paused && !wasMusicPlaying) { 
+                    backgroundMusic.play().then(() => { hasUserInteracted = true; }).catch(() => {});
+                }
+            }
+
+            /* --- THEME HANDLING --- */
+            const savedTheme = localStorage.getItem('qbbic-theme') || 'blank-slate';
+            document.body.setAttribute('data-theme', savedTheme);
+            if(themeSelect) themeSelect.value = savedTheme;
+
+            if(themeSelect) {
+                themeSelect.addEventListener('change', (e) => {
+                    const newTheme = e.target.value;
+                    document.body.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('qbbic-theme', newTheme);
+                    playSound(selectSound);
+                    showToast(`Theme changed to ${e.target.options[e.target.selectedIndex].text.replace(/^[^\w]+/, '')}`); 
+                });
+            }
+
+            /* --- BGM HANDLING --- */
+            const savedBGM = localStorage.getItem(BGM_STORAGE_KEY) || 'none';
+            if(songSelect) {
+                songSelect.value = savedBGM;
+                if (savedBGM !== 'none') setAndPlayBGM(savedBGM);
+                
+                songSelect.addEventListener('change', (e) => {
+                    const newSongUrl = e.target.value;
+                    localStorage.setItem(BGM_STORAGE_KEY, newSongUrl);
+                    setAndPlayBGM(newSongUrl);
+                    playSound(selectSound);
+                    showToast(newSongUrl === 'none' ? "Music Muted" : "Playing Music");
+                });
+            }
+
+            /* --- CLOAKING --- */
+            function setFavicon(url) {
+                let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+                link.type = 'image/x-icon'; link.rel = 'shortcut icon'; link.href = url;
+                document.getElementsByTagName('head')[0].appendChild(link);
+            }
+
+            function cloakTab(preset) {
+                playSound(selectSound);
+                let name = "";
+                if (preset === 'drive') {
+                    document.title = 'Google Drive';
+                    setFavicon('https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png');
+                    name = "Google Drive";
+                } else if (preset === 'canvas') {
+                    document.title = 'Canvas';
+                    setFavicon('https://www.instructure.com/themes/custom/instructure_canvas/favicon.ico');
+                    name = "Canvas";
+                } else if (preset === 'classroom') {
+                    document.title = 'Classes';
+                    setFavicon('https://ssl.gstatic.com/images/branding/product/1x/classroom_32dp.png');
+                    name = "Google Classroom";
+                }
+                showToast(`Tab cloaked as ${name}`);
+            }
+
+            document.getElementById('cloak-drive')?.addEventListener('click', (e) => { e.preventDefault(); cloakTab('drive'); });
+            document.getElementById('cloak-canvas')?.addEventListener('click', (e) => { e.preventDefault(); cloakTab('canvas'); });
+            document.getElementById('cloak-classroom')?.addEventListener('click', (e) => { e.preventDefault(); cloakTab('classroom'); });
+
+            /* --- SEARCH FUNCTIONALITY (Placeholder for index) --- */
+            const gameSearchInput = document.getElementById('game-search-input');
+            const allGameCards = document.querySelectorAll('.game-card');
             
-            // References for Game Modal (these elements now exist in the HTML)
+            if (gameSearchInput) {
+                gameSearchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    allGameCards.forEach(card => {
+                        const title = card.querySelector('h3')?.textContent.toLowerCase();
+                        if (title) {
+                            card.style.display = title.includes(searchTerm) ? '' : 'none';
+                        }
+                    });
+                });
+            }
+
+            /* --- MODAL & GAMEPLAY --- */
             const gameModal = document.getElementById('game-modal');
             const gameModalTitle = document.getElementById('game-modal-title');
             const gameIframe = document.getElementById('game-iframe');
-            const openNewTabBtn = document.getElementById('open-new-tab-btn');
-            const openBlankBtn = document.getElementById('open-blank-btn');
-            const fullscreenBtn = document.getElementById('fullscreen-btn');
-            const copyUrlBtn = document.getElementById('copy-url-btn');
-            const closeModalBtn = document.getElementById('close-game-modal-btn');
-            const messageBox = document.getElementById('message-box');
+            let currentGameUrl = '';
 
-            // --- Hover Sound Setup ---
-            const hoverSelector = '.game-play-btn, .control-btn, .game-card, header a, footer a'; /* Added .control-btn, .game-card, header a, footer a */
-            document.querySelectorAll(hoverSelector).forEach(element => {
-                element.addEventListener('mouseenter', () => playSound(hoverSound));
-            });
-
-            // --- Mobile Menu Toggle ---
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-                playSound(selectSound); 
-            });
-
-            // --- Modal Functions ---
-
-            /**
-             * Opens the game modal with the specified game details.
-             * @param {string} url The URL of the game to load in the iframe.
-             * @param {string} title The title of the game.
-             */
             function openGameModal(url, title) {
+                // --- MUTE MUSIC ON MODAL OPEN ---
+                if (!backgroundMusic.paused) {
+                    wasMusicPlaying = true;
+                    backgroundMusic.pause();
+                } else {
+                    wasMusicPlaying = false;
+                }
+
                 currentGameUrl = url;
                 gameModalTitle.textContent = title;
                 gameIframe.src = url;
-                gameModal.classList.remove('hidden');
-                document.body.classList.add('overflow-hidden');
-                playSound(selectSound);
+                gameModal.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
+                document.body.style.overflow = 'hidden'; 
             }
-
-            /**
-             * Closes the game modal.
-             */
+            
             function closeGameModal() {
-                gameModal.classList.add('hidden');
-                gameIframe.src = 'about:blank'; // Stop audio/video
-                document.body.classList.remove('overflow-hidden');
                 playSound(exitSound);
-            }
 
-            // --- Modal Event Listeners ---
-            document.querySelectorAll('.game-play-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const url = e.currentTarget.dataset.url;
-                    const title = e.currentTarget.dataset.title || 'Qbbic Game';
-                    openGameModal(url, title);
-                });
-            });
-
-            if (closeModalBtn) {
-                closeModalBtn.addEventListener('click', closeGameModal);
-            }
-
-            // Close modal when clicking outside (on the black overlay)
-            if (gameModal) {
-                gameModal.addEventListener('click', (e) => {
-                    if (e.target === gameModal) {
-                        closeGameModal();
-                    }
-                });
-            }
-            
-            // Close modal with 'Escape' key
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && !gameModal.classList.contains('hidden')) {
-                    closeGameModal();
+                // --- UNMUTE MUSIC ON MODAL CLOSE ---
+                if (wasMusicPlaying) {
+                    backgroundMusic.play();
+                    wasMusicPlaying = false;
                 }
-            });
 
-            // Handle Action Buttons
-            if (openNewTabBtn) {
-                openNewTabBtn.addEventListener('click', () => {
-                    window.open(currentGameUrl, '_blank');
-                });
-            }
-
-            if (openBlankBtn) {
-                openBlankBtn.addEventListener('click', () => {
-                    const newWindow = window.open('about:blank', '_blank');
-                    if (newWindow) {
-                        newWindow.document.write(`
-                            <!DOCTYPE html>
-                            <html lang="en">
-                            <head><title>${gameModalTitle.textContent}</title><style>body, html { margin: 0; padding: 0; overflow: hidden; background: #000; }</style></head>
-                            <body>
-                                <iframe src="${currentGameUrl}" style="width: 100vw; height: 100vh; border: none;" allowfullscreen></iframe>
-                            </body>
-                            </html>
-                        `);
-                        newWindow.document.close();
-                    } else {
-                        showMessage("Popup blocked! Please allow popups.", 'error');
-                    }
-                });
-            }
-
-            if (fullscreenBtn) {
-                fullscreenBtn.addEventListener('click', () => {
-                    const requestFS = gameIframe.requestFullscreen || gameIframe.mozRequestFullScreen || gameIframe.webkitRequestFullscreen || gameIframe.msRequestFullscreen;
-                    if (requestFS) {
-                        requestFS.call(gameIframe);
-                        playSound(selectSound);
-                    }
-                });
-            }
-            
-            if (copyUrlBtn) {
-                copyUrlBtn.addEventListener('click', async () => {
-                    try {
-                        await navigator.clipboard.writeText(currentGameUrl);
-                        showMessage('Game URL copied!', 'success');
-                    } catch (err) {
-                        console.error('Failed to copy: ', err);
-                        showMessage('Could not copy URL.', 'error');
-                    }
-                });
-            }
-
-            /**
-             * Shows a toast-like message at the bottom of the screen.
-             * @param {string} text The message to display
-             * @param {'success' | 'error'} type The type of message
-             */
-            function showMessage(text, type = 'success') {
-                if (!messageBox) return;
-                messageBox.textContent = text;
-                messageBox.classList.remove('bg-cyan-600', 'bg-red-600');
-                
-                // Use CSS variables for background colors in the message box
-                if (type === 'error') {
-                    messageBox.classList.add('bg-red-600');
-                    messageBox.style.backgroundColor = 'var(--color-primary-dark)';
-                } else {
-                    messageBox.classList.add('bg-cyan-600');
-                    messageBox.style.backgroundColor = 'var(--color-primary)';
-                }
-                
-                messageBox.classList.remove('hidden');
-                messageBox.classList.add('fixed', 'bottom-4', 'left-1/2', '-translate-x-1/2', 'px-4', 'py-2', 'rounded-lg', 'text-white', 'shadow-lg', 'transition-opacity', 'duration-300', 'z-[101]');
-                messageBox.style.opacity = '1';
-                
+                gameModal.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
                 setTimeout(() => {
-                    messageBox.style.opacity = '0';
-                    setTimeout(() => messageBox.classList.add('hidden'), 300);
-                }, 3000);
+                    gameIframe.src = 'about:blank'; 
+                    currentGameUrl = '';
+                    document.body.style.overflow = ''; 
+                }, 300); 
             }
 
-        }); // End of DOMContentLoaded
-        
+            // Bind click events for play buttons
+            document.addEventListener('click', (e) => {
+                const playButton = e.target.closest('.game-play-btn');
+                if (playButton) {
+                    const url = playButton.dataset.url;
+                    const title = playButton.dataset.title;
+                    if (url && title) openGameModal(url, title);
+                }
+            });
+
+            // --- MODAL BUTTON LISTENERS ---
+            document.getElementById('reload-game-btn')?.addEventListener('click', () => {
+                if (gameIframe) {
+                    gameIframe.src = gameIframe.src; 
+                    showToast("Reloading game...");
+                }
+            });
+            document.getElementById('open-new-tab-btn')?.addEventListener('click', () => window.open(currentGameUrl, '_blank'));
+            document.getElementById('open-blank-btn')?.addEventListener('click', () => {
+                const newWindow = window.open('about:blank', '_blank');
+                if (newWindow) {
+                    newWindow.document.write(`<!DOCTYPE html><html lang="en"><head><title>${gameModalTitle.textContent}</title><style>body, html { margin: 0; padding: 0; overflow: hidden; background: #000; }</style></head><body><iframe src="${currentGameUrl}" style="width: 100vw; height: 100vh; border: none;" allowfullscreen></iframe></body></html>`);
+                    newWindow.document.close();
+                }
+            });
+            document.getElementById('fullscreen-btn')?.addEventListener('click', () => {
+                const requestFS = gameIframe.requestFullscreen || gameIframe.mozRequestFullScreen || gameIframe.webkitRequestFullscreen || gameIframe.msRequestFullscreen;
+                if (requestFS) requestFS.call(gameIframe);
+            });
+            document.getElementById('close-game-modal-btn')?.addEventListener('click', closeGameModal);
+
+            /* --- UI SOUNDS --- */
+            const hoverSelector = '.game-play-btn, .control-btn, a, select, .game-card';
+            document.querySelectorAll(hoverSelector).forEach(el => {
+                el.addEventListener('mouseenter', () => playSound(hoverSound));
+            });
+            document.body.addEventListener('click', (e) => {
+                const isCloakBtn = e.target.closest('#cloak-drive, #cloak-canvas, #cloak-classroom');
+                const isClickable = e.target.closest('a, button, .game-play-btn, .control-btn');
+                if (isClickable && !isCloakBtn && !e.target.closest('#close-game-modal-btn')) {
+                    playSound(selectSound);
+                }
+            });
+        });
     </script>
 </body>
 </html>
