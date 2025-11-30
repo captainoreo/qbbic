@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Qbbic</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Architects+Daughter&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Architects+Daughter&family=Press+Start+2P&family=Anton&display=swap" rel="stylesheet">
     
     <style>
         /* --- 1. GLOBAL VARIABLES & SCROLLBARS --- */
@@ -42,6 +42,24 @@
         @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); opacity: 0; } 10% { opacity: 0.7; } 90% { opacity: 0.7; } 100% { transform: translateY(-20vh) scale(1.2); opacity: 0; } }
         @keyframes scrollGrid { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }
         @keyframes matrixRain { 0% { background-position: 0% 0%; } 100% { background-position: 0% 100%; } }
+        
+        /* New Animation: Phantom Twitch (P5) */
+        @keyframes phantomTwitch {
+            0% { transform: skew(-5deg) translate(0, 0); }
+            25% { transform: skew(-5deg) translate(-2px, 2px); }
+            50% { transform: skew(-5deg) translate(2px, -1px); }
+            75% { transform: skew(-5deg) translate(-1px, -2px); }
+            100% { transform: skew(-5deg) translate(0, 0); }
+        }
+        /* New Animation: Phantom Scroll (P5) */
+        @keyframes phantomScroll { from { background-position: 0 0; } to { background-position: 100px 100px; } }
+
+        /* New Animation: Dark Hour Pulse (P3) */
+        @keyframes moonPulse {
+            0% { box-shadow: 0 0 10px #25d6e8; border-color: rgba(37, 214, 232, 0.5); }
+            50% { box-shadow: 0 0 25px #25d6e8, 0 0 50px rgba(18, 54, 138, 0.5); border-color: #ffffff; }
+            100% { box-shadow: 0 0 10px #25d6e8; border-color: rgba(37, 214, 232, 0.5); }
+        }
 
         /* --- 3. THEME DEFINITIONS --- */
 
@@ -160,6 +178,52 @@
             --font-main: Tahoma, sans-serif;
         }
 
+        /* 5. PHANTOM (Persona 5) */
+        body[data-theme="phantom"] {
+            --color-primary: #d80018; /* Iconic Red */
+            --color-primary-light: #ffffff;
+            --color-primary-dark: #000000;
+            --color-text-base: #000000;
+            --color-text-white: #ffffff;
+            --color-text-dark: #000000;
+            --bg-page: #d80018;
+            --bg-glass-header: #000000;
+            --bg-glass-card: #ffffff;
+            --bg-glass-card-hover: #000000;
+            --bg-glass-modal: #d80018;
+            --bg-glass-modal-header: #000000;
+            --bg-glass-controls: #000000;
+            --bg-glass-controls-hover: #333333;
+            --border-glass: #000000;
+            --border-glass-light: #000000;
+            --blur-strength: 0px;
+            --card-radius: 0px;
+            --font-main: 'Anton', 'Impact', sans-serif;
+        }
+
+        /* 6. DARK HOUR (Persona 3) */
+        body[data-theme="dark-hour"] {
+            --color-primary: #12368a; /* Deep Blue */
+            --color-primary-light: #25d6e8; /* Moonlight Cyan */
+            --color-primary-dark: #071638;
+            --color-text-base: #ffffff;
+            --color-text-white: #ffffff;
+            --color-text-dark: #12368a;
+            --bg-page: #071638;
+            --bg-glass-header: rgba(18, 54, 138, 0.95);
+            --bg-glass-card: rgba(255, 255, 255, 0.9);
+            --bg-glass-card-hover: #ffffff;
+            --bg-glass-modal: rgba(7, 22, 56, 0.95);
+            --bg-glass-modal-header: #12368a;
+            --bg-glass-controls: rgba(37, 214, 232, 0.2);
+            --bg-glass-controls-hover: rgba(37, 214, 232, 0.4);
+            --border-glass: #25d6e8;
+            --border-glass-light: rgba(37, 214, 232, 0.5);
+            --blur-strength: 8px;
+            --card-radius: 40px 0 40px 0;
+            --font-main: 'Arial', sans-serif;
+        }
+
         /* --- BODY BASE --- */
         body {
             font-family: var(--font-main);
@@ -181,13 +245,36 @@
         body[data-theme="blueprint"] #css-3d-background { background-color: #0044cc; background-image: linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px); background-size: 20px 20px; }
         body[data-theme="matrix"] #css-3d-background { background-color: black; background-image: linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px); background-size: 100% 20px; animation: matrixRain 2s linear infinite; }
         body[data-theme="classic"] #css-3d-background { background-color: #008080; }
+        
+        /* Phantom Background (Animated Angular) */
+        body[data-theme="phantom"] #css-3d-background { 
+            background-color: #d80018; 
+            background-image: linear-gradient(115deg, transparent 75%, rgba(0,0,0,0.8) 75%), linear-gradient(245deg, transparent 75%, rgba(0,0,0,0.8) 75%);
+            background-size: 50px 80px;
+            animation: phantomScroll 5s linear infinite;
+        }
 
-        body:not([data-theme="frutiger-aero"]) .bubble-container { display: none; }
+        /* Dark Hour Background (Gradient + Bubbles) */
+        body[data-theme="dark-hour"] #css-3d-background {
+            background: radial-gradient(circle at 50% 20%, #25d6e8 0%, rgba(37, 214, 232, 0.1) 10%, #12368a 30%, #071638 100%);
+        }
+
+        /* Bubble / Particle Logic */
+        /* Only show bubbles for Frutiger and Dark Hour */
+        body:not([data-theme="frutiger-aero"]):not([data-theme="dark-hour"]) .bubble-container { display: none; }
+        
         .bubble {
             position: absolute; bottom: -100px; background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.1));
             box-shadow: 0 0 10px rgba(255,255,255,0.3), inset 0 0 10px rgba(255,255,255,0.3); border-radius: 50%;
             pointer-events: none; z-index: 0; animation: floatUp var(--speed) linear infinite;
             animation-delay: var(--delay); width: var(--size); height: var(--size); left: var(--pos); opacity: 0; 
+        }
+
+        /* Dark Hour Specific Bubbles (Green/Cyan Motes) */
+        body[data-theme="dark-hour"] .bubble {
+            background: radial-gradient(circle at 30% 30%, #25d6e8, transparent);
+            box-shadow: 0 0 15px #25d6e8;
+            opacity: 0.4;
         }
 
         /* --- UI COMPONENTS --- */
@@ -248,6 +335,45 @@
         body[data-theme="classic"] nav a.text-white { color: #000 !important; }
         body[data-theme="classic"] .bg-cyan-500 { background: #c0c0c0 !important; color: black !important; box-shadow: none; }
         body[data-theme="classic"] .bg-cyan-500:active { border-color: #808080 #fff #fff #808080; }
+
+        /* PHANTOM UI OVERRIDES (ANIMATED) */
+        body[data-theme="phantom"] .game-card {
+            transform: skew(-5deg); border: 3px solid black; box-shadow: 5px 5px 0px #000;
+            transition: none; /* Disable default transition for keyframe override */
+        }
+        body[data-theme="phantom"] .game-card:hover {
+            background-color: #000; box-shadow: 10px 10px 0px #fff;
+            animation: phantomTwitch 0.2s linear infinite;
+        }
+        body[data-theme="phantom"] .game-card h3 { color: black; font-style: italic; text-transform: uppercase; font-size: 1.3rem; letter-spacing: -1px; }
+        body[data-theme="phantom"] .game-card:hover h3 { color: white; }
+        body[data-theme="phantom"] .game-card p { color: #333; font-weight: bold; background: white; display: inline-block; transform: skew(10deg); }
+        body[data-theme="phantom"] .game-card:hover p { color: #d80018; }
+        body[data-theme="phantom"] .glass-header { border-bottom: 4px solid black; background: #fff; transform: skewY(-1deg); margin-bottom: 20px; }
+        body[data-theme="phantom"] nav a { color: black !important; font-weight: 900; text-transform: uppercase; background: white; padding: 2px 5px; transform: skew(-10deg); }
+        body[data-theme="phantom"] nav a:hover { color: white !important; background: black; box-shadow: 3px 3px 0 #d80018; }
+        body[data-theme="phantom"] .bg-cyan-500 { background: black !important; color: white !important; border: none; transform: skew(-10deg); text-transform: uppercase; font-size: 1.1rem; }
+        body[data-theme="phantom"] .bg-cyan-500:hover { background: #d80018 !important; color: black !important; transform: skew(-10deg) scale(1.1); }
+        body[data-theme="phantom"] .custom-select, body[data-theme="phantom"] #game-search-input { border: 2px solid black; background: white; color: black; transform: skew(-5deg); border-radius: 0; }
+
+        /* DARK HOUR UI OVERRIDES (ANIMATED) */
+        body[data-theme="dark-hour"] .game-card {
+            border: 1px solid #25d6e8;
+            box-shadow: 0 0 10px rgba(37, 214, 232, 0.3);
+            background: rgba(255, 255, 255, 0.85);
+        }
+        body[data-theme="dark-hour"] .game-card:hover {
+            animation: moonPulse 2s infinite ease-in-out;
+            background: #ffffff;
+        }
+        body[data-theme="dark-hour"] .glass-header { border-bottom: 1px solid #25d6e8; box-shadow: 0 0 15px rgba(37, 214, 232, 0.2); }
+        body[data-theme="dark-hour"] h1 { text-shadow: 0 0 10px #25d6e8; font-weight: normal; letter-spacing: 2px; text-transform: uppercase; }
+        body[data-theme="dark-hour"] .bg-cyan-500 { background: linear-gradient(to right, #12368a, #25d6e8) !important; border-radius: 50px; border: none; box-shadow: 0 0 10px #25d6e8; }
+        body[data-theme="dark-hour"] .bg-cyan-500:hover { box-shadow: 0 0 20px #25d6e8; }
+        body[data-theme="dark-hour"] .custom-select, body[data-theme="dark-hour"] #game-search-input { background: rgba(7, 22, 56, 0.8); border: 1px solid #25d6e8; color: #25d6e8; box-shadow: inset 0 0 5px #25d6e8; }
+        body[data-theme="dark-hour"] nav a { text-shadow: 0 0 5px #25d6e8; }
+        body[data-theme="dark-hour"] nav a:hover { color: #25d6e8 !important; text-shadow: 0 0 15px #25d6e8; }
+
 
         /* Text Colors */
         .game-card h3 { color: var(--color-text-dark); z-index: 2; position: relative; }
@@ -382,6 +508,8 @@
                         <option value="blueprint">📐 Blueprint</option>
                         <option value="matrix">🟢 The Matrix</option>
                         <option value="classic">💾 Windows 95</option>
+                        <option value="phantom">🎭 Phantom (P5)</option>
+                        <option value="dark-hour">🌕 Dark Hour (P3)</option>
                     </select>
                 </div>
             </nav>
@@ -400,7 +528,6 @@
                     </div>
                     
                     <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-                        <!-- Existing Games Start -->
                         <div class="game-card overflow-hidden transition duration-200">
                             <img src="/assets/nikki.jpg" alt="Yume Nikki" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
@@ -817,9 +944,6 @@
                                 <button type="button" data-url="/games/cldynamiteheaddy.html" data-title="Dynamite Headdy" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                        <!-- Existing Games End -->
-
-                        <!-- Mario 64 Start -->
                         <div class="game-card overflow-hidden transition duration-200">
                             <img src="/assets/IMG_6233.jpeg" alt="Mario 64" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
@@ -884,7 +1008,6 @@
                                 <button type="button" data-url="/games/clfnafps.html" data-title="Freddy Fazbear's Pizzeria Simulator" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
                             </div>
                         </div>
-                        <!-- Five Nights at Candy's 1 Start -->
                         <div class="game-card overflow-hidden transition duration-200">
                             <img src="/assets/FNAC1ICON.png" alt="Five Nights at Candy's 1" class="w-full h-28 object-cover transition duration-200" loading="lazy">
                             <div class="p-3">
@@ -952,7 +1075,6 @@
                 <div class="flex-shrink-0 p-3 flex justify-between items-center border-b border-gray-700 glass-modal-header">
                     <h2 id="game-modal-title" class="text-xl font-bold text-cyan-400 truncate">Game Title</h2>
                     <div class="flex space-x-2 items-center">
-                        <!-- RELOAD BUTTON ADDED -->
                         <button id="reload-game-btn" type="button" class="control-btn" title="Reload Game"><span class="sr-only">Reload Game</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8C17 5.23858 14.7614 3 12 3C9.23858 3 7 5.23858 7 8M17 8V11M17 8H20M7 8H4M7 8V11M12 21C14.7614 21 17 18.7614 17 16C17 13.2386 14.7614 11 12 11C9.23858 11 7 13.2386 7 16C7 18.7614 9.23858 21 12 21Z" transform="rotate(90 12 12)"></path></svg></button>
                         <button id="open-new-tab-btn" type="button" class="control-btn" title="Open in New Tab"><span class="sr-only">Open in New Tab</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></button>
                         <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloaking)"><span class="sr-only">Open in about:blank</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></button>
@@ -980,7 +1102,7 @@
             const themeSelect = document.getElementById('theme-select');
             const BGM_STORAGE_KEY = 'qbbic-bgm';
             let hasUserInteracted = false;
-            let wasMusicPlaying = false; // <-- ADDED for modal music logic
+            let wasMusicPlaying = false; 
 
             /* --- TOAST NOTIFICATION SYSTEM --- */
             const toast = document.getElementById('toast-notification');
@@ -1009,20 +1131,10 @@
                     audioElement.currentTime = 0; 
                     audioElement.play().catch(() => {});
                 }
-                if (!hasUserInteracted && backgroundMusic.src && backgroundMusic.paused && !wasMusicPlaying) { // Check wasMusicPlaying so it doesn't resume on interaction
+                if (!hasUserInteracted && backgroundMusic.src && backgroundMusic.paused && !wasMusicPlaying) { 
                     backgroundMusic.play().then(() => { hasUserInteracted = true; }).catch(() => {});
                 }
             }
-
-            /* --- THEME MAPPING (RETAINED FOR FUTURE USE IF NEEDED) --- */
-            const themeMusicMap = {
-                'blank-slate': 'none',
-                'frutiger-aero': '/assets/Wii U OST - Mii Maker (Mii Editor).flac',
-                'minecraft': '/assets/Droopy likes your face.flac', // CHANGED
-                'blueprint': 'none',
-                'matrix': '/assets/Droopy likes your face.flac',
-                'classic': 'none'
-            };
 
             /* --- THEME HANDLING --- */
             const savedTheme = localStorage.getItem('qbbic-theme') || 'blank-slate';
@@ -1036,18 +1148,6 @@
                     localStorage.setItem('qbbic-theme', newTheme);
                     playSound(selectSound);
                     showToast(`Theme changed to ${e.target.options[e.target.selectedIndex].text.replace(/^[^\w]+/, '')}`); 
-                    
-                    // --- MUSIC CHANGE ON THEME SWITCH REMOVED PER REQUEST ---
-                    /*
-                    // Auto-Switch Music based on Theme
-                    const newSong = themeMusicMap[newTheme];
-                    if(newSong !== undefined && songSelect) {
-                        songSelect.value = newSong;
-                        localStorage.setItem(BGM_STORAGE_KEY, newSong);
-                        setAndPlayBGM(newSong);
-                        // showToast(`Theme music applied: ${newSong === 'none' ? 'Silent' : 'Playing'}`);
-                    }
-                    */
                 });
             }
 
