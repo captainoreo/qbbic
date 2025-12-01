@@ -41,8 +41,30 @@
         /* --- 2. ANIMATIONS --- */
         @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); opacity: 0; } 10% { opacity: 0.7; } 90% { opacity: 0.7; } 100% { transform: translateY(-20vh) scale(1.2); opacity: 0; } }
         @keyframes scrollGrid { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }
+        @keyframes scrollMinecraft { 0% { background-position: 0 0, 30px 30px; } 100% { background-position: 60px 60px, 90px 90px; } }
         @keyframes matrixRain { 0% { background-position: 0% 0%; } 100% { background-position: 0% 100%; } }
         
+        /* New Animation: Subtle Breathe (Blank Slate) */
+        @keyframes subtleBreathe {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* New Animation: Aero Sway (Frutiger) */
+        @keyframes aeroSway {
+            0% { background-position: center top; transform: scale(1); }
+            50% { background-position: center bottom; transform: scale(1.02); }
+            100% { background-position: center top; transform: scale(1); }
+        }
+
+        /* New Animation: CRT Scan (Classic) */
+        @keyframes crtScan {
+            0% { transform: translateY(-100%); opacity: 0.1; }
+            50% { opacity: 0.2; }
+            100% { transform: translateY(100%); opacity: 0.1; }
+        }
+
         /* New Animation: Phantom Twitch (P5) */
         @keyframes phantomTwitch {
             0% { transform: skew(-5deg) translate(0, 0); }
@@ -239,12 +261,62 @@
         #css-3d-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; transition: background 0.5s ease; }
         
         /* Backgrounds */
-        body[data-theme="blank-slate"] #css-3d-background { background: #ffffff; }
-        body[data-theme="frutiger-aero"] #css-3d-background { background-image: url('/assets/aqua.jpg'); background-size: cover; background-position: center; }
-        body[data-theme="minecraft"] #css-3d-background { background-color: #795548; background-image: linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037), linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037); background-size: 60px 60px; background-position: 0 0, 30px 30px; }
-        body[data-theme="blueprint"] #css-3d-background { background-color: #0044cc; background-image: linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px); background-size: 20px 20px; }
+        
+        /* Blank Slate - Animated Gradient */
+        body[data-theme="blank-slate"] #css-3d-background { 
+            background: linear-gradient(-45deg, #ffffff, #f0f0f0, #e6e6e6, #ffffff);
+            background-size: 400% 400%;
+            animation: subtleBreathe 15s ease infinite;
+        }
+
+        /* Frutiger Aero - Animated Sway */
+        body[data-theme="frutiger-aero"] #css-3d-background { 
+            background-image: url('/assets/aqua.jpg'); 
+            background-size: cover; 
+            background-position: center; 
+            animation: aeroSway 20s ease-in-out infinite alternate;
+        }
+
+        /* Minecraft - Animated Scroll */
+        body[data-theme="minecraft"] #css-3d-background { 
+            background-color: #795548; 
+            background-image: linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037), linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037); 
+            background-size: 60px 60px; 
+            background-position: 0 0, 30px 30px; 
+            animation: scrollMinecraft 3s linear infinite;
+        }
+
+        /* Blueprint - Animated Grid Scroll */
+        body[data-theme="blueprint"] #css-3d-background { 
+            background-color: #0044cc; 
+            background-image: linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px); 
+            background-size: 40px 40px; 
+            animation: scrollGrid 2s linear infinite;
+        }
+
+        /* Matrix - Rain Scroll */
         body[data-theme="matrix"] #css-3d-background { background-color: black; background-image: linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px); background-size: 100% 20px; animation: matrixRain 2s linear infinite; }
+        
+        /* Classic / Win95 - CRT Scanline Effect */
         body[data-theme="classic"] #css-3d-background { background-color: #008080; }
+        body[data-theme="classic"] #css-3d-background::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        body[data-theme="classic"] #css-3d-background::before {
+             content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            animation: crtScan 4s linear infinite;
+            pointer-events: none;
+            z-index: 11;
+        }
         
         /* Phantom Background (Animated Angular) */
         body[data-theme="phantom"] #css-3d-background { 
