@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Qbbic - Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Architects+Daughter&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Architects+Daughter&family=Press+Start+2P&family=Anton&display=swap" rel="stylesheet">
     
     <style>
         /* --- 1. GLOBAL VARIABLES & SCROLLBARS --- */
@@ -41,7 +41,47 @@
         /* --- 2. ANIMATIONS --- */
         @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); opacity: 0; } 10% { opacity: 0.7; } 90% { opacity: 0.7; } 100% { transform: translateY(-20vh) scale(1.2); opacity: 0; } }
         @keyframes scrollGrid { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }
+        @keyframes scrollMinecraft { 0% { background-position: 0 0, 30px 30px; } 100% { background-position: 60px 60px, 90px 90px; } }
         @keyframes matrixRain { 0% { background-position: 0% 0%; } 100% { background-position: 0% 100%; } }
+        
+        /* New Animation: Subtle Breathe (Blank Slate) */
+        @keyframes subtleBreathe {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* New Animation: Aero Sway (Frutiger) */
+        @keyframes aeroSway {
+            0% { background-position: center top; transform: scale(1); }
+            50% { background-position: center bottom; transform: scale(1.02); }
+            100% { background-position: center top; transform: scale(1); }
+        }
+
+        /* New Animation: CRT Scan (Classic) */
+        @keyframes crtScan {
+            0% { transform: translateY(-100%); opacity: 0.1; }
+            50% { opacity: 0.2; }
+            100% { transform: translateY(100%); opacity: 0.1; }
+        }
+
+        /* New Animation: Phantom Twitch (P5) */
+        @keyframes phantomTwitch {
+            0% { transform: skew(-5deg) translate(0, 0); }
+            25% { transform: skew(-5deg) translate(-2px, 2px); }
+            50% { transform: skew(-5deg) translate(2px, -1px); }
+            75% { transform: skew(-5deg) translate(-1px, -2px); }
+            100% { transform: skew(-5deg) translate(0, 0); }
+        }
+        /* New Animation: Phantom Scroll (P5) */
+        @keyframes phantomScroll { from { background-position: 0 0; } to { background-position: 100px 100px; } }
+
+        /* New Animation: Dark Hour Pulse (P3) */
+        @keyframes moonPulse {
+            0% { box-shadow: 0 0 10px #25d6e8; border-color: rgba(37, 214, 232, 0.5); }
+            50% { box-shadow: 0 0 25px #25d6e8, 0 0 50px rgba(18, 54, 138, 0.5); border-color: #ffffff; }
+            100% { box-shadow: 0 0 10px #25d6e8; border-color: rgba(37, 214, 232, 0.5); }
+        }
 
         /* --- 3. THEME DEFINITIONS --- */
 
@@ -160,6 +200,52 @@
             --font-main: Tahoma, sans-serif;
         }
 
+        /* 5. PHANTOM (Persona 5) */
+        body[data-theme="phantom"] {
+            --color-primary: #d80018; /* Iconic Red */
+            --color-primary-light: #ffffff;
+            --color-primary-dark: #000000;
+            --color-text-base: #000000;
+            --color-text-white: #ffffff;
+            --color-text-dark: #000000;
+            --bg-page: #d80018;
+            --bg-glass-header: #000000;
+            --bg-glass-card: #ffffff;
+            --bg-glass-card-hover: #000000;
+            --bg-glass-modal: #d80018;
+            --bg-glass-modal-header: #000000;
+            --bg-glass-controls: #000000;
+            --bg-glass-controls-hover: #333333;
+            --border-glass: #000000;
+            --border-glass-light: #000000;
+            --blur-strength: 0px;
+            --card-radius: 0px;
+            --font-main: 'Anton', 'Impact', sans-serif;
+        }
+
+        /* 6. DARK HOUR (Persona 3) */
+        body[data-theme="dark-hour"] {
+            --color-primary: #12368a; /* Deep Blue */
+            --color-primary-light: #25d6e8; /* Moonlight Cyan */
+            --color-primary-dark: #071638;
+            --color-text-base: #ffffff;
+            --color-text-white: #ffffff;
+            --color-text-dark: #12368a;
+            --bg-page: #071638;
+            --bg-glass-header: rgba(18, 54, 138, 0.95);
+            --bg-glass-card: rgba(255, 255, 255, 0.9);
+            --bg-glass-card-hover: #ffffff;
+            --bg-glass-modal: rgba(7, 22, 56, 0.95);
+            --bg-glass-modal-header: #12368a;
+            --bg-glass-controls: rgba(37, 214, 232, 0.2);
+            --bg-glass-controls-hover: rgba(37, 214, 232, 0.4);
+            --border-glass: #25d6e8;
+            --border-glass-light: rgba(37, 214, 232, 0.5);
+            --blur-strength: 8px;
+            --card-radius: 40px 0 40px 0;
+            --font-main: 'Arial', sans-serif;
+        }
+
         /* --- BODY BASE --- */
         body {
             font-family: var(--font-main);
@@ -175,19 +261,92 @@
         #css-3d-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; transition: background 0.5s ease; }
         
         /* Backgrounds */
-        body[data-theme="blank-slate"] #css-3d-background { background: #ffffff; }
-        body[data-theme="frutiger-aero"] #css-3d-background { background-image: url('/assets/aqua.jpg'); background-size: cover; background-position: center; }
-        body[data-theme="minecraft"] #css-3d-background { background-color: #795548; background-image: linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037), linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037); background-size: 60px 60px; background-position: 0 0, 30px 30px; }
-        body[data-theme="blueprint"] #css-3d-background { background-color: #0044cc; background-image: linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px); background-size: 20px 20px; }
-        body[data-theme="matrix"] #css-3d-background { background-color: black; background-image: linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px); background-size: 100% 20px; animation: matrixRain 2s linear infinite; }
-        body[data-theme="classic"] #css-3d-background { background-color: #008080; }
 
-        body:not([data-theme="frutiger-aero"]) .bubble-container { display: none; }
+        /* Blank Slate - Animated Gradient */
+        body[data-theme="blank-slate"] #css-3d-background { 
+            background: linear-gradient(-45deg, #ffffff, #f0f0f0, #e6e6e6, #ffffff);
+            background-size: 400% 400%;
+            animation: subtleBreathe 15s ease infinite;
+        }
+
+        /* Frutiger Aero - Animated Sway */
+        body[data-theme="frutiger-aero"] #css-3d-background { 
+            background-image: url('/assets/aqua.jpg'); 
+            background-size: cover; 
+            background-position: center; 
+            animation: aeroSway 20s ease-in-out infinite alternate;
+        }
+
+        /* Minecraft - Animated Scroll */
+        body[data-theme="minecraft"] #css-3d-background { 
+            background-color: #795548; 
+            background-image: linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037), linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037); 
+            background-size: 60px 60px; 
+            background-position: 0 0, 30px 30px; 
+            animation: scrollMinecraft 3s linear infinite;
+        }
+
+        /* Blueprint - Animated Grid Scroll */
+        body[data-theme="blueprint"] #css-3d-background { 
+            background-color: #0044cc; 
+            background-image: linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px); 
+            background-size: 40px 40px; 
+            animation: scrollGrid 2s linear infinite;
+        }
+
+        /* Matrix - Rain Scroll */
+        body[data-theme="matrix"] #css-3d-background { background-color: black; background-image: linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px); background-size: 100% 20px; animation: matrixRain 2s linear infinite; }
+        
+        /* Classic / Win95 - CRT Scanline Effect */
+        body[data-theme="classic"] #css-3d-background { background-color: #008080; }
+        body[data-theme="classic"] #css-3d-background::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        body[data-theme="classic"] #css-3d-background::before {
+             content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            animation: crtScan 4s linear infinite;
+            pointer-events: none;
+            z-index: 11;
+        }
+
+        /* Phantom Background (Animated Angular) */
+        body[data-theme="phantom"] #css-3d-background { 
+            background-color: #d80018; 
+            background-image: linear-gradient(115deg, transparent 75%, rgba(0,0,0,0.8) 75%), linear-gradient(245deg, transparent 75%, rgba(0,0,0,0.8) 75%);
+            background-size: 50px 80px;
+            animation: phantomScroll 5s linear infinite;
+        }
+
+        /* Dark Hour Background (Gradient + Bubbles) */
+        body[data-theme="dark-hour"] #css-3d-background {
+            background: radial-gradient(circle at 50% 20%, #25d6e8 0%, rgba(37, 214, 232, 0.1) 10%, #12368a 30%, #071638 100%);
+        }
+
+        /* Bubble / Particle Logic */
+        /* Only show bubbles for Frutiger and Dark Hour */
+        body:not([data-theme="frutiger-aero"]):not([data-theme="dark-hour"]) .bubble-container { display: none; }
+        
         .bubble {
             position: absolute; bottom: -100px; background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.1));
             box-shadow: 0 0 10px rgba(255,255,255,0.3), inset 0 0 10px rgba(255,255,255,0.3); border-radius: 50%;
             pointer-events: none; z-index: 0; animation: floatUp var(--speed) linear infinite;
             animation-delay: var(--delay); width: var(--size); height: var(--size); left: var(--pos); opacity: 0; 
+        }
+
+        /* Dark Hour Specific Bubbles (Green/Cyan Motes) */
+        body[data-theme="dark-hour"] .bubble {
+            background: radial-gradient(circle at 30% 30%, #25d6e8, transparent);
+            box-shadow: 0 0 15px #25d6e8;
+            opacity: 0.4;
         }
 
         /* --- UI COMPONENTS --- */
@@ -248,6 +407,45 @@
         body[data-theme="classic"] nav a.text-white { color: #000 !important; }
         body[data-theme="classic"] .bg-cyan-500 { background: #c0c0c0 !important; color: black !important; box-shadow: none; }
         body[data-theme="classic"] .bg-cyan-500:active { border-color: #808080 #fff #fff #808080; }
+
+        /* PHANTOM UI OVERRIDES (ANIMATED) */
+        body[data-theme="phantom"] .game-card {
+            transform: skew(-5deg); border: 3px solid black; box-shadow: 5px 5px 0px #000;
+            transition: none; /* Disable default transition for keyframe override */
+        }
+        body[data-theme="phantom"] .game-card:hover {
+            background-color: #000; box-shadow: 10px 10px 0px #fff;
+            animation: phantomTwitch 0.2s linear infinite;
+        }
+        body[data-theme="phantom"] .game-card h3 { color: black; font-style: italic; text-transform: uppercase; font-size: 1.3rem; letter-spacing: -1px; }
+        body[data-theme="phantom"] .game-card:hover h3 { color: white; }
+        body[data-theme="phantom"] .game-card p { color: #333; font-weight: bold; background: white; display: inline-block; transform: skew(10deg); }
+        body[data-theme="phantom"] .game-card:hover p { color: #d80018; }
+        body[data-theme="phantom"] .glass-header { border-bottom: 4px solid black; background: #fff; transform: skewY(-1deg); margin-bottom: 20px; }
+        body[data-theme="phantom"] nav a { color: black !important; font-weight: 900; text-transform: uppercase; background: white; padding: 2px 5px; transform: skew(-10deg); }
+        body[data-theme="phantom"] nav a:hover { color: white !important; background: black; box-shadow: 3px 3px 0 #d80018; }
+        body[data-theme="phantom"] .bg-cyan-500 { background: black !important; color: white !important; border: none; transform: skew(-10deg); text-transform: uppercase; font-size: 1.1rem; }
+        body[data-theme="phantom"] .bg-cyan-500:hover { background: #d80018 !important; color: black !important; transform: skew(-10deg) scale(1.1); }
+        body[data-theme="phantom"] .custom-select { border: 2px solid black; background: white; color: black; transform: skew(-5deg); border-radius: 0; }
+
+        /* DARK HOUR UI OVERRIDES (ANIMATED) */
+        body[data-theme="dark-hour"] .game-card {
+            border: 1px solid #25d6e8;
+            box-shadow: 0 0 10px rgba(37, 214, 232, 0.3);
+            background: rgba(255, 255, 255, 0.85);
+        }
+        body[data-theme="dark-hour"] .game-card:hover {
+            animation: moonPulse 2s infinite ease-in-out;
+            background: #ffffff;
+        }
+        body[data-theme="dark-hour"] .glass-header { border-bottom: 1px solid #25d6e8; box-shadow: 0 0 15px rgba(37, 214, 232, 0.2); }
+        body[data-theme="dark-hour"] h1, body[data-theme="dark-hour"] h2 { text-shadow: 0 0 10px #25d6e8; font-weight: normal; letter-spacing: 2px; text-transform: uppercase; }
+        body[data-theme="dark-hour"] .bg-cyan-500 { background: linear-gradient(to right, #12368a, #25d6e8) !important; border-radius: 50px; border: none; box-shadow: 0 0 10px #25d6e8; }
+        body[data-theme="dark-hour"] .bg-cyan-500:hover { box-shadow: 0 0 20px #25d6e8; }
+        body[data-theme="dark-hour"] .custom-select { background: rgba(7, 22, 56, 0.8); border: 1px solid #25d6e8; color: #25d6e8; box-shadow: inset 0 0 5px #25d6e8; }
+        body[data-theme="dark-hour"] nav a { text-shadow: 0 0 5px #25d6e8; }
+        body[data-theme="dark-hour"] nav a:hover { color: #25d6e8 !important; text-shadow: 0 0 15px #25d6e8; }
+
 
         /* Text Colors */
         .game-card h3 { color: var(--color-text-dark); z-index: 2; position: relative; }
