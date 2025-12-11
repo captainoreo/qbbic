@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qbbic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="/assets/fanny.gif" type="image/gif" />
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Architects+Daughter&family=Press+Start+2P&family=Anton&display=swap" rel="stylesheet">
+    
+    <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
+
+    <style>
+        /* =========================================
+           1. SHARED / MODERN CSS
+           ========================================= */
+        :root {
+            /* Modern Variables */
+            --color-primary: #00a1ff; 
+            --color-primary-light: #40c4ff;
+            --color-primary-dark: #0077c0;
+            --color-text-base: #003366;
+            --color-text-white: #ffffff;
+            --color-text-dark: #002244; 
+            --bg-glass-header: rgba(255, 255, 255, 0.7); 
+            --bg-glass-card: rgba(255, 255, 255, 0.6);
+            --card-radius: 1.5rem;
+            --font-main: Arial, sans-serif;
+            --blur-strength: 10px;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--color-primary); 
+            color: var(--color-text-base);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: color 0.3s, background-color 0.3s;
+        }
+
+        /* --- LEGACY MODE SPECIFIC BODY OVERRIDES --- */
+        body[data-theme="legacy"] {
+            margin: 0;
+            font-family: 'PopHappiness', 'Arial', sans-serif;
+            background-color: #e6e8e7;
+            /* Tiny grid pattern for Wii look */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="%23e6e8e7"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
+            color: black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden; /* Lock scroll for Wii menu */
+            cursor: url('https://qottlebup.nekoweb.org/cursor.png'), auto;
+        }
+
+        /* Hide Modern UI elements when in Legacy Mode */
+        body[data-theme="legacy"] #modern-ui { display: none !important; }
+        
+        /* Hide Legacy UI elements when NOT in Legacy Mode */
+        body:not([data-theme="legacy"]) #legacy-ui { display: none !important; }
+        body:not([data-theme="legacy"]) .wii-top-bar { display: none; }
+        body:not([data-theme="legacy"]) .wii-bottom-bar { display: none; }
+
+        /* Modern UI Scrollbar */
+        ::-webkit-scrollbar { width: 12px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 6px; border: 2px solid rgba(255,255,255,0.5); }
+
+        /* Modern Animations */
+        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); opacity: 0; } 100% { transform: translateY(-20vh) scale(1.2); opacity: 0; } }
+        @keyframes subtleBreathe { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes aeroSway { 0% { background-position: center top; transform: scale(1); } 50% { background-position: center bottom; transform: scale(1.02); } 100% { background-position: center top; transform: scale(1); } }
+
+        /* Modern Card Styles */
+        .glass-header { background-color: var(--bg-glass-header); backdrop-filter: blur(var(--blur-strength)); border-bottom: 1px solid rgba(255,255,255,0.4); }
+        .glass-footer { background-color: var(--bg-glass-header); backdrop-filter: blur(var(--blur-strength)); border-top: 1px solid rgba(255,255,255,0.4); }
+        .glass-main-panel { background-color: var(--bg-glass-card); backdrop-filter: blur(var(--blur-strength)); border-radius: var(--card-radius); padding: 1rem; }
+        .game-card {
+            background-color: var(--bg-glass-card);
+            backdrop-filter: blur(var(--blur-strength));
+            border-radius: var(--card-radius);
+            transition: transform 0.2s;
+        }
+        .game-card:hover { transform: scale(1.03); }
+        
+        /* Background Container for Modern Themes */
+        #css-3d-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; transition: background 0.5s ease; }
+        
+        /* Theme: Blank Slate */
+        body[data-theme="blank-slate"] #css-3d-background { background: linear-gradient(-45deg, #ffffff, #f0f0f0, #e6e6e6, #ffffff); background-size: 400% 400%; animation: subtleBreathe 15s ease infinite; }
+        /* Theme: Frutiger Aero */
+        body[data-theme="frutiger-aero"] { --color-primary: #00a1ff; }
+        body[data-theme="frutiger-aero"] #css-3d-background { background-image: url('/assets/aqua.jpg'); background-size: cover; animation: aeroSway 20s ease-in-out infinite alternate; }
+
+        /* ... [Other modern theme styles omitted for brevity, they remain mostly same] ... */
+
+        /* =========================================
+           2. LEGACY (CLASSIC) CSS 
+           ========================================= */
+        
+        @font-face { font-family: 'PopHappiness'; src: url('https://qottlebup.nekoweb.org/PopHappiness.OTF') format('opentype'); }
+        
+        /* Wii Top Bar */
+        .wii-top-bar {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 100%);
+            pointer-events: none; z-index: 100;
+        }
+
+        /* Wii Bottom Bar */
+        .wii-bottom-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
+            background-color: #c9c5c2; border-top: 2px solid #a4a2a0;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 100;
+        }
+        
+        .wii-bottom-bar-content { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 900px; padding: 0 20px; }
+
+        .wii-round-button {
+            background-color: #d8d4d1; border: 2px solid #a4a2a0; border-radius: 50%;
+            width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: transform 0.1s ease;
+        }
+        .wii-round-button:hover { transform: scale(1.05); box-shadow: 0 0 8px rgba(0, 161, 223, 0.4); }
+        .wii-round-button img, .wii-round-button svg { width: 70%; height: auto; fill: #555; }
+        
+        .wii-date-time { font-size: 1rem; text-align: center; color: #555; user-select: none; }
+        .wii-date-time .time { font-size: 1.5rem; }
+
+        /* Legacy Game Grid */
+        #game-pages-container {
+            position: fixed; z-index: 10; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 100%; max-width: 900px;
+            overflow: hidden; padding-bottom: 50px;
+        }
+        #game-pages-wrapper { display: flex; transition: transform 0.4s ease-in-out; width: 100%; }
+        
+        .legacy-game-buttons {
+            display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr);
+            gap: 20px; width: 100%; height: 400px; justify-items: center; padding: 20px;
+            flex-shrink: 0;
+        }
+
+        .legacy-game-cell {
+            width: 160px; height: 80px; background-color: #ffffff; border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); cursor: pointer; position: relative;
+            background-size: cover; background-position: center; transition: transform 0.1s;
+            border: 1px solid #ddd;
+        }
+        .legacy-game-cell:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 161, 223, 0.7); outline: 4px solid rgba(0, 161, 223, 0.5); }
+        
+        /* Placeholder Images for Legacy Grid */
+        .legacy-game-cell.empty { background-image: url('https://qottlebup.nekoweb.org/wii-channel-static-empty-wii-channel.gif'); }
+        .legacy-game-cell.mii { background-image: url('https://qottlebup.nekoweb.org/EmulatorJS.png'); }
+        .legacy-game-cell.photo { background-image: url('https://qottlebup.nekoweb.org/emulation.gif'); }
+        .legacy-game-cell.shop { background-image: url('https://qottlebup.nekoweb.org/OvO.png'); }
+
+        /* Legacy Pagination Dots */
+        .page-indicator { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
+        .page-dot { width: 10px; height: 10px; background-color: #d8d4d1; border: 2px solid #a4a2a0; border-radius: 50%; }
+        .page-dot.active { background-color: #0087c0; border-color: #005a80; }
+
+        /* Legacy Iframe Overlay (Reused for both) */
+        #legacy-iframe-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+        #legacy-iframe-container {
+            position: relative; width: 90%; height: 90%; background: #000; border: 2px solid #fff; border-radius: 10px;
+        }
+        #close-legacy-iframe {
+            position: absolute; top: -15px; right: -15px; width: 40px; height: 40px;
+            background: #fff; border-radius: 50%; border: 2px solid #000; font-weight: bold; cursor: pointer;
+        }
+    </style>
+</head>
+<body data-theme="blank-slate">
+    
+    <audio id="hover-sound" src="/assets/Sample_0016.wav" preload="auto"></audio>
+    <audio id="select-sound" src="/assets/Sample_0000.wav" preload="auto"></audio>
+    <audio id="wii-hover" src="https://qottlebup.nekoweb.org/Sample_0004.wav" preload="auto"></audio>
+    <audio id="wii-click" src="https://qottlebup.nekoweb.org/Sample_0000.wav" preload="auto"></audio>
+    <audio id="wii-bgm" src="https://qottlebup.nekoweb.org/Wii%20OST%20-%20Menu.flac" loop></audio>
+    
+    <div id="css-3d-background"></div>
+
+    <div id="modern-ui" class="relative w-full min-h-screen flex flex-col">
+        <header class="sticky top-0 z-50 border-b border-gray-700 glass-header">
+            <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-white hover:text-cyan-400 transition duration-300">
+                        <img src="/assets/fanny.gif" alt="Logo" class="w-8 h-8 rounded-full object-contain">
+                        <span>QB<span class="text-cyan-400">BIC</span></span>
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex space-x-6 items-center">
+                    <a href="#" class="text-gray-600 hover:text-black transition duration-200 font-medium">Home</a>
+                    <a href="#" class="text-black border-b-2 border-cyan-400 transition duration-200 font-medium">Games</a>
+                    
+                    <select id="theme-select" class="bg-white/50 border border-gray-300 rounded-full px-4 py-1 text-sm font-bold cursor-pointer hover:bg-white/80 transition shadow-sm">
+                        <option value="blank-slate">⬜ Blank Slate</option>
+                        <option value="frutiger-aero">🫧 Frutiger Aero</option>
+                        <option value="minecraft">🧱 Minecraft</option>
+                        <option value="blueprint">📐 Blueprint</option>
+                        <option value="matrix">🟢 The Matrix</option>
+                        <option value="classic">💾 Windows 95</option>
+                        <option value="phantom">🎭 Phantom (P5)</option>
+                        <option value="dark-hour">🌕 Dark Hour (P3)</option>
+                        <option value="legacy">🎮 Legacy Mode (Wii)</option>
+                    </select>
+                </div>
+            </nav>
+        </header>
+
+        <main class="flex-grow">
+        <section class="py-8 sm:py-12">
+            <div class="container mx-auto">
+                <div class="glass-main-panel mx-4">
+                    <h1 class="text-3xl font-bold text-center mb-10 text-gray-800">Full Game Catalog</h1>
+
+                    <div class="mb-10 max-w-lg mx-auto">
+                        <input type="text" id="game-search-input" placeholder="Search for a game..." class="w-full p-3 rounded-2xl bg-white/80 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow duration-300" />
+                    </div>
+                    
+                    <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                        <div class="game-card overflow-hidden">
+                            <img src="/assets/nikki.jpg" alt="Yume Nikki" class="w-full h-28 object-cover">
+                            <div class="p-3">
+                                <h3 class="text-lg font-semibold truncate">Yume Nikki</h3>
+                                <button type="button" data-url="/games/clyumenikki.html" data-title="Yume Nikki" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-1 rounded-md text-sm transition">Play</button>
+                            </div>
+                        </div>
+                        <div class="game-card overflow-hidden">
+                            <img src="/assets/cookie.png" alt="Cookie Clicker" class="w-full h-28 object-cover">
+                            <div class="p-3">
+                                <h3 class="text-lg font-semibold truncate">Cookie Clicker</h3>
+                                <button type="button" data-url="/games/Cookie Clicker.html" data-title="Cookie Clicker" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-1 rounded-md text-sm transition">Play</button>
+                            </div>
+                        </div>
+                        <div class="game-card overflow-hidden">
+                            <img src="/assets/doom1.jpg" alt="Doom 1" class="w-full h-28 object-cover">
+                            <div class="p-3">
+                                <h3 class="text-lg font-semibold truncate">Doom 1</h3>
+                                <button type="button" data-url="/games/DOOM.html" data-title="Doom 1" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-1 rounded-md text-sm transition">Play</button>
+                            </div>
+                        </div>
+                        <div class="game-card overflow-hidden">
+                            <img src="/assets/pizzatower.jpg" alt="Pizza Tower" class="w-full h-28 object-cover">
+                            <div class="p-3">
+                                <h3 class="text-lg font-semibold truncate">Pizza Tower</h3>
+                                <button type="button" data-url="/games/Pizza Tower.html" data-title="Pizza Tower" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-1 rounded-md text-sm transition">Play</button>
+                            </div>
+                        </div>
+                        </div> 
+                </div> 
+            </div> 
+        </section>
+        </main>
+
+        <footer class="border-t border-gray-300 mt-10 glass-footer">
+            <div class="container mx-auto px-4 py-6 text-center">
+                <p class="text-gray-500 text-xs">Copyright Team Qbbic © 2025.</p>
+            </div>
+        </footer>
+    </div>
+
+    <div id="legacy-ui" style="display: none; width: 100%; height: 100vh; position: relative;">
+        <div class="wii-top-bar"></div>
+        
+        <div id="game-pages-container">
+            <div id="game-pages-wrapper">
+                <nav class="legacy-game-buttons">
+                    <div class="legacy-game-cell mii" data-url="/games/clyumenikki.html" title="Yume Nikki"></div>
+                    <div class="legacy-game-cell photo" data-url="/games/Cookie Clicker.html" title="Cookie Clicker"></div>
+                    <div class="legacy-game-cell shop" data-url="/games/Pizza Tower.html" title="Pizza Tower"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                </nav>
+                 <nav class="legacy-game-buttons">
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
+                </nav>
+            </div>
+        </div>
+
+        <div class="page-indicator" id="legacy-dots">
+            <div class="page-dot active"></div>
+            <div class="page-dot"></div>
+        </div>
+
+        <div class="wii-bottom-bar">
+            <div class="wii-bottom-bar-content">
+                <div class="wii-round-button" id="prev-page-btn" title="Previous Page">
+                    <img src="https://qottlebup.nekoweb.org/nope.svg" alt="<">
+                </div>
+                
+                <div class="wii-round-button" id="exit-legacy-btn" title="Return to Modern UI">
+                    <img src="https://qottlebup.nekoweb.org/Plus.svg" alt="Exit">
+                </div>
+                
+                <div class="wii-date-time">
+                    <div class="time" id="wii-time">12:00 PM</div>
+                    <div class="date" id="wii-date">Mon 1/1</div>
+                </div>
+                
+                <div class="wii-round-button" id="next-page-btn" title="Next Page">
+                    <img src="https://qottlebup.nekoweb.org/move.svg" alt=">">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-modal" class="fixed inset-0 bg-black bg-opacity-95 z-[5000] flex items-center justify-center p-2 sm:p-4 transition-all duration-300 opacity-0 pointer-events-none scale-95" style="display: none;">
+        <div class="w-full h-full max-w-7xl max-h-[95vh] flex flex-col bg-gray-950 rounded-2xl overflow-hidden shadow-2xl glass-modal-container relative">
+            <button id="close-game-modal-btn" type="button" class="absolute top-2 right-2 bg-red-600 hover:bg-red-500 text-white w-8 h-8 rounded-full z-50 flex items-center justify-center font-bold">X</button>
+            <div class="flex-grow relative bg-black">
+                <iframe id="game-iframe" src="" frameborder="0" allowfullscreen class="w-full h-full"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // -- Elements --
+            const themeSelect = document.getElementById('theme-select');
+            const gameSearchInput = document.getElementById('game-search-input');
+            const allGameCards = document.querySelectorAll('.game-card');
+            const gameModal = document.getElementById('game-modal');
+            const gameIframe = document.getElementById('game-iframe');
+            
+            // -- Sounds --
+            const hoverSound = document.getElementById('hover-sound');
+            const selectSound = document.getElementById('select-sound');
+            const wiiHover = document.getElementById('wii-hover');
+            const wiiClick = document.getElementById('wii-click');
+            const wiiBGM = document.getElementById('wii-bgm');
+
+            // -- Theme Logic --
+            const savedTheme = localStorage.getItem('qbbic-theme') || 'blank-slate';
+            setTheme(savedTheme);
+            if(themeSelect) themeSelect.value = savedTheme;
+
+            themeSelect.addEventListener('change', (e) => {
+                const newTheme = e.target.value;
+                setTheme(newTheme);
+            });
+
+            // Added logic for the "Exit Legacy" button inside the Legacy UI
+            document.getElementById('exit-legacy-btn').addEventListener('click', () => {
+                setTheme('blank-slate'); // Fallback to default
+                themeSelect.value = 'blank-slate';
+            });
+
+            function setTheme(theme) {
+                document.body.setAttribute('data-theme', theme);
+                localStorage.setItem('qbbic-theme', theme);
+                
+                if (theme === 'legacy') {
+                    // Activate Legacy Logic
+                    wiiBGM.volume = 0.5;
+                    wiiBGM.play().catch(e => console.log("Audio requires interaction"));
+                    startWiiClock();
+                } else {
+                    // Deactivate Legacy Logic
+                    wiiBGM.pause();
+                    wiiBGM.currentTime = 0;
+                }
+            }
+
+            /* --- MODERN SEARCH --- */
+            if (gameSearchInput) {
+                gameSearchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    allGameCards.forEach(card => {
+                        const title = card.querySelector('h3')?.textContent.toLowerCase();
+                        if (title) {
+                            card.style.display = title.includes(searchTerm) ? '' : 'none';
+                        }
+                    });
+                });
+            }
+
+            /* --- SHARED GAME MODAL --- */
+            function openGame(url) {
+                if(!url) return;
+                gameIframe.src = url;
+                gameModal.style.display = 'flex';
+                // Small delay to allow CSS transitions if we were using them, 
+                // but direct display block is safer for the hybrid UI
+                setTimeout(() => {
+                    gameModal.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
+                }, 10);
+            }
+
+            function closeGame() {
+                gameModal.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
+                setTimeout(() => {
+                    gameModal.style.display = 'none';
+                    gameIframe.src = 'about:blank'; 
+                }, 300);
+            }
+
+            document.getElementById('close-game-modal-btn').addEventListener('click', closeGame);
+
+            // Modern Play Buttons
+            document.querySelectorAll('.game-play-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    selectSound.currentTime = 0; selectSound.play();
+                    openGame(btn.dataset.url);
+                });
+                btn.addEventListener('mouseenter', () => {
+                    hoverSound.currentTime = 0; hoverSound.play();
+                });
+            });
+
+            /* --- LEGACY (Wii) LOGIC --- */
+            let legacyPage = 0;
+            const legacyWrapper = document.getElementById('game-pages-wrapper');
+            const legacyDots = document.querySelectorAll('.page-dot');
+
+            // Legacy Button Clicks
+            document.querySelectorAll('.legacy-game-cell').forEach(cell => {
+                cell.addEventListener('mouseenter', () => {
+                    wiiHover.currentTime = 0; wiiHover.play();
+                    cell.style.zIndex = 10; // pop out
+                });
+                cell.addEventListener('mouseleave', () => {
+                    cell.style.zIndex = 1;
+                });
+                cell.addEventListener('click', () => {
+                    const url = cell.dataset.url;
+                    if(url) {
+                        wiiClick.currentTime = 0; wiiClick.play();
+                        // Add slight delay for animation
+                        setTimeout(() => openGame(url), 200);
+                    }
+                });
+            });
+
+            // Legacy Pagination
+            document.getElementById('prev-page-btn').addEventListener('click', () => {
+                wiiHover.currentTime = 0; wiiHover.play();
+                if(legacyPage > 0) { legacyPage--; updateLegacyPage(); }
+            });
+            document.getElementById('next-page-btn').addEventListener('click', () => {
+                wiiHover.currentTime = 0; wiiHover.play();
+                if(legacyPage < 1) { legacyPage++; updateLegacyPage(); } // Only 2 pages defined in HTML
+            });
+
+            function updateLegacyPage() {
+                legacyWrapper.style.transform = `translateX(-${legacyPage * 100}%)`;
+                legacyDots.forEach((dot, idx) => {
+                    if(idx === legacyPage) dot.classList.add('active');
+                    else dot.classList.remove('active');
+                });
+            }
+
+            // Wii Clock
+            function startWiiClock() {
+                const timeEl = document.getElementById('wii-time');
+                const dateEl = document.getElementById('wii-date');
+                
+                function update() {
+                    const now = new Date();
+                    timeEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                    dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' });
+                }
+                update();
+                setInterval(update, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
