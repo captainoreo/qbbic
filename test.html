@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://qottlebup.nekoweb.org/banner.css" />
     <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
     <style>
-      /* --- CORE STYLES FROM CLASSIC.HTML --- */
+      /* --- CORE STYLES --- */
       body {
         margin: 0;
         font-family: 'PopHappiness', 'Arial', 'MarioKartDS', sans-serif;
@@ -114,7 +114,7 @@
       .theme-heading, .music-heading { font-weight: bold; color: #888; margin: 5px 0; font-size: 0.8rem; text-transform: uppercase; }
       .theme-divider, .music-divider { border: 0; height: 1px; background: #ccc; margin: 5px 0; }
 
-      /* --- NEW IFRAME MODAL STYLES (MATCHING GAMES(3).HTML) --- */
+      /* --- ADVANCED IFRAME MODAL STYLES --- */
       #game-modal {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background-color: rgba(0, 0, 0, 0.95);
@@ -141,7 +141,7 @@
       #game-modal-title {
         font-size: 1.25rem; font-weight: bold; color: #40c4ff;
         white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        font-family: 'Arial', sans-serif; /* Keep title readable */
+        font-family: 'Arial', sans-serif;
       }
 
       #game-modal-controls { display: flex; gap: 8px; align-items: center; }
@@ -177,12 +177,12 @@
       #toast-notification.show { transform: translateX(-50%) translateY(0); }
 
 
-      /* Dark Mode & Theme Overrides (Condensed) */
+      /* Dark Mode & Theme Overrides */
       body.dark-mode { background-color: #121212; background-image: none; color: #e0e0e0; }
       body.dark-mode .wii-bottom-bar { background-color: #222; border-color: #444; }
       body.dark-mode .wii-button { background-color: #333; border-color: #555; }
       
-      /* Custom Theme CSS from previous request */
+      /* Custom Theme CSS */
       body.retro-green-theme { background-color: #9bbc0f; background-image: none; color: #0f380f; font-family: 'Early GameBoy', sans-serif; }
       body.retro-green-theme .wii-bottom-bar { background-color: #8cac0f; border-color: #5b710f; }
       body.retro-green-theme .wii-button { background-color: #a7c12f; border-color: #5b710f; color: #0f380f; }
@@ -409,7 +409,7 @@
       const nextPageButton = document.getElementById('next-page-button');
       let currentPage = 0;
 
-      // --- NEW IFRAME MODAL LOGIC (FROM GAMES(3).HTML) ---
+      // --- IFRAME MODAL LOGIC ---
       const gameModal = document.getElementById('game-modal');
       const gameModalTitle = document.getElementById('game-modal-title');
       const gameIframe = document.getElementById('game-iframe');
@@ -427,11 +427,12 @@
         toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2500);
       }
 
-      // Music Data
+      // --- MUSIC DATA (UPDATED TO MATCH GAMES(3).HTML) ---
       const songs = [
-        { name: 'Wii Shop Channel', url: 'Wii Shop Channel Music.mp3' }, 
-        { name: 'Mii Maker', url: 'Wii U OST - Mii Maker (Mii Editor).flac' },
-        { name: 'Wii Menu', url: 'Wii OST - Menu.flac' }
+        { name: 'Wii U Mii Maker', url: '/assets/Wii U OST - Mii Maker (Mii Editor).flac' },
+        { name: 'Droopy likes your face', url: '/assets/Droopy likes your face.flac' },
+        { name: 'Sleepville', url: '/assets/Sleepville - Little Man Legends.mp3' },
+        { name: 'Beneath the Mask', url: '/assets/Beneath the Mask -instrumental version- - Lyn.mp3' }
       ];
 
       // --- INITIALIZATION ---
@@ -444,6 +445,12 @@
         // Init Themes
         const savedTheme = localStorage.getItem('selectedTheme') || 'light';
         setTheme(savedTheme);
+
+        // Init Music (Persistence)
+        const savedBGM = localStorage.getItem('qbbic-bgm');
+        if (savedBGM && savedBGM !== 'none') {
+            playBGM(savedBGM);
+        }
       });
 
       // --- PAGE NAVIGATION ---
@@ -480,7 +487,7 @@
           }
       });
 
-      // --- GAME CLICK LOGIC (MODIFIED) ---
+      // --- GAME CLICK LOGIC ---
       document.querySelectorAll('.game-button').forEach(btn => {
           btn.addEventListener('mouseenter', () => {
               hoverSound.currentTime = 0; hoverSound.play().catch(()=>{});
@@ -490,7 +497,7 @@
               clickSound.currentTime = 0; clickSound.play().catch(()=>{});
               
               const url = btn.dataset.href;
-              const title = btn.title || "Game"; // Get title from attribute
+              const title = btn.title || "Game";
               if(url) {
                   openGameModal(url, title);
               }
@@ -505,7 +512,6 @@
           gameModalTitle.textContent = title;
           gameIframe.src = url;
           gameModal.style.display = 'flex';
-          // Small delay to allow transition if we were adding classes, here simpler
           setTimeout(() => gameModal.classList.add('active'), 10);
           document.body.style.overflow = 'hidden';
           showToast(`Launched ${title}`);
@@ -524,7 +530,7 @@
       
       closeGameModalBtn.addEventListener('click', closeGameModal);
 
-      // --- NEW MODAL BUTTON FEATURES ---
+      // --- ADVANCED MODAL BUTTONS ---
       document.getElementById('reload-game-btn').addEventListener('click', () => {
           if (gameIframe.src && gameIframe.src !== 'about:blank') {
               gameIframe.src = gameIframe.src;
@@ -603,7 +609,14 @@
           if(!found) alert("Game not found!");
       }
 
-      // --- MUSIC LOGIC ---
+      // --- MUSIC LOGIC (PERSISTENCE + NEW SONGS) ---
+      function playBGM(url) {
+          bgMusic.src = url;
+          bgMusic.volume = 0.4; // Matches games(3).html volume
+          bgMusic.play().catch(e => console.log("Autoplay blocked until interaction"));
+          localStorage.setItem('qbbic-bgm', url);
+      }
+
       function populateMusicMenu() {
           const list = document.getElementById('music-list');
           songs.forEach((song, idx) => {
@@ -611,9 +624,9 @@
               div.className = 'music-option';
               div.textContent = song.name;
               div.onclick = () => {
-                  bgMusic.src = song.url;
-                  bgMusic.play();
+                  playBGM(song.url);
                   document.getElementById('music-menu').style.display = 'none';
+                  showToast("Playing: " + song.name);
               };
               list.appendChild(div);
           });
@@ -627,7 +640,16 @@
 
       document.getElementById('music-option-stop').addEventListener('click', () => {
           bgMusic.pause();
+          localStorage.setItem('qbbic-bgm', 'none');
           document.getElementById('music-menu').style.display = 'none';
+          showToast("Music Stopped");
+      });
+
+      document.getElementById('music-option-random').addEventListener('click', () => {
+          const randomSong = songs[Math.floor(Math.random() * songs.length)];
+          playBGM(randomSong.url);
+          document.getElementById('music-menu').style.display = 'none';
+          showToast("Playing Random: " + randomSong.name);
       });
 
       // --- TIME LOGIC ---
