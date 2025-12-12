@@ -9,6 +9,102 @@
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Architects+Daughter&family=Press+Start+2P&family=Anton&display=swap" rel="stylesheet">
     
     <style>
+        /* --- 0. WII SAFETY WARNING SCREEN --- */
+        #safety-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif; /* Clean font like Wii */
+            color: #ffffff;
+            cursor: pointer;
+            transition: opacity 0.8s ease-out;
+            user-select: none;
+        }
+
+        #safety-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .safety-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .warning-icon {
+            background-color: #d1d1d1;
+            color: #000;
+            width: 50px;
+            height: 44px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 30px;
+            padding-bottom: 2px;
+        }
+
+        .warning-icon span {
+            margin-bottom: -2px; /* Visual adjustment for the exclamation mark */
+        }
+
+        .safety-title {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #d1d1d1;
+        }
+
+        .safety-text {
+            text-align: center;
+            max-width: 700px;
+            font-size: 20px;
+            line-height: 1.6;
+            color: #b0b0b0; /* Slightly grey text like the original */
+            margin-bottom: 80px;
+            font-weight: bold;
+        }
+
+        .press-a-container {
+            font-size: 22px;
+            color: #d1d1d1;
+            font-weight: bold;
+            animation: pulseText 2s infinite;
+        }
+
+        .a-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background-color: #d1d1d1;
+            color: #000;
+            border-radius: 50%;
+            margin: 0 5px;
+            font-size: 20px;
+            font-weight: 900;
+            box-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+
+        @keyframes pulseText {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
         /* --- 1. GLOBAL VARIABLES & SCROLLBARS --- */
         :root {
             /* Frutiger Aero (Default) Variables */
@@ -520,6 +616,19 @@
 </head>
 <body data-theme="blank-slate"> 
     
+    <div id="safety-screen">
+        <div class="safety-header">
+            <div class="warning-icon"><span>!</span></div>
+            <div class="safety-title">WARNING-WORK AND SCHOOL SAFETY</div>
+        </div>
+        <div class="safety-text">
+            <p style="margin-bottom: 30px;">BEFORE PLAYING, PLEASE ENSURE YOU HAVE COMPLETED<br>ALL OF YOUR ASSIGNED CLASSWORK AND JOB RESPONSIBILITIES.</p>
+            <p>IF YOU GET CAUGHT SLACKING OFF, IT IS NOT<br>THE FAULT OF TEAM QBBIC.</p>
+        </div>
+        <div class="press-a-container">
+            Press <span class="a-button">A</span> to continue.
+        </div>
+    </div>
     <div id="css-3d-background">
         <div class="bubble-container">
             <div class="bubble" style="--size: 40px; --pos: 10%; --speed: 8s; --delay: 0s;"></div>
@@ -758,8 +867,39 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const hoverSound = document.getElementById('hover-sound');
+            /* --- SAFETY SCREEN LOGIC --- */
+            const safetyScreen = document.getElementById('safety-screen');
             const selectSound = document.getElementById('select-sound');
+            
+            function enterSite() {
+                if(safetyScreen.style.opacity === '0') return; // prevent double trigger
+                
+                safetyScreen.classList.add('fade-out');
+                
+                // Play the standard select sound from your assets
+                if(selectSound) {
+                    selectSound.currentTime = 0;
+                    selectSound.play().catch(e => console.log('Audio autoplay blocked'));
+                }
+                
+                // Remove from DOM after fade to prevent clicks
+                setTimeout(() => {
+                    safetyScreen.remove();
+                }, 800);
+            }
+
+            // Listen for clicks on the safety screen
+            safetyScreen.addEventListener('click', enterSite);
+            
+            // Listen for keydown (specifically 'a' or 'A')
+            document.addEventListener('keydown', (e) => {
+                if (document.body.contains(safetyScreen) && e.key.toLowerCase() === 'a') {
+                    enterSite();
+                }
+            });
+
+            /* --- EXISTING SCRIPT LOGIC BELOW --- */
+            const hoverSound = document.getElementById('hover-sound');
             const exitSound = document.getElementById('exit-sound');
             const backgroundMusic = document.getElementById('background-music');
             const songSelect = document.getElementById('song-select');
