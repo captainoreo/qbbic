@@ -1,496 +1,520 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qbbic</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Qbbic - Wii Mode</title>
     <link rel="icon" href="/assets/fanny.gif" type="image/gif" />
-    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Architects+Daughter&family=Press+Start+2P&family=Anton&display=swap" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://qottlebup.nekoweb.org/banner.css" />
     <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
-
     <style>
-        /* =========================================
-           1. SHARED / MODERN CSS
-           ========================================= */
-        :root {
-            /* Modern Variables */
-            --color-primary: #00a1ff; 
-            --color-primary-light: #40c4ff;
-            --color-primary-dark: #0077c0;
-            --color-text-base: #003366;
-            --color-text-white: #ffffff;
-            --color-text-dark: #002244; 
-            --bg-glass-header: rgba(255, 255, 255, 0.7); 
-            --bg-glass-card: rgba(255, 255, 255, 0.6);
-            --card-radius: 1.5rem;
-            --font-main: Arial, sans-serif;
-            --blur-strength: 10px;
-        }
+      /* --- CORE STYLES FROM CLASSIC.HTML --- */
+      body {
+        margin: 0;
+        font-family: 'PopHappiness', 'Arial', 'MarioKartDS', sans-serif;
+        background-color: #e6e8e7;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="%23e6e8e7"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
+        color: black;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        align-items: center;
+        padding: 4rem 1rem;
+        box-sizing: border-box;
+        cursor: url('cursor.png'), auto;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
 
-        body {
-            font-family: var(--font-main);
-            background-color: var(--color-primary); 
-            color: var(--color-text-base);
-            min-height: 100vh;
-            overflow-x: hidden;
-            transition: color 0.3s, background-color 0.3s;
-        }
+      /* Fonts */
+      @font-face { font-family: 'PopHappiness'; src: url('PopHappiness.OTF') format('opentype'); }
+      @font-face { font-family: 'MarioKartDS'; src: url('MarioKartDS.ttf') format('truetype'); }
+      @font-face { font-family: 'Early GameBoy'; src: url('Early GameBoy.ttf') format('truetype'); }
+      @font-face { font-family: 'Virtual Boy'; src: url('Virtual Boy.ttf') format('truetype'); }
+      @font-face { font-family: 'monofonto'; src: url('monofonto.otf') format('opentype'); }
 
-        /* --- LEGACY MODE SPECIFIC BODY OVERRIDES --- */
-        body[data-theme="legacy"] {
-            margin: 0;
-            font-family: 'PopHappiness', 'Arial', sans-serif;
-            background-color: #e6e8e7;
-            /* Tiny grid pattern for Wii look */
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="%23e6e8e7"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
-            color: black;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow: hidden; /* Lock scroll for Wii menu */
-            cursor: url('https://qottlebup.nekoweb.org/cursor.png'), auto;
-        }
+      /* Top Bar */
+      .wii-top-bar {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100px;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 100%);
+        pointer-events: none; z-index: 100;
+      }
 
-        /* Hide Modern UI elements when in Legacy Mode */
-        body[data-theme="legacy"] #modern-ui { display: none !important; }
-        
-        /* Hide Legacy UI elements when NOT in Legacy Mode */
-        body:not([data-theme="legacy"]) #legacy-ui { display: none !important; }
-        body:not([data-theme="legacy"]) .wii-top-bar { display: none; }
-        body:not([data-theme="legacy"]) .wii-bottom-bar { display: none; }
+      /* Bottom Bar */
+      .wii-bottom-bar {
+        position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
+        background-color: #c9c5c2; border-top: 2px solid #a4a2a0;
+        box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+        display: flex; justify-content: center; align-items: center;
+        gap: 20px; padding: 0 20px; box-sizing: border-box; z-index: 100;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+      .wii-bottom-bar-content { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 900px; }
 
-        /* Modern UI Scrollbar */
-        ::-webkit-scrollbar { width: 12px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
-        ::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 6px; border: 2px solid rgba(255,255,255,0.5); }
+      /* Round Bottom Buttons */
+      .wii-button {
+        background-color: #d8d4d1; border: 2px solid #a4a2a0; border-radius: 50%;
+        width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: all 0.2s ease;
+      }
+      .wii-button:hover { transform: scale(1.05); box-shadow: 0 0 8px rgba(0, 161, 223, 0.4); cursor: url('Link-Select.png'), pointer; }
+      .wii-button.disabled { pointer-events: none; opacity: 0.5; }
+      .wii-button img, .wii-button-svg { width: 70%; height: auto; transition: filter 0.3s ease, fill 0.3s ease; fill: #555; }
+      .wii-date-time { font-size: 1rem; text-align: center; color: #555; user-select: none; }
+      .wii-date-time .time { font-size: 1.5rem; }
 
-        /* Modern Animations */
-        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); opacity: 0; } 100% { transform: translateY(-20vh) scale(1.2); opacity: 0; } }
-        @keyframes subtleBreathe { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        @keyframes aeroSway { 0% { background-position: center top; transform: scale(1); } 50% { background-position: center bottom; transform: scale(1.02); } 100% { background-position: center top; transform: scale(1); } }
+      /* Main Grid Container */
+      #game-pages-container {
+        position: fixed; z-index: 10; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        width: 100%; max-width: 900px; padding-bottom: 120px; box-sizing: border-box; overflow: hidden;
+      }
+      #game-pages-wrapper { display: flex; transition: transform 0.4s ease-in-out; width: 100%; }
+      
+      .game-buttons {
+        display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr);
+        gap: 20px; width: 100%; height: 500px; justify-items: center; padding: 20px;
+        box-sizing: border-box; flex-shrink: 0;
+      }
 
-        /* Modern Card Styles */
-        .glass-header { background-color: var(--bg-glass-header); backdrop-filter: blur(var(--blur-strength)); border-bottom: 1px solid rgba(255,255,255,0.4); }
-        .glass-footer { background-color: var(--bg-glass-header); backdrop-filter: blur(var(--blur-strength)); border-top: 1px solid rgba(255,255,255,0.4); }
-        .glass-main-panel { background-color: var(--bg-glass-card); backdrop-filter: blur(var(--blur-strength)); border-radius: var(--card-radius); padding: 1rem; }
-        .game-card {
-            background-color: var(--bg-glass-card);
-            backdrop-filter: blur(var(--blur-strength));
-            border-radius: var(--card-radius);
-            transition: transform 0.2s;
-        }
-        .game-card:hover { transform: scale(1.03); }
-        
-        /* Background Container for Modern Themes */
-        #css-3d-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; transition: background 0.5s ease; }
-        
-        /* Theme: Blank Slate */
-        body[data-theme="blank-slate"] #css-3d-background { background: linear-gradient(-45deg, #ffffff, #f0f0f0, #e6e6e6, #ffffff); background-size: 400% 400%; animation: subtleBreathe 15s ease infinite; }
-        /* Theme: Frutiger Aero */
-        body[data-theme="frutiger-aero"] { --color-primary: #00a1ff; }
-        body[data-theme="frutiger-aero"] #css-3d-background { background-image: url('/assets/aqua.jpg'); background-size: cover; animation: aeroSway 20s ease-in-out infinite alternate; }
+      /* Game Cards (Buttons) */
+      .game-button {
+        width: 160px; height: 80px; background-color: #ffffff;
+        border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        text-decoration: none; color: black; font-weight: bold; text-align: center;
+        position: relative; overflow: hidden; cursor: url('cursor.png'), auto;
+        background-size: cover; background-position: center; background-repeat: no-repeat;
+        transition: transform 0.1s, box-shadow 0.1s;
+      }
+      .game-button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 161, 223, 0.7); z-index: 20; cursor: url('Link-Select.png'), pointer; }
+      .game-button-text {
+        position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.8);
+        font-size: 0.8rem; padding: 2px 0; display: none; /* Show on hover usually, or specific themes */
+      }
+      .game-button:hover .game-button-text { display: block; }
 
-        /* ... [Other modern theme styles omitted for brevity, they remain mostly same] ... */
+      /* Page Dots */
+      .page-indicator { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
+      .page-dot { width: 10px; height: 10px; background-color: #d8d4d1; border: 2px solid #a4a2a0; border-radius: 50%; transition: all 0.3s; }
+      .page-dot.active { background-color: #0087c0; border-color: #005a80; }
 
-        /* =========================================
-           2. LEGACY (CLASSIC) CSS 
-           ========================================= */
-        
-        @font-face { font-family: 'PopHappiness'; src: url('https://qottlebup.nekoweb.org/PopHappiness.OTF') format('opentype'); }
-        
-        /* Wii Top Bar */
-        .wii-top-bar {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100px;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 100%);
-            pointer-events: none; z-index: 100;
-        }
+      /* Search & Menus */
+      #search-container, #theme-menu, #music-menu {
+        position: fixed; background: #fff; border: 2px solid #a4a2a0; border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 200; display: none;
+      }
+      #search-container { bottom: 110px; left: 50%; transform: translateX(-50%); padding: 10px; }
+      #theme-menu { bottom: 80px; right: 20px; width: 340px; padding: 10px; column-count: 2; }
+      #music-menu { bottom: 80px; left: 20px; width: 280px; padding: 10px; max-height: 400px; overflow-y: auto; }
+      
+      .theme-option, .music-option { padding: 5px; cursor: pointer; border-radius: 4px; }
+      .theme-option:hover, .music-option:hover { background-color: #e0e0e0; }
+      .theme-heading, .music-heading { font-weight: bold; color: #888; margin: 5px 0; font-size: 0.8rem; text-transform: uppercase; }
+      .theme-divider, .music-divider { border: 0; height: 1px; background: #ccc; margin: 5px 0; }
 
-        /* Wii Bottom Bar */
-        .wii-bottom-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
-            background-color: #c9c5c2; border-top: 2px solid #a4a2a0;
-            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 100;
-        }
-        
-        .wii-bottom-bar-content { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 900px; padding: 0 20px; }
+      /* Iframe Overlay */
+      #iframe-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 1000;
+      }
+      #iframe-container { position: relative; width: 90%; height: 90%; background: #000; border: 2px solid #fff; border-radius: 10px; }
+      #game-iframe { width: 100%; height: 100%; border: none; }
+      #close-iframe-button {
+        position: absolute; top: -15px; right: -15px; width: 40px; height: 40px;
+        background: #fff; border: 2px solid #000; border-radius: 50%; cursor: pointer;
+        font-weight: bold; font-size: 20px;
+      }
 
-        .wii-round-button {
-            background-color: #d8d4d1; border: 2px solid #a4a2a0; border-radius: 50%;
-            width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: transform 0.1s ease;
-        }
-        .wii-round-button:hover { transform: scale(1.05); box-shadow: 0 0 8px rgba(0, 161, 223, 0.4); }
-        .wii-round-button img, .wii-round-button svg { width: 70%; height: auto; fill: #555; }
-        
-        .wii-date-time { font-size: 1rem; text-align: center; color: #555; user-select: none; }
-        .wii-date-time .time { font-size: 1.5rem; }
-
-        /* Legacy Game Grid */
-        #game-pages-container {
-            position: fixed; z-index: 10; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); width: 100%; max-width: 900px;
-            overflow: hidden; padding-bottom: 50px;
-        }
-        #game-pages-wrapper { display: flex; transition: transform 0.4s ease-in-out; width: 100%; }
-        
-        .legacy-game-buttons {
-            display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr);
-            gap: 20px; width: 100%; height: 400px; justify-items: center; padding: 20px;
-            flex-shrink: 0;
-        }
-
-        .legacy-game-cell {
-            width: 160px; height: 80px; background-color: #ffffff; border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); cursor: pointer; position: relative;
-            background-size: cover; background-position: center; transition: transform 0.1s;
-            border: 1px solid #ddd;
-        }
-        .legacy-game-cell:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 161, 223, 0.7); outline: 4px solid rgba(0, 161, 223, 0.5); }
-        
-        /* Placeholder Images for Legacy Grid */
-        .legacy-game-cell.empty { background-image: url('https://qottlebup.nekoweb.org/wii-channel-static-empty-wii-channel.gif'); }
-        .legacy-game-cell.mii { background-image: url('https://qottlebup.nekoweb.org/EmulatorJS.png'); }
-        .legacy-game-cell.photo { background-image: url('https://qottlebup.nekoweb.org/emulation.gif'); }
-        .legacy-game-cell.shop { background-image: url('https://qottlebup.nekoweb.org/OvO.png'); }
-
-        /* Legacy Pagination Dots */
-        .page-indicator { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
-        .page-dot { width: 10px; height: 10px; background-color: #d8d4d1; border: 2px solid #a4a2a0; border-radius: 50%; }
-        .page-dot.active { background-color: #0087c0; border-color: #005a80; }
-
-        /* Legacy Iframe Overlay (Reused for both) */
-        #legacy-iframe-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 2000;
-        }
-        #legacy-iframe-container {
-            position: relative; width: 90%; height: 90%; background: #000; border: 2px solid #fff; border-radius: 10px;
-        }
-        #close-legacy-iframe {
-            position: absolute; top: -15px; right: -15px; width: 40px; height: 40px;
-            background: #fff; border-radius: 50%; border: 2px solid #000; font-weight: bold; cursor: pointer;
-        }
+      /* Dark Mode & Theme Overrides (Condensed) */
+      body.dark-mode { background-color: #121212; background-image: none; color: #e0e0e0; }
+      body.dark-mode .wii-bottom-bar { background-color: #222; border-color: #444; }
+      body.dark-mode .wii-button { background-color: #333; border-color: #555; }
+      
+      /* ... (Other themes like Windows 7, Halloween, etc. would go here as in Classic.html) ... */
     </style>
-</head>
-<body data-theme="blank-slate">
-    
-    <audio id="hover-sound" src="/assets/Sample_0016.wav" preload="auto"></audio>
-    <audio id="select-sound" src="/assets/Sample_0000.wav" preload="auto"></audio>
-    <audio id="wii-hover" src="https://qottlebup.nekoweb.org/Sample_0004.wav" preload="auto"></audio>
-    <audio id="wii-click" src="https://qottlebup.nekoweb.org/Sample_0000.wav" preload="auto"></audio>
-    <audio id="wii-bgm" src="https://qottlebup.nekoweb.org/Wii%20OST%20-%20Menu.flac" loop></audio>
-    
-    <div id="css-3d-background"></div>
+  </head>
+  <body>
+    <div class="wii-top-bar"></div>
 
-    <div id="modern-ui" class="relative w-full min-h-screen flex flex-col">
-        <header class="sticky top-0 z-50 border-b border-gray-700 glass-header">
-            <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-                <div class="flex items-center">
-                    <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-white hover:text-cyan-400 transition duration-300">
-                        <img src="/assets/fanny.gif" alt="Logo" class="w-8 h-8 rounded-full object-contain">
-                        <span>QB<span class="text-cyan-400">BIC</span></span>
-                    </a>
-                </div>
-                
-                <div class="hidden md:flex space-x-6 items-center">
-                    <a href="#" class="text-gray-600 hover:text-black transition duration-200 font-medium">Home</a>
-                    <a href="#" class="text-black border-b-2 border-cyan-400 transition duration-200 font-medium">Games</a>
-                    
-                    <select id="theme-select" class="bg-white/50 border border-gray-300 rounded-full px-4 py-1 text-sm font-bold cursor-pointer hover:bg-white/80 transition shadow-sm">
-                        <option value="blank-slate">⬜ Blank Slate</option>
-                        <option value="frutiger-aero">🫧 Frutiger Aero</option>
-                        <option value="minecraft">🧱 Minecraft</option>
-                        <option value="blueprint">📐 Blueprint</option>
-                        <option value="matrix">🟢 The Matrix</option>
-                        <option value="classic">💾 Windows 95</option>
-                        <option value="phantom">🎭 Phantom (P5)</option>
-                        <option value="dark-hour">🌕 Dark Hour (P3)</option>
-                        <option value="legacy">🎮 Legacy Mode (Wii)</option>
-                    </select>
-                </div>
-            </nav>
-        </header>
-
-        <main class="flex-grow">
-        <section class="py-8 sm:py-12">
-            <div class="container mx-auto">
-                <div class="glass-main-panel mx-4">
-                    <h1 class="text-3xl font-bold text-center mb-10 text-gray-800">Full Game Catalog</h1>
-
-                    <div class="mb-10 max-w-lg mx-auto">
-                        <input type="text" id="game-search-input" placeholder="Search for a game..." class="w-full p-3 rounded-2xl bg-white/80 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow duration-300" />
-                    </div>
-                    
-                    <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-                        <div class="game-card overflow-hidden">
-                            <img src="/assets/nikki.jpg" alt="Yume Nikki" class="w-full h-28 object-cover">
-                            <div class="p-3">
-                                <h3 class="text-lg font-semibold truncate">Yume Nikki</h3>
-                                <button type="button" data-url="/games/clyumenikki.html" data-title="Yume Nikki" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-1 rounded-md text-sm transition">Play</button>
-                            </div>
-                        </div>
-                        <div class="game-card overflow-hidden">
-                            <img src="/assets/cookie.png" alt="Cookie Clicker" class="w-full h-28 object-cover">
-                            <div class="p-3">
-                                <h3 class="text-lg font-semibold truncate">Cookie Clicker</h3>
-                                <button type="button" data-url="/games/Cookie Clicker.html" data-title="Cookie Clicker" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-1 rounded-md text-sm transition">Play</button>
-                            </div>
-                        </div>
-                        <div class="game-card overflow-hidden">
-                            <img src="/assets/doom1.jpg" alt="Doom 1" class="w-full h-28 object-cover">
-                            <div class="p-3">
-                                <h3 class="text-lg font-semibold truncate">Doom 1</h3>
-                                <button type="button" data-url="/games/DOOM.html" data-title="Doom 1" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-1 rounded-md text-sm transition">Play</button>
-                            </div>
-                        </div>
-                        <div class="game-card overflow-hidden">
-                            <img src="/assets/pizzatower.jpg" alt="Pizza Tower" class="w-full h-28 object-cover">
-                            <div class="p-3">
-                                <h3 class="text-lg font-semibold truncate">Pizza Tower</h3>
-                                <button type="button" data-url="/games/Pizza Tower.html" data-title="Pizza Tower" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-1 rounded-md text-sm transition">Play</button>
-                            </div>
-                        </div>
-                        </div> 
-                </div> 
-            </div> 
-        </section>
-        </main>
-
-        <footer class="border-t border-gray-300 mt-10 glass-footer">
-            <div class="container mx-auto px-4 py-6 text-center">
-                <p class="text-gray-500 text-xs">Copyright Team Qbbic © 2025.</p>
-            </div>
-        </footer>
-    </div>
-
-    <div id="legacy-ui" style="display: none; width: 100%; height: 100vh; position: relative;">
-        <div class="wii-top-bar"></div>
+    <div id="game-pages-container">
+      <div id="game-pages-wrapper">
         
-        <div id="game-pages-container">
-            <div id="game-pages-wrapper">
-                <nav class="legacy-game-buttons">
-                    <div class="legacy-game-cell mii" data-url="/games/clyumenikki.html" title="Yume Nikki"></div>
-                    <div class="legacy-game-cell photo" data-url="/games/Cookie Clicker.html" title="Cookie Clicker"></div>
-                    <div class="legacy-game-cell shop" data-url="/games/Pizza Tower.html" title="Pizza Tower"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                </nav>
-                 <nav class="legacy-game-buttons">
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                    <div class="legacy-game-cell empty" title="Channel Empty"></div>
-                </nav>
-            </div>
-        </div>
+        <nav class="game-buttons" aria-label="Page 1">
+          <a data-href="/games/clyumenikki.html" class="game-button" style="background-image: url('/assets/nikki.jpg');" title="Yume Nikki"><span class="game-button-text">Yume Nikki</span></a>
+          <a data-href="/games/Cookie Clicker.html" class="game-button" style="background-image: url('/assets/cookie.png');" title="Cookie Clicker"><span class="game-button-text">Cookie Clicker</span></a>
+          <a data-href="/games/DOOM.html" class="game-button" style="background-image: url('/assets/doom1.jpg');" title="Doom 1"><span class="game-button-text">Doom 1</span></a>
+          <a data-href="/games/Doom 2.html" class="game-button" style="background-image: url('/assets/doom2.png');" title="Doom 2"><span class="game-button-text">Doom 2</span></a>
+          <a data-href="/games/Nubbys Number Factory.html" class="game-button" style="background-image: url('/assets/factory.jpg');" title="Nubby's Number Factory"><span class="game-button-text">Nubby's Factory</span></a>
+          <a data-href="/games/Pizza Tower.html" class="game-button" style="background-image: url('/assets/pizzatower.jpg');" title="Pizza Tower"><span class="game-button-text">Pizza Tower</span></a>
+          <a data-href="/games/clcavestory.html" class="game-button" style="background-image: url('/assets/cavestory.png');" title="Cave Story"><span class="game-button-text">Cave Story</span></a>
+          <a data-href="/games/clbfdia5b.html" class="game-button" style="background-image: url('/assets/572190-vqi8cznu-v4.jpg');" title="BFDIA5B"><span class="game-button-text">BFDIA5B</span></a>
+          <a data-href="/games/cluncannycatgolf.html" class="game-button" style="background-image: url('/assets/uncanny-cat-canny-cat.gif');" title="Uncanny Cat Golf"><span class="game-button-text">Uncanny Cat Golf</span></a>
+          <a data-href="/games/n-gon.html" class="game-button" style="background-image: url('/assets/ngon.png');" title="N-GON"><span class="game-button-text">N-GON</span></a>
+          <a data-href="https://deltacook.vercel.app/" class="game-button" style="background-image: url('/assets/hx2er6ahcrv11.gif');" title="Deltarune"><span class="game-button-text">Deltarune</span></a>
+          <a data-href="/games/Half Life.html" class="game-button" style="background-image: url('/assets/2133.png');" title="Half-Life"><span class="game-button-text">Half-Life</span></a>
+          <a data-href="/games/Hollow Knight(1).html" class="game-button" style="background-image: url('/assets/knight.jpeg');" title="Hollow Knight"><span class="game-button-text">Hollow Knight</span></a>
+          <a data-href="/games/clparappatherapperalt.html" class="game-button" style="background-image: url('/assets/Sony-playstation-parappa-the-rapper.png');" title="Parappa the Rapper"><span class="game-button-text">Parappa</span></a>
+          <a data-href="/games/clsmashremix.html" class="game-button" style="background-image: url('/assets/remix.jpg');" title="Smash Remix"><span class="game-button-text">Smash Remix</span></a>
+          <a data-href="/games/Fallout.html" class="game-button" style="background-image: url('/assets/585.webp');" title="Fallout"><span class="game-button-text">Fallout</span></a>
+          <a data-href="/games/WebFishing.html" class="game-button" style="background-image: url('/assets/423.png');" title="Webfishing"><span class="game-button-text">Webfishing</span></a>
+          <a data-href="/games/Kindergarten.html" class="game-button" style="background-image: url('/assets/garten1.png');" title="Kindergarten"><span class="game-button-text">Kindergarten</span></a>
+          <a data-href="/games/Kindergarten 2.html" class="game-button" style="background-image: url('/assets/garten2.png');" title="Kindergarten 2"><span class="game-button-text">Kindergarten 2</span></a>
+          <a data-href="/games/Kindergarten 3.html" class="game-button" style="background-image: url('/assets/garten3.png');" title="Kindergarten 3"><span class="game-button-text">Kindergarten 3</span></a>
+        </nav>
 
-        <div class="page-indicator" id="legacy-dots">
-            <div class="page-dot active"></div>
-            <div class="page-dot"></div>
-        </div>
+        <nav class="game-buttons" aria-label="Page 2">
+          <a data-href="/games/clkirbysadventure.html" class="game-button" style="background-image: url('/assets/kirby.png');" title="Kirby's Adventure"><span class="game-button-text">Kirby's Adventure</span></a>
+          <a data-href="/games/clpacmana.html" class="game-button" style="background-image: url('/assets/pacman.png');" title="Pac-Man"><span class="game-button-text">Pac-Man</span></a>
+          <a data-href="/games/clbindingofisaccsheeptime.html" class="game-button" style="background-image: url('/assets/350.png');" title="The Binding of Isaac"><span class="game-button-text">Isaac</span></a>
+          <a data-href="/games/Dadish.html" class="game-button" style="background-image: url('/assets/IMG_6019.jpeg');" title="Dadish"><span class="game-button-text">Dadish</span></a>
+          <a data-href="/games/Dadish 2.html" class="game-button" style="background-image: url('/assets/IMG_6020.jpeg');" title="Dadish 2"><span class="game-button-text">Dadish 2</span></a>
+          <a data-href="/games/Dadish 3.html" class="game-button" style="background-image: url('/assets/IMG_6021.jpeg');" title="Dadish 3"><span class="game-button-text">Dadish 3</span></a>
+          <a data-href="/games/Dadish 3D.html" class="game-button" style="background-image: url('/assets/IMG_6022.jpeg');" title="Dadish 3D"><span class="game-button-text">Dadish 3D</span></a>
+          <a data-href="/games/clgoldensun.html" class="game-button" style="background-image: url('/assets/IMG_6027.jpeg');" title="Godzilla Domination"><span class="game-button-text">Godzilla</span></a>
+          <a data-href="/games/clmariosmysterymeat.html" class="game-button" style="background-image: url('/assets/IMG_6034.png');" title="Mario's Mystery Meat"><span class="game-button-text">Mystery Meat</span></a>
+          <a data-href="/games/cldonkeykong64.html" class="game-button" style="background-image: url('/assets/IMG_6033.jpeg');" title="Donkey Kong 64"><span class="game-button-text">DK 64</span></a>
+          <a data-href="/games/clcheesechompers3d.html" class="game-button" style="background-image: url('/assets/IMG_6060.jpeg');" title="Cheese Chompers 3D"><span class="game-button-text">Cheese Chompers</span></a>
+          <a data-href="/games/Postal.html" class="game-button" style="background-image: url('/assets/686592.png');" title="Postal"><span class="game-button-text">Postal</span></a>
+          <a data-href="/games/cliwbtg.html" class="game-button" style="background-image: url('/assets/IMG_6121.png');" title="I Wanna Be The Guy"><span class="game-button-text">IWBTG</span></a>
+          <a data-href="/games/clundertale.html" class="game-button" style="background-image: url('/assets/undertale-pixel-art.gif');" title="Undertale"><span class="game-button-text">Undertale</span></a>
+          <a data-href="/games/Balatro.html" class="game-button" style="background-image: url('/assets/Balatro_cover.jpg');" title="Balatro"><span class="game-button-text">Balatro</span></a>
+          <a data-href="/games/clmonkeymart.html" class="game-button" style="background-image: url('/assets/IMG_6142.jpeg');" title="Monkey Mart"><span class="game-button-text">Monkey Mart</span></a>
+          <a data-href="/games/pvz.html" class="game-button" style="background-image: url('/assets/Plantsvs.ZombiesNintendoDS.png');" title="Plants Vs Zombies"><span class="game-button-text">PvZ</span></a>
+          <a data-href="/games/clctgpnitro.html" class="game-button" style="background-image: url('/assets/ctgp.jpg');" title="CTGP Nitro"><span class="game-button-text">CTGP Nitro</span></a>
+          <a data-href="/games/clkirbysqueaksquad.html" class="game-button" style="background-image: url('/assets/squeak.png');" title="Kirby Squeak Squad"><span class="game-button-text">Squeak Squad</span></a>
+          <a data-href="/games/clkirbysuperstarultra.html" class="game-button" style="background-image: url('/assets/ultra.jpg');" title="Kirby Super Star Ultra"><span class="game-button-text">Super Star Ultra</span></a>
+        </nav>
 
-        <div class="wii-bottom-bar">
-            <div class="wii-bottom-bar-content">
-                <div class="wii-round-button" id="prev-page-btn" title="Previous Page">
-                    <img src="https://qottlebup.nekoweb.org/nope.svg" alt="<">
-                </div>
-                
-                <div class="wii-round-button" id="exit-legacy-btn" title="Return to Modern UI">
-                    <img src="https://qottlebup.nekoweb.org/Plus.svg" alt="Exit">
-                </div>
-                
-                <div class="wii-date-time">
-                    <div class="time" id="wii-time">12:00 PM</div>
-                    <div class="date" id="wii-date">Mon 1/1</div>
-                </div>
-                
-                <div class="wii-round-button" id="next-page-btn" title="Next Page">
-                    <img src="https://qottlebup.nekoweb.org/move.svg" alt=">">
-                </div>
-            </div>
-        </div>
+        <nav class="game-buttons" aria-label="Page 3">
+          <a data-href="/games/clgta2alt.html" class="game-button" style="background-image: url('/assets/gta2.jpg');" title="Grand Theft Auto 2"><span class="game-button-text">GTA 2</span></a>
+          <a data-href="/games/clgtaalty.html" class="game-button" style="background-image: url('/assets/gta1.jpg');" title="Grand Theft Auto"><span class="game-button-text">GTA 1</span></a>
+          <a data-href="/games/clocarinaoftime.html" class="game-button" style="background-image: url('/assets/oot.jpg');" title="Zelda: Ocarina of Time"><span class="game-button-text">Ocarina of Time</span></a>
+          <a data-href="/games/clmajorasmask.html" class="game-button" style="background-image: url('/assets/majora.jpg');" title="Zelda: Majora's Mask"><span class="game-button-text">Majora's Mask</span></a>
+          <a data-href="/games/cldrmario(1).html" class="game-button" style="background-image: url('/assets/drmario.jpg');" title="Dr. Mario"><span class="game-button-text">Dr. Mario</span></a>
+          <a data-href="/games/cllearntofly.html" class="game-button" style="background-image: url('/assets/340.png');" title="Learn to Fly"><span class="game-button-text">Learn to Fly</span></a>
+          <a data-href="/games/cllearntofly2.html" class="game-button" style="background-image: url('/assets/341.png');" title="Learn to Fly 2"><span class="game-button-text">Learn to Fly 2</span></a>
+          <a data-href="/games/cllearntofly3.html" class="game-button" style="background-image: url('/assets/342.png');" title="Learn to Fly 3"><span class="game-button-text">Learn to Fly 3</span></a>
+          <a data-href="/games/cllearntoflyidle.html" class="game-button" style="background-image: url('/assets/343.png');" title="Learn to Fly Idle"><span class="game-button-text">Learn to Fly Idle</span></a>
+          <a data-href="/games/clwebecomewhatwebehold.html" class="game-button" style="background-image: url('/assets/become.png');" title="We Become What We Behold"><span class="game-button-text">WBWWB</span></a>
+          <a data-href="/games/ristar.html" class="game-button" style="background-image: url('/assets/ristar.jpeg');" title="Ristar"><span class="game-button-text">Ristar</span></a>
+          <a data-href="/games/cldynamiteheaddy.html" class="game-button" style="background-image: url('/assets/headdy.jpg');" title="Dynamite Headdy"><span class="game-button-text">Dynamite Headdy</span></a>
+          <a data-href="https://mariosixty.vercel.app/sm64/index.html" class="game-button" style="background-image: url('/assets/IMG_6233.jpeg');" title="Super Mario 64"><span class="game-button-text">Mario 64</span></a>
+          <a data-href="/games/clFNAF.html" class="game-button" style="background-image: url('/assets/FNaF1.jpg');" title="FNAF 1"><span class="game-button-text">FNAF 1</span></a>
+          <a data-href="/games/clFNAF2.html" class="game-button" style="background-image: url('/assets/FNAF 2.png');" title="FNAF 2"><span class="game-button-text">FNAF 2</span></a>
+          <a data-href="/games/clFNAF3.html" class="game-button" style="background-image: url('/assets/FNaF3.png');" title="FNAF 3"><span class="game-button-text">FNAF 3</span></a>
+          <a data-href="/games/clFNAF4.html" class="game-button" style="background-image: url('/assets/Fnaf4.png');" title="FNAF 4"><span class="game-button-text">FNAF 4</span></a>
+          <a data-href="/games/clfnafworldd.html" class="game-button" style="background-image: url('/assets/FNaFWorld.png');" title="FNAF World"><span class="game-button-text">FNAF World</span></a>
+          <a data-href="/games/clfnafsl.html" class="game-button" style="background-image: url('/assets/fnafsl.png');" title="Sister Location"><span class="game-button-text">Sister Location</span></a>
+          <a data-href="/games/clfnafps.html" class="game-button" style="background-image: url('/assets/FFPS.png');" title="Pizzeria Simulator"><span class="game-button-text">Pizzeria Sim</span></a>
+        </nav>
+        
+        <nav class="game-buttons" aria-label="Page 4">
+          <a data-href="/games/clfnac1.html" class="game-button" style="background-image: url('/assets/FNAC1ICON.png');" title="Five Nights at Candy's"><span class="game-button-text">FNAC 1</span></a>
+          <a data-href="/games/clfridaynightfunkin.html" class="game-button" style="background-image: url('/assets/fnf.jpeg');" title="Friday Night Funkin"><span class="game-button-text">FNF</span></a>
+          <a data-href="/games/clfruitninja.html" class="game-button" style="background-image: url('/assets/FruitNinja.jpg');" title="Fruit Ninja"><span class="game-button-text">Fruit Ninja</span></a>
+          <a data-href="/games/clrunningfred.html" class="game-button" style="background-image: url('/assets/fred.png');" title="Running Fred"><span class="game-button-text">Running Fred</span></a>
+          <a data-href="/games/clspelunky.html" class="game-button" style="background-image: url('/assets/spelunky.png');" title="Spelunky"><span class="game-button-text">Spelunky</span></a>
+          <a data-href="/games/Oneshot (LEGACY).html" class="game-button" style="background-image: url('/assets/oneshot.png');" title="Oneshot"><span class="game-button-text">Oneshot</span></a>
+          <a data-href="/games/Off.html" class="game-button" style="background-image: url('/assets/off.jpg');" title="OFF"><span class="game-button-text">OFF</span></a>
+          <a data-href="/games/BFDIA 5b_ 5_30.html" class="game-button" style="background-image: url('/assets/ruby.gif');" title="BFDIA 5b: 5*30"><span class="game-button-text">BFDIA 5b</span></a>
+          <a data-href="/games/clpico8edu.html" class="game-button" style="background-image: url('/assets/pico.png');" title="Pico-8"><span class="game-button-text">Pico-8</span></a>
+          <a data-href="/games/clonebitadventure.html" class="game-button" style="background-image: url('/assets/onebit.png');" title="Onebit Adventure"><span class="game-button-text">Onebit</span></a>
+          <a data-href="/games/clunitresdreams.html" class="game-button" style="background-image: url('/assets/IMG_6334.png');" title="Unitres Dreams"><span class="game-button-text">Unitres</span></a>
+          <a data-href="/games/cltetris.html" class="game-button" style="background-image: url('/assets/IMG_6335.png');" title="Tetris"><span class="game-button-text">Tetris</span></a>
+          <a data-href="/games/clpeggle.html" class="game-button" style="background-image: url('/assets/IMG_6381.jpeg');" title="Peggle"><span class="game-button-text">Peggle</span></a>
+          <a data-href="/games/clgranddad.html" class="game-button" style="background-image: url('/assets/IMG_6382.webp');" title="7 Grand Dad"><span class="game-button-text">Grand Dad</span></a>
+          <a data-href="/games/clpicosschool.html" class="game-button" style="background-image: url('/assets/IMG_6383.png');" title="Pico's School"><span class="game-button-text">Pico's School</span></a>
+          <a data-href="/games/clpomgetsinternet.html" class="game-button" style="background-image: url('/assets/IMG_6386.png');" title="Pom Gets Wifi"><span class="game-button-text">Pom Gets Wifi</span></a>
+          <a data-href="/games/clpunchout.html" class="game-button" style="background-image: url('/assets/IMG_6437.jpeg');" title="Punch-Out"><span class="game-button-text">Punch-Out</span></a>
+          <a data-href="/games/clearthbound.html" class="game-button" style="background-image: url('/assets/IMG_6443.webp');" title="Mother"><span class="game-button-text">Mother</span></a>
+          <a data-href="/games/clearthboundsnes.html" class="game-button" style="background-image: url('/assets/IMG_6444.jpeg');" title="Mother 2"><span class="game-button-text">Mother 2</span></a>
+          <a data-href="/games/clearthbound3.html" class="game-button" style="background-image: url('/assets/IMG_6445.jpeg');" title="Mother 3"><span class="game-button-text">Mother 3</span></a>
+        </nav>
+
+      </div>
     </div>
 
-    <div id="game-modal" class="fixed inset-0 bg-black bg-opacity-95 z-[5000] flex items-center justify-center p-2 sm:p-4 transition-all duration-300 opacity-0 pointer-events-none scale-95" style="display: none;">
-        <div class="w-full h-full max-w-7xl max-h-[95vh] flex flex-col bg-gray-950 rounded-2xl overflow-hidden shadow-2xl glass-modal-container relative">
-            <button id="close-game-modal-btn" type="button" class="absolute top-2 right-2 bg-red-600 hover:bg-red-500 text-white w-8 h-8 rounded-full z-50 flex items-center justify-center font-bold">X</button>
-            <div class="flex-grow relative bg-black">
-                <iframe id="game-iframe" src="" frameborder="0" allowfullscreen class="w-full h-full"></iframe>
-            </div>
-        </div>
+    <div class="page-indicator" id="page-indicator-dots"></div>
+    
+    <div id="search-container">
+      <input type="text" id="search-input" placeholder="Enter game name...">
+      <button id="search-submit-button">Find</button>
     </div>
+
+    <div class="wii-bottom-bar">
+      <div class="wii-bottom-bar-content">
+        <div class="wii-button" id="prev-page-button" title="Previous Page">
+          <img src="https://qottlebup.nekoweb.org/nope.svg" alt="Previous Page" />
+        </div>
+        <a href="index.html" class="wii-button" id="wii-menu-button" title="Home">
+          <img src="https://qottlebup.nekoweb.org/Plus.svg" alt="Home" />
+        </a>
+        <div class="wii-button" id="search-button" title="Search Games">
+            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+        </div>
+        <div class="wii-date-time">
+          <div class="time" id="current-time">12:00 AM</div>
+          <div class="date" id="current-date">Fri 1/1</div>
+        </div>
+        <div class="wii-button" id="music-menu-toggle" title="Select Music">
+            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+            </svg>
+        </div>
+        <div class="wii-button" id="theme-menu-toggle" title="Select Theme">
+          <img src="https://qottlebup.nekoweb.org/mode.svg" alt="Select Theme" />
+        </div>
+        <div class="wii-button" id="next-page-button" title="Next Page">
+          <img src="https://qottlebup.nekoweb.org/move.svg" alt="Next Page" />
+        </div>
+      </div>
+    </div>
+
+    <div id="music-menu">
+        <div class="music-heading">Music Options</div>
+        <div class="music-option" id="music-option-random">Random (Auto-play)</div>
+        <div class="music-option" id="music-option-stop">Stop Music</div>
+        <hr class="music-divider">
+        <div class="music-heading">Songs</div>
+        <div id="music-list"></div>
+    </div>
+    
+    <div id="theme-menu">
+        <div class="theme-heading">Modes</div>
+        <div class="theme-option" data-theme="light">Light Mode</div>
+        <div class="theme-option" data-theme="dark">Dark Mode</div>
+        <hr class="theme-divider">
+        <div class="theme-heading">UI Themes</div>
+        <div class="theme-option" data-theme="wiiu">Wii U</div>
+        <div class="theme-option" data-theme="n3ds">Nintendo 3DS</div>
+        <div class="theme-option" data-theme="psvita">PS Vita</div>
+        <div class="theme-option" data-theme="nes">NES</div>
+        <div class="theme-option" data-theme="gameboy">Game Boy</div>
+        <div class="theme-option" data-theme="virtualboy">Virtual Boy</div>
+        <div class="theme-option" data-theme="windows7">Windows 7</div>
+    </div>
+
+    <div id="iframe-overlay">
+      <div id="iframe-container">
+        <button id="close-iframe-button" title="Close Game">&times;</button>
+        <iframe id="game-iframe" src="about:blank" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <audio id="bg-music"></audio>
+    <audio id="hover-sound" src="Sample_0004.wav" preload="auto"></audio>
+    <audio id="click-sound" src="Sample_0000.wav" preload="auto"></audio>
+    <audio id="prev-page-sound" src="WSD-SELECT.wav" preload="auto"></audio>
+    <audio id="next-page-sound" src="WSD-SELECT.wav" preload="auto"></audio>
+    <audio id="theme-click-sound" src="Sample_0002.wav" preload="auto"></audio>
+    <audio id="search-click-sound" src="Sample_0001.wav" preload="auto"></audio>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // -- Elements --
-            const themeSelect = document.getElementById('theme-select');
-            const gameSearchInput = document.getElementById('game-search-input');
-            const allGameCards = document.querySelectorAll('.game-card');
-            const gameModal = document.getElementById('game-modal');
-            const gameIframe = document.getElementById('game-iframe');
-            
-            // -- Sounds --
-            const hoverSound = document.getElementById('hover-sound');
-            const selectSound = document.getElementById('select-sound');
-            const wiiHover = document.getElementById('wii-hover');
-            const wiiClick = document.getElementById('wii-click');
-            const wiiBGM = document.getElementById('wii-bgm');
+      // --- LOGIC FROM CLASSIC.HTML ---
+      const bgMusic = document.getElementById('bg-music');
+      const hoverSound = document.getElementById('hover-sound');
+      const clickSound = document.getElementById('click-sound');
+      const prevPageSound = document.getElementById('prev-page-sound');
+      const nextPageSound = document.getElementById('next-page-sound');
+      const themeClickSound = document.getElementById('theme-click-sound');
+      const searchClickSound = document.getElementById('search-click-sound');
+      
+      const gamePagesWrapper = document.getElementById('game-pages-wrapper');
+      const pageIndicatorDots = document.getElementById('page-indicator-dots');
+      const prevPageButton = document.getElementById('prev-page-button');
+      const nextPageButton = document.getElementById('next-page-button');
+      let currentPage = 0;
 
-            // -- Theme Logic --
-            const savedTheme = localStorage.getItem('qbbic-theme') || 'blank-slate';
-            setTheme(savedTheme);
-            if(themeSelect) themeSelect.value = savedTheme;
+      // Iframe Logic
+      const iframeOverlay = document.getElementById('iframe-overlay');
+      const gameIframe = document.getElementById('game-iframe');
+      const closeIframeButton = document.getElementById('close-iframe-button');
+      let wasMusicPlayingBeforeGame = false;
 
-            themeSelect.addEventListener('change', (e) => {
-                const newTheme = e.target.value;
-                setTheme(newTheme);
-            });
+      // Music Data
+      const songs = [
+        { name: 'Wii Shop Channel', url: 'Wii Shop Channel Music.mp3' }, // Example placeholder
+        { name: 'Mii Maker', url: 'Wii U OST - Mii Maker (Mii Editor).flac' },
+        { name: 'Wii Menu', url: 'Wii OST - Menu.flac' }
+      ];
 
-            // Added logic for the "Exit Legacy" button inside the Legacy UI
-            document.getElementById('exit-legacy-btn').addEventListener('click', () => {
-                setTheme('blank-slate'); // Fallback to default
-                themeSelect.value = 'blank-slate';
-            });
+      // --- INITIALIZATION ---
+      window.addEventListener('load', () => {
+        updatePage();
+        populateMusicMenu();
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        
+        // Init Themes
+        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+        setTheme(savedTheme);
+      });
 
-            function setTheme(theme) {
-                document.body.setAttribute('data-theme', theme);
-                localStorage.setItem('qbbic-theme', theme);
-                
-                if (theme === 'legacy') {
-                    // Activate Legacy Logic
-                    wiiBGM.volume = 0.5;
-                    wiiBGM.play().catch(e => console.log("Audio requires interaction"));
-                    startWiiClock();
-                } else {
-                    // Deactivate Legacy Logic
-                    wiiBGM.pause();
-                    wiiBGM.currentTime = 0;
-                }
-            }
+      // --- PAGE NAVIGATION ---
+      function updatePage() {
+          const offset = -currentPage * 100;
+          gamePagesWrapper.style.transform = `translateX(${offset}%)`;
+          
+          // Update Dots
+          const allGamePages = document.querySelectorAll('.game-buttons');
+          pageIndicatorDots.innerHTML = '';
+          for (let i = 0; i < allGamePages.length; i++) {
+              const dot = document.createElement('div');
+              dot.classList.add('page-dot');
+              if (i === currentPage) dot.classList.add('active');
+              pageIndicatorDots.appendChild(dot);
+          }
 
-            /* --- MODERN SEARCH --- */
-            if (gameSearchInput) {
-                gameSearchInput.addEventListener('input', (e) => {
-                    const searchTerm = e.target.value.toLowerCase();
-                    allGameCards.forEach(card => {
-                        const title = card.querySelector('h3')?.textContent.toLowerCase();
-                        if (title) {
-                            card.style.display = title.includes(searchTerm) ? '' : 'none';
-                        }
-                    });
-                });
-            }
+          // Update Buttons
+          prevPageButton.classList.toggle('disabled', currentPage === 0);
+          nextPageButton.classList.toggle('disabled', currentPage === allGamePages.length - 1);
+      }
 
-            /* --- SHARED GAME MODAL --- */
-            function openGame(url) {
-                if(!url) return;
-                gameIframe.src = url;
-                gameModal.style.display = 'flex';
-                // Small delay to allow CSS transitions if we were using them, 
-                // but direct display block is safer for the hybrid UI
-                setTimeout(() => {
-                    gameModal.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
-                }, 10);
-            }
+      prevPageButton.addEventListener('click', () => {
+          if (currentPage > 0) {
+              currentPage--;
+              updatePage();
+              prevPageSound.currentTime = 0; prevPageSound.play().catch(()=>{});
+          }
+      });
 
-            function closeGame() {
-                gameModal.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
-                setTimeout(() => {
-                    gameModal.style.display = 'none';
-                    gameIframe.src = 'about:blank'; 
-                }, 300);
-            }
+      nextPageButton.addEventListener('click', () => {
+          const allGamePages = document.querySelectorAll('.game-buttons');
+          if (currentPage < allGamePages.length - 1) {
+              currentPage++;
+              updatePage();
+              nextPageSound.currentTime = 0; nextPageSound.play().catch(()=>{});
+          }
+      });
 
-            document.getElementById('close-game-modal-btn').addEventListener('click', closeGame);
+      // --- GAME CLICK LOGIC ---
+      document.querySelectorAll('.game-button').forEach(btn => {
+          btn.addEventListener('mouseenter', () => {
+              hoverSound.currentTime = 0; hoverSound.play().catch(()=>{});
+          });
+          btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              clickSound.currentTime = 0; clickSound.play().catch(()=>{});
+              
+              const url = btn.dataset.href;
+              if(url) {
+                  wasMusicPlayingBeforeGame = !bgMusic.paused;
+                  bgMusic.pause();
+                  gameIframe.src = url;
+                  iframeOverlay.style.display = 'flex';
+              }
+          });
+      });
 
-            // Modern Play Buttons
-            document.querySelectorAll('.game-play-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    selectSound.currentTime = 0; selectSound.play();
-                    openGame(btn.dataset.url);
-                });
-                btn.addEventListener('mouseenter', () => {
-                    hoverSound.currentTime = 0; hoverSound.play();
-                });
-            });
+      closeIframeButton.addEventListener('click', () => {
+          iframeOverlay.style.display = 'none';
+          gameIframe.src = 'about:blank';
+          if (wasMusicPlayingBeforeGame) bgMusic.play().catch(()=>{});
+      });
 
-            /* --- LEGACY (Wii) LOGIC --- */
-            let legacyPage = 0;
-            const legacyWrapper = document.getElementById('game-pages-wrapper');
-            const legacyDots = document.querySelectorAll('.page-dot');
+      // --- THEME LOGIC ---
+      function setTheme(themeName) {
+          document.body.className = ''; // Clear classes
+          if (themeName !== 'light') document.body.classList.add(`${themeName}-theme`);
+          if (themeName === 'dark') document.body.classList.add('dark-mode');
+          localStorage.setItem('selectedTheme', themeName);
+      }
 
-            // Legacy Button Clicks
-            document.querySelectorAll('.legacy-game-cell').forEach(cell => {
-                cell.addEventListener('mouseenter', () => {
-                    wiiHover.currentTime = 0; wiiHover.play();
-                    cell.style.zIndex = 10; // pop out
-                });
-                cell.addEventListener('mouseleave', () => {
-                    cell.style.zIndex = 1;
-                });
-                cell.addEventListener('click', () => {
-                    const url = cell.dataset.url;
-                    if(url) {
-                        wiiClick.currentTime = 0; wiiClick.play();
-                        // Add slight delay for animation
-                        setTimeout(() => openGame(url), 200);
-                    }
-                });
-            });
+      document.getElementById('theme-menu-toggle').addEventListener('click', () => {
+          const menu = document.getElementById('theme-menu');
+          menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+          themeClickSound.currentTime = 0; themeClickSound.play().catch(()=>{});
+      });
 
-            // Legacy Pagination
-            document.getElementById('prev-page-btn').addEventListener('click', () => {
-                wiiHover.currentTime = 0; wiiHover.play();
-                if(legacyPage > 0) { legacyPage--; updateLegacyPage(); }
-            });
-            document.getElementById('next-page-btn').addEventListener('click', () => {
-                wiiHover.currentTime = 0; wiiHover.play();
-                if(legacyPage < 1) { legacyPage++; updateLegacyPage(); } // Only 2 pages defined in HTML
-            });
+      document.querySelectorAll('.theme-option').forEach(opt => {
+          opt.addEventListener('click', () => {
+              setTheme(opt.dataset.theme);
+              document.getElementById('theme-menu').style.display = 'none';
+              clickSound.currentTime = 0; clickSound.play().catch(()=>{});
+          });
+      });
 
-            function updateLegacyPage() {
-                legacyWrapper.style.transform = `translateX(-${legacyPage * 100}%)`;
-                legacyDots.forEach((dot, idx) => {
-                    if(idx === legacyPage) dot.classList.add('active');
-                    else dot.classList.remove('active');
-                });
-            }
+      // --- SEARCH LOGIC ---
+      document.getElementById('search-button').addEventListener('click', () => {
+          const container = document.getElementById('search-container');
+          container.style.display = container.style.display === 'block' ? 'none' : 'block';
+          searchClickSound.currentTime = 0; searchClickSound.play().catch(()=>{});
+      });
 
-            // Wii Clock
-            function startWiiClock() {
-                const timeEl = document.getElementById('wii-time');
-                const dateEl = document.getElementById('wii-date');
-                
-                function update() {
-                    const now = new Date();
-                    timeEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-                    dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' });
-                }
-                update();
-                setInterval(update, 1000);
-            }
-        });
+      document.getElementById('search-submit-button').addEventListener('click', performSearch);
+      
+      function performSearch() {
+          const query = document.getElementById('search-input').value.toLowerCase();
+          const buttons = document.querySelectorAll('.game-button');
+          let found = false;
+
+          for(let btn of buttons) {
+              if(btn.title.toLowerCase().includes(query)) {
+                  // Navigate to page
+                  const page = btn.closest('.game-buttons');
+                  const pages = document.querySelectorAll('.game-buttons');
+                  currentPage = Array.from(pages).indexOf(page);
+                  updatePage();
+                  
+                  // Highlight
+                  btn.style.boxShadow = "0 0 30px red";
+                  setTimeout(() => btn.style.boxShadow = "", 1000);
+                  found = true;
+                  document.getElementById('search-container').style.display = 'none';
+                  break;
+              }
+          }
+          if(!found) alert("Game not found!");
+      }
+
+      // --- MUSIC LOGIC ---
+      function populateMusicMenu() {
+          const list = document.getElementById('music-list');
+          songs.forEach((song, idx) => {
+              const div = document.createElement('div');
+              div.className = 'music-option';
+              div.textContent = song.name;
+              div.onclick = () => {
+                  bgMusic.src = song.url;
+                  bgMusic.play();
+                  document.getElementById('music-menu').style.display = 'none';
+              };
+              list.appendChild(div);
+          });
+      }
+      
+      document.getElementById('music-menu-toggle').addEventListener('click', () => {
+          const menu = document.getElementById('music-menu');
+          menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+          themeClickSound.currentTime = 0; themeClickSound.play().catch(()=>{});
+      });
+
+      document.getElementById('music-option-stop').addEventListener('click', () => {
+          bgMusic.pause();
+          document.getElementById('music-menu').style.display = 'none';
+      });
+
+      // --- TIME LOGIC ---
+      function updateDateTime() {
+        const now = new Date();
+        document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+        document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', {weekday:'short', month:'numeric', day:'numeric'});
+      }
+      
+      // Close menus on outside click
+      document.addEventListener('click', (e) => {
+          if (!e.target.closest('#theme-menu') && !e.target.closest('#theme-menu-toggle')) {
+              document.getElementById('theme-menu').style.display = 'none';
+          }
+          if (!e.target.closest('#music-menu') && !e.target.closest('#music-menu-toggle')) {
+              document.getElementById('music-menu').style.display = 'none';
+          }
+      });
+
     </script>
-</body>
+  </body>
 </html>
