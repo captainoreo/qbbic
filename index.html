@@ -25,7 +25,7 @@
             font-family: Arial, sans-serif; /* Clean font like Wii */
             color: #ffffff;
             cursor: pointer;
-            transition: opacity 0.8s ease-out;
+            transition: opacity 0.5s ease-out;
             user-select: none;
         }
 
@@ -872,20 +872,24 @@
             const selectSound = document.getElementById('select-sound');
             
             function enterSite() {
-                if(safetyScreen.style.opacity === '0') return; // prevent double trigger
+                // Prevent double clicking
+                if(safetyScreen.getAttribute('data-clicked') === 'true') return;
+                safetyScreen.setAttribute('data-clicked', 'true');
                 
-                safetyScreen.classList.add('fade-out');
-                
-                // Play the standard select sound from your assets
+                // 1. Play Sound
                 if(selectSound) {
                     selectSound.currentTime = 0;
                     selectSound.play().catch(e => console.log('Audio autoplay blocked'));
                 }
                 
-                // Remove from DOM after fade to prevent clicks
+                // 2. Visual Feedback (Fade out slightly)
+                safetyScreen.classList.add('fade-out');
+
+                // 3. Redirect to games.html
+                // We use a small timeout to let the click sound start playing
                 setTimeout(() => {
-                    safetyScreen.remove();
-                }, 800);
+                    window.location.href = 'games.html';
+                }, 200);
             }
 
             // Listen for clicks on the safety screen
