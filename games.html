@@ -61,7 +61,10 @@
       }
       .wii-button:hover { transform: scale(1.05); box-shadow: 0 0 8px rgba(0, 161, 223, 0.4); cursor: url('Link-Select.png'), pointer; }
       .wii-button.disabled { pointer-events: none; opacity: 0.5; }
-      .wii-button img, .wii-button-svg { width: 70%; height: auto; transition: filter 0.3s ease, fill 0.3s ease; fill: #555; }
+      
+      /* SVG Styling */
+      .wii-button-svg { width: 60%; height: 60%; transition: filter 0.3s ease, fill 0.3s ease; fill: #555; }
+      
       .wii-date-time { font-size: 1rem; text-align: center; color: #555; user-select: none; }
       .wii-date-time .time { font-size: 1.5rem; }
 
@@ -177,23 +180,61 @@
       #toast-notification.show { transform: translateX(-50%) translateY(0); }
 
 
-      /* Dark Mode & Theme Overrides */
+      /* --- THEMES --- */
+      
+      /* Dark Mode */
       body.dark-mode { background-color: #121212; background-image: none; color: #e0e0e0; }
       body.dark-mode .wii-bottom-bar { background-color: #222; border-color: #444; }
       body.dark-mode .wii-button { background-color: #333; border-color: #555; }
+      body.dark-mode .wii-button-svg { fill: #ccc; }
       
-      /* Custom Theme CSS */
+      /* Retro Green (GameBoy) */
       body.retro-green-theme { background-color: #9bbc0f; background-image: none; color: #0f380f; font-family: 'Early GameBoy', sans-serif; }
       body.retro-green-theme .wii-bottom-bar { background-color: #8cac0f; border-color: #5b710f; }
       body.retro-green-theme .wii-button { background-color: #a7c12f; border-color: #5b710f; color: #0f380f; }
+      body.retro-green-theme .wii-button-svg { fill: #0f380f; }
 
+      /* Cyberpunk */
       body.cyberpunk-theme { background-color: #1a082a; background-image: none; color: #00ffff; font-family: 'monofonto', monospace; }
       body.cyberpunk-theme .wii-bottom-bar { background-color: #3f0a57; border-top: 2px solid #ff00c8; }
       body.cyberpunk-theme .wii-button { background-color: #5d157a; border-color: #00ffff; box-shadow: 0 0 5px #ff00c8; }
+      body.cyberpunk-theme .wii-button-svg { fill: #00ffff; }
 
+      /* Ocean */
       body.ocean-theme { background-color: #e0f7fa; background-image: none; color: #00796b; }
       body.ocean-theme .wii-bottom-bar { background-color: #80deea; border-color: #00bcd4; }
       body.ocean-theme .wii-button { background-color: #b2ebf2; border-color: #00acc1; }
+      body.ocean-theme .wii-button-svg { fill: #006064; }
+
+      /* NEW: NES Theme (8-Bit) */
+      body.nes-theme { background-color: #202020; background-image: none; color: #fff; font-family: 'Press Start 2P', 'Early GameBoy', cursive; }
+      body.nes-theme .wii-bottom-bar { background-color: #404040; border-top: 4px solid #e60012; }
+      body.nes-theme .wii-button { background-color: #d1d1d1; border: 2px solid #000; border-radius: 4px; /* Boxy buttons */ }
+      body.nes-theme .wii-button-svg { fill: #e60012; } /* Nintendo Red Icons */
+      body.nes-theme .wii-button:hover { background-color: #fff; box-shadow: 0 0 10px #e60012; transform: translateY(-2px); }
+
+      /* NEW: SNES Theme (16-Bit) */
+      body.snes-theme { background-color: #c0c0c0; background-image: none; color: #333; }
+      body.snes-theme .wii-bottom-bar { background-color: #e0e0e0; border-top: 4px solid #4f43ae; }
+      body.snes-theme .wii-button { background-color: #b0b0b0; border: 2px solid #4f43ae; border-radius: 50%; }
+      body.snes-theme .wii-button-svg { fill: #4f43ae; } /* Purple Icons */
+      body.snes-theme .page-dot.active { background-color: #4f43ae; border-color: #2e266f; }
+
+      /* NEW: GameCube Theme */
+      body.gamecube-theme { background-color: #6345a5; background-image: none; color: #fff; }
+      body.gamecube-theme .wii-bottom-bar { background-color: #dbe0e7; border-top: 4px solid #ff8b0f; }
+      body.gamecube-theme .wii-button { background-color: #dbe0e7; border: 2px solid #6345a5; }
+      body.gamecube-theme .wii-button-svg { fill: #6345a5; } /* Indigo Icons */
+      body.gamecube-theme .wii-date-time { color: #333; }
+      
+      /* NEW: Virtual Boy Theme */
+      body.virtualboy-theme { background-color: #000; background-image: none; color: #ff0000; font-family: 'Virtual Boy', monospace; }
+      body.virtualboy-theme .wii-bottom-bar { background-color: #110000; border-top: 2px solid #ff0000; }
+      body.virtualboy-theme .wii-button { background-color: #000; border: 1px solid #ff0000; box-shadow: 0 0 5px #ff0000; }
+      body.virtualboy-theme .wii-button-svg { fill: #ff0000; filter: drop-shadow(0 0 2px #ff0000); }
+      body.virtualboy-theme .wii-date-time { color: #ff0000; }
+      body.virtualboy-theme .game-button { border: 1px solid #ff0000; filter: grayscale(100%) sepia(100%) hue-rotate(-50deg) saturate(600%); } /* Red filter on images */
+
     </style>
   </head>
   <body>
@@ -307,10 +348,14 @@
     <div class="wii-bottom-bar">
       <div class="wii-bottom-bar-content">
         <div class="wii-button" id="prev-page-button" title="Previous Page">
-          <img src="https://qottlebup.nekoweb.org/nope.svg" alt="Previous Page" />
+            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
         </div>
         <a href="index.html" class="wii-button" id="wii-menu-button" title="Home">
-          <img src="https://qottlebup.nekoweb.org/Plus.svg" alt="Home" />
+            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
         </a>
         <div class="wii-button" id="search-button" title="Search Games">
             <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -327,10 +372,14 @@
             </svg>
         </div>
         <div class="wii-button" id="theme-menu-toggle" title="Select Theme">
-          <img src="https://qottlebup.nekoweb.org/mode.svg" alt="Select Theme" />
+            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+            </svg>
         </div>
         <div class="wii-button" id="next-page-button" title="Next Page">
-          <img src="https://qottlebup.nekoweb.org/move.svg" alt="Next Page" />
+            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+            </svg>
         </div>
       </div>
     </div>
@@ -345,12 +394,18 @@
     </div>
     
     <div id="theme-menu">
-        <div class="theme-heading">Modes</div>
-        <div class="theme-option" data-theme="light">Classic Mode</div>
+        <div class="theme-heading">Classic Modes</div>
+        <div class="theme-option" data-theme="light">Wii Mode</div>
         <div class="theme-option" data-theme="dark">Dark Mode</div>
         <hr class="theme-divider">
-        <div class="theme-heading">Custom Themes</div>
-        <div class="theme-option" data-theme="retro-green">Retro Green</div>
+        <div class="theme-heading">Retro Consoles</div>
+        <div class="theme-option" data-theme="nes">NES (8-Bit)</div>
+        <div class="theme-option" data-theme="snes">SNES (16-Bit)</div>
+        <div class="theme-option" data-theme="gamecube">GameCube</div>
+        <div class="theme-option" data-theme="virtualboy">Virtual Boy</div>
+        <div class="theme-option" data-theme="retro-green">GameBoy</div>
+        <hr class="theme-divider">
+        <div class="theme-heading">Styles</div>
         <div class="theme-option" data-theme="cyberpunk">Cyberpunk</div>
         <div class="theme-option" data-theme="ocean">Ocean Blue</div>
     </div>
@@ -427,7 +482,7 @@
         toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2500);
       }
 
-      // --- MUSIC DATA (UPDATED TO MATCH GAMES(3).HTML) ---
+      // --- MUSIC DATA ---
       const songs = [
         { name: 'Wii U Mii Maker', url: '/assets/Wii U OST - Mii Maker (Mii Editor).flac' },
         { name: 'Droopy likes your face', url: '/assets/Droopy likes your face.flac' },
@@ -556,7 +611,9 @@
       });
 
       // --- THEME LOGIC ---
-      const customThemes = ['dark', 'retro-green', 'cyberpunk', 'ocean'];
+      // Updated to include new retro themes
+      const customThemes = ['dark', 'retro-green', 'cyberpunk', 'ocean', 'nes', 'snes', 'gamecube', 'virtualboy'];
+      
       function setTheme(themeName) {
           document.body.className = ''; 
           if (customThemes.includes(themeName)) {
@@ -609,10 +666,10 @@
           if(!found) alert("Game not found!");
       }
 
-      // --- MUSIC LOGIC (PERSISTENCE + NEW SONGS) ---
+      // --- MUSIC LOGIC ---
       function playBGM(url) {
           bgMusic.src = url;
-          bgMusic.volume = 0.4; // Matches games(3).html volume
+          bgMusic.volume = 0.4; 
           bgMusic.play().catch(e => console.log("Autoplay blocked until interaction"));
           localStorage.setItem('qbbic-bgm', url);
       }
