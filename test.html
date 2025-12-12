@@ -132,7 +132,64 @@
       body.dark-mode .wii-bottom-bar { background-color: #222; border-color: #444; }
       body.dark-mode .wii-button { background-color: #333; border-color: #555; }
       
-      /* ... (Other themes like Windows 7, Halloween, etc. would go here as in Classic.html) ... */
+      /* --- START OF CUSTOM THEME CSS PLACEHOLDERS --- */
+      /* These classes must be defined in your main CSS file for the themes to work visually */
+      
+      /* Example: Retro Green Theme (Game Boy style) */
+      body.retro-green-theme {
+        background-color: #9bbc0f;
+        background-image: none;
+        color: #0f380f;
+        font-family: 'Early GameBoy', sans-serif;
+      }
+      body.retro-green-theme .wii-bottom-bar {
+        background-color: #8cac0f;
+        border-color: #5b710f;
+      }
+      body.retro-green-theme .wii-button {
+        background-color: #a7c12f;
+        border-color: #5b710f;
+        color: #0f380f;
+      }
+
+      /* Example: Cyberpunk Theme (Dark, Neon Blue/Pink) */
+      body.cyberpunk-theme {
+        background-color: #1a082a;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="%231a082a"/><path d="M 0 5 L 10 5" stroke="%23ff00c8" stroke-width="0.5"/><path d="M 5 0 L 5 10" stroke="%2300ffff" stroke-width="0.5"/></svg>');
+        color: #00ffff;
+        font-family: 'monofonto', monospace;
+      }
+      body.cyberpunk-theme .wii-bottom-bar {
+        background-color: #3f0a57;
+        border-top: 2px solid #ff00c8;
+        box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.5);
+      }
+      body.cyberpunk-theme .wii-button {
+        background-color: #5d157a;
+        border-color: #00ffff;
+        box-shadow: 0 0 5px #ff00c8;
+      }
+      body.cyberpunk-theme .page-dot.active {
+        background-color: #ff00c8;
+        border-color: #00ffff;
+      }
+
+      /* Example: Ocean Theme (Light Blue and White) */
+      body.ocean-theme {
+        background-color: #e0f7fa;
+        background-image: none;
+        color: #00796b;
+      }
+      body.ocean-theme .wii-bottom-bar {
+        background-color: #80deea;
+        border-color: #00bcd4;
+      }
+      body.ocean-theme .wii-button {
+        background-color: #b2ebf2;
+        border-color: #00acc1;
+      }
+
+      /* --- END OF CUSTOM THEME CSS PLACEHOLDERS --- */
     </style>
   </head>
   <body>
@@ -285,17 +342,16 @@
     
     <div id="theme-menu">
         <div class="theme-heading">Modes</div>
-        <div class="theme-option" data-theme="light">Light Mode</div>
+        <div class="theme-option" data-theme="light">Classic Mode</div>
         <div class="theme-option" data-theme="dark">Dark Mode</div>
         <hr class="theme-divider">
-        <div class="theme-heading">UI Themes</div>
-        <div class="theme-option" data-theme="wiiu">Wii U</div>
-        <div class="theme-option" data-theme="n3ds">Nintendo 3DS</div>
-        <div class="theme-option" data-theme="psvita">PS Vita</div>
-        <div class="theme-option" data-theme="nes">NES</div>
-        <div class="theme-option" data-theme="gameboy">Game Boy</div>
-        <div class="theme-option" data-theme="virtualboy">Virtual Boy</div>
-        <div class="theme-option" data-theme="windows7">Windows 7</div>
+        <div class="theme-heading">Custom Themes</div>
+        <div class="theme-option" data-theme="retro-green">Retro Green</div>
+        <div class="theme-option" data-theme="cyberpunk">Cyberpunk</div>
+        <div class="theme-option" data-theme="ocean">Ocean Blue</div>
+        <div class="theme-option" data-theme="lava">Lava Red</div>
+        <div class="theme-option" data-theme="pastel">Pastel Dream</div>
+        <div class="theme-option" data-theme="high-contrast">High Contrast</div>
     </div>
 
     <div id="iframe-overlay">
@@ -416,11 +472,21 @@
           if (wasMusicPlayingBeforeGame) bgMusic.play().catch(()=>{});
       });
 
-      // --- THEME LOGIC ---
+      // --- THEME LOGIC (MODIFIED) ---
+      const customThemes = ['dark', 'retro-green', 'cyberpunk', 'ocean', 'lava', 'pastel', 'high-contrast'];
+      
       function setTheme(themeName) {
-          document.body.className = ''; // Clear classes
-          if (themeName !== 'light') document.body.classList.add(`${themeName}-theme`);
-          if (themeName === 'dark') document.body.classList.add('dark-mode');
+          document.body.className = ''; // Clear all theme-related classes
+          // Check if the theme is one of the defined custom themes or 'light'
+          if (customThemes.includes(themeName)) {
+              if (themeName === 'dark') {
+                  document.body.classList.add('dark-mode');
+              } else {
+                  // Apply class in the format 'theme-name-theme'
+                  document.body.classList.add(`${themeName}-theme`);
+              }
+          }
+          // If themeName is 'light', no class is added, maintaining the default styles.
           localStorage.setItem('selectedTheme', themeName);
       }
 
