@@ -1,841 +1,650 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qbbic</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Qbbic - Wii Mode</title>
     <link rel="icon" href="/assets/fanny.gif" type="image/gif" />
-    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Architects+Daughter&family=Press+Start+2P&family=Anton&display=swap" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://qottlebup.nekoweb.org/banner.css" />
+    <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
     <style>
-        /* --- 1. GLOBAL VARIABLES & SCROLLBARS --- */
-        :root {
-            /* Frutiger Aero (Default) Variables */
-            --color-primary: #00a1ff; 
-            --color-primary-light: #40c4ff;
-            --color-primary-dark: #0077c0;
-            --color-text-base: #003366;
-            --color-text-white: #ffffff;
-            --color-text-dark: #002244; 
-            --bg-page: transparent; 
-            --bg-glass-header: rgba(255, 255, 255, 0.7); 
-            --bg-glass-card: rgba(255, 255, 255, 0.6);
-            --bg-glass-card-hover: rgba(255, 255, 255, 0.85);
-            --bg-glass-modal: rgba(240, 240, 255, 0.9);
-            --bg-glass-modal-header: rgba(255, 255, 255, 0.7);
-            --bg-glass-controls: rgba(255, 255, 255, 0.5);
-            --bg-glass-controls-hover: rgba(255, 255, 255, 0.8); 
-            --border-glass: rgba(0, 161, 255, 0.4);
-            --border-glass-light: rgba(0, 161, 255, 0.2);
-            --blur-strength: 10px;
-            --card-radius: 1.5rem;
-            --font-main: Arial, 'Helvetica Neue', Helvetica, sans-serif;
-        }
+      /* --- CORE STYLES FROM CLASSIC.HTML --- */
+      body {
+        margin: 0;
+        font-family: 'PopHappiness', 'Arial', 'MarioKartDS', sans-serif;
+        background-color: #e6e8e7;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="%23e6e8e7"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
+        color: black;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        align-items: center;
+        padding: 4rem 1rem;
+        box-sizing: border-box;
+        cursor: url('cursor.png'), auto;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 12px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
-        ::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 6px; border: 2px solid rgba(255,255,255,0.5); }
-        ::-webkit-scrollbar-thumb:hover { background: var(--color-primary-dark); }
+      /* Fonts */
+      @font-face { font-family: 'PopHappiness'; src: url('PopHappiness.OTF') format('opentype'); }
+      @font-face { font-family: 'MarioKartDS'; src: url('MarioKartDS.ttf') format('truetype'); }
+      @font-face { font-family: 'Early GameBoy'; src: url('Early GameBoy.ttf') format('truetype'); }
+      @font-face { font-family: 'Virtual Boy'; src: url('Virtual Boy.ttf') format('truetype'); }
+      @font-face { font-family: 'monofonto'; src: url('monofonto.otf') format('opentype'); }
 
-        /* --- 2. ANIMATIONS --- */
-        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); opacity: 0; } 10% { opacity: 0.7; } 90% { opacity: 0.7; } 100% { transform: translateY(-20vh) scale(1.2); opacity: 0; } }
-        @keyframes scrollGrid { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }
-        @keyframes scrollMinecraft { 0% { background-position: 0 0, 30px 30px; } 100% { background-position: 60px 60px, 90px 90px; } }
-        @keyframes matrixRain { 0% { background-position: 0% 0%; } 100% { background-position: 0% 100%; } }
-        
-        /* New Animation: Subtle Breathe (Blank Slate) */
-        @keyframes subtleBreathe {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+      /* Top Bar */
+      .wii-top-bar {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100px;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 100%);
+        pointer-events: none; z-index: 100;
+      }
 
-        /* New Animation: Aero Sway (Frutiger) */
-        @keyframes aeroSway {
-            0% { background-position: center top; transform: scale(1); }
-            50% { background-position: center bottom; transform: scale(1.02); }
-            100% { background-position: center top; transform: scale(1); }
-        }
+      /* Bottom Bar */
+      .wii-bottom-bar {
+        position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
+        background-color: #c9c5c2; border-top: 2px solid #a4a2a0;
+        box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+        display: flex; justify-content: center; align-items: center;
+        gap: 20px; padding: 0 20px; box-sizing: border-box; z-index: 100;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+      .wii-bottom-bar-content { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 900px; }
 
-        /* New Animation: CRT Scan (Classic) */
-        @keyframes crtScan {
-            0% { transform: translateY(-100%); opacity: 0.1; }
-            50% { opacity: 0.2; }
-            100% { transform: translateY(100%); opacity: 0.1; }
-        }
+      /* Round Bottom Buttons */
+      .wii-button {
+        background-color: #d8d4d1; border: 2px solid #a4a2a0; border-radius: 50%;
+        width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: all 0.2s ease;
+      }
+      .wii-button:hover { transform: scale(1.05); box-shadow: 0 0 8px rgba(0, 161, 223, 0.4); cursor: url('Link-Select.png'), pointer; }
+      .wii-button.disabled { pointer-events: none; opacity: 0.5; }
+      .wii-button img, .wii-button-svg { width: 70%; height: auto; transition: filter 0.3s ease, fill 0.3s ease; fill: #555; }
+      .wii-date-time { font-size: 1rem; text-align: center; color: #555; user-select: none; }
+      .wii-date-time .time { font-size: 1.5rem; }
 
-        /* New Animation: Phantom Twitch (P5) */
-        @keyframes phantomTwitch {
-            0% { transform: skew(-5deg) translate(0, 0); }
-            25% { transform: skew(-5deg) translate(-2px, 2px); }
-            50% { transform: skew(-5deg) translate(2px, -1px); }
-            75% { transform: skew(-5deg) translate(-1px, -2px); }
-            100% { transform: skew(-5deg) translate(0, 0); }
-        }
-        /* New Animation: Phantom Scroll (P5) */
-        @keyframes phantomScroll { from { background-position: 0 0; } to { background-position: 100px 100px; } }
+      /* Main Grid Container */
+      #game-pages-container {
+        position: fixed; z-index: 10; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        width: 100%; max-width: 900px; padding-bottom: 120px; box-sizing: border-box; overflow: hidden;
+      }
+      #game-pages-wrapper { display: flex; transition: transform 0.4s ease-in-out; width: 100%; }
+      
+      .game-buttons {
+        display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr);
+        gap: 20px; width: 100%; height: 500px; justify-items: center; padding: 20px;
+        box-sizing: border-box; flex-shrink: 0;
+      }
 
-        /* New Animation: Dark Hour Pulse (P3) */
-        @keyframes moonPulse {
-            0% { box-shadow: 0 0 10px #25d6e8; border-color: rgba(37, 214, 232, 0.5); }
-            50% { box-shadow: 0 0 25px #25d6e8, 0 0 50px rgba(18, 54, 138, 0.5); border-color: #ffffff; }
-            100% { box-shadow: 0 0 10px #25d6e8; border-color: rgba(37, 214, 232, 0.5); }
-        }
+      /* Game Cards (Buttons) */
+      .game-button {
+        width: 160px; height: 80px; background-color: #ffffff;
+        border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        text-decoration: none; color: black; font-weight: bold; text-align: center;
+        position: relative; overflow: hidden; cursor: url('cursor.png'), auto;
+        background-size: cover; background-position: center; background-repeat: no-repeat;
+        transition: transform 0.1s, box-shadow 0.1s;
+      }
+      .game-button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 161, 223, 0.7); z-index: 20; cursor: url('Link-Select.png'), pointer; }
+      .game-button-text {
+        position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.8);
+        font-size: 0.8rem; padding: 2px 0; display: none; /* Show on hover usually, or specific themes */
+      }
+      .game-button:hover .game-button-text { display: block; }
 
-        /* --- 3. THEME DEFINITIONS --- */
+      /* Page Dots */
+      .page-indicator { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
+      .page-dot { width: 10px; height: 10px; background-color: #d8d4d1; border: 2px solid #a4a2a0; border-radius: 50%; transition: all 0.3s; }
+      .page-dot.active { background-color: #0087c0; border-color: #005a80; }
 
-        /* 0. BLANK SLATE */
-        body[data-theme="blank-slate"] {
-            --color-primary: #f0f0f0; 
-            --color-primary-light: #ffffff; 
-            --color-primary-dark: #cccccc;
-            --color-text-base: #333333;
-            --color-text-white: #000000; 
-            --color-text-dark: #000000;
-            --bg-page: #ffffff;
-            --bg-glass-header: #f8f8f8;
-            --bg-glass-card: #ffffff;
-            --bg-glass-card-hover: #f0f0f0;
-            --bg-glass-modal: #ffffff;
-            --bg-glass-modal-header: #f8f8f8;
-            --bg-glass-controls: #eeeeee;
-            --bg-glass-controls-hover: #dddddd;
-            --border-glass: #cccccc;
-            --border-glass-light: #eeeeee;
-            --blur-strength: 0px;
-            --card-radius: 4px;
-            --font-main: system-ui, -apple-system, sans-serif;
-        }
+      /* Search & Menus */
+      #search-container, #theme-menu, #music-menu {
+        position: fixed; background: #fff; border: 2px solid #a4a2a0; border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 200; display: none;
+      }
+      #search-container { bottom: 110px; left: 50%; transform: translateX(-50%); padding: 10px; }
+      #theme-menu { bottom: 80px; right: 20px; width: 340px; padding: 10px; column-count: 2; }
+      #music-menu { bottom: 80px; left: 20px; width: 280px; padding: 10px; max-height: 400px; overflow-y: auto; }
+      
+      .theme-option, .music-option { padding: 5px; cursor: pointer; border-radius: 4px; }
+      .theme-option:hover, .music-option:hover { background-color: #e0e0e0; }
+      .theme-heading, .music-heading { font-weight: bold; color: #888; margin: 5px 0; font-size: 0.8rem; text-transform: uppercase; }
+      .theme-divider, .music-divider { border: 0; height: 1px; background: #ccc; margin: 5px 0; }
 
-        /* 1. MINECRAFT */
-        body[data-theme="minecraft"] {
-            --color-primary: #795548; /* Dirt */
-            --color-primary-light: #4CAF50; /* Grass */
-            --color-primary-dark: #3E2723;
-            --color-text-base: #ffffff;
-            --color-text-white: #ffffff;
-            --color-text-dark: #ddd;
-            --bg-page: #795548;
-            --bg-glass-header: rgba(62, 39, 35, 0.9);
-            --bg-glass-card: rgba(100, 100, 100, 0.85); /* Stone */
-            --bg-glass-card-hover: rgba(120, 120, 120, 0.95);
-            --bg-glass-modal: rgba(0, 0, 0, 0.8);
-            --bg-glass-modal-header: #5d4037;
-            --bg-glass-controls: #555;
-            --bg-glass-controls-hover: #777;
-            --border-glass: #000;
-            --border-glass-light: #222;
-            --blur-strength: 0px;
-            --card-radius: 0px;
-            --font-main: 'VT323', monospace;
-        }
+      /* --- NEW IFRAME MODAL STYLES (MATCHING GAMES(3).HTML) --- */
+      #game-modal {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.95);
+        display: none; justify-content: center; align-items: center; z-index: 1000;
+        opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+      }
+      #game-modal.active { opacity: 1; pointer-events: auto; }
 
-        /* 2. BLUEPRINT */
-        body[data-theme="blueprint"] {
-            --color-primary: #0044cc; 
-            --color-primary-light: #ffffff; 
-            --color-primary-dark: #002288;
-            --color-text-base: #ffffff;
-            --color-text-white: #ffffff;
-            --color-text-dark: #ffffff;
-            --bg-page: #0044cc;
-            --bg-glass-header: rgba(0, 68, 204, 0.9);
-            --bg-glass-card: transparent;
-            --bg-glass-card-hover: rgba(255, 255, 255, 0.1);
-            --bg-glass-modal: #0044cc;
-            --bg-glass-modal-header: #003399;
-            --bg-glass-controls: rgba(0, 68, 204, 0.5);
-            --bg-glass-controls-hover: rgba(255,255,255,0.2);
-            --border-glass: #ffffff;
-            --border-glass-light: rgba(255, 255, 255, 0.5);
-            --blur-strength: 0px;
-            --card-radius: 0px;
-            --font-main: 'Architects Daughter', cursive;
-        }
+      #game-modal-container {
+        width: 100%; height: 100%; max-width: 1280px; max-height: 95vh;
+        display: flex; flex-direction: column;
+        background-color: #111; border-radius: 16px;
+        overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
 
-        /* 3. MATRIX */
-        body[data-theme="matrix"] {
-            --color-primary: #000000;
-            --color-primary-light: #00FF41; /* Matrix Green */
-            --color-primary-dark: #003B00;
-            --color-text-base: #00FF41;
-            --color-text-white: #00FF41;
-            --color-text-dark: #00FF41;
-            --bg-page: #000000;
-            --bg-glass-header: rgba(0, 20, 0, 0.9);
-            --bg-glass-card: rgba(0, 10, 0, 0.8);
-            --bg-glass-card-hover: rgba(0, 50, 0, 0.9);
-            --bg-glass-modal: #000000;
-            --bg-glass-modal-header: #003B00;
-            --bg-glass-controls: #000;
-            --bg-glass-controls-hover: #003B00;
-            --border-glass: #008F11;
-            --border-glass-light: #00FF41;
-            --blur-strength: 2px;
-            --card-radius: 0px;
-            --font-main: 'Courier New', monospace;
-        }
+      /* Modal Header Bar */
+      #game-modal-header {
+        flex-shrink: 0; padding: 12px; display: flex; justify-content: space-between; align-items: center;
+        background-color: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
 
-        /* 4. WINDOWS 95 */
-        body[data-theme="classic"] {
-            --color-primary: #c0c0c0;
-            --color-primary-light: #ffffff;
-            --color-primary-dark: #808080;
-            --color-text-base: #000000;
-            --color-text-white: #000000; 
-            --color-text-dark: #000000;
-            --bg-page: #008080;
-            --bg-glass-header: #c0c0c0;
-            --bg-glass-card: #c0c0c0;
-            --bg-glass-card-hover: #c0c0c0;
-            --bg-glass-modal: #c0c0c0;
-            --bg-glass-modal-header: #000080;
-            --bg-glass-controls: #c0c0c0;
-            --bg-glass-controls-hover: #c0c0c0;
-            --border-glass: #ffffff;
-            --border-glass-light: #808080;
-            --blur-strength: 0px;
-            --card-radius: 0px;
-            --font-main: Tahoma, sans-serif;
-        }
+      #game-modal-title {
+        font-size: 1.25rem; font-weight: bold; color: #40c4ff;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        font-family: 'Arial', sans-serif; /* Keep title readable */
+      }
 
-        /* 5. PHANTOM (Persona 5) */
-        body[data-theme="phantom"] {
-            --color-primary: #d80018; /* Iconic Red */
-            --color-primary-light: #ffffff;
-            --color-primary-dark: #000000;
-            --color-text-base: #000000;
-            --color-text-white: #ffffff;
-            --color-text-dark: #000000;
-            --bg-page: #d80018;
-            --bg-glass-header: #000000;
-            --bg-glass-card: #ffffff;
-            --bg-glass-card-hover: #000000;
-            --bg-glass-modal: #d80018;
-            --bg-glass-modal-header: #000000;
-            --bg-glass-controls: #000000;
-            --bg-glass-controls-hover: #333333;
-            --border-glass: #000000;
-            --border-glass-light: #000000;
-            --blur-strength: 0px;
-            --card-radius: 0px;
-            --font-main: 'Anton', 'Impact', sans-serif;
-        }
+      #game-modal-controls { display: flex; gap: 8px; align-items: center; }
 
-        /* 6. DARK HOUR (Persona 3) */
-        body[data-theme="dark-hour"] {
-            --color-primary: #12368a; /* Deep Blue */
-            --color-primary-light: #25d6e8; /* Moonlight Cyan */
-            --color-primary-dark: #071638;
-            --color-text-base: #ffffff;
-            --color-text-white: #ffffff;
-            --color-text-dark: #12368a;
-            --bg-page: #071638;
-            --bg-glass-header: rgba(18, 54, 138, 0.95);
-            --bg-glass-card: rgba(255, 255, 255, 0.9);
-            --bg-glass-card-hover: #ffffff;
-            --bg-glass-modal: rgba(7, 22, 56, 0.95);
-            --bg-glass-modal-header: #12368a;
-            --bg-glass-controls: rgba(37, 214, 232, 0.2);
-            --bg-glass-controls-hover: rgba(37, 214, 232, 0.4);
-            --border-glass: #25d6e8;
-            --border-glass-light: rgba(37, 214, 232, 0.5);
-            --blur-strength: 8px;
-            --card-radius: 40px 0 40px 0;
-            --font-main: 'Arial', sans-serif;
-        }
+      /* Control Buttons */
+      .control-btn {
+        background-color: rgba(255, 255, 255, 0.1); color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px; width: 36px; height: 36px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: all 0.2s;
+      }
+      .control-btn:hover { background-color: rgba(255, 255, 255, 0.2); transform: scale(1.05); }
+      .control-btn svg { width: 20px; height: 20px; }
+      
+      .control-btn.close-btn { background-color: #dc2626; border-color: #dc2626; color: white; }
+      .control-btn.close-btn:hover { background-color: #ef4444; }
 
-        /* --- BODY BASE --- */
-        body {
-            font-family: var(--font-main);
-            background-color: var(--color-primary); 
-            color: var(--color-text-base);
-            min-height: 100vh;
-            cursor: url('/assets/Normal Select.cur'), auto;
-            transition: color 0.3s, background-color 0.3s;
-        }
-        a:hover, button:hover, .game-play-btn:hover, .control-btn:hover { cursor: url('/assets/Link Select.cur'), pointer; }
-
-        /* --- BACKGROUND LOGIC --- */
-        #css-3d-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; transition: background 0.5s ease; }
-        
-        /* Backgrounds */
-        
-        /* Blank Slate - Animated Gradient */
-        body[data-theme="blank-slate"] #css-3d-background { 
-            background: linear-gradient(-45deg, #ffffff, #f0f0f0, #e6e6e6, #ffffff);
-            background-size: 400% 400%;
-            animation: subtleBreathe 15s ease infinite;
-        }
-
-        /* Frutiger Aero - Animated Sway */
-        body[data-theme="frutiger-aero"] #css-3d-background { 
-            background-image: url('/assets/aqua.jpg'); 
-            background-size: cover; 
-            background-position: center; 
-            animation: aeroSway 20s ease-in-out infinite alternate;
-        }
-
-        /* Minecraft - Animated Scroll */
-        body[data-theme="minecraft"] #css-3d-background { 
-            background-color: #795548; 
-            background-image: linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037), linear-gradient(45deg, #5D4037 25%, transparent 25%, transparent 75%, #5D4037 75%, #5D4037); 
-            background-size: 60px 60px; 
-            background-position: 0 0, 30px 30px; 
-            animation: scrollMinecraft 3s linear infinite;
-        }
-
-        /* Blueprint - Animated Grid Scroll */
-        body[data-theme="blueprint"] #css-3d-background { 
-            background-color: #0044cc; 
-            background-image: linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px); 
-            background-size: 40px 40px; 
-            animation: scrollGrid 2s linear infinite;
-        }
-
-        /* Matrix - Rain Scroll */
-        body[data-theme="matrix"] #css-3d-background { background-color: black; background-image: linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px); background-size: 100% 20px; animation: matrixRain 2s linear infinite; }
-        
-        /* Classic / Win95 - CRT Scanline Effect */
-        body[data-theme="classic"] #css-3d-background { background-color: #008080; }
-        body[data-theme="classic"] #css-3d-background::after {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 10;
-        }
-        body[data-theme="classic"] #css-3d-background::before {
-             content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            animation: crtScan 4s linear infinite;
-            pointer-events: none;
-            z-index: 11;
-        }
-        
-        /* Phantom Background (Animated Angular) */
-        body[data-theme="phantom"] #css-3d-background { 
-            background-color: #d80018; 
-            background-image: linear-gradient(115deg, transparent 75%, rgba(0,0,0,0.8) 75%), linear-gradient(245deg, transparent 75%, rgba(0,0,0,0.8) 75%);
-            background-size: 50px 80px;
-            animation: phantomScroll 5s linear infinite;
-        }
-
-        /* Dark Hour Background (Gradient + Bubbles) */
-        body[data-theme="dark-hour"] #css-3d-background {
-            background: radial-gradient(circle at 50% 20%, #25d6e8 0%, rgba(37, 214, 232, 0.1) 10%, #12368a 30%, #071638 100%);
-        }
-
-        /* Bubble / Particle Logic */
-        /* Only show bubbles for Frutiger and Dark Hour */
-        body:not([data-theme="frutiger-aero"]):not([data-theme="dark-hour"]) .bubble-container { display: none; }
-        
-        .bubble {
-            position: absolute; bottom: -100px; background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.1));
-            box-shadow: 0 0 10px rgba(255,255,255,0.3), inset 0 0 10px rgba(255,255,255,0.3); border-radius: 50%;
-            pointer-events: none; z-index: 0; animation: floatUp var(--speed) linear infinite;
-            animation-delay: var(--delay); width: var(--size); height: var(--size); left: var(--pos); opacity: 0; 
-        }
-
-        /* Dark Hour Specific Bubbles (Green/Cyan Motes) */
-        body[data-theme="dark-hour"] .bubble {
-            background: radial-gradient(circle at 30% 30%, #25d6e8, transparent);
-            box-shadow: 0 0 15px #25d6e8;
-            opacity: 0.4;
-        }
-
-        /* --- UI COMPONENTS --- */
-        .glass-header { background-color: var(--bg-glass-header); backdrop-filter: blur(var(--blur-strength)); border-bottom: 1px solid var(--border-glass); box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3); }
-        .glass-footer { background-color: var(--bg-glass-header); backdrop-filter: blur(var(--blur-strength)); border-top: 1px solid var(--border-glass); }
-        .glass-main-panel { background-color: var(--bg-glass-card); backdrop-filter: blur(var(--blur-strength)); border: 1px solid var(--border-glass-light); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); border-radius: var(--card-radius); padding: 1rem; }
-
-        /* Card Styles */
-        .game-card {
-            background-color: var(--bg-glass-card);
-            backdrop-filter: blur(var(--blur-strength));
-            border: 1px solid var(--border-glass-light);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: all 0.2s ease; 
-            position: relative;
-            border-radius: var(--card-radius);
-            overflow: hidden;
-        }
-        .game-card:hover { transform: scale(1.03); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); }
-
-        /* Theme Overrides */
-        body[data-theme="blank-slate"] .game-card { border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        body[data-theme="blank-slate"] .game-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        body[data-theme="blank-slate"] h1 { color: #333; text-shadow: none; }
-        body[data-theme="blank-slate"] .bg-cyan-500 { background: #f0f0f0 !important; border: 1px solid #ccc; color: #333 !important; box-shadow: none; }
-        body[data-theme="blank-slate"] .bg-cyan-500:hover { background: #e0e0e0 !important; }
-
-        body[data-theme="frutiger-aero"] .game-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 112px; z-index: 1;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 100%);
-            pointer-events: none; border-radius: 1.5rem 1.5rem 0 0;
-        }
-        body[data-theme="frutiger-aero"] .game-card:hover::after {
-             background: rgba(0, 161, 255, 0.2); transform: rotateX(85deg) skewX(-10deg) scaleY(0.1) translateZ(15px);
-             content: ''; position: absolute; bottom: -15px; left: 10%; width: 80%; height: 50px; opacity: 0.8; transition: all 0.3s ease;
-        }
-
-        body[data-theme="minecraft"] .game-card { border: 4px solid #000; box-shadow: 4px 4px 0 #000; }
-        body[data-theme="minecraft"] .game-card:hover { transform: translateY(-2px); box-shadow: 6px 6px 0 #000; }
-        body[data-theme="minecraft"] .bg-cyan-500 { background: #757575 !important; border: 2px solid #fff; border-bottom-color: #555; border-right-color: #555; color: #fff !important; border-radius: 0; }
-        
-        body[data-theme="blueprint"] .game-card { border: 2px dashed #fff; }
-        body[data-theme="blueprint"] .game-card img { filter: grayscale(100%) opacity(0.8); }
-        body[data-theme="blueprint"] .game-card:hover { transform: rotate(1deg); background: rgba(0, 68, 204, 0.5); }
-
-        body[data-theme="matrix"] .game-card { border: 1px solid #00FF41; box-shadow: 0 0 5px #00FF41; }
-        body[data-theme="matrix"] .game-card:hover { background: #001100; box-shadow: 0 0 15px #00FF41; }
-        
-        body[data-theme="classic"] .game-card, body[data-theme="classic"] .glass-header, body[data-theme="classic"] .glass-footer, body[data-theme="classic"] .glass-main-panel, body[data-theme="classic"] .control-btn, body[data-theme="classic"] #game-search-input, body[data-theme="classic"] select, body[data-theme="classic"] .bg-cyan-500 {
-            border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080;
-            box-shadow: 1px 1px 0 #000; transform: none !important;
-        }
-        body[data-theme="classic"] .glass-modal-header { background: linear-gradient(to right, #000080, #1084d0); color: white; padding: 4px 8px; }
-        body[data-theme="classic"] .glass-modal-container { border: 2px solid #fff; border-right-color: #808080; border-bottom-color: #808080; backdrop-filter: none; }
-        body[data-theme="classic"] .glass-modal-header { border-bottom: none; }
-        body[data-theme="classic"] #game-modal-title { color: white !important; font-size: 14px; }
-        body[data-theme="classic"] h1 { color: #000; background: #c0c0c0; border: 2px solid #fff; border-right-color: #808080; border-bottom-color: #808080; padding: 5px; text-shadow: none; }
-        body[data-theme="classic"] nav a.text-white { color: #000 !important; }
-        body[data-theme="classic"] .bg-cyan-500 { background: #c0c0c0 !important; color: black !important; box-shadow: none; }
-        body[data-theme="classic"] .bg-cyan-500:active { border-color: #808080 #fff #fff #808080; }
-
-        /* PHANTOM UI OVERRIDES (ANIMATED) */
-        body[data-theme="phantom"] .game-card {
-            transform: skew(-5deg); border: 3px solid black; box-shadow: 5px 5px 0px #000;
-            transition: none; /* Disable default transition for keyframe override */
-        }
-        body[data-theme="phantom"] .game-card:hover {
-            background-color: #000; box-shadow: 10px 10px 0px #fff;
-            animation: phantomTwitch 0.2s linear infinite;
-        }
-        body[data-theme="phantom"] .game-card h3 { color: black; font-style: italic; text-transform: uppercase; font-size: 1.3rem; letter-spacing: -1px; }
-        body[data-theme="phantom"] .game-card:hover h3 { color: white; }
-        body[data-theme="phantom"] .game-card p { color: #333; font-weight: bold; background: white; display: inline-block; transform: skew(10deg); }
-        body[data-theme="phantom"] .game-card:hover p { color: #d80018; }
-        body[data-theme="phantom"] .glass-header { border-bottom: 4px solid black; background: #fff; transform: skewY(-1deg); margin-bottom: 20px; }
-        body[data-theme="phantom"] nav a { color: black !important; font-weight: 900; text-transform: uppercase; background: white; padding: 2px 5px; transform: skew(-10deg); }
-        body[data-theme="phantom"] nav a:hover { color: white !important; background: black; box-shadow: 3px 3px 0 #d80018; }
-        body[data-theme="phantom"] .bg-cyan-500 { background: black !important; color: white !important; border: none; transform: skew(-10deg); text-transform: uppercase; font-size: 1.1rem; }
-        body[data-theme="phantom"] .bg-cyan-500:hover { background: #d80018 !important; color: black !important; transform: skew(-10deg) scale(1.1); }
-        body[data-theme="phantom"] .custom-select, body[data-theme="phantom"] #game-search-input { border: 2px solid black; background: white; color: black; transform: skew(-5deg); border-radius: 0; }
-
-        /* DARK HOUR UI OVERRIDES (ANIMATED) */
-        body[data-theme="dark-hour"] .game-card {
-            border: 1px solid #25d6e8;
-            box-shadow: 0 0 10px rgba(37, 214, 232, 0.3);
-            background: rgba(255, 255, 255, 0.85);
-        }
-        body[data-theme="dark-hour"] .game-card:hover {
-            animation: moonPulse 2s infinite ease-in-out;
-            background: #ffffff;
-        }
-        body[data-theme="dark-hour"] .glass-header { border-bottom: 1px solid #25d6e8; box-shadow: 0 0 15px rgba(37, 214, 232, 0.2); }
-        body[data-theme="dark-hour"] h1 { text-shadow: 0 0 10px #25d6e8; font-weight: normal; letter-spacing: 2px; text-transform: uppercase; }
-        body[data-theme="dark-hour"] .bg-cyan-500 { background: linear-gradient(to right, #12368a, #25d6e8) !important; border-radius: 50px; border: none; box-shadow: 0 0 10px #25d6e8; }
-        body[data-theme="dark-hour"] .bg-cyan-500:hover { box-shadow: 0 0 20px #25d6e8; }
-        body[data-theme="dark-hour"] .custom-select, body[data-theme="dark-hour"] #game-search-input { background: rgba(7, 22, 56, 0.8); border: 1px solid #25d6e8; color: #25d6e8; box-shadow: inset 0 0 5px #25d6e8; }
-        body[data-theme="dark-hour"] nav a { text-shadow: 0 0 5px #25d6e8; }
-        body[data-theme="dark-hour"] nav a:hover { color: #25d6e8 !important; text-shadow: 0 0 15px #25d6e8; }
+      /* Iframe Area */
+      #game-iframe-wrapper { flex-grow: 1; position: relative; background-color: #000; }
+      #game-iframe { width: 100%; height: 100%; border: none; display: block; }
+      
+      /* --- TOAST NOTIFICATION --- */
+      #toast-notification {
+        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+        background-color: #00a1ff; color: white;
+        padding: 12px 24px; border-radius: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000;
+        font-weight: bold; border: 2px solid rgba(255,255,255,0.3); text-align: center;
+        font-family: sans-serif;
+      }
+      #toast-notification.show { transform: translateX(-50%) translateY(0); }
 
 
-        /* Text Colors */
-        .game-card h3 { color: var(--color-text-dark); z-index: 2; position: relative; }
-        .game-card p { color: #004477; z-index: 2; position: relative; }
-        h1 { color: var(--color-text-white); text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
-        body[data-theme="classic"] .game-card p { color: #000; }
-        body[data-theme="matrix"] .game-card p { color: #00FF41; }
-        body[data-theme="blank-slate"] .game-card p { color: #666; }
+      /* Dark Mode & Theme Overrides (Condensed) */
+      body.dark-mode { background-color: #121212; background-image: none; color: #e0e0e0; }
+      body.dark-mode .wii-bottom-bar { background-color: #222; border-color: #444; }
+      body.dark-mode .wii-button { background-color: #333; border-color: #555; }
+      
+      /* Custom Theme CSS from previous request */
+      body.retro-green-theme { background-color: #9bbc0f; background-image: none; color: #0f380f; font-family: 'Early GameBoy', sans-serif; }
+      body.retro-green-theme .wii-bottom-bar { background-color: #8cac0f; border-color: #5b710f; }
+      body.retro-green-theme .wii-button { background-color: #a7c12f; border-color: #5b710f; color: #0f380f; }
 
-        /* Button Styles */
-        .bg-cyan-500 { 
-            background-color: var(--color-primary) !important; 
-            background-image: linear-gradient(to bottom, var(--color-primary-light), var(--color-primary)) !important;
-            box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 0 1px 1px rgba(0,0,0,0.1);
-            border: 1px solid var(--color-primary-dark);
-            text-shadow: 0 1px 0 rgba(0,0,0,0.1);
-            font-weight: bold; z-index: 2; position: relative; 
-        }
-        body[data-theme="matrix"] .bg-cyan-500 { background: black !important; border: 1px solid #00FF41; color: #00FF41 !important; box-shadow: none; }
-        body[data-theme="matrix"] .bg-cyan-500:hover { background: #00FF41 !important; color: black !important; }
+      body.cyberpunk-theme { background-color: #1a082a; background-image: none; color: #00ffff; font-family: 'monofonto', monospace; }
+      body.cyberpunk-theme .wii-bottom-bar { background-color: #3f0a57; border-top: 2px solid #ff00c8; }
+      body.cyberpunk-theme .wii-button { background-color: #5d157a; border-color: #00ffff; box-shadow: 0 0 5px #ff00c8; }
 
-        /* --- INPUTS & CONTROLS --- */
-        /* User Friendly Selector Style */
-        .custom-select {
-            background-color: var(--bg-glass-controls);
-            color: var(--color-text-dark);
-            border: 1px solid var(--border-glass-light);
-            padding: 0.5rem 2rem 0.5rem 1rem; 
-            border-radius: 9999px; 
-            outline: none;
-            font-weight: bold;
-            appearance: none; 
-            -webkit-appearance: none;
-            cursor: pointer;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 0.5rem center;
-            background-repeat: no-repeat;
-            background-size: 1.5em 1.5em;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .custom-select:hover {
-            background-color: var(--bg-glass-controls-hover);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        #game-search-input {
-            background-color: var(--bg-glass-card);
-            border: 1px solid var(--border-glass-light);
-            color: var(--color-text-dark);
-        }
-
-        /* Theme specific input overrides */
-        body[data-theme="blank-slate"] .custom-select, body[data-theme="blank-slate"] #game-search-input { background-color: #fff; border-color: #ccc; color: #333; box-shadow: none; }
-        body[data-theme="classic"] .custom-select, body[data-theme="classic"] #game-search-input { background-color: #fff; border-radius: 0; color: black; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='black' viewBox='0 0 20 20'%3e%3cpath d='M7 7l3-3 3 3m0 6l-3 3-3-3' stroke='black' stroke-width='2'/%3e%3c/svg%3e"); box-shadow: none; border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080;}
-        body[data-theme="matrix"] .custom-select, body[data-theme="matrix"] #game-search-input { background-color: #000; color: #00FF41; border: 1px solid #00FF41; border-radius: 0; background-image: none; }
-
-        /* Toast Notification */
-        #toast-notification {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
-            background-color: var(--color-primary); color: var(--color-text-white);
-            padding: 12px 24px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000;
-            font-weight: bold; border: 2px solid rgba(255,255,255,0.3); text-align: center;
-        }
-        #toast-notification.show { transform: translateX(-50%) translateY(0); }
-
-        /* MODIFIED: Iframe Overlay Styles (From Wii Mode) */
-        #iframe-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 1000;
-        }
-        #iframe-container { position: relative; width: 90%; height: 90%; background: #000; border: 2px solid #fff; border-radius: 10px; }
-        #game-iframe { width: 100%; height: 100%; border: none; }
-        #close-iframe-button {
-            position: absolute; top: -15px; right: -15px; width: 40px; height: 40px;
-            background: #fff; border: 2px solid #000; border-radius: 50%; cursor: pointer;
-            font-weight: bold; font-size: 20px;
-            display: flex; align-items: center; justify-content: center; /* centering x */
-        }
-        
+      body.ocean-theme { background-color: #e0f7fa; background-image: none; color: #00796b; }
+      body.ocean-theme .wii-bottom-bar { background-color: #80deea; border-color: #00bcd4; }
+      body.ocean-theme .wii-button { background-color: #b2ebf2; border-color: #00acc1; }
     </style>
-</head>
-<body data-theme="blank-slate"> 
+  </head>
+  <body>
+    <div class="wii-top-bar"></div>
+
+    <div id="game-pages-container">
+      <div id="game-pages-wrapper">
+        
+        <nav class="game-buttons" aria-label="Page 1">
+          <a data-href="/games/clyumenikki.html" class="game-button" style="background-image: url('/assets/nikki.jpg');" title="Yume Nikki"><span class="game-button-text">Yume Nikki</span></a>
+          <a data-href="/games/Cookie Clicker.html" class="game-button" style="background-image: url('/assets/cookie.png');" title="Cookie Clicker"><span class="game-button-text">Cookie Clicker</span></a>
+          <a data-href="/games/DOOM.html" class="game-button" style="background-image: url('/assets/doom1.jpg');" title="Doom 1"><span class="game-button-text">Doom 1</span></a>
+          <a data-href="/games/Doom 2.html" class="game-button" style="background-image: url('/assets/doom2.png');" title="Doom 2"><span class="game-button-text">Doom 2</span></a>
+          <a data-href="/games/Nubbys Number Factory.html" class="game-button" style="background-image: url('/assets/factory.jpg');" title="Nubby's Number Factory"><span class="game-button-text">Nubby's Factory</span></a>
+          <a data-href="/games/Pizza Tower.html" class="game-button" style="background-image: url('/assets/pizzatower.jpg');" title="Pizza Tower"><span class="game-button-text">Pizza Tower</span></a>
+          <a data-href="/games/clcavestory.html" class="game-button" style="background-image: url('/assets/cavestory.png');" title="Cave Story"><span class="game-button-text">Cave Story</span></a>
+          <a data-href="/games/clbfdia5b.html" class="game-button" style="background-image: url('/assets/572190-vqi8cznu-v4.jpg');" title="BFDIA5B"><span class="game-button-text">BFDIA5B</span></a>
+          <a data-href="/games/cluncannycatgolf.html" class="game-button" style="background-image: url('/assets/uncanny-cat-canny-cat.gif');" title="Uncanny Cat Golf"><span class="game-button-text">Uncanny Cat Golf</span></a>
+          <a data-href="/games/n-gon.html" class="game-button" style="background-image: url('/assets/ngon.png');" title="N-GON"><span class="game-button-text">N-GON</span></a>
+          <a data-href="https://deltacook.vercel.app/" class="game-button" style="background-image: url('/assets/hx2er6ahcrv11.gif');" title="Deltarune"><span class="game-button-text">Deltarune</span></a>
+          <a data-href="/games/Half Life.html" class="game-button" style="background-image: url('/assets/2133.png');" title="Half-Life"><span class="game-button-text">Half-Life</span></a>
+          <a data-href="/games/Hollow Knight(1).html" class="game-button" style="background-image: url('/assets/knight.jpeg');" title="Hollow Knight"><span class="game-button-text">Hollow Knight</span></a>
+          <a data-href="/games/clparappatherapperalt.html" class="game-button" style="background-image: url('/assets/Sony-playstation-parappa-the-rapper.png');" title="Parappa the Rapper"><span class="game-button-text">Parappa</span></a>
+          <a data-href="/games/clsmashremix.html" class="game-button" style="background-image: url('/assets/remix.jpg');" title="Smash Remix"><span class="game-button-text">Smash Remix</span></a>
+          <a data-href="/games/Fallout.html" class="game-button" style="background-image: url('/assets/585.webp');" title="Fallout"><span class="game-button-text">Fallout</span></a>
+          <a data-href="/games/WebFishing.html" class="game-button" style="background-image: url('/assets/423.png');" title="Webfishing"><span class="game-button-text">Webfishing</span></a>
+          <a data-href="/games/Kindergarten.html" class="game-button" style="background-image: url('/assets/garten1.png');" title="Kindergarten"><span class="game-button-text">Kindergarten</span></a>
+          <a data-href="/games/Kindergarten 2.html" class="game-button" style="background-image: url('/assets/garten2.png');" title="Kindergarten 2"><span class="game-button-text">Kindergarten 2</span></a>
+          <a data-href="/games/Kindergarten 3.html" class="game-button" style="background-image: url('/assets/garten3.png');" title="Kindergarten 3"><span class="game-button-text">Kindergarten 3</span></a>
+        </nav>
+
+        <nav class="game-buttons" aria-label="Page 2">
+          <a data-href="/games/clkirbysadventure.html" class="game-button" style="background-image: url('/assets/kirby.png');" title="Kirby's Adventure"><span class="game-button-text">Kirby's Adventure</span></a>
+          <a data-href="/games/clpacmana.html" class="game-button" style="background-image: url('/assets/pacman.png');" title="Pac-Man"><span class="game-button-text">Pac-Man</span></a>
+          <a data-href="/games/clbindingofisaccsheeptime.html" class="game-button" style="background-image: url('/assets/350.png');" title="The Binding of Isaac"><span class="game-button-text">Isaac</span></a>
+          <a data-href="/games/Dadish.html" class="game-button" style="background-image: url('/assets/IMG_6019.jpeg');" title="Dadish"><span class="game-button-text">Dadish</span></a>
+          <a data-href="/games/Dadish 2.html" class="game-button" style="background-image: url('/assets/IMG_6020.jpeg');" title="Dadish 2"><span class="game-button-text">Dadish 2</span></a>
+          <a data-href="/games/Dadish 3.html" class="game-button" style="background-image: url('/assets/IMG_6021.jpeg');" title="Dadish 3"><span class="game-button-text">Dadish 3</span></a>
+          <a data-href="/games/Dadish 3D.html" class="game-button" style="background-image: url('/assets/IMG_6022.jpeg');" title="Dadish 3D"><span class="game-button-text">Dadish 3D</span></a>
+          <a data-href="/games/clgoldensun.html" class="game-button" style="background-image: url('/assets/IMG_6027.jpeg');" title="Godzilla Domination"><span class="game-button-text">Godzilla</span></a>
+          <a data-href="/games/clmariosmysterymeat.html" class="game-button" style="background-image: url('/assets/IMG_6034.png');" title="Mario's Mystery Meat"><span class="game-button-text">Mystery Meat</span></a>
+          <a data-href="/games/cldonkeykong64.html" class="game-button" style="background-image: url('/assets/IMG_6033.jpeg');" title="Donkey Kong 64"><span class="game-button-text">DK 64</span></a>
+          <a data-href="/games/clcheesechompers3d.html" class="game-button" style="background-image: url('/assets/IMG_6060.jpeg');" title="Cheese Chompers 3D"><span class="game-button-text">Cheese Chompers</span></a>
+          <a data-href="/games/Postal.html" class="game-button" style="background-image: url('/assets/686592.png');" title="Postal"><span class="game-button-text">Postal</span></a>
+          <a data-href="/games/cliwbtg.html" class="game-button" style="background-image: url('/assets/IMG_6121.png');" title="I Wanna Be The Guy"><span class="game-button-text">IWBTG</span></a>
+          <a data-href="/games/clundertale.html" class="game-button" style="background-image: url('/assets/undertale-pixel-art.gif');" title="Undertale"><span class="game-button-text">Undertale</span></a>
+          <a data-href="/games/Balatro.html" class="game-button" style="background-image: url('/assets/Balatro_cover.jpg');" title="Balatro"><span class="game-button-text">Balatro</span></a>
+          <a data-href="/games/clmonkeymart.html" class="game-button" style="background-image: url('/assets/IMG_6142.jpeg');" title="Monkey Mart"><span class="game-button-text">Monkey Mart</span></a>
+          <a data-href="/games/pvz.html" class="game-button" style="background-image: url('/assets/Plantsvs.ZombiesNintendoDS.png');" title="Plants Vs Zombies"><span class="game-button-text">PvZ</span></a>
+          <a data-href="/games/clctgpnitro.html" class="game-button" style="background-image: url('/assets/ctgp.jpg');" title="CTGP Nitro"><span class="game-button-text">CTGP Nitro</span></a>
+          <a data-href="/games/clkirbysqueaksquad.html" class="game-button" style="background-image: url('/assets/squeak.png');" title="Kirby Squeak Squad"><span class="game-button-text">Squeak Squad</span></a>
+          <a data-href="/games/clkirbysuperstarultra.html" class="game-button" style="background-image: url('/assets/ultra.jpg');" title="Kirby Super Star Ultra"><span class="game-button-text">Super Star Ultra</span></a>
+        </nav>
+
+        <nav class="game-buttons" aria-label="Page 3">
+          <a data-href="/games/clgta2alt.html" class="game-button" style="background-image: url('/assets/gta2.jpg');" title="Grand Theft Auto 2"><span class="game-button-text">GTA 2</span></a>
+          <a data-href="/games/clgtaalty.html" class="game-button" style="background-image: url('/assets/gta1.jpg');" title="Grand Theft Auto"><span class="game-button-text">GTA 1</span></a>
+          <a data-href="/games/clocarinaoftime.html" class="game-button" style="background-image: url('/assets/oot.jpg');" title="Zelda: Ocarina of Time"><span class="game-button-text">Ocarina of Time</span></a>
+          <a data-href="/games/clmajorasmask.html" class="game-button" style="background-image: url('/assets/majora.jpg');" title="Zelda: Majora's Mask"><span class="game-button-text">Majora's Mask</span></a>
+          <a data-href="/games/cldrmario(1).html" class="game-button" style="background-image: url('/assets/drmario.jpg');" title="Dr. Mario"><span class="game-button-text">Dr. Mario</span></a>
+          <a data-href="/games/cllearntofly.html" class="game-button" style="background-image: url('/assets/340.png');" title="Learn to Fly"><span class="game-button-text">Learn to Fly</span></a>
+          <a data-href="/games/cllearntofly2.html" class="game-button" style="background-image: url('/assets/341.png');" title="Learn to Fly 2"><span class="game-button-text">Learn to Fly 2</span></a>
+          <a data-href="/games/cllearntofly3.html" class="game-button" style="background-image: url('/assets/342.png');" title="Learn to Fly 3"><span class="game-button-text">Learn to Fly 3</span></a>
+          <a data-href="/games/cllearntoflyidle.html" class="game-button" style="background-image: url('/assets/343.png');" title="Learn to Fly Idle"><span class="game-button-text">Learn to Fly Idle</span></a>
+          <a data-href="/games/clwebecomewhatwebehold.html" class="game-button" style="background-image: url('/assets/become.png');" title="We Become What We Behold"><span class="game-button-text">WBWWB</span></a>
+          <a data-href="/games/ristar.html" class="game-button" style="background-image: url('/assets/ristar.jpeg');" title="Ristar"><span class="game-button-text">Ristar</span></a>
+          <a data-href="/games/cldynamiteheaddy.html" class="game-button" style="background-image: url('/assets/headdy.jpg');" title="Dynamite Headdy"><span class="game-button-text">Dynamite Headdy</span></a>
+          <a data-href="https://mariosixty.vercel.app/sm64/index.html" class="game-button" style="background-image: url('/assets/IMG_6233.jpeg');" title="Super Mario 64"><span class="game-button-text">Mario 64</span></a>
+          <a data-href="/games/clFNAF.html" class="game-button" style="background-image: url('/assets/FNaF1.jpg');" title="FNAF 1"><span class="game-button-text">FNAF 1</span></a>
+          <a data-href="/games/clFNAF2.html" class="game-button" style="background-image: url('/assets/FNAF 2.png');" title="FNAF 2"><span class="game-button-text">FNAF 2</span></a>
+          <a data-href="/games/clFNAF3.html" class="game-button" style="background-image: url('/assets/FNaF3.png');" title="FNAF 3"><span class="game-button-text">FNAF 3</span></a>
+          <a data-href="/games/clFNAF4.html" class="game-button" style="background-image: url('/assets/Fnaf4.png');" title="FNAF 4"><span class="game-button-text">FNAF 4</span></a>
+          <a data-href="/games/clfnafworldd.html" class="game-button" style="background-image: url('/assets/FNaFWorld.png');" title="FNAF World"><span class="game-button-text">FNAF World</span></a>
+          <a data-href="/games/clfnafsl.html" class="game-button" style="background-image: url('/assets/fnafsl.png');" title="Sister Location"><span class="game-button-text">Sister Location</span></a>
+          <a data-href="/games/clfnafps.html" class="game-button" style="background-image: url('/assets/FFPS.png');" title="Pizzeria Simulator"><span class="game-button-text">Pizzeria Sim</span></a>
+        </nav>
+        
+        <nav class="game-buttons" aria-label="Page 4">
+          <a data-href="/games/clfnac1.html" class="game-button" style="background-image: url('/assets/FNAC1ICON.png');" title="Five Nights at Candy's"><span class="game-button-text">FNAC 1</span></a>
+          <a data-href="/games/clfridaynightfunkin.html" class="game-button" style="background-image: url('/assets/fnf.jpeg');" title="Friday Night Funkin"><span class="game-button-text">FNF</span></a>
+          <a data-href="/games/clfruitninja.html" class="game-button" style="background-image: url('/assets/FruitNinja.jpg');" title="Fruit Ninja"><span class="game-button-text">Fruit Ninja</span></a>
+          <a data-href="/games/clrunningfred.html" class="game-button" style="background-image: url('/assets/fred.png');" title="Running Fred"><span class="game-button-text">Running Fred</span></a>
+          <a data-href="/games/clspelunky.html" class="game-button" style="background-image: url('/assets/spelunky.png');" title="Spelunky"><span class="game-button-text">Spelunky</span></a>
+          <a data-href="/games/Oneshot (LEGACY).html" class="game-button" style="background-image: url('/assets/oneshot.png');" title="Oneshot"><span class="game-button-text">Oneshot</span></a>
+          <a data-href="/games/Off.html" class="game-button" style="background-image: url('/assets/off.jpg');" title="OFF"><span class="game-button-text">OFF</span></a>
+          <a data-href="/games/BFDIA 5b_ 5_30.html" class="game-button" style="background-image: url('/assets/ruby.gif');" title="BFDIA 5b: 5*30"><span class="game-button-text">BFDIA 5b</span></a>
+          <a data-href="/games/clpico8edu.html" class="game-button" style="background-image: url('/assets/pico.png');" title="Pico-8"><span class="game-button-text">Pico-8</span></a>
+          <a data-href="/games/clonebitadventure.html" class="game-button" style="background-image: url('/assets/onebit.png');" title="Onebit Adventure"><span class="game-button-text">Onebit</span></a>
+          <a data-href="/games/clunitresdreams.html" class="game-button" style="background-image: url('/assets/IMG_6334.png');" title="Unitres Dreams"><span class="game-button-text">Unitres</span></a>
+          <a data-href="/games/cltetris.html" class="game-button" style="background-image: url('/assets/IMG_6335.png');" title="Tetris"><span class="game-button-text">Tetris</span></a>
+          <a data-href="/games/clpeggle.html" class="game-button" style="background-image: url('/assets/IMG_6381.jpeg');" title="Peggle"><span class="game-button-text">Peggle</span></a>
+          <a data-href="/games/clgranddad.html" class="game-button" style="background-image: url('/assets/IMG_6382.webp');" title="7 Grand Dad"><span class="game-button-text">Grand Dad</span></a>
+          <a data-href="/games/clpicosschool.html" class="game-button" style="background-image: url('/assets/IMG_6383.png');" title="Pico's School"><span class="game-button-text">Pico's School</span></a>
+          <a data-href="/games/clpomgetsinternet.html" class="game-button" style="background-image: url('/assets/IMG_6386.png');" title="Pom Gets Wifi"><span class="game-button-text">Pom Gets Wifi</span></a>
+          <a data-href="/games/clpunchout.html" class="game-button" style="background-image: url('/assets/IMG_6437.jpeg');" title="Punch-Out"><span class="game-button-text">Punch-Out</span></a>
+          <a data-href="/games/clearthbound.html" class="game-button" style="background-image: url('/assets/IMG_6443.webp');" title="Mother"><span class="game-button-text">Mother</span></a>
+          <a data-href="/games/clearthboundsnes.html" class="game-button" style="background-image: url('/assets/IMG_6444.jpeg');" title="Mother 2"><span class="game-button-text">Mother 2</span></a>
+          <a data-href="/games/clearthbound3.html" class="game-button" style="background-image: url('/assets/IMG_6445.jpeg');" title="Mother 3"><span class="game-button-text">Mother 3</span></a>
+        </nav>
+
+      </div>
+    </div>
+
+    <div class="page-indicator" id="page-indicator-dots"></div>
     
-    <div id="css-3d-background">
-        <div class="bubble-container">
-            <div class="bubble" style="--size: 40px; --pos: 10%; --speed: 8s; --delay: 0s;"></div>
-            <div class="bubble" style="--size: 60px; --pos: 30%; --speed: 12s; --delay: 2s;"></div>
-            <div class="bubble" style="--size: 30px; --pos: 50%; --speed: 10s; --delay: 4s;"></div>
-            <div class="bubble" style="--size: 50px; --pos: 70%; --speed: 15s; --delay: 1s;"></div>
-            <div class="bubble" style="--size: 80px; --pos: 90%; --speed: 20s; --delay: 0.5s;"></div>
+    <div id="search-container">
+      <input type="text" id="search-input" placeholder="Enter game name...">
+      <button id="search-submit-button">Find</button>
+    </div>
+
+    <div class="wii-bottom-bar">
+      <div class="wii-bottom-bar-content">
+        <div class="wii-button" id="prev-page-button" title="Previous Page">
+          <img src="https://qottlebup.nekoweb.org/nope.svg" alt="Previous Page" />
         </div>
+        <a href="index.html" class="wii-button" id="wii-menu-button" title="Home">
+          <img src="https://qottlebup.nekoweb.org/Plus.svg" alt="Home" />
+        </a>
+        <div class="wii-button" id="search-button" title="Search Games">
+            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+        </div>
+        <div class="wii-date-time">
+          <div class="time" id="current-time">12:00 AM</div>
+          <div class="date" id="current-date">Fri 1/1</div>
+        </div>
+        <div class="wii-button" id="music-menu-toggle" title="Select Music">
+            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+            </svg>
+        </div>
+        <div class="wii-button" id="theme-menu-toggle" title="Select Theme">
+          <img src="https://qottlebup.nekoweb.org/mode.svg" alt="Select Theme" />
+        </div>
+        <div class="wii-button" id="next-page-button" title="Next Page">
+          <img src="https://qottlebup.nekoweb.org/move.svg" alt="Next Page" />
+        </div>
+      </div>
+    </div>
+
+    <div id="music-menu">
+        <div class="music-heading">Music Options</div>
+        <div class="music-option" id="music-option-random">Random (Auto-play)</div>
+        <div class="music-option" id="music-option-stop">Stop Music</div>
+        <hr class="music-divider">
+        <div class="music-heading">Songs</div>
+        <div id="music-list"></div>
     </div>
     
-    <div id="page-content" class="relative z-10">
-        <audio id="hover-sound" src="/assets/Sample_0016.wav" preload="auto"></audio>
-        <audio id="select-sound" src="/assets/Sample_0000.wav" preload="auto"></audio>
-        <audio id="exit-sound" src="/assets/Sample_0001.wav" preload="auto"></audio>
-        <audio id="background-music" loop preload="auto"></audio>
+    <div id="theme-menu">
+        <div class="theme-heading">Modes</div>
+        <div class="theme-option" data-theme="light">Classic Mode</div>
+        <div class="theme-option" data-theme="dark">Dark Mode</div>
+        <hr class="theme-divider">
+        <div class="theme-heading">Custom Themes</div>
+        <div class="theme-option" data-theme="retro-green">Retro Green</div>
+        <div class="theme-option" data-theme="cyberpunk">Cyberpunk</div>
+        <div class="theme-option" data-theme="ocean">Ocean Blue</div>
+    </div>
 
-        <header class="sticky top-0 z-50 border-b border-gray-700 glass-header">
-            <nav class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-                <div class="flex items-center">
-                    <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-white hover:text-cyan-400 transition duration-300">
-                        <img src="/assets/fanny.gif" alt="Logo" class="w-8 h-8 rounded-full object-contain">
-                        <span>QB<span class="text-cyan-400">BIC</span></span>
-                    </a>
+    <div id="game-modal" role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
+        <div id="game-modal-container">
+            <div id="game-modal-header">
+                <h2 id="game-modal-title">Game Title</h2>
+                <div id="game-modal-controls">
+                    <button id="reload-game-btn" type="button" class="control-btn" title="Reload Game">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8C17 5.23858 14.7614 3 12 3C9.23858 3 7 5.23858 7 8M17 8V11M17 8H20M7 8H4M7 8V11M12 21C14.7614 21 17 18.7614 17 16C17 13.2386 14.7614 11 12 11C9.23858 11 7 13.2386 7 16C7 18.7614 9.23858 21 12 21Z" transform="rotate(90 12 12)"></path></svg>
+                    </button>
+                    <button id="open-new-tab-btn" type="button" class="control-btn" title="Open in New Tab">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </button>
+                    <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloaking)">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </button>
+                    <button id="fullscreen-btn" type="button" class="control-btn" title="Fullscreen Game">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m0 11v-4m0 4h-4m4 0l-5-5m-5 5v-4m-5 4h4m-4 0l5-5"></path></svg>
+                    </button>
+                    <button id="close-game-modal-btn" type="button" class="control-btn close-btn" title="Close Player">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
                 </div>
-                
-                <div class="hidden md:flex space-x-6 items-center">
-                    <a href="index.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Home</a>
-                    <a href="games.html" class="text-white border-b-2 border-cyan-400 transition duration-200 font-medium">Games</a>
-                    <a href="faq.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">FAQ</a>
-                    <a href="changelog.html" class="text-gray-300 hover:text-white transition duration-200 font-medium">Changelog</a>
-                    
-                    <select id="song-select" class="custom-select" title="Change Background Music">
-                        <option value="none">🎵 Music: Off</option>
-                        <option value="/assets/Wii U OST - Mii Maker (Mii Editor).flac">🎵 Wii U Mii Maker</option>
-                        <option value="/assets/Droopy likes your face.flac">🎵 Droopy likes your face</option>
-                        <option value="/assets/Sleepville - Little Man Legends.mp3">🎵 Sleepville - Little Man Legends</option>
-                        <option value="/assets/Beneath the Mask -instrumental version- - Lyn.mp3">🎵 Beneath the Mask</option>
-                    </select>
-                    <select id="theme-select" class="custom-select" title="Change Theme">
-                        <option value="blank-slate">⬜ Blank Slate</option>
-                        <option value="frutiger-aero">🫧 Frutiger Aero</option>
-                        <option value="minecraft">🧱 Minecraft</option>
-                        <option value="blueprint">📐 Blueprint</option>
-                        <option value="matrix">🟢 The Matrix</option>
-                        <option value="classic">💾 Windows 95</option>
-                        <option value="phantom">🎭 Phantom (P5)</option>
-                        <option value="dark-hour">🌕 Dark Hour (P3)</option>
-                    </select>
-                </div>
-            </nav>
-        </header>
-
-        <main>
-        <section class="py-8 sm:py-12">
-            <div class="container mx-auto">
-                <div class="glass-main-panel mx-4">
-                    <h1 class="text-3xl font-bold text-center mb-10 text-white">
-                        Full Game Catalog
-                    </h1>
-
-                    <div class="mb-10 max-w-lg mx-auto">
-                        <input type="text" id="game-search-input" placeholder="Search for a game..." class="w-full p-3 rounded-2xl bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow duration-300" />
-                    </div>
-                    
-                    <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-                        <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/nikki.jpg" alt="Yume Nikki" class="w-full h-28 object-cover transition duration-200" loading="lazy">
-                            <div class="p-3">
-                                <h3 class="text-lg font-semibold truncate">Yume Nikki</h3>
-                                <p class="text-xs">Weirdness / Simulation</p>
-                                <button type="button" data-url="/games/clyumenikki.html" data-title="Yume Nikki" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                            </div>
-                        </div>
-                        <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/cookie.png" alt="Cookie Clicker" class="w-full h-28 object-cover transition duration-200" loading="lazy">
-                            <div class="p-3">
-                                <h3 class="text-lg font-semibold truncate">Cookie Clicker</h3>
-                                <p class="text-xs">Idle / Simulation</p>
-                                <button type="button" data-url="/games/Cookie Clicker.html" data-title="Cookie Clicker" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                            </div>
-                        </div>
-                        <div class="game-card overflow-hidden transition duration-200">
-                            <img src="/assets/doom1.jpg" alt="Doom 1" class="w-full h-28 object-cover transition duration-200" loading="lazy">
-                            <div class="p-3">
-                                <h3 class="text-lg font-semibold truncate">Doom 1</h3>
-                                <p class="text-xs">Survival / Shooter</p>
-                                <button type="button" data-url="/games/DOOM.html" data-title="Doom 1" class="game-play-btn mt-2 block w-full text-center bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold py-1 rounded-md text-sm transition duration-200">Play</button>
-                            </div>
-                        </div>
-                    </div> 
-                </div> 
-            </div> 
-        </section>
-        </main>
-
-        <footer class="border-t border-gray-700 mt-10 glass-footer">
-            <div class="container mx-auto px-4 py-6 text-center">
-                <div class="flex justify-center space-x-6 mb-4">
-                    <a href="index.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Home</a>
-                    <a href="games.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">Games</a>
-                    <a href="faq.html" class="text-gray-400 hover:text-cyan-400 transition duration-200">FAQ</a>
-                    <a href="#" id="cloak-drive" class="text-gray-400 hover:text-cyan-400 transition duration-200">Google Drive</a>
-                    <a href="#" id="cloak-canvas" class="text-gray-400 hover:text-cyan-400 transition duration-200">Canvas</a>
-                    <a href="#" id="cloak-classroom" class="text-gray-400 hover:text-cyan-400 transition duration-200">Classroom</a>
-                </div>
-                <p class="text-gray-500 text-xs">
-                    Copyright Team Qbbic © 2025. All rights reserved to respective owners.
-                </p>
             </div>
-        </footer>
-
-        <div id="iframe-overlay">
-          <div id="iframe-container">
-            <button id="close-iframe-button" title="Close Game">&times;</button>
-            <iframe id="game-iframe" src="about:blank" allowfullscreen></iframe>
-          </div>
+            <div id="game-iframe-wrapper">
+                <iframe id="game-iframe" src="about:blank" allowfullscreen></iframe>
+            </div>
         </div>
+    </div>
 
-        <div id="toast-notification">Notification</div>
+    <div id="toast-notification">Notification</div>
 
-    </div> 
+    <audio id="bg-music"></audio>
+    <audio id="hover-sound" src="Sample_0004.wav" preload="auto"></audio>
+    <audio id="click-sound" src="Sample_0000.wav" preload="auto"></audio>
+    <audio id="prev-page-sound" src="WSD-SELECT.wav" preload="auto"></audio>
+    <audio id="next-page-sound" src="WSD-SELECT.wav" preload="auto"></audio>
+    <audio id="theme-click-sound" src="Sample_0002.wav" preload="auto"></audio>
+    <audio id="search-click-sound" src="Sample_0001.wav" preload="auto"></audio>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const hoverSound = document.getElementById('hover-sound');
-            const selectSound = document.getElementById('select-sound');
-            const exitSound = document.getElementById('exit-sound');
-            const backgroundMusic = document.getElementById('background-music');
-            const songSelect = document.getElementById('song-select');
-            const themeSelect = document.getElementById('theme-select');
-            const BGM_STORAGE_KEY = 'qbbic-bgm';
-            let hasUserInteracted = false;
-            let wasMusicPlaying = false; 
+      // --- CORE VARIABLES ---
+      const bgMusic = document.getElementById('bg-music');
+      const hoverSound = document.getElementById('hover-sound');
+      const clickSound = document.getElementById('click-sound');
+      const prevPageSound = document.getElementById('prev-page-sound');
+      const nextPageSound = document.getElementById('next-page-sound');
+      const themeClickSound = document.getElementById('theme-click-sound');
+      const searchClickSound = document.getElementById('search-click-sound');
+      
+      const gamePagesWrapper = document.getElementById('game-pages-wrapper');
+      const pageIndicatorDots = document.getElementById('page-indicator-dots');
+      const prevPageButton = document.getElementById('prev-page-button');
+      const nextPageButton = document.getElementById('next-page-button');
+      let currentPage = 0;
 
-            /* --- TOAST NOTIFICATION SYSTEM --- */
-            const toast = document.getElementById('toast-notification');
-            let toastTimeout;
-            function showToast(message) {
-                toast.textContent = message;
-                toast.classList.add('show');
-                clearTimeout(toastTimeout);
-                toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2500);
-            }
+      // --- NEW IFRAME MODAL LOGIC (FROM GAMES(3).HTML) ---
+      const gameModal = document.getElementById('game-modal');
+      const gameModalTitle = document.getElementById('game-modal-title');
+      const gameIframe = document.getElementById('game-iframe');
+      const closeGameModalBtn = document.getElementById('close-game-modal-btn');
+      let wasMusicPlayingBeforeGame = false;
+      let currentGameUrl = '';
 
-            /* --- SOUND & THEME LOGIC --- */
-            function setAndPlayBGM(url) {
-                if (url && url !== 'none') {
-                    backgroundMusic.src = url;
-                    backgroundMusic.volume = 0.4;
-                    backgroundMusic.play().catch(e => console.warn("Autoplay blocked until interaction"));
-                } else {
-                    backgroundMusic.pause();
-                    backgroundMusic.src = '';
-                }
-            }
+      // Toast Logic
+      const toast = document.getElementById('toast-notification');
+      let toastTimeout;
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2500);
+      }
 
-            function playSound(audioElement) {
-                if (audioElement) {
-                    audioElement.currentTime = 0; 
-                    audioElement.play().catch(() => {});
-                }
-                if (!hasUserInteracted && backgroundMusic.src && backgroundMusic.paused && !wasMusicPlaying) { 
-                    backgroundMusic.play().then(() => { hasUserInteracted = true; }).catch(() => {});
-                }
-            }
+      // Music Data
+      const songs = [
+        { name: 'Wii Shop Channel', url: 'Wii Shop Channel Music.mp3' }, 
+        { name: 'Mii Maker', url: 'Wii U OST - Mii Maker (Mii Editor).flac' },
+        { name: 'Wii Menu', url: 'Wii OST - Menu.flac' }
+      ];
 
-            /* --- THEME HANDLING --- */
-            const savedTheme = localStorage.getItem('qbbic-theme') || 'blank-slate';
-            document.body.setAttribute('data-theme', savedTheme);
-            if(themeSelect) themeSelect.value = savedTheme;
+      // --- INITIALIZATION ---
+      window.addEventListener('load', () => {
+        updatePage();
+        populateMusicMenu();
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        
+        // Init Themes
+        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+        setTheme(savedTheme);
+      });
 
-            if(themeSelect) {
-                themeSelect.addEventListener('change', (e) => {
-                    const newTheme = e.target.value;
-                    document.body.setAttribute('data-theme', newTheme);
-                    localStorage.setItem('qbbic-theme', newTheme);
-                    playSound(selectSound);
-                    showToast(`Theme changed to ${e.target.options[e.target.selectedIndex].text.replace(/^[^\w]+/, '')}`); 
-                });
-            }
+      // --- PAGE NAVIGATION ---
+      function updatePage() {
+          const offset = -currentPage * 100;
+          gamePagesWrapper.style.transform = `translateX(${offset}%)`;
+          
+          const allGamePages = document.querySelectorAll('.game-buttons');
+          pageIndicatorDots.innerHTML = '';
+          for (let i = 0; i < allGamePages.length; i++) {
+              const dot = document.createElement('div');
+              dot.classList.add('page-dot');
+              if (i === currentPage) dot.classList.add('active');
+              pageIndicatorDots.appendChild(dot);
+          }
+          prevPageButton.classList.toggle('disabled', currentPage === 0);
+          nextPageButton.classList.toggle('disabled', currentPage === allGamePages.length - 1);
+      }
 
-            /* --- BGM HANDLING --- */
-            const savedBGM = localStorage.getItem(BGM_STORAGE_KEY) || 'none';
-            if(songSelect) {
-                songSelect.value = savedBGM;
-                if (savedBGM !== 'none') setAndPlayBGM(savedBGM);
-                
-                songSelect.addEventListener('change', (e) => {
-                    const newSongUrl = e.target.value;
-                    localStorage.setItem(BGM_STORAGE_KEY, newSongUrl);
-                    setAndPlayBGM(newSongUrl);
-                    playSound(selectSound);
-                    showToast(newSongUrl === 'none' ? "Music Muted" : "Playing Music");
-                });
-            }
+      prevPageButton.addEventListener('click', () => {
+          if (currentPage > 0) {
+              currentPage--;
+              updatePage();
+              prevPageSound.currentTime = 0; prevPageSound.play().catch(()=>{});
+          }
+      });
 
-            /* --- CLOAKING --- */
-            function setFavicon(url) {
-                let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-                link.type = 'image/x-icon'; link.rel = 'shortcut icon'; link.href = url;
-                document.getElementsByTagName('head')[0].appendChild(link);
-            }
+      nextPageButton.addEventListener('click', () => {
+          const allGamePages = document.querySelectorAll('.game-buttons');
+          if (currentPage < allGamePages.length - 1) {
+              currentPage++;
+              updatePage();
+              nextPageSound.currentTime = 0; nextPageSound.play().catch(()=>{});
+          }
+      });
 
-            function cloakTab(preset) {
-                playSound(selectSound);
-                let name = "";
-                if (preset === 'drive') {
-                    document.title = 'Google Drive';
-                    setFavicon('https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png');
-                    name = "Google Drive";
-                } else if (preset === 'canvas') {
-                    document.title = 'Canvas';
-                    setFavicon('https://www.instructure.com/themes/custom/instructure_canvas/favicon.ico');
-                    name = "Canvas";
-                } else if (preset === 'classroom') {
-                    document.title = 'Classes';
-                    setFavicon('https://ssl.gstatic.com/images/branding/product/1x/classroom_32dp.png');
-                    name = "Google Classroom";
-                }
-                showToast(`Tab cloaked as ${name}`);
-            }
+      // --- GAME CLICK LOGIC (MODIFIED) ---
+      document.querySelectorAll('.game-button').forEach(btn => {
+          btn.addEventListener('mouseenter', () => {
+              hoverSound.currentTime = 0; hoverSound.play().catch(()=>{});
+          });
+          btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              clickSound.currentTime = 0; clickSound.play().catch(()=>{});
+              
+              const url = btn.dataset.href;
+              const title = btn.title || "Game"; // Get title from attribute
+              if(url) {
+                  openGameModal(url, title);
+              }
+          });
+      });
 
-            document.getElementById('cloak-drive')?.addEventListener('click', (e) => { e.preventDefault(); cloakTab('drive'); });
-            document.getElementById('cloak-canvas')?.addEventListener('click', (e) => { e.preventDefault(); cloakTab('canvas'); });
-            document.getElementById('cloak-classroom')?.addEventListener('click', (e) => { e.preventDefault(); cloakTab('classroom'); });
+      function openGameModal(url, title) {
+          wasMusicPlayingBeforeGame = !bgMusic.paused;
+          bgMusic.pause();
+          
+          currentGameUrl = url;
+          gameModalTitle.textContent = title;
+          gameIframe.src = url;
+          gameModal.style.display = 'flex';
+          // Small delay to allow transition if we were adding classes, here simpler
+          setTimeout(() => gameModal.classList.add('active'), 10);
+          document.body.style.overflow = 'hidden';
+          showToast(`Launched ${title}`);
+      }
 
-            /* --- SEARCH FUNCTIONALITY --- */
-            const gameSearchInput = document.getElementById('game-search-input');
-            const allGameCards = document.querySelectorAll('.game-card');
-            
-            if (gameSearchInput) {
-                gameSearchInput.addEventListener('input', (e) => {
-                    const searchTerm = e.target.value.toLowerCase();
-                    allGameCards.forEach(card => {
-                        const title = card.querySelector('h3')?.textContent.toLowerCase();
-                        if (title) {
-                            card.style.display = title.includes(searchTerm) ? '' : 'none';
-                        }
-                    });
-                });
-            }
+      function closeGameModal() {
+          gameModal.classList.remove('active');
+          setTimeout(() => {
+              gameModal.style.display = 'none';
+              gameIframe.src = 'about:blank';
+              currentGameUrl = '';
+              document.body.style.overflow = '';
+              if (wasMusicPlayingBeforeGame) bgMusic.play().catch(()=>{});
+          }, 300);
+      }
+      
+      closeGameModalBtn.addEventListener('click', closeGameModal);
 
-            /* --- MODIFIED: MODAL & GAMEPLAY (Using test.html logic) --- */
-            const iframeOverlay = document.getElementById('iframe-overlay');
-            const gameIframe = document.getElementById('game-iframe');
-            const closeIframeButton = document.getElementById('close-iframe-button');
+      // --- NEW MODAL BUTTON FEATURES ---
+      document.getElementById('reload-game-btn').addEventListener('click', () => {
+          if (gameIframe.src && gameIframe.src !== 'about:blank') {
+              gameIframe.src = gameIframe.src;
+              showToast("Reloading game...");
+          }
+      });
 
-            function openGameModal(url, title) {
-                // --- MUTE MUSIC ON MODAL OPEN ---
-                if (!backgroundMusic.paused) {
-                    wasMusicPlaying = true;
-                    backgroundMusic.pause();
-                } else {
-                    wasMusicPlaying = false;
-                }
+      document.getElementById('open-new-tab-btn').addEventListener('click', () => {
+          if(currentGameUrl) window.open(currentGameUrl, '_blank');
+      });
 
-                // Show overlay (flex)
-                iframeOverlay.style.display = 'flex';
-                gameIframe.src = url;
-                document.body.style.overflow = 'hidden'; 
-                showToast("Launching " + title);
-            }
-            
-            function closeGameModal() {
-                playSound(exitSound);
+      document.getElementById('open-blank-btn').addEventListener('click', () => {
+          const newWindow = window.open('about:blank', '_blank');
+          if (newWindow) {
+              newWindow.document.write(`<!DOCTYPE html><html lang="en"><head><title>${gameModalTitle.textContent}</title><style>body, html { margin: 0; padding: 0; overflow: hidden; background: #000; }</style></head><body><iframe src="${currentGameUrl}" style="width: 100vw; height: 100vh; border: none;" allowfullscreen></iframe></body></html>`);
+              newWindow.document.close();
+          }
+      });
 
-                // --- UNMUTE MUSIC ON MODAL CLOSE ---
-                if (wasMusicPlaying) {
-                    backgroundMusic.play();
-                    wasMusicPlaying = false;
-                }
+      document.getElementById('fullscreen-btn').addEventListener('click', () => {
+          const requestFS = gameIframe.requestFullscreen || gameIframe.mozRequestFullScreen || gameIframe.webkitRequestFullscreen || gameIframe.msRequestFullscreen;
+          if (requestFS) requestFS.call(gameIframe);
+      });
 
-                // Hide overlay
-                iframeOverlay.style.display = 'none';
-                gameIframe.src = 'about:blank'; 
-                document.body.style.overflow = ''; 
-            }
+      // --- THEME LOGIC ---
+      const customThemes = ['dark', 'retro-green', 'cyberpunk', 'ocean'];
+      function setTheme(themeName) {
+          document.body.className = ''; 
+          if (customThemes.includes(themeName)) {
+              if (themeName === 'dark') document.body.classList.add('dark-mode');
+              else document.body.classList.add(`${themeName}-theme`);
+          }
+          localStorage.setItem('selectedTheme', themeName);
+      }
 
-            document.getElementById('game-grid')?.addEventListener('click', (e) => {
-                const playButton = e.target.closest('.game-play-btn');
-                if (playButton) {
-                    const url = playButton.dataset.url;
-                    const title = playButton.dataset.title;
-                    if (url && title) openGameModal(url, title);
-                }
-            });
+      document.getElementById('theme-menu-toggle').addEventListener('click', () => {
+          const menu = document.getElementById('theme-menu');
+          menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+          themeClickSound.currentTime = 0; themeClickSound.play().catch(()=>{});
+      });
 
-            // Close button listener
-            if(closeIframeButton) {
-                closeIframeButton.addEventListener('click', closeGameModal);
-            }
+      document.querySelectorAll('.theme-option').forEach(opt => {
+          opt.addEventListener('click', () => {
+              setTheme(opt.dataset.theme);
+              document.getElementById('theme-menu').style.display = 'none';
+              clickSound.currentTime = 0; clickSound.play().catch(()=>{});
+          });
+      });
 
-            /* --- UI SOUNDS --- */
-            const hoverSelector = '.game-play-btn, .control-btn, a, select';
-            document.querySelectorAll(hoverSelector).forEach(el => {
-                el.addEventListener('mouseenter', () => playSound(hoverSound));
-            });
-            document.body.addEventListener('click', (e) => {
-                const isCloakBtn = e.target.closest('#cloak-drive, #cloak-canvas, #cloak-classroom');
-                const isClickable = e.target.closest('a, button, .game-play-btn, .control-btn');
-                if (isClickable && !isCloakBtn && !e.target.closest('#close-iframe-button')) {
-                    playSound(selectSound);
-                }
-            });
-        });
+      // --- SEARCH LOGIC ---
+      document.getElementById('search-button').addEventListener('click', () => {
+          const container = document.getElementById('search-container');
+          container.style.display = container.style.display === 'block' ? 'none' : 'block';
+          searchClickSound.currentTime = 0; searchClickSound.play().catch(()=>{});
+      });
+
+      document.getElementById('search-submit-button').addEventListener('click', performSearch);
+      
+      function performSearch() {
+          const query = document.getElementById('search-input').value.toLowerCase();
+          const buttons = document.querySelectorAll('.game-button');
+          let found = false;
+          for(let btn of buttons) {
+              if(btn.title.toLowerCase().includes(query)) {
+                  const page = btn.closest('.game-buttons');
+                  const pages = document.querySelectorAll('.game-buttons');
+                  currentPage = Array.from(pages).indexOf(page);
+                  updatePage();
+                  btn.style.boxShadow = "0 0 30px red";
+                  setTimeout(() => btn.style.boxShadow = "", 1000);
+                  found = true;
+                  document.getElementById('search-container').style.display = 'none';
+                  break;
+              }
+          }
+          if(!found) alert("Game not found!");
+      }
+
+      // --- MUSIC LOGIC ---
+      function populateMusicMenu() {
+          const list = document.getElementById('music-list');
+          songs.forEach((song, idx) => {
+              const div = document.createElement('div');
+              div.className = 'music-option';
+              div.textContent = song.name;
+              div.onclick = () => {
+                  bgMusic.src = song.url;
+                  bgMusic.play();
+                  document.getElementById('music-menu').style.display = 'none';
+              };
+              list.appendChild(div);
+          });
+      }
+      
+      document.getElementById('music-menu-toggle').addEventListener('click', () => {
+          const menu = document.getElementById('music-menu');
+          menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+          themeClickSound.currentTime = 0; themeClickSound.play().catch(()=>{});
+      });
+
+      document.getElementById('music-option-stop').addEventListener('click', () => {
+          bgMusic.pause();
+          document.getElementById('music-menu').style.display = 'none';
+      });
+
+      // --- TIME LOGIC ---
+      function updateDateTime() {
+        const now = new Date();
+        document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+        document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', {weekday:'short', month:'numeric', day:'numeric'});
+      }
+      
+      document.addEventListener('click', (e) => {
+          if (!e.target.closest('#theme-menu') && !e.target.closest('#theme-menu-toggle')) {
+              document.getElementById('theme-menu').style.display = 'none';
+          }
+          if (!e.target.closest('#music-menu') && !e.target.closest('#music-menu-toggle')) {
+              document.getElementById('music-menu').style.display = 'none';
+          }
+      });
     </script>
-</body>
+  </body>
 </html>
