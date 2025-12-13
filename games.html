@@ -10,9 +10,18 @@
     <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
     <style>
       /* --- CORE STYLES --- */
+      /* Global Font Application */
+      @font-face { font-family: 'PopHappiness'; src: url('/assets/PopHappiness.OTF') format('opentype'); }
+
+      /* Legacy fonts kept but unused */
+      @font-face { font-family: 'MarioKartDS'; src: url('MarioKartDS.ttf') format('truetype'); }
+      @font-face { font-family: 'Early GameBoy'; src: url('Early GameBoy.ttf') format('truetype'); }
+      @font-face { font-family: 'Virtual Boy'; src: url('Virtual Boy.ttf') format('truetype'); }
+      @font-face { font-family: 'monofonto'; src: url('monofonto.otf') format('opentype'); }
+
       body {
         margin: 0;
-        font-family: 'PopHappiness', 'Arial', 'MarioKartDS', sans-serif;
+        font-family: 'PopHappiness', sans-serif;
         background-color: #e6e8e7;
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="%23e6e8e7"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
         color: black;
@@ -22,18 +31,12 @@
         align-items: center;
         padding: 4rem 1rem;
         box-sizing: border-box;
-        cursor: url('cursor.png'), auto;
+        /* UPDATED CURSOR PATH */
+        cursor: url('/assets/cursor.png'), auto;
         overflow-x: hidden;
         overflow-y: hidden;
         transition: background-color 0.3s ease, color 0.3s ease;
       }
-
-      /* Fonts */
-      @font-face { font-family: 'PopHappiness'; src: url('PopHappiness.OTF') format('opentype'); }
-      @font-face { font-family: 'MarioKartDS'; src: url('MarioKartDS.ttf') format('truetype'); }
-      @font-face { font-family: 'Early GameBoy'; src: url('Early GameBoy.ttf') format('truetype'); }
-      @font-face { font-family: 'Virtual Boy'; src: url('Virtual Boy.ttf') format('truetype'); }
-      @font-face { font-family: 'monofonto'; src: url('monofonto.otf') format('opentype'); }
 
       /* Top Bar */
       .wii-top-bar {
@@ -59,7 +62,12 @@
         width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
         cursor: pointer; transition: all 0.2s ease;
       }
-      .wii-button:hover { transform: scale(1.05); box-shadow: 0 0 8px rgba(0, 161, 223, 0.4); cursor: url('Link-Select.png'), pointer; }
+      .wii-button:hover { 
+          transform: scale(1.05); 
+          box-shadow: 0 0 8px rgba(0, 161, 223, 0.4); 
+          /* UPDATED CURSOR PATH */
+          cursor: url('/assets/Link-Select.png'), pointer; 
+      }
       .wii-button.disabled { pointer-events: none; opacity: 0.5; }
       
       /* SVG Styling */
@@ -87,14 +95,22 @@
         border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         text-decoration: none; color: black; font-weight: bold; text-align: center;
-        position: relative; overflow: hidden; cursor: url('cursor.png'), auto;
+        position: relative; overflow: hidden; 
+        /* UPDATED CURSOR PATH */
+        cursor: url('/assets/cursor.png'), auto;
         background-size: cover; background-position: center; background-repeat: no-repeat;
         transition: transform 0.1s, box-shadow 0.1s;
       }
-      .game-button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 161, 223, 0.7); z-index: 20; cursor: url('Link-Select.png'), pointer; }
+      .game-button:hover { 
+          transform: scale(1.05); 
+          box-shadow: 0 0 15px rgba(0, 161, 223, 0.7); 
+          z-index: 20; 
+          /* UPDATED CURSOR PATH */
+          cursor: url('/assets/Link-Select.png'), pointer; 
+      }
       .game-button-text {
         position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.8);
-        font-size: 0.8rem; padding: 2px 0; display: none; /* Show on hover usually, or specific themes */
+        font-size: 0.8rem; padding: 2px 0; display: none; 
       }
       .game-button:hover .game-button-text { display: block; }
       
@@ -203,13 +219,13 @@
       body.dark-mode .wii-button-svg { fill: #ccc; }
       
       /* Retro Green (GameBoy) */
-      body.retro-green-theme { background-color: #9bbc0f; background-image: none; color: #0f380f; font-family: 'Early GameBoy', sans-serif; }
+      body.retro-green-theme { background-color: #9bbc0f; background-image: none; color: #0f380f; }
       body.retro-green-theme .wii-bottom-bar { background-color: #8cac0f; border-color: #5b710f; }
       body.retro-green-theme .wii-button { background-color: #a7c12f; border-color: #5b710f; color: #0f380f; }
       body.retro-green-theme .wii-button-svg { fill: #0f380f; }
 
       /* Cyberpunk */
-      body.cyberpunk-theme { background-color: #1a082a; background-image: none; color: #00ffff; font-family: 'monofonto', monospace; }
+      body.cyberpunk-theme { background-color: #1a082a; background-image: none; color: #00ffff; }
       body.cyberpunk-theme .wii-bottom-bar { background-color: #3f0a57; border-top: 2px solid #ff00c8; }
       body.cyberpunk-theme .wii-button { background-color: #5d157a; border-color: #00ffff; box-shadow: 0 0 5px #ff00c8; }
       body.cyberpunk-theme .wii-button-svg { fill: #00ffff; }
@@ -221,7 +237,7 @@
       body.ocean-theme .wii-button-svg { fill: #006064; }
 
       /* NES Theme (8-Bit) */
-      body.nes-theme { background-color: #202020; background-image: none; color: #fff; font-family: 'Press Start 2P', 'Early GameBoy', cursive; }
+      body.nes-theme { background-color: #202020; background-image: none; color: #fff; }
       body.nes-theme .wii-bottom-bar { background-color: #404040; border-top: 4px solid #e60012; }
       body.nes-theme .wii-button { background-color: #d1d1d1; border: 2px solid #000; border-radius: 4px; }
       body.nes-theme .wii-button-svg { fill: #e60012; } 
@@ -242,7 +258,7 @@
       body.gamecube-theme .wii-date-time { color: #333; }
       
       /* Virtual Boy Theme */
-      body.virtualboy-theme { background-color: #000; background-image: none; color: #ff0000; font-family: 'Virtual Boy', monospace; }
+      body.virtualboy-theme { background-color: #000; background-image: none; color: #ff0000; }
       body.virtualboy-theme .wii-bottom-bar { background-color: #110000; border-top: 2px solid #ff0000; }
       body.virtualboy-theme .wii-button { background-color: #000; border: 1px solid #ff0000; box-shadow: 0 0 5px #ff0000; }
       body.virtualboy-theme .wii-button-svg { fill: #ff0000; filter: drop-shadow(0 0 2px #ff0000); }
@@ -373,11 +389,11 @@
         </nav>
         
         <nav class="game-buttons" aria-label="Page 5 - New Games">
-          <a data-href="/games/Buster Jam.html" class="game-button" style="background-image: url('/assets/boom.gif');" title="Buster Jam"><span class="game-button-text">Buster Jam</span></a>
-          <a data-href="/games/clovofixed.html" class="game-button" style="background-image: url('/assets/ovo.jpeg');" title="OvO"><span class="game-button-text">OvO</span></a>
-          <a data-href="/games/clmyteardrop.html" class="game-button" style="background-image: url('/assets/tear.gif');" title="My Teardrop"><span class="game-button-text">My Teardrop</span></a>
-          <a data-href="/games/cljetpackjoyride(1).html" class="game-button" style="background-image: url('/assets/jetpack.jpeg');" title="Jetpack Joyride"><span class="game-button-text">Jetpack Joyride</span></a>
-          <a data-href="/games/clretrobowl.html" class="game-button" style="background-image: url('/assets/bowl.png');" title="Retro Bowl"><span class="game-button-text">Retro Bowl</span></a>
+          <a data-href="/games/Buster Jam.html" class="game-button" style="background-image: url('/assets/buster.jpg');" title="Buster Jam"><span class="game-button-text">Buster Jam</span></a>
+          <a data-href="/games/clovofixed.html" class="game-button" style="background-image: url('/assets/ovo.png');" title="OvO"><span class="game-button-text">OvO</span></a>
+          <a data-href="/games/clmyteardrop.html" class="game-button" style="background-image: url('/assets/teardrop.png');" title="My Teardrop"><span class="game-button-text">My Teardrop</span></a>
+          <a data-href="/games/cljetpackjoyride(1).html" class="game-button" style="background-image: url('/assets/jetpack.jpg');" title="Jetpack Joyride"><span class="game-button-text">Jetpack Joyride</span></a>
+          <a data-href="/games/clretrobowl.html" class="game-button" style="background-image: url('/assets/retrobowl.jpg');" title="Retro Bowl"><span class="game-button-text">Retro Bowl</span></a>
           
           <a class="game-button placeholder" title="Coming Soon"><span class="game-button-text">Coming Soon</span></a>
           <a class="game-button placeholder" title="Coming Soon"><span class="game-button-text">Coming Soon</span></a>
