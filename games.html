@@ -31,7 +31,6 @@
         align-items: center;
         padding: 4rem 1rem;
         box-sizing: border-box;
-        /* UPDATED CURSOR PATH */
         cursor: url('/assets/cursor.png'), auto;
         overflow-x: hidden;
         overflow-y: hidden;
@@ -65,7 +64,6 @@
       .wii-button:hover { 
           transform: scale(1.05); 
           box-shadow: 0 0 8px rgba(0, 161, 223, 0.4); 
-          /* UPDATED CURSOR PATH */
           cursor: url('/assets/Link-Select.png'), pointer; 
       }
       .wii-button.disabled { pointer-events: none; opacity: 0.5; }
@@ -96,7 +94,6 @@
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         text-decoration: none; color: black; font-weight: bold; text-align: center;
         position: relative; overflow: hidden; 
-        /* UPDATED CURSOR PATH */
         cursor: url('/assets/cursor.png'), auto;
         background-size: cover; background-position: center; background-repeat: no-repeat;
         transition: transform 0.1s, box-shadow 0.1s;
@@ -105,7 +102,6 @@
           transform: scale(1.05); 
           box-shadow: 0 0 15px rgba(0, 161, 223, 0.7); 
           z-index: 20; 
-          /* UPDATED CURSOR PATH */
           cursor: url('/assets/Link-Select.png'), pointer; 
       }
       .game-button-text {
@@ -496,19 +492,29 @@
                 <h2 id="game-modal-title">Game Title</h2>
                 <div id="game-modal-controls">
                     <button id="reload-game-btn" type="button" class="control-btn" title="Reload Game">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8C17 5.23858 14.7614 3 12 3C9.23858 3 7 5.23858 7 8M17 8V11M17 8H20M7 8H4M7 8V11M12 21C14.7614 21 17 18.7614 17 16C17 13.2386 14.7614 11 12 11C9.23858 11 7 13.2386 7 16C7 18.7614 9.23858 21 12 21Z" transform="rotate(90 12 12)"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
                     </button>
                     <button id="open-new-tab-btn" type="button" class="control-btn" title="Open in New Tab">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
                     </button>
-                    <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloaking)">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloak)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                        </svg>
                     </button>
                     <button id="fullscreen-btn" type="button" class="control-btn" title="Fullscreen Game">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m0 11v-4m0 4h-4m4 0l-5-5m-5 5v-4m-5 4h4m-4 0l5-5"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m0 11v-4m0 4h-4m4 0l-5-5m-5 5v-4m-5 4h4m-4 0l5-5" />
+                        </svg>
                     </button>
                     <button id="close-game-modal-btn" type="button" class="control-btn close-btn" title="Close Player">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                     </button>
                 </div>
             </div>
