@@ -19,10 +19,18 @@
       @font-face { font-family: 'Virtual Boy'; src: url('Virtual Boy.ttf') format('truetype'); }
       @font-face { font-family: 'monofonto'; src: url('monofonto.otf') format('opentype'); }
 
+      /* --- GLOBAL ANIMATIONS --- */
+      @keyframes scrollGrid { from { background-position: 0 0; } to { background-position: 40px 40px; } }
+      @keyframes mistFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+      @keyframes scanlineScroll { 0% { background-position: 0 0; } 100% { background-position: 0 100%; } }
+      @keyframes neonPulse { 0% { box-shadow: 0 0 5px #ff00c8; } 50% { box-shadow: 0 0 20px #ff00c8, 0 0 10px #00ffff; } 100% { box-shadow: 0 0 5px #ff00c8; } }
+      @keyframes slowGlow { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+
       body {
         margin: 0;
         font-family: 'PopHappiness', sans-serif;
         background-color: #e6e8e7;
+        /* Default Wii Grid Pattern */
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="%23e6e8e7"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
         color: black;
         display: flex;
@@ -284,6 +292,87 @@
       body.n64-theme .wii-button-svg { fill: #333; }
       body.n64-theme .wii-date-time { color: #fff; }
 
+      /* --- NEW THEMES --- */
+
+      /* Xbox Theme (Original) */
+      body.xbox-theme { background-color: #0f0f0f; background-image: none; color: #107c10; }
+      body.xbox-theme .wii-bottom-bar { background-color: #000; border-top: 4px solid #107c10; }
+      body.xbox-theme .wii-button { background-color: #000; border: 2px solid #107c10; border-radius: 50%; box-shadow: 0 0 10px rgba(16, 124, 16, 0.5); }
+      body.xbox-theme .wii-button-svg { fill: #107c10; }
+      body.xbox-theme .wii-button:hover { background-color: #107c10; }
+      body.xbox-theme .wii-button:hover .wii-button-svg { fill: #000; }
+      body.xbox-theme .wii-date-time { color: #107c10; }
+
+      /* Dreamcast Theme */
+      body.dreamcast-theme { background-color: #eef; background-image: none; color: #333; }
+      body.dreamcast-theme .wii-bottom-bar { background-color: #fff; border-top: 4px solid #ff6600; }
+      body.dreamcast-theme .wii-button { background-color: #fff; border: 2px solid #ff6600; border-radius: 50%; }
+      body.dreamcast-theme .wii-button-svg { fill: #ff6600; }
+      body.dreamcast-theme .page-dot.active { background-color: #ff6600; border-color: #cc5200; }
+
+      /* Switch Theme (Dark Handheld) */
+      body.switch-theme { background-color: #2d2d2d; background-image: none; color: #fff; }
+      body.switch-theme .wii-bottom-bar { background-color: #1a1a1a; border-top: 4px solid #e60012; }
+      body.switch-theme .wii-button { background-color: #333; border: 2px solid #e60012; border-radius: 50%; }
+      body.switch-theme .wii-button:nth-child(even) { border-color: #00c3e3; } /* Alternating Joycon colors */
+      body.switch-theme .wii-button-svg { fill: #fff; }
+      
+      /* Vaporwave Theme */
+      body.vaporwave-theme { 
+        background-color: #2b0f3a; 
+        background-image: linear-gradient(180deg, #2b0f3a 0%, #ff71ce 100%); 
+        color: #01cdfe; 
+      }
+      body.vaporwave-theme .wii-bottom-bar { background-color: rgba(43, 15, 58, 0.9); border-top: 2px solid #01cdfe; }
+      body.vaporwave-theme .wii-button { background-color: #ff71ce; border: 2px solid #01cdfe; box-shadow: 4px 4px 0px rgba(1, 205, 254, 0.5); }
+      body.vaporwave-theme .wii-button-svg { fill: #fff; }
+      body.vaporwave-theme .game-button { box-shadow: 5px 5px 0 #ff71ce; border: 1px solid #01cdfe; }
+
+      /* PS2 Theme (BIOS) */
+      body.ps2-theme { 
+        background-color: #000; 
+        background-image: radial-gradient(circle at 50% 50%, #1a2a6c, #0d112b, #000);
+        background-size: 200% 200%;
+        color: #0096c7; 
+        animation: mistFlow 15s ease infinite;
+      }
+      body.ps2-theme .wii-bottom-bar { 
+        background: linear-gradient(to bottom, #0d112b, #000); 
+        border-top: 2px solid #005f99; 
+        box-shadow: 0 -5px 15px rgba(0, 150, 199, 0.3);
+      }
+      body.ps2-theme .wii-button { 
+        background: radial-gradient(circle, #2b3a8c, #000); 
+        border: 1px solid #005f99; 
+        box-shadow: 0 0 10px rgba(0, 95, 153, 0.5);
+      }
+      body.ps2-theme .wii-button-svg { fill: #00d4ff; filter: drop-shadow(0 0 3px #00d4ff); }
+      body.ps2-theme .game-button { border: 1px solid #005f99; opacity: 0.9; }
+
+      /* --- THEME ANIMATION OVERRIDES --- */
+      
+      /* 1. Animate the Main Wii Grid (Scrolls diagonally) */
+      body:not([class*="-theme"]) { animation: scrollGrid 10s linear infinite; }
+      
+      /* 2. Animate Retro Themes (Scanlines move down) */
+      body.nes-theme, body.snes-theme, body.genesis-theme, body.retro-green-theme, body.virtualboy-theme {
+        background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 3px, rgba(0,0,0,0.1) 4px);
+        background-size: 100% 8px; /* Size of scanlines */
+        animation: scanlineScroll 2s linear infinite;
+      }
+
+      /* 3. Animate Smooth Themes (Color Shifting) */
+      body.ocean-theme, body.cyberpunk-theme, body.vaporwave-theme, body.xbox-theme, body.dreamcast-theme {
+        background-size: 400% 400%;
+        animation: mistFlow 12s ease infinite;
+      }
+      
+      /* 4. Specific Pulse for Cyberpunk Buttons */
+      body.cyberpunk-theme .wii-button { animation: neonPulse 2s infinite; }
+
+      /* 5. Dark Mode & Switch (Subtle Pulse) */
+      body.dark-mode, body.switch-theme { animation: slowGlow 5s ease-in-out infinite alternate; }
+
     </style>
   </head>
   <body>
@@ -470,19 +559,26 @@
         <div class="theme-heading">Classic Modes</div>
         <div class="theme-option" data-theme="light">Wii Mode</div>
         <div class="theme-option" data-theme="dark">Dark Mode</div>
+        
         <hr class="theme-divider">
         <div class="theme-heading">Retro Consoles</div>
         <div class="theme-option" data-theme="nes">NES (8-Bit)</div>
         <div class="theme-option" data-theme="snes">SNES (16-Bit)</div>
-        <div class="theme-option" data-theme="genesis">Genesis</div>
         <div class="theme-option" data-theme="n64">N64</div>
-        <div class="theme-option" data-theme="ps1">PS1 (BIOS)</div>
         <div class="theme-option" data-theme="gamecube">GameCube</div>
+        <div class="theme-option" data-theme="ps1">PS1 (PlayStation)</div>
+        <div class="theme-option" data-theme="ps2">PS2 (BIOS)</div>
+        <div class="theme-option" data-theme="xbox">Xbox Original</div>
+        <div class="theme-option" data-theme="dreamcast">Dreamcast</div>
+        <div class="theme-option" data-theme="switch">Switch</div>
+        <div class="theme-option" data-theme="genesis">Genesis</div>
         <div class="theme-option" data-theme="virtualboy">Virtual Boy</div>
         <div class="theme-option" data-theme="retro-green">GameBoy</div>
+        
         <hr class="theme-divider">
         <div class="theme-heading">Styles</div>
         <div class="theme-option" data-theme="cyberpunk">Cyberpunk</div>
+        <div class="theme-option" data-theme="vaporwave">Vaporwave</div>
         <div class="theme-option" data-theme="ocean">Ocean Blue</div>
     </div>
 
@@ -700,8 +796,11 @@
       });
 
       // --- THEME LOGIC ---
-      // Updated to include new retro themes
-      const customThemes = ['dark', 'retro-green', 'cyberpunk', 'ocean', 'nes', 'snes', 'gamecube', 'virtualboy', 'genesis', 'ps1', 'n64'];
+      const customThemes = [
+          'dark', 'retro-green', 'cyberpunk', 'ocean', 'nes', 'snes', 
+          'gamecube', 'virtualboy', 'genesis', 'ps1', 'n64',
+          'xbox', 'dreamcast', 'switch', 'vaporwave', 'ps2'
+      ];
       
       function setTheme(themeName) {
           document.body.className = ''; 
