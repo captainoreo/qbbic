@@ -10,25 +10,21 @@
     <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
     <style>
       /* --- CORE STYLES --- */
+      /* Global Font Application */
       @font-face { font-family: 'PopHappiness'; src: url('/assets/PopHappiness.OTF') format('opentype'); }
+
+      /* Legacy fonts kept but unused */
+      @font-face { font-family: 'MarioKartDS'; src: url('MarioKartDS.ttf') format('truetype'); }
+      @font-face { font-family: 'Early GameBoy'; src: url('Early GameBoy.ttf') format('truetype'); }
+      @font-face { font-family: 'Virtual Boy'; src: url('Virtual Boy.ttf') format('truetype'); }
+      @font-face { font-family: 'monofonto'; src: url('monofonto.otf') format('opentype'); }
 
       /* --- GLOBAL ANIMATIONS --- */
       @keyframes scrollGrid { from { background-position: 0 0; } to { background-position: 40px 40px; } }
       @keyframes mistFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-      @keyframes scanlineScroll { from { background-position: 0 0; } to { background-position: 0 100%; } }
+      @keyframes scanlineScroll { 0% { background-position: 0 0; } 100% { background-position: 0 100%; } }
       @keyframes neonPulse { 0% { box-shadow: 0 0 5px #ff00c8; } 50% { box-shadow: 0 0 20px #ff00c8, 0 0 10px #00ffff; } 100% { box-shadow: 0 0 5px #ff00c8; } }
       @keyframes slowGlow { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
-      
-      /* New Unique Animations */
-      @keyframes starfield { from { background-position: 0 0; } to { background-position: -100px 100px; } }
-      @keyframes genesisSpeed { from { background-position: 0 0; } to { background-position: 500px 0; } }
-      @keyframes plasmaPulse { 0% { background-size: 100% 100%; } 50% { background-size: 120% 120%; } 100% { background-size: 100% 100%; } }
-      @keyframes cubeRoll { 0% { background-position: 0 0; } 100% { background-position: 50px 50px; } }
-      @keyframes vaporGrid { 0% { background-position: 0 0; } 100% { background-position: 0 40px; } }
-      @keyframes ps1Swirl { 0% { background-position: 0% 0%; filter: hue-rotate(0deg); } 100% { background-position: 100% 100%; filter: hue-rotate(360deg); } }
-      @keyframes vibration { 0% { transform: translate(0,0); } 20% { transform: translate(-1px, 1px); } 40% { transform: translate(1px, -1px); } 60% { transform: translate(-1px, -1px); } 80% { transform: translate(1px, 1px); } 100% { transform: translate(0,0); } }
-      @keyframes dreamcastSwirl { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-      @keyframes oceanWaves { 0% { background-position: 0 0; } 100% { background-position: 100px 20px; } }
 
       body {
         margin: 0;
@@ -218,154 +214,88 @@
       #toast-notification.show { transform: translateX(-50%) translateY(0); }
 
 
-      /* --- UNIQUE ANIMATED THEMES --- */
+      /* --- THEMES --- */
       
-      /* 1. Default (Wii Grid) - Diagonal Scroll */
-      body:not([class*="-theme"]) { animation: scrollGrid 10s linear infinite; }
-
-      /* 2. Dark Mode - Subtle Breathing Pulse */
-      body.dark-mode { 
-        background-color: #121212; background-image: none; color: #e0e0e0; 
-        animation: slowGlow 8s ease-in-out infinite alternate;
-      }
+      /* Dark Mode */
+      body.dark-mode { background-color: #121212; background-image: none; color: #e0e0e0; }
       body.dark-mode .wii-bottom-bar { background-color: #222; border-color: #444; }
       body.dark-mode .wii-button { background-color: #333; border-color: #555; }
       body.dark-mode .wii-button-svg { fill: #ccc; }
       
-      /* 3. GameBoy (Retro Green) - Pixel Checkerboard Scroll */
-      body.retro-green-theme { 
-        background-color: #9bbc0f; color: #0f380f; 
-        background-image: 
-          linear-gradient(45deg, #8bac0f 25%, transparent 25%, transparent 75%, #8bac0f 75%, #8bac0f),
-          linear-gradient(45deg, #8bac0f 25%, transparent 25%, transparent 75%, #8bac0f 75%, #8bac0f);
-        background-size: 20px 20px;
-        background-position: 0 0, 10px 10px;
-        animation: scrollGrid 4s linear infinite; /* Reuse scroll but slower */
-      }
+      /* Retro Green (GameBoy) */
+      body.retro-green-theme { background-color: #9bbc0f; background-image: none; color: #0f380f; }
       body.retro-green-theme .wii-bottom-bar { background-color: #8cac0f; border-color: #5b710f; }
       body.retro-green-theme .wii-button { background-color: #a7c12f; border-color: #5b710f; color: #0f380f; }
       body.retro-green-theme .wii-button-svg { fill: #0f380f; }
 
-      /* 4. Cyberpunk - Glitchy Neon Lines */
-      body.cyberpunk-theme { 
-        background-color: #1a082a; color: #00ffff; 
-        background-image: repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(0, 255, 255, 0.1) 10px, rgba(0, 255, 255, 0.1) 11px);
-        animation: scanlineScroll 0.5s linear infinite;
-      }
+      /* Cyberpunk */
+      body.cyberpunk-theme { background-color: #1a082a; background-image: none; color: #00ffff; }
       body.cyberpunk-theme .wii-bottom-bar { background-color: #3f0a57; border-top: 2px solid #ff00c8; }
-      body.cyberpunk-theme .wii-button { background-color: #5d157a; border-color: #00ffff; box-shadow: 0 0 5px #ff00c8; animation: neonPulse 1.5s infinite; }
+      body.cyberpunk-theme .wii-button { background-color: #5d157a; border-color: #00ffff; box-shadow: 0 0 5px #ff00c8; }
       body.cyberpunk-theme .wii-button-svg { fill: #00ffff; }
 
-      /* 5. Ocean - Gentle Rising Bubbles/Waves */
-      body.ocean-theme { 
-        background-color: #e0f7fa; color: #00796b; 
-        background-image: radial-gradient(circle, rgba(255,255,255,0.8) 20%, transparent 20%), radial-gradient(circle, rgba(255,255,255,0.8) 20%, transparent 20%);
-        background-size: 50px 50px;
-        animation: oceanWaves 5s linear infinite;
-      }
+      /* Ocean */
+      body.ocean-theme { background-color: #e0f7fa; background-image: none; color: #00796b; }
       body.ocean-theme .wii-bottom-bar { background-color: #80deea; border-color: #00bcd4; }
       body.ocean-theme .wii-button { background-color: #b2ebf2; border-color: #00acc1; }
       body.ocean-theme .wii-button-svg { fill: #006064; }
 
-      /* 6. NES (8-Bit) - Slow Starfield */
-      body.nes-theme { 
-        background-color: #202020; color: #fff; 
-        background-image: 
-            radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
-            radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
-            radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px);
-        background-size: 550px 550px, 350px 350px, 250px 250px; 
-        background-position: 0 0, 40px 60px, 130px 270px;
-        animation: starfield 20s linear infinite;
-      }
+      /* NES Theme (8-Bit) */
+      body.nes-theme { background-color: #202020; background-image: none; color: #fff; }
       body.nes-theme .wii-bottom-bar { background-color: #404040; border-top: 4px solid #e60012; }
       body.nes-theme .wii-button { background-color: #d1d1d1; border: 2px solid #000; border-radius: 4px; }
       body.nes-theme .wii-button-svg { fill: #e60012; } 
       body.nes-theme .wii-button:hover { background-color: #fff; box-shadow: 0 0 10px #e60012; transform: translateY(-2px); }
 
-      /* 7. SNES (16-Bit) - Mode 7 Gradient Spin */
-      body.snes-theme { 
-        background-color: #c0c0c0; color: #333; 
-        background-image: linear-gradient(135deg, #c0c0c0 25%, #dcdcdc 25%, #dcdcdc 50%, #c0c0c0 50%, #c0c0c0 75%, #dcdcdc 75%, #dcdcdc 100%);
-        background-size: 40px 40px;
-        animation: mistFlow 10s ease infinite; /* Gentle shifting */
-      }
+      /* SNES Theme (16-Bit) */
+      body.snes-theme { background-color: #c0c0c0; background-image: none; color: #333; }
       body.snes-theme .wii-bottom-bar { background-color: #e0e0e0; border-top: 4px solid #4f43ae; }
       body.snes-theme .wii-button { background-color: #b0b0b0; border: 2px solid #4f43ae; border-radius: 50%; }
       body.snes-theme .wii-button-svg { fill: #4f43ae; }
       body.snes-theme .page-dot.active { background-color: #4f43ae; border-color: #2e266f; }
 
-      /* 8. GameCube - Rolling Geometric Cube Pattern */
-      body.gamecube-theme { 
-        background-color: #6345a5; color: #fff; 
-        background-image: radial-gradient(circle, #52378b 20%, transparent 21%);
-        background-size: 30px 30px;
-        animation: cubeRoll 3s linear infinite;
-      }
+      /* GameCube Theme */
+      body.gamecube-theme { background-color: #6345a5; background-image: none; color: #fff; }
       body.gamecube-theme .wii-bottom-bar { background-color: #dbe0e7; border-top: 4px solid #ff8b0f; }
       body.gamecube-theme .wii-button { background-color: #dbe0e7; border: 2px solid #6345a5; }
       body.gamecube-theme .wii-button-svg { fill: #6345a5; }
       body.gamecube-theme .wii-date-time { color: #333; }
       
-      /* 9. Virtual Boy - Red Vibration */
-      body.virtualboy-theme { 
-        background-color: #000; color: #ff0000; 
-        background-image: linear-gradient(0deg, transparent 50%, #330000 50%);
-        background-size: 50px 50px;
-        animation: vibration 0.2s infinite;
-      }
+      /* Virtual Boy Theme */
+      body.virtualboy-theme { background-color: #000; background-image: none; color: #ff0000; }
       body.virtualboy-theme .wii-bottom-bar { background-color: #110000; border-top: 2px solid #ff0000; }
       body.virtualboy-theme .wii-button { background-color: #000; border: 1px solid #ff0000; box-shadow: 0 0 5px #ff0000; }
       body.virtualboy-theme .wii-button-svg { fill: #ff0000; filter: drop-shadow(0 0 2px #ff0000); }
       body.virtualboy-theme .wii-date-time { color: #ff0000; }
       body.virtualboy-theme .game-button { border: 1px solid #ff0000; filter: grayscale(100%) sepia(100%) hue-rotate(-50deg) saturate(600%); }
 
-      /* 10. Genesis (Sega) - High Speed Parallax */
-      body.genesis-theme { 
-        background-color: #000; color: #fff; 
-        background-image: linear-gradient(90deg, #000 0%, #111 50%, #000 100%);
-        background-size: 100px 100%;
-        animation: genesisSpeed 1s linear infinite;
-      }
-      body.genesis-theme .wii-bottom-bar { background-color: #1a1a1a; border-top: 2px solid #d0021b; } 
+      /* Genesis Theme (Sega) */
+      body.genesis-theme { background-color: #000; background-image: none; color: #fff; }
+      body.genesis-theme .wii-bottom-bar { background-color: #1a1a1a; border-top: 2px solid #d0021b; } /* Sega Red */
       body.genesis-theme .wii-button { background-color: #1a1a1a; border: 2px solid #777; border-radius: 50%; }
       body.genesis-theme .wii-button-svg { fill: #d0021b; }
       body.genesis-theme .wii-button:hover { border-color: #d0021b; box-shadow: 0 0 10px #d0021b; }
 
-      /* 11. PS1 - Swirling Cosmic Gradient */
-      body.ps1-theme { 
-        background-color: #b0b0b0; color: #000; 
-        background: linear-gradient(45deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
-        background-size: 600% 600%;
-        animation: ps1Swirl 15s ease infinite alternate;
-      }
-      body.ps1-theme .wii-bottom-bar { background-color: #00008b; border-top: 3px solid #00bfff; } 
+      /* PS1 Theme (PlayStation) */
+      body.ps1-theme { background-color: #b0b0b0; background-image: none; color: #000; }
+      body.ps1-theme .wii-bottom-bar { background-color: #00008b; border-top: 3px solid #00bfff; } /* BIOS Blue */
       body.ps1-theme .wii-button { background-color: #808080; border: 2px solid #444; border-radius: 4px; }
       body.ps1-theme .wii-button-svg { fill: #fff; }
       body.ps1-theme .wii-date-time { color: #fff; }
       body.ps1-theme .page-dot.active { background-color: #00bfff; }
 
-      /* 12. N64 - 3D Fog Pulse */
-      body.n64-theme { 
-        background-color: #2e2e2e; color: #fff; 
-        background-image: radial-gradient(circle at 50% 50%, #444, #2e2e2e);
-        background-size: 200% 200%;
-        animation: slowGlow 3s ease-in-out infinite alternate;
-      }
-      body.n64-theme .wii-bottom-bar { background-color: #444; border-top: 4px solid #fecb00; }
-      body.n64-theme .wii-button { background-color: #ddd; border: 2px solid #009624; }
-      body.n64-theme .wii-button:nth-child(2) { border-color: #d70014; }
+      /* N64 Theme */
+      body.n64-theme { background-color: #2e2e2e; background-image: none; color: #fff; }
+      body.n64-theme .wii-bottom-bar { background-color: #444; border-top: 4px solid #fecb00; /* C-Yellow */ }
+      body.n64-theme .wii-button { background-color: #ddd; border: 2px solid #009624; /* A-Green */ }
+      body.n64-theme .wii-button:nth-child(2) { border-color: #d70014; /* B-Red */ }
       body.n64-theme .wii-button-svg { fill: #333; }
       body.n64-theme .wii-date-time { color: #fff; }
 
-      /* 13. Xbox - Pulsing Green Plasma Blob */
-      body.xbox-theme { 
-        background-color: #0f0f0f; color: #107c10; 
-        background: radial-gradient(circle at 50% 50%, #107c10 0%, #000 60%);
-        background-size: 120% 120%;
-        background-position: center;
-        animation: plasmaPulse 5s ease-in-out infinite;
-      }
+      /* --- NEW THEMES --- */
+
+      /* Xbox Theme (Original) */
+      body.xbox-theme { background-color: #0f0f0f; background-image: none; color: #107c10; }
       body.xbox-theme .wii-bottom-bar { background-color: #000; border-top: 4px solid #107c10; }
       body.xbox-theme .wii-button { background-color: #000; border: 2px solid #107c10; border-radius: 50%; box-shadow: 0 0 10px rgba(16, 124, 16, 0.5); }
       body.xbox-theme .wii-button-svg { fill: #107c10; }
@@ -373,45 +303,32 @@
       body.xbox-theme .wii-button:hover .wii-button-svg { fill: #000; }
       body.xbox-theme .wii-date-time { color: #107c10; }
 
-      /* 14. Dreamcast - Rotating Spiral Swirl */
-      body.dreamcast-theme { 
-        background-color: #eef; color: #333; 
-        background-image: repeating-conic-gradient(#eef 0deg 10deg, #ddd 10deg 20deg);
-        animation: dreamcastSwirl 20s linear infinite;
-      }
+      /* Dreamcast Theme */
+      body.dreamcast-theme { background-color: #eef; background-image: none; color: #333; }
       body.dreamcast-theme .wii-bottom-bar { background-color: #fff; border-top: 4px solid #ff6600; }
       body.dreamcast-theme .wii-button { background-color: #fff; border: 2px solid #ff6600; border-radius: 50%; }
       body.dreamcast-theme .wii-button-svg { fill: #ff6600; }
       body.dreamcast-theme .page-dot.active { background-color: #ff6600; border-color: #cc5200; }
 
-      /* 15. Switch - Red/Blue Gradient Drift */
-      body.switch-theme { 
-        background-color: #2d2d2d; color: #fff; 
-        background: linear-gradient(135deg, #2d2d2d 0%, #2d2d2d 40%, #e60012 40%, #e60012 60%, #00c3e3 60%, #00c3e3 100%);
-        background-size: 200% 200%;
-        animation: mistFlow 8s ease infinite;
-      }
+      /* Switch Theme (Dark Handheld) */
+      body.switch-theme { background-color: #2d2d2d; background-image: none; color: #fff; }
       body.switch-theme .wii-bottom-bar { background-color: #1a1a1a; border-top: 4px solid #e60012; }
       body.switch-theme .wii-button { background-color: #333; border: 2px solid #e60012; border-radius: 50%; }
-      body.switch-theme .wii-button:nth-child(even) { border-color: #00c3e3; } 
+      body.switch-theme .wii-button:nth-child(even) { border-color: #00c3e3; } /* Alternating Joycon colors */
       body.switch-theme .wii-button-svg { fill: #fff; }
       
-      /* 16. Vaporwave - Perspective Moving Grid */
+      /* Vaporwave Theme */
       body.vaporwave-theme { 
         background-color: #2b0f3a; 
+        background-image: linear-gradient(180deg, #2b0f3a 0%, #ff71ce 100%); 
         color: #01cdfe; 
-        background-image: 
-          linear-gradient(0deg, transparent 24%, rgba(1, 205, 254, .3) 25%, rgba(1, 205, 254, .3) 26%, transparent 27%, transparent 74%, rgba(1, 205, 254, .3) 75%, rgba(1, 205, 254, .3) 76%, transparent 77%, transparent), 
-          linear-gradient(90deg, transparent 24%, rgba(1, 205, 254, .3) 25%, rgba(1, 205, 254, .3) 26%, transparent 27%, transparent 74%, rgba(1, 205, 254, .3) 75%, rgba(1, 205, 254, .3) 76%, transparent 77%, transparent);
-        background-size: 50px 50px;
-        animation: vaporGrid 1s linear infinite;
       }
       body.vaporwave-theme .wii-bottom-bar { background-color: rgba(43, 15, 58, 0.9); border-top: 2px solid #01cdfe; }
       body.vaporwave-theme .wii-button { background-color: #ff71ce; border: 2px solid #01cdfe; box-shadow: 4px 4px 0px rgba(1, 205, 254, 0.5); }
       body.vaporwave-theme .wii-button-svg { fill: #fff; }
       body.vaporwave-theme .game-button { box-shadow: 5px 5px 0 #ff71ce; border: 1px solid #01cdfe; }
 
-      /* 17. PS2 - Drifting Dark Pillars */
+      /* PS2 Theme (BIOS) */
       body.ps2-theme { 
         background-color: #000; 
         background-image: radial-gradient(circle at 50% 50%, #1a2a6c, #0d112b, #000);
@@ -431,6 +348,30 @@
       }
       body.ps2-theme .wii-button-svg { fill: #00d4ff; filter: drop-shadow(0 0 3px #00d4ff); }
       body.ps2-theme .game-button { border: 1px solid #005f99; opacity: 0.9; }
+
+      /* --- THEME ANIMATION OVERRIDES --- */
+      
+      /* 1. Animate the Main Wii Grid (Scrolls diagonally) */
+      body:not([class*="-theme"]) { animation: scrollGrid 10s linear infinite; }
+      
+      /* 2. Animate Retro Themes (Scanlines move down) */
+      body.nes-theme, body.snes-theme, body.genesis-theme, body.retro-green-theme, body.virtualboy-theme {
+        background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 3px, rgba(0,0,0,0.1) 4px);
+        background-size: 100% 8px; /* Size of scanlines */
+        animation: scanlineScroll 2s linear infinite;
+      }
+
+      /* 3. Animate Smooth Themes (Color Shifting) */
+      body.ocean-theme, body.cyberpunk-theme, body.vaporwave-theme, body.xbox-theme, body.dreamcast-theme {
+        background-size: 400% 400%;
+        animation: mistFlow 12s ease infinite;
+      }
+      
+      /* 4. Specific Pulse for Cyberpunk Buttons */
+      body.cyberpunk-theme .wii-button { animation: neonPulse 2s infinite; }
+
+      /* 5. Dark Mode & Switch (Subtle Pulse) */
+      body.dark-mode, body.switch-theme { animation: slowGlow 5s ease-in-out infinite alternate; }
 
     </style>
   </head>
