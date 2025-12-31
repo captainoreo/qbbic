@@ -11,30 +11,43 @@
     <style>
       /* --- CORE STYLES & VARIABLES --- */
       :root {
-        /* DEFAULT WII COLORS */
+        /* DEFAULT COLORS */
         --bg-color: #e6e8e7;
         --bar-color: #c9c5c2;
-        --static-color: #555555; /* Used for Text, Icons, and Grid lines */
-        --grid-color: #d6d8d7;   /* Fainter version for the background pattern */
+        --static-color: #555555;
+        
+        /* SHAPE & EFFECT VARIABLES */
+        --btn-radius: 50%;   /* For bottom bar buttons */
+        --card-radius: 12px; /* For game cards */
+        --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        --transform-hover: scale(1.05);
+        --transform-active: scale(0.95);
+      }
+
+      /* 3D MODE OVERRIDES */
+      body.mode-3d {
+        --box-shadow: 0 6px 0 var(--static-color), 0 10px 10px rgba(0,0,0,0.2);
+        --transform-hover: translateY(-4px);
+        --transform-active: translateY(2px) !important;
+      }
+      
+      /* Ensure text color adapts if 3D makes it heavy */
+      body.mode-3d .wii-button, body.mode-3d .game-button {
+          border-bottom-width: 4px; /* Thicker bottom border for 3D look */
       }
 
       @font-face { font-family: 'PopHappiness'; src: url('/assets/PopHappiness.OTF') format('opentype'); }
 
       /* --- GLOBAL ANIMATIONS --- */
       @keyframes scrollGrid { from { background-position: 0 0; } to { background-position: 40px 40px; } }
-      @keyframes slowGlow { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
 
       body {
         margin: 0;
         font-family: 'PopHappiness', sans-serif;
-        
-        /* Dynamic Variables applied here */
         background-color: var(--bg-color);
         color: var(--static-color);
-        
-        /* Default Grid Pattern (Will be overwritten by JS on load) */
+        /* Default Grid Pattern */
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
-        
         display: flex;
         flex-direction: column;
         min-height: 100vh;
@@ -58,11 +71,8 @@
       /* Bottom Bar */
       .wii-bottom-bar {
         position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
-        
-        /* Dynamic Bar Color */
         background-color: var(--bar-color); 
         border-top: 2px solid var(--static-color);
-        
         box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
         display: flex; justify-content: center; align-items: center;
         gap: 20px; padding: 0 20px; box-sizing: border-box; z-index: 100;
@@ -70,22 +80,28 @@
       }
       .wii-bottom-bar-content { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 900px; }
 
-      /* Round Bottom Buttons */
+      /* Bottom Buttons */
       .wii-button {
-        background-color: rgba(255,255,255, 0.3); /* Slightly transparent to adapt to bar color */
+        background-color: rgba(255,255,255, 0.3);
         border: 2px solid var(--static-color); 
-        border-radius: 50%;
+        border-radius: var(--btn-radius); /* Dynamic Shape */
         width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
-        cursor: pointer; transition: all 0.2s ease;
+        cursor: pointer; 
+        transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       }
       .wii-button:hover { 
-          transform: scale(1.05); 
+          transform: var(--transform-hover); 
           box-shadow: 0 0 8px var(--static-color); 
           cursor: url('/assets/Link-Select.png'), pointer; 
           background-color: rgba(255,255,255, 0.6);
       }
-      .wii-button.disabled { pointer-events: none; opacity: 0.5; }
+      .wii-button:active { transform: var(--transform-active); }
       
+      /* 3D Mode Specific Hovers */
+      body.mode-3d .wii-button { box-shadow: var(--box-shadow); transition: transform 0.1s; }
+      body.mode-3d .wii-button:hover { box-shadow: var(--box-shadow); }
+      body.mode-3d .wii-button:active { box-shadow: 0 0 0 transparent; transform: translateY(4px); }
+
       /* SVG Styling */
       .wii-button-svg { width: 60%; height: 60%; transition: filter 0.3s ease, fill 0.3s ease; fill: var(--static-color); }
       
@@ -108,7 +124,8 @@
       /* Game Cards (Buttons) */
       .game-button {
         width: 160px; height: 80px; background-color: #ffffff;
-        border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        border-radius: var(--card-radius); /* Dynamic Shape */
+        box-shadow: var(--box-shadow); /* Dynamic 3D */
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         text-decoration: none; color: black; font-weight: bold; text-align: center;
         position: relative; overflow: hidden; 
@@ -118,12 +135,18 @@
         border: 1px solid rgba(0,0,0,0.1);
       }
       .game-button:hover { 
-          transform: scale(1.05); 
+          transform: var(--transform-hover);
           box-shadow: 0 0 15px var(--static-color); 
           z-index: 20; 
           cursor: url('/assets/Link-Select.png'), pointer; 
           border-color: var(--static-color);
       }
+      
+      /* 3D Mode Game Button Specifics */
+      body.mode-3d .game-button { border: 2px solid var(--static-color); border-bottom-width: 5px; }
+      body.mode-3d .game-button:hover { box-shadow: 0 8px 0 var(--static-color); transform: translateY(-4px); }
+      body.mode-3d .game-button:active { box-shadow: 0 0 0 transparent; transform: translateY(4px); }
+
       .game-button-text {
         position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.9);
         font-size: 0.8rem; padding: 2px 0; display: none; color: #000;
@@ -140,26 +163,39 @@
         font-size: 0.7rem;
         opacity: 0.5;
       }
+      .game-button.placeholder:hover { transform: none; box-shadow: none; cursor: default; }
 
       /* Page Dots */
       .page-indicator { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
-      .page-dot { width: 10px; height: 10px; background-color: var(--bar-color); border: 2px solid var(--static-color); border-radius: 50%; transition: all 0.3s; }
-      .page-dot.active { background-color: var(--static-color); }
+      .page-dot { 
+          width: 14px; height: 14px; /* Slightly larger for clicking */
+          background-color: var(--bar-color); 
+          border: 2px solid var(--static-color); 
+          border-radius: 50%; 
+          transition: all 0.3s;
+          cursor: pointer; /* Change cursor to indicate clickability */
+      }
+      .page-dot:hover { transform: scale(1.3); background-color: rgba(255,255,255,0.5); }
+      .page-dot.active { background-color: var(--static-color); pointer-events: none; }
 
-      /* Search & Menus */
+      /* Menus */
       #search-container, #theme-menu, #music-menu {
         position: fixed; background: #fff; border: 2px solid var(--static-color); border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 200; display: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 200; display: none;
         color: #333;
       }
       #search-container { bottom: 110px; left: 50%; transform: translateX(-50%); padding: 10px; }
       
-      /* New Theme Menu Styles */
-      #theme-menu { bottom: 80px; right: 20px; width: 250px; padding: 15px; }
-      .theme-maker-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+      /* Theme Maker Menu */
+      #theme-menu { bottom: 80px; right: 20px; width: 280px; padding: 15px; }
+      .theme-maker-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
       .theme-maker-label { font-size: 0.9rem; font-weight: bold; color: #555; }
       input[type="color"] { width: 40px; height: 30px; border: none; cursor: pointer; background: none; }
-      #reset-theme-btn { width: 100%; padding: 8px; background: #ddd; border: 1px solid #aaa; cursor: pointer; margin-top: 10px; font-weight: bold; }
+      
+      select, input[type="checkbox"] { cursor: pointer; }
+      select { padding: 4px; border-radius: 4px; border: 1px solid #ccc; }
+      
+      #reset-theme-btn { width: 100%; padding: 8px; background: #ddd; border: 1px solid #aaa; cursor: pointer; margin-top: 10px; font-weight: bold; border-radius: 4px; }
       #reset-theme-btn:hover { background: #ccc; }
 
       #music-menu { bottom: 80px; left: 20px; width: 280px; padding: 10px; max-height: 400px; overflow-y: auto; }
@@ -190,7 +226,6 @@
         background-color: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       }
-
       #game-modal-title { font-size: 1.25rem; font-weight: bold; color: #40c4ff; font-family: 'Arial', sans-serif; }
       #game-modal-controls { display: flex; gap: 8px; align-items: center; }
 
@@ -366,7 +401,7 @@
         </nav>
 
         <nav class="game-buttons" aria-label="Page 7">
-          <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
            <div class="game-button placeholder">COMING SOON</div>
            <div class="game-button placeholder">COMING SOON</div>
            <div class="game-button placeholder">COMING SOON</div>
@@ -389,7 +424,7 @@
         </nav>
         
          <nav class="game-buttons" aria-label="Page 8">
-          <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
            <div class="game-button placeholder">COMING SOON</div>
            <div class="game-button placeholder">COMING SOON</div>
            <div class="game-button placeholder">COMING SOON</div>
@@ -478,6 +513,21 @@
         <div class="theme-maker-row">
             <span class="theme-maker-label">TV Static / Grid</span>
             <input type="color" id="input-static" value="#555555">
+        </div>
+
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">Button Shape</span>
+            <select id="input-shape">
+                <option value="round">Round</option>
+                <option value="squircle">Squircle</option>
+                <option value="rounded-square">Rounded Square</option>
+                <option value="square">Sharp Square</option>
+            </select>
+        </div>
+
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">3D Effects</span>
+            <input type="checkbox" id="input-3d">
         </div>
 
         <button id="reset-theme-btn">Reset Default</button>
@@ -594,11 +644,13 @@
         const savedTheme = localStorage.getItem('customTheme');
         if (savedTheme) {
             const theme = JSON.parse(savedTheme);
-            applyTheme(theme.bg, theme.bar, theme.static);
+            applyTheme(theme);
             // Update input values
-            document.getElementById('input-bg').value = theme.bg;
-            document.getElementById('input-bar').value = theme.bar;
-            document.getElementById('input-static').value = theme.static;
+            document.getElementById('input-bg').value = theme.bg || '#e6e8e7';
+            document.getElementById('input-bar').value = theme.bar || '#c9c5c2';
+            document.getElementById('input-static').value = theme.static || '#555555';
+            document.getElementById('input-shape').value = theme.shape || 'round';
+            document.getElementById('input-3d').checked = theme.is3d || false;
         }
 
         // Init Music (Persistence)
@@ -619,6 +671,14 @@
               const dot = document.createElement('div');
               dot.classList.add('page-dot');
               if (i === currentPage) dot.classList.add('active');
+              
+              // CLICKABLE DOT LOGIC
+              dot.addEventListener('click', () => {
+                  currentPage = i;
+                  updatePage();
+                  clickSound.currentTime = 0; clickSound.play().catch(()=>{});
+              });
+
               pageIndicatorDots.appendChild(dot);
           }
           prevPageButton.classList.toggle('disabled', currentPage === 0);
@@ -716,37 +776,71 @@
       const inputBg = document.getElementById('input-bg');
       const inputBar = document.getElementById('input-bar');
       const inputStatic = document.getElementById('input-static');
+      const inputShape = document.getElementById('input-shape');
+      const input3d = document.getElementById('input-3d');
       const btnReset = document.getElementById('reset-theme-btn');
 
-      function applyTheme(bg, bar, staticColor) {
-        // Set CSS Variables
+      function applyTheme(themeObj) {
+        const { bg, bar, static, shape, is3d } = themeObj;
+
+        // Colors
         document.documentElement.style.setProperty('--bg-color', bg);
         document.documentElement.style.setProperty('--bar-color', bar);
-        document.documentElement.style.setProperty('--static-color', staticColor);
+        document.documentElement.style.setProperty('--static-color', static);
         
-        // Regenerate SVG Background with the static color
-        const encodedColor = encodeURIComponent(staticColor);
+        // Shapes
+        let btnRad = '50%';
+        let cardRad = '12px';
+        if(shape === 'square') { btnRad = '0px'; cardRad = '0px'; }
+        else if(shape === 'rounded-square') { btnRad = '8px'; cardRad = '8px'; }
+        else if(shape === 'squircle') { btnRad = '20px'; cardRad = '20px'; }
+        
+        document.documentElement.style.setProperty('--btn-radius', btnRad);
+        document.documentElement.style.setProperty('--card-radius', cardRad);
+
+        // 3D Mode
+        if(is3d) document.body.classList.add('mode-3d');
+        else document.body.classList.remove('mode-3d');
+
+        // Regenerate SVG Background
+        const encodedColor = encodeURIComponent(static);
         const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
         document.body.style.backgroundImage = svg;
 
         // Save
-        localStorage.setItem('customTheme', JSON.stringify({ bg, bar, static: staticColor }));
+        localStorage.setItem('customTheme', JSON.stringify(themeObj));
       }
 
-      // Listeners for Inputs
-      [inputBg, inputBar, inputStatic].forEach(input => {
-        input.addEventListener('input', () => {
-            applyTheme(inputBg.value, inputBar.value, inputStatic.value);
+      function getCurrentThemeObj() {
+          return {
+              bg: inputBg.value,
+              bar: inputBar.value,
+              static: inputStatic.value,
+              shape: inputShape.value,
+              is3d: input3d.checked
+          };
+      }
+
+      // Listeners
+      [inputBg, inputBar, inputStatic, inputShape, input3d].forEach(input => {
+        input.addEventListener('change', () => {
+            applyTheme(getCurrentThemeObj());
         });
+        // Real-time update for colors
+        if(input.type === 'color') {
+            input.addEventListener('input', () => applyTheme(getCurrentThemeObj()));
+        }
       });
 
       // Reset Button
       btnReset.addEventListener('click', () => {
-          const defaults = { bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555' };
-          applyTheme(defaults.bg, defaults.bar, defaults.static);
+          const defaults = { bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', shape: 'round', is3d: false };
+          applyTheme(defaults);
           inputBg.value = defaults.bg;
           inputBar.value = defaults.bar;
           inputStatic.value = defaults.static;
+          inputShape.value = defaults.shape;
+          input3d.checked = defaults.is3d;
           clickSound.currentTime = 0; clickSound.play().catch(()=>{});
           showToast("Theme Reset");
       });
@@ -838,7 +932,7 @@
       }
       
       document.addEventListener('click', (e) => {
-          if (!e.target.closest('#theme-menu') && !e.target.closest('#theme-menu-toggle') && !e.target.closest('input[type="color"]')) {
+          if (!e.target.closest('#theme-menu') && !e.target.closest('#theme-menu-toggle') && !e.target.closest('input') && !e.target.closest('select')) {
               document.getElementById('theme-menu').style.display = 'none';
           }
           if (!e.target.closest('#music-menu') && !e.target.closest('#music-menu-toggle')) {
