@@ -11,20 +11,82 @@
     <style>
       /* --- CORE STYLES & VARIABLES --- */
       :root {
-        /* DEFAULT COLORS */
+        /* DEFAULT (Wii) VARIABLES */
         --bg-color: #e6e8e7;
         --bar-color: #c9c5c2;
         --static-color: #555555;
+        --text-color: #555555;
+        --accent-color: #40c4ff;
         
-        /* SHAPE & EFFECT VARIABLES */
-        --btn-radius: 50%;   /* For bottom bar buttons */
-        --card-radius: 12px; /* For game cards */
-        --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        --btn-radius: 50%;
+        --card-radius: 12px;
+        --font-family: 'PopHappiness', sans-serif;
+        --bar-border: 2px solid var(--static-color);
+        --btn-border: 2px solid var(--static-color);
+        --bg-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
+        
         --transform-hover: scale(1.05);
         --transform-active: scale(0.95);
+        --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
 
-      /* 3D MODE OVERRIDES */
+      /* --- THEME OVERRIDES --- */
+
+      /* NINTENDO DSi STYLE */
+      body[data-theme="dsi"] {
+        --bg-color: #ffffff;
+        --bar-color: #d6d6d6;
+        --static-color: #333333;
+        --text-color: #000000;
+        --btn-radius: 4px;
+        --card-radius: 4px;
+        --font-family: sans-serif; /* Cleaner, simpler font */
+        --bar-border: 1px solid #aaa;
+        --btn-border: 1px solid #888;
+        --bg-image: linear-gradient(90deg, transparent 95%, #eee 95%), linear-gradient(#eee 5%, transparent 5%);
+        --box-shadow: 0 2px 0 #bbb;
+        --transform-hover: translateY(-2px);
+      }
+
+      /* PS3 XMB STYLE */
+      body[data-theme="ps3"] {
+        --bg-color: #1a1a1a;
+        --bar-color: rgba(255, 255, 255, 0.1);
+        --static-color: #ffffff;
+        --text-color: #ffffff;
+        --btn-radius: 8px;
+        --card-radius: 2px;
+        --font-family: 'Arial', sans-serif;
+        --bar-border: none;
+        --btn-border: 1px solid rgba(255,255,255,0.2);
+        --bg-image: radial-gradient(circle at top right, #333, #000);
+        --box-shadow: 0 0 15px rgba(255,255,255,0.1);
+        --accent-color: #fca311;
+        --transform-hover: scale(1.1);
+      }
+      /* specific text override for PS3 */
+      body[data-theme="ps3"] .wii-date-time { text-shadow: 0 0 5px rgba(255,255,255,0.8); }
+      body[data-theme="ps3"] .wii-bottom-bar { backdrop-filter: blur(5px); }
+
+      /* XBOX 360 STYLE */
+      body[data-theme="xbox"] {
+        --bg-color: #e6e6e6;
+        --bar-color: #107c10; /* Xbox Green */
+        --static-color: #ffffff;
+        --text-color: #ffffff;
+        --btn-radius: 50%;
+        --card-radius: 16px;
+        --font-family: 'Arial Black', sans-serif;
+        --bar-border: 4px solid #ffffff;
+        --btn-border: 2px solid #ffffff;
+        --bg-image: repeating-linear-gradient(45deg, #ddd, #ddd 1px, #e6e6e6 1px, #e6e6e6 20px);
+        --box-shadow: 2px 4px 6px rgba(0,0,0,0.3);
+        --transform-hover: scale(1.05) rotate(2deg);
+      }
+      body[data-theme="xbox"] .wii-date-time { color: #fff; text-shadow: 1px 1px 2px #000; }
+      body[data-theme="xbox"] .wii-button svg { fill: #fff; }
+
+      /* 3D MODE OVERRIDES (Applies on top of themes) */
       body.mode-3d {
         --box-shadow: 0 6px 0 var(--static-color), 0 10px 10px rgba(0,0,0,0.2);
         --transform-hover: translateY(-4px);
@@ -43,11 +105,11 @@
 
       body {
         margin: 0;
-        font-family: 'PopHappiness', sans-serif;
+        font-family: var(--font-family);
         background-color: var(--bg-color);
-        color: var(--static-color);
-        /* Default Grid Pattern */
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
+        color: var(--text-color);
+        background-image: var(--bg-image);
+        background-size: 40px 40px; /* Default for grid, overridden by themes if needed */
         display: flex;
         flex-direction: column;
         min-height: 100vh;
@@ -57,8 +119,8 @@
         cursor: url('/assets/cursor.png'), auto;
         overflow-x: hidden;
         overflow-y: hidden;
-        transition: background-color 0.3s ease, color 0.3s ease;
-        animation: scrollGrid 10s linear infinite;
+        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        animation: scrollGrid 20s linear infinite;
       }
 
       /* Top Bar */
@@ -72,18 +134,18 @@
       .wii-bottom-bar {
         position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
         background-color: var(--bar-color); 
-        border-top: 2px solid var(--static-color);
+        border-top: var(--bar-border);
         box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
         display: flex; justify-content: center; align-items: center;
         gap: 20px; padding: 0 20px; box-sizing: border-box; z-index: 100;
-        transition: background-color 0.3s ease, border-color 0.3s ease;
+        transition: background-color 0.5s ease, border-color 0.5s ease;
       }
       .wii-bottom-bar-content { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 900px; }
 
       /* Bottom Buttons */
       .wii-button {
-        background-color: rgba(255,255,255, 0.3);
-        border: 2px solid var(--static-color); 
+        background-color: rgba(255,255,255, 0.2);
+        border: var(--btn-border);
         border-radius: var(--btn-radius); /* Dynamic Shape */
         width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
         cursor: pointer; 
@@ -97,13 +159,9 @@
       }
       .wii-button:active { transform: var(--transform-active); }
       
-      /* 3D Mode Specific Hovers */
-      body.mode-3d .wii-button { box-shadow: var(--box-shadow); transition: transform 0.1s; }
-      body.mode-3d .wii-button:hover { box-shadow: var(--box-shadow); }
-      body.mode-3d .wii-button:active { box-shadow: 0 0 0 transparent; transform: translateY(4px); }
-
       /* SVG Styling */
       .wii-button-svg { width: 60%; height: 60%; transition: filter 0.3s ease, fill 0.3s ease; fill: var(--static-color); }
+      body[data-theme="ps3"] .wii-button-svg { fill: #fff; } /* Force white icons on PS3 */
       
       .wii-date-time { font-size: 1rem; text-align: center; color: var(--static-color); user-select: none; }
       .wii-date-time .time { font-size: 1.5rem; }
@@ -131,7 +189,7 @@
         position: relative; overflow: hidden; 
         cursor: url('/assets/cursor.png'), auto;
         background-size: cover; background-position: center; background-repeat: no-repeat;
-        transition: transform 0.1s, box-shadow 0.1s;
+        transition: transform 0.2s, box-shadow 0.2s;
         border: 1px solid rgba(0,0,0,0.1);
       }
       .game-button:hover { 
@@ -142,11 +200,6 @@
           border-color: var(--static-color);
       }
       
-      /* 3D Mode Game Button Specifics */
-      body.mode-3d .game-button { border: 2px solid var(--static-color); border-bottom-width: 5px; }
-      body.mode-3d .game-button:hover { box-shadow: 0 8px 0 var(--static-color); transform: translateY(-4px); }
-      body.mode-3d .game-button:active { box-shadow: 0 0 0 transparent; transform: translateY(4px); }
-
       .game-button-text {
         position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.9);
         font-size: 0.8rem; padding: 2px 0; display: none; color: #000;
@@ -177,14 +230,27 @@
       }
       .page-dot:hover { transform: scale(1.3); background-color: rgba(255,255,255,0.5); }
       .page-dot.active { background-color: var(--static-color); pointer-events: none; }
+      /* PS3 Dot Override */
+      body[data-theme="ps3"] .page-dot { border-color: white; }
+      body[data-theme="ps3"] .page-dot.active { background-color: white; box-shadow: 0 0 10px white; }
 
       /* Menus */
-      #search-container, #theme-menu, #music-menu {
+      #search-container, #theme-menu, #music-menu, #qbbic-menu {
         position: fixed; background: #fff; border: 2px solid var(--static-color); border-radius: 10px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 200; display: none;
         color: #333;
       }
       #search-container { bottom: 110px; left: 50%; transform: translateX(-50%); padding: 10px; }
+      
+      /* Qbbic Style Switcher Menu */
+      #qbbic-menu { bottom: 80px; left: 50%; transform: translateX(-80px); width: 220px; padding: 10px; }
+      .qbbic-menu-heading { font-weight: bold; text-align: center; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 5px; font-size: 0.9rem; color: #555; }
+      .qbbic-menu-option { 
+          padding: 10px; cursor: pointer; border-radius: 6px; font-weight: bold; margin-bottom: 4px;
+          display: flex; align-items: center; gap: 10px; border: 1px solid transparent; transition: background 0.2s;
+      }
+      .qbbic-menu-option:hover { background-color: #f0f0f0; border-color: #ccc; }
+      .qbbic-icon { width: 24px; height: 24px; border-radius: 4px; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #555; }
       
       /* Theme Maker Menu */
       #theme-menu { bottom: 80px; right: 20px; width: 280px; padding: 15px; }
@@ -226,7 +292,7 @@
         background-color: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       }
-      #game-modal-title { font-size: 1.25rem; font-weight: bold; color: #40c4ff; font-family: 'Arial', sans-serif; }
+      #game-modal-title { font-size: 1.25rem; font-weight: bold; color: var(--accent-color); font-family: 'Arial', sans-serif; }
       #game-modal-controls { display: flex; gap: 8px; align-items: center; }
 
       .control-btn {
@@ -256,7 +322,7 @@
       #toast-notification.show { transform: translateX(-50%) translateY(0); }
     </style>
   </head>
-  <body>
+  <body data-theme="wii">
     <div class="wii-top-bar"></div>
 
     <div id="game-pages-container">
@@ -463,11 +529,11 @@
                 <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
             </svg>
         </div>
-        <a href="index.html" class="wii-button" id="wii-menu-button" title="Home">
+        <div class="wii-button" id="wii-menu-button" title="Select UI Style">
             <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm0 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
             </svg>
-        </a>
+        </div>
         <div class="wii-button" id="search-button" title="Search Games">
             <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
@@ -498,7 +564,7 @@
     </div>
 
     <div id="theme-menu">
-        <div class="theme-heading">Theme Maker</div>
+        <div class="theme-heading">Custom Theme Maker</div>
         
         <div class="theme-maker-row">
             <span class="theme-maker-label">Background</span>
@@ -540,6 +606,30 @@
         <hr class="music-divider">
         <div class="music-heading">Songs</div>
         <div id="music-list"></div>
+    </div>
+
+    <div id="qbbic-menu">
+        <div class="qbbic-menu-heading">Select UI Style</div>
+        
+        <div class="qbbic-menu-option" onclick="setUiTheme('wii')">
+            <div class="qbbic-icon">Wii</div>
+            Wii (Default)
+        </div>
+        
+        <div class="qbbic-menu-option" onclick="setUiTheme('dsi')">
+            <div class="qbbic-icon">DSi</div>
+            Nintendo DSi
+        </div>
+
+        <div class="qbbic-menu-option" onclick="setUiTheme('ps3')">
+            <div class="qbbic-icon" style="background:#000; color:#fff;">PS3</div>
+            PS3 XMB
+        </div>
+
+        <div class="qbbic-menu-option" onclick="setUiTheme('xbox')">
+            <div class="qbbic-icon" style="background:#107c10; color:#fff;">360</div>
+            Xbox 360
+        </div>
     </div>
 
     <div id="game-modal" role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
@@ -641,9 +731,15 @@
         setInterval(updateDateTime, 1000);
         
         // Init Themes
-        const savedTheme = localStorage.getItem('customTheme');
-        if (savedTheme) {
-            const theme = JSON.parse(savedTheme);
+        const savedCustomTheme = localStorage.getItem('customTheme');
+        // Check for UI Style Preset first
+        const savedUiStyle = localStorage.getItem('uiStyle');
+        if(savedUiStyle) {
+            setUiTheme(savedUiStyle);
+        }
+
+        if (savedCustomTheme) {
+            const theme = JSON.parse(savedCustomTheme);
             applyTheme(theme);
             // Update input values
             document.getElementById('input-bg').value = theme.bg || '#e6e8e7';
@@ -772,7 +868,22 @@
           if (requestFS) requestFS.call(gameIframe);
       });
 
-      // --- NEW THEME MAKER LOGIC ---
+      // --- UI STYLE SWITCHER LOGIC ---
+      function setUiTheme(themeName) {
+          document.body.setAttribute('data-theme', themeName);
+          localStorage.setItem('uiStyle', themeName);
+          
+          // Close menu
+          document.getElementById('qbbic-menu').style.display = 'none';
+          
+          // Sound effect
+          clickSound.currentTime = 0; 
+          clickSound.play().catch(()=>{});
+          
+          showToast("Switched to " + themeName.toUpperCase() + " Style");
+      }
+
+      // --- THEME MAKER LOGIC ---
       const inputBg = document.getElementById('input-bg');
       const inputBar = document.getElementById('input-bar');
       const inputStatic = document.getElementById('input-static');
@@ -783,12 +894,12 @@
       function applyTheme(themeObj) {
         const { bg, bar, static, shape, is3d } = themeObj;
 
-        // Colors
+        // Manually override CSS vars for custom theme
+        // Note: This overrides the Preset Theme variables
         document.documentElement.style.setProperty('--bg-color', bg);
         document.documentElement.style.setProperty('--bar-color', bar);
         document.documentElement.style.setProperty('--static-color', static);
         
-        // Shapes
         let btnRad = '50%';
         let cardRad = '12px';
         if(shape === 'square') { btnRad = '0px'; cardRad = '0px'; }
@@ -798,16 +909,14 @@
         document.documentElement.style.setProperty('--btn-radius', btnRad);
         document.documentElement.style.setProperty('--card-radius', cardRad);
 
-        // 3D Mode
         if(is3d) document.body.classList.add('mode-3d');
         else document.body.classList.remove('mode-3d');
 
-        // Regenerate SVG Background
+        // Custom SVG
         const encodedColor = encodeURIComponent(static);
         const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
-        document.body.style.backgroundImage = svg;
+        document.documentElement.style.setProperty('--bg-image', svg);
 
-        // Save
         localStorage.setItem('customTheme', JSON.stringify(themeObj));
       }
 
@@ -821,33 +930,33 @@
           };
       }
 
-      // Listeners
       [inputBg, inputBar, inputStatic, inputShape, input3d].forEach(input => {
         input.addEventListener('change', () => {
             applyTheme(getCurrentThemeObj());
         });
-        // Real-time update for colors
         if(input.type === 'color') {
             input.addEventListener('input', () => applyTheme(getCurrentThemeObj()));
         }
       });
 
-      // Reset Button
       btnReset.addEventListener('click', () => {
-          const defaults = { bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', shape: 'round', is3d: false };
-          applyTheme(defaults);
-          inputBg.value = defaults.bg;
-          inputBar.value = defaults.bar;
-          inputStatic.value = defaults.static;
-          inputShape.value = defaults.shape;
-          input3d.checked = defaults.is3d;
+          // Removes custom overrides, reverting to the 'data-theme' CSS
+          document.documentElement.style = ""; 
+          localStorage.removeItem('customTheme');
+          
           clickSound.currentTime = 0; clickSound.play().catch(()=>{});
-          showToast("Theme Reset");
+          showToast("Custom Theme Reset");
       });
 
-      // Toggle Menu
+      // Toggle Menus
       document.getElementById('theme-menu-toggle').addEventListener('click', () => {
           const menu = document.getElementById('theme-menu');
+          menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+          themeClickSound.currentTime = 0; themeClickSound.play().catch(()=>{});
+      });
+
+      document.getElementById('wii-menu-button').addEventListener('click', () => {
+          const menu = document.getElementById('qbbic-menu');
           menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
           themeClickSound.currentTime = 0; themeClickSound.play().catch(()=>{});
       });
@@ -937,6 +1046,9 @@
           }
           if (!e.target.closest('#music-menu') && !e.target.closest('#music-menu-toggle')) {
               document.getElementById('music-menu').style.display = 'none';
+          }
+          if (!e.target.closest('#qbbic-menu') && !e.target.closest('#wii-menu-button')) {
+              document.getElementById('qbbic-menu').style.display = 'none';
           }
       });
     </script>
