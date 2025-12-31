@@ -9,30 +9,45 @@
     <link rel="stylesheet" href="https://qottlebup.nekoweb.org/banner.css" />
     <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
     <style>
-      /* --- CORE STYLES --- */
-      /* Global Font Application */
-      @font-face { font-family: 'PopHappiness'; src: url('/assets/PopHappiness.OTF') format('opentype'); }
+      /* --- CORE STYLES & VARIABLES --- */
+      :root {
+        /* DEFAULT COLORS */
+        --bg-color: #e6e8e7;
+        --bar-color: #c9c5c2;
+        --static-color: #555555;
+        
+        /* SHAPE & EFFECT VARIABLES */
+        --btn-radius: 50%;   /* For bottom bar buttons */
+        --card-radius: 12px; /* For game cards */
+        --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        --transform-hover: scale(1.05);
+        --transform-active: scale(0.95);
+      }
 
-      /* Legacy fonts kept but unused */
-      @font-face { font-family: 'MarioKartDS'; src: url('MarioKartDS.ttf') format('truetype'); }
-      @font-face { font-family: 'Early GameBoy'; src: url('Early GameBoy.ttf') format('truetype'); }
-      @font-face { font-family: 'Virtual Boy'; src: url('Virtual Boy.ttf') format('truetype'); }
-      @font-face { font-family: 'monofonto'; src: url('monofonto.otf') format('opentype'); }
+      /* 3D MODE OVERRIDES */
+      body.mode-3d {
+        --box-shadow: 0 6px 0 var(--static-color), 0 10px 10px rgba(0,0,0,0.2);
+        --transform-hover: translateY(-4px);
+        --transform-active: translateY(2px) !important;
+      }
+      
+      /* Ensure text color adapts if 3D makes it heavy */
+      body.mode-3d .wii-button, body.mode-3d .game-button {
+          border-bottom-width: 4px; /* Thicker bottom border for 3D look */
+      }
+
+      @font-face { font-family: 'PopHappiness'; src: url('/assets/PopHappiness.OTF') format('opentype'); }
 
       /* --- GLOBAL ANIMATIONS --- */
       @keyframes scrollGrid { from { background-position: 0 0; } to { background-position: 40px 40px; } }
-      @keyframes mistFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-      @keyframes scanlineScroll { 0% { background-position: 0 0; } 100% { background-position: 0 100%; } }
-      @keyframes neonPulse { 0% { box-shadow: 0 0 5px #ff00c8; } 50% { box-shadow: 0 0 20px #ff00c8, 0 0 10px #00ffff; } 100% { box-shadow: 0 0 5px #ff00c8; } }
-      @keyframes slowGlow { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
 
       body {
         margin: 0;
         font-family: 'PopHappiness', sans-serif;
-        background-color: #e6e8e7;
-        /* Default Wii Grid Pattern */
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="%23e6e8e7"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
-        color: black;
+        background-color: var(--bg-color);
+        color: var(--static-color);
+        /* Default Grid Pattern */
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
         display: flex;
         flex-direction: column;
         min-height: 100vh;
@@ -43,19 +58,21 @@
         overflow-x: hidden;
         overflow-y: hidden;
         transition: background-color 0.3s ease, color 0.3s ease;
+        animation: scrollGrid 10s linear infinite;
       }
 
       /* Top Bar */
       .wii-top-bar {
         position: absolute; top: 0; left: 0; width: 100%; height: 100px;
-        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 100%);
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
         pointer-events: none; z-index: 100;
       }
 
       /* Bottom Bar */
       .wii-bottom-bar {
         position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
-        background-color: #c9c5c2; border-top: 2px solid #a4a2a0;
+        background-color: var(--bar-color); 
+        border-top: 2px solid var(--static-color);
         box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
         display: flex; justify-content: center; align-items: center;
         gap: 20px; padding: 0 20px; box-sizing: border-box; z-index: 100;
@@ -63,23 +80,32 @@
       }
       .wii-bottom-bar-content { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 900px; }
 
-      /* Round Bottom Buttons */
+      /* Bottom Buttons */
       .wii-button {
-        background-color: #d8d4d1; border: 2px solid #a4a2a0; border-radius: 50%;
+        background-color: rgba(255,255,255, 0.3);
+        border: 2px solid var(--static-color); 
+        border-radius: var(--btn-radius); /* Dynamic Shape */
         width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
-        cursor: pointer; transition: all 0.2s ease;
+        cursor: pointer; 
+        transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       }
       .wii-button:hover { 
-          transform: scale(1.05); 
-          box-shadow: 0 0 8px rgba(0, 161, 223, 0.4); 
+          transform: var(--transform-hover); 
+          box-shadow: 0 0 8px var(--static-color); 
           cursor: url('/assets/Link-Select.png'), pointer; 
+          background-color: rgba(255,255,255, 0.6);
       }
-      .wii-button.disabled { pointer-events: none; opacity: 0.5; }
+      .wii-button:active { transform: var(--transform-active); }
       
+      /* 3D Mode Specific Hovers */
+      body.mode-3d .wii-button { box-shadow: var(--box-shadow); transition: transform 0.1s; }
+      body.mode-3d .wii-button:hover { box-shadow: var(--box-shadow); }
+      body.mode-3d .wii-button:active { box-shadow: 0 0 0 transparent; transform: translateY(4px); }
+
       /* SVG Styling */
-      .wii-button-svg { width: 60%; height: 60%; transition: filter 0.3s ease, fill 0.3s ease; fill: #555; }
+      .wii-button-svg { width: 60%; height: 60%; transition: filter 0.3s ease, fill 0.3s ease; fill: var(--static-color); }
       
-      .wii-date-time { font-size: 1rem; text-align: center; color: #555; user-select: none; }
+      .wii-date-time { font-size: 1rem; text-align: center; color: var(--static-color); user-select: none; }
       .wii-date-time .time { font-size: 1.5rem; }
 
       /* Main Grid Container */
@@ -98,23 +124,32 @@
       /* Game Cards (Buttons) */
       .game-button {
         width: 160px; height: 80px; background-color: #ffffff;
-        border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        border-radius: var(--card-radius); /* Dynamic Shape */
+        box-shadow: var(--box-shadow); /* Dynamic 3D */
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         text-decoration: none; color: black; font-weight: bold; text-align: center;
         position: relative; overflow: hidden; 
         cursor: url('/assets/cursor.png'), auto;
         background-size: cover; background-position: center; background-repeat: no-repeat;
         transition: transform 0.1s, box-shadow 0.1s;
+        border: 1px solid rgba(0,0,0,0.1);
       }
       .game-button:hover { 
-          transform: scale(1.05); 
-          box-shadow: 0 0 15px rgba(0, 161, 223, 0.7); 
+          transform: var(--transform-hover);
+          box-shadow: 0 0 15px var(--static-color); 
           z-index: 20; 
           cursor: url('/assets/Link-Select.png'), pointer; 
+          border-color: var(--static-color);
       }
+      
+      /* 3D Mode Game Button Specifics */
+      body.mode-3d .game-button { border: 2px solid var(--static-color); border-bottom-width: 5px; }
+      body.mode-3d .game-button:hover { box-shadow: 0 8px 0 var(--static-color); transform: translateY(-4px); }
+      body.mode-3d .game-button:active { box-shadow: 0 0 0 transparent; transform: translateY(4px); }
+
       .game-button-text {
-        position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.8);
-        font-size: 0.8rem; padding: 2px 0; display: none; 
+        position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.9);
+        font-size: 0.8rem; padding: 2px 0; display: none; color: #000;
       }
       .game-button:hover .game-button-text { display: block; }
       
@@ -122,37 +157,54 @@
       .game-button.placeholder {
         background-image: none !important;
         background-color: rgba(255,255,255,0.3);
-        border: 2px dashed rgba(0,0,0,0.1);
+        border: 2px dashed var(--static-color);
         box-shadow: none;
-        color: rgba(0,0,0,0.3);
+        color: var(--static-color);
         font-size: 0.7rem;
+        opacity: 0.5;
       }
-      .game-button.placeholder:hover {
-        transform: none;
-        box-shadow: none;
-        cursor: default;
-      }
+      .game-button.placeholder:hover { transform: none; box-shadow: none; cursor: default; }
 
       /* Page Dots */
       .page-indicator { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
-      .page-dot { width: 10px; height: 10px; background-color: #d8d4d1; border: 2px solid #a4a2a0; border-radius: 50%; transition: all 0.3s; }
-      .page-dot.active { background-color: #0087c0; border-color: #005a80; }
+      .page-dot { 
+          width: 14px; height: 14px; /* Slightly larger for clicking */
+          background-color: var(--bar-color); 
+          border: 2px solid var(--static-color); 
+          border-radius: 50%; 
+          transition: all 0.3s;
+          cursor: pointer; /* Change cursor to indicate clickability */
+      }
+      .page-dot:hover { transform: scale(1.3); background-color: rgba(255,255,255,0.5); }
+      .page-dot.active { background-color: var(--static-color); pointer-events: none; }
 
-      /* Search & Menus */
+      /* Menus */
       #search-container, #theme-menu, #music-menu {
-        position: fixed; background: #fff; border: 2px solid #a4a2a0; border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 200; display: none;
+        position: fixed; background: #fff; border: 2px solid var(--static-color); border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 200; display: none;
+        color: #333;
       }
       #search-container { bottom: 110px; left: 50%; transform: translateX(-50%); padding: 10px; }
-      #theme-menu { bottom: 80px; right: 20px; width: 340px; padding: 10px; column-count: 2; }
-      #music-menu { bottom: 80px; left: 20px; width: 280px; padding: 10px; max-height: 400px; overflow-y: auto; }
       
-      .theme-option, .music-option { padding: 5px; cursor: pointer; border-radius: 4px; }
-      .theme-option:hover, .music-option:hover { background-color: #e0e0e0; }
-      .theme-heading, .music-heading { font-weight: bold; color: #888; margin: 5px 0; font-size: 0.8rem; text-transform: uppercase; }
-      .theme-divider, .music-divider { border: 0; height: 1px; background: #ccc; margin: 5px 0; }
+      /* Theme Maker Menu */
+      #theme-menu { bottom: 80px; right: 20px; width: 280px; padding: 15px; }
+      .theme-maker-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+      .theme-maker-label { font-size: 0.9rem; font-weight: bold; color: #555; }
+      input[type="color"] { width: 40px; height: 30px; border: none; cursor: pointer; background: none; }
+      
+      select, input[type="checkbox"] { cursor: pointer; }
+      select { padding: 4px; border-radius: 4px; border: 1px solid #ccc; }
+      
+      #reset-theme-btn { width: 100%; padding: 8px; background: #ddd; border: 1px solid #aaa; cursor: pointer; margin-top: 10px; font-weight: bold; border-radius: 4px; }
+      #reset-theme-btn:hover { background: #ccc; }
 
-      /* --- ADVANCED IFRAME MODAL STYLES --- */
+      #music-menu { bottom: 80px; left: 20px; width: 280px; padding: 10px; max-height: 400px; overflow-y: auto; }
+      .music-option { padding: 5px; cursor: pointer; border-radius: 4px; }
+      .music-option:hover { background-color: #e0e0e0; }
+      .music-heading { font-weight: bold; color: #888; margin: 5px 0; font-size: 0.8rem; text-transform: uppercase; }
+      .music-divider { border: 0; height: 1px; background: #ccc; margin: 5px 0; }
+
+      /* --- IFRAME MODAL STYLES --- */
       #game-modal {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background-color: rgba(0, 0, 0, 0.95);
@@ -169,22 +221,14 @@
         border: 1px solid rgba(255,255,255,0.1);
       }
 
-      /* Modal Header Bar */
       #game-modal-header {
         flex-shrink: 0; padding: 12px; display: flex; justify-content: space-between; align-items: center;
         background-color: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       }
-
-      #game-modal-title {
-        font-size: 1.25rem; font-weight: bold; color: #40c4ff;
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        font-family: 'Arial', sans-serif;
-      }
-
+      #game-modal-title { font-size: 1.25rem; font-weight: bold; color: #40c4ff; font-family: 'Arial', sans-serif; }
       #game-modal-controls { display: flex; gap: 8px; align-items: center; }
 
-      /* Control Buttons */
       .control-btn {
         background-color: rgba(255, 255, 255, 0.1); color: #e0e0e0;
         border: 1px solid rgba(255, 255, 255, 0.2);
@@ -194,186 +238,22 @@
       }
       .control-btn:hover { background-color: rgba(255, 255, 255, 0.2); transform: scale(1.05); }
       .control-btn svg { width: 20px; height: 20px; }
-      
       .control-btn.close-btn { background-color: #dc2626; border-color: #dc2626; color: white; }
-      .control-btn.close-btn:hover { background-color: #ef4444; }
 
-      /* Iframe Area */
       #game-iframe-wrapper { flex-grow: 1; position: relative; background-color: #000; }
       #game-iframe { width: 100%; height: 100%; border: none; display: block; }
       
-      /* --- TOAST NOTIFICATION --- */
+      /* --- TOAST --- */
       #toast-notification {
         position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
-        background-color: #00a1ff; color: white;
+        background-color: var(--bar-color); color: var(--static-color);
         padding: 12px 24px; border-radius: 30px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000;
-        font-weight: bold; border: 2px solid rgba(255,255,255,0.3); text-align: center;
+        font-weight: bold; border: 2px solid var(--static-color); text-align: center;
         font-family: sans-serif;
       }
       #toast-notification.show { transform: translateX(-50%) translateY(0); }
-
-
-      /* --- THEMES --- */
-      
-      /* Dark Mode */
-      body.dark-mode { background-color: #121212; background-image: none; color: #e0e0e0; }
-      body.dark-mode .wii-bottom-bar { background-color: #222; border-color: #444; }
-      body.dark-mode .wii-button { background-color: #333; border-color: #555; }
-      body.dark-mode .wii-button-svg { fill: #ccc; }
-      
-      /* Retro Green (GameBoy) */
-      body.retro-green-theme { background-color: #9bbc0f; background-image: none; color: #0f380f; }
-      body.retro-green-theme .wii-bottom-bar { background-color: #8cac0f; border-color: #5b710f; }
-      body.retro-green-theme .wii-button { background-color: #a7c12f; border-color: #5b710f; color: #0f380f; }
-      body.retro-green-theme .wii-button-svg { fill: #0f380f; }
-
-      /* Cyberpunk */
-      body.cyberpunk-theme { background-color: #1a082a; background-image: none; color: #00ffff; }
-      body.cyberpunk-theme .wii-bottom-bar { background-color: #3f0a57; border-top: 2px solid #ff00c8; }
-      body.cyberpunk-theme .wii-button { background-color: #5d157a; border-color: #00ffff; box-shadow: 0 0 5px #ff00c8; }
-      body.cyberpunk-theme .wii-button-svg { fill: #00ffff; }
-
-      /* Ocean */
-      body.ocean-theme { background-color: #e0f7fa; background-image: none; color: #00796b; }
-      body.ocean-theme .wii-bottom-bar { background-color: #80deea; border-color: #00bcd4; }
-      body.ocean-theme .wii-button { background-color: #b2ebf2; border-color: #00acc1; }
-      body.ocean-theme .wii-button-svg { fill: #006064; }
-
-      /* NES Theme (8-Bit) */
-      body.nes-theme { background-color: #202020; background-image: none; color: #fff; }
-      body.nes-theme .wii-bottom-bar { background-color: #404040; border-top: 4px solid #e60012; }
-      body.nes-theme .wii-button { background-color: #d1d1d1; border: 2px solid #000; border-radius: 4px; }
-      body.nes-theme .wii-button-svg { fill: #e60012; } 
-      body.nes-theme .wii-button:hover { background-color: #fff; box-shadow: 0 0 10px #e60012; transform: translateY(-2px); }
-
-      /* SNES Theme (16-Bit) */
-      body.snes-theme { background-color: #c0c0c0; background-image: none; color: #333; }
-      body.snes-theme .wii-bottom-bar { background-color: #e0e0e0; border-top: 4px solid #4f43ae; }
-      body.snes-theme .wii-button { background-color: #b0b0b0; border: 2px solid #4f43ae; border-radius: 50%; }
-      body.snes-theme .wii-button-svg { fill: #4f43ae; }
-      body.snes-theme .page-dot.active { background-color: #4f43ae; border-color: #2e266f; }
-
-      /* GameCube Theme */
-      body.gamecube-theme { background-color: #6345a5; background-image: none; color: #fff; }
-      body.gamecube-theme .wii-bottom-bar { background-color: #dbe0e7; border-top: 4px solid #ff8b0f; }
-      body.gamecube-theme .wii-button { background-color: #dbe0e7; border: 2px solid #6345a5; }
-      body.gamecube-theme .wii-button-svg { fill: #6345a5; }
-      body.gamecube-theme .wii-date-time { color: #333; }
-      
-      /* Virtual Boy Theme */
-      body.virtualboy-theme { background-color: #000; background-image: none; color: #ff0000; }
-      body.virtualboy-theme .wii-bottom-bar { background-color: #110000; border-top: 2px solid #ff0000; }
-      body.virtualboy-theme .wii-button { background-color: #000; border: 1px solid #ff0000; box-shadow: 0 0 5px #ff0000; }
-      body.virtualboy-theme .wii-button-svg { fill: #ff0000; filter: drop-shadow(0 0 2px #ff0000); }
-      body.virtualboy-theme .wii-date-time { color: #ff0000; }
-      body.virtualboy-theme .game-button { border: 1px solid #ff0000; filter: grayscale(100%) sepia(100%) hue-rotate(-50deg) saturate(600%); }
-
-      /* Genesis Theme (Sega) */
-      body.genesis-theme { background-color: #000; background-image: none; color: #fff; }
-      body.genesis-theme .wii-bottom-bar { background-color: #1a1a1a; border-top: 2px solid #d0021b; } /* Sega Red */
-      body.genesis-theme .wii-button { background-color: #1a1a1a; border: 2px solid #777; border-radius: 50%; }
-      body.genesis-theme .wii-button-svg { fill: #d0021b; }
-      body.genesis-theme .wii-button:hover { border-color: #d0021b; box-shadow: 0 0 10px #d0021b; }
-
-      /* PS1 Theme (PlayStation) */
-      body.ps1-theme { background-color: #b0b0b0; background-image: none; color: #000; }
-      body.ps1-theme .wii-bottom-bar { background-color: #00008b; border-top: 3px solid #00bfff; } /* BIOS Blue */
-      body.ps1-theme .wii-button { background-color: #808080; border: 2px solid #444; border-radius: 4px; }
-      body.ps1-theme .wii-button-svg { fill: #fff; }
-      body.ps1-theme .wii-date-time { color: #fff; }
-      body.ps1-theme .page-dot.active { background-color: #00bfff; }
-
-      /* N64 Theme */
-      body.n64-theme { background-color: #2e2e2e; background-image: none; color: #fff; }
-      body.n64-theme .wii-bottom-bar { background-color: #444; border-top: 4px solid #fecb00; /* C-Yellow */ }
-      body.n64-theme .wii-button { background-color: #ddd; border: 2px solid #009624; /* A-Green */ }
-      body.n64-theme .wii-button:nth-child(2) { border-color: #d70014; /* B-Red */ }
-      body.n64-theme .wii-button-svg { fill: #333; }
-      body.n64-theme .wii-date-time { color: #fff; }
-
-      /* --- NEW THEMES --- */
-
-      /* Xbox Theme (Original) */
-      body.xbox-theme { background-color: #0f0f0f; background-image: none; color: #107c10; }
-      body.xbox-theme .wii-bottom-bar { background-color: #000; border-top: 4px solid #107c10; }
-      body.xbox-theme .wii-button { background-color: #000; border: 2px solid #107c10; border-radius: 50%; box-shadow: 0 0 10px rgba(16, 124, 16, 0.5); }
-      body.xbox-theme .wii-button-svg { fill: #107c10; }
-      body.xbox-theme .wii-button:hover { background-color: #107c10; }
-      body.xbox-theme .wii-button:hover .wii-button-svg { fill: #000; }
-      body.xbox-theme .wii-date-time { color: #107c10; }
-
-      /* Dreamcast Theme */
-      body.dreamcast-theme { background-color: #eef; background-image: none; color: #333; }
-      body.dreamcast-theme .wii-bottom-bar { background-color: #fff; border-top: 4px solid #ff6600; }
-      body.dreamcast-theme .wii-button { background-color: #fff; border: 2px solid #ff6600; border-radius: 50%; }
-      body.dreamcast-theme .wii-button-svg { fill: #ff6600; }
-      body.dreamcast-theme .page-dot.active { background-color: #ff6600; border-color: #cc5200; }
-
-      /* Switch Theme (Dark Handheld) */
-      body.switch-theme { background-color: #2d2d2d; background-image: none; color: #fff; }
-      body.switch-theme .wii-bottom-bar { background-color: #1a1a1a; border-top: 4px solid #e60012; }
-      body.switch-theme .wii-button { background-color: #333; border: 2px solid #e60012; border-radius: 50%; }
-      body.switch-theme .wii-button:nth-child(even) { border-color: #00c3e3; } /* Alternating Joycon colors */
-      body.switch-theme .wii-button-svg { fill: #fff; }
-      
-      /* Vaporwave Theme */
-      body.vaporwave-theme { 
-        background-color: #2b0f3a; 
-        background-image: linear-gradient(180deg, #2b0f3a 0%, #ff71ce 100%); 
-        color: #01cdfe; 
-      }
-      body.vaporwave-theme .wii-bottom-bar { background-color: rgba(43, 15, 58, 0.9); border-top: 2px solid #01cdfe; }
-      body.vaporwave-theme .wii-button { background-color: #ff71ce; border: 2px solid #01cdfe; box-shadow: 4px 4px 0px rgba(1, 205, 254, 0.5); }
-      body.vaporwave-theme .wii-button-svg { fill: #fff; }
-      body.vaporwave-theme .game-button { box-shadow: 5px 5px 0 #ff71ce; border: 1px solid #01cdfe; }
-
-      /* PS2 Theme (BIOS) */
-      body.ps2-theme { 
-        background-color: #000; 
-        background-image: radial-gradient(circle at 50% 50%, #1a2a6c, #0d112b, #000);
-        background-size: 200% 200%;
-        color: #0096c7; 
-        animation: mistFlow 15s ease infinite;
-      }
-      body.ps2-theme .wii-bottom-bar { 
-        background: linear-gradient(to bottom, #0d112b, #000); 
-        border-top: 2px solid #005f99; 
-        box-shadow: 0 -5px 15px rgba(0, 150, 199, 0.3);
-      }
-      body.ps2-theme .wii-button { 
-        background: radial-gradient(circle, #2b3a8c, #000); 
-        border: 1px solid #005f99; 
-        box-shadow: 0 0 10px rgba(0, 95, 153, 0.5);
-      }
-      body.ps2-theme .wii-button-svg { fill: #00d4ff; filter: drop-shadow(0 0 3px #00d4ff); }
-      body.ps2-theme .game-button { border: 1px solid #005f99; opacity: 0.9; }
-
-      /* --- THEME ANIMATION OVERRIDES --- */
-      
-      /* 1. Animate the Main Wii Grid (Scrolls diagonally) */
-      body:not([class*="-theme"]) { animation: scrollGrid 10s linear infinite; }
-      
-      /* 2. Animate Retro Themes (Scanlines move down) */
-      body.nes-theme, body.snes-theme, body.genesis-theme, body.retro-green-theme, body.virtualboy-theme {
-        background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 3px, rgba(0,0,0,0.1) 4px);
-        background-size: 100% 8px; /* Size of scanlines */
-        animation: scanlineScroll 2s linear infinite;
-      }
-
-      /* 3. Animate Smooth Themes (Color Shifting) */
-      body.ocean-theme, body.cyberpunk-theme, body.vaporwave-theme, body.xbox-theme, body.dreamcast-theme {
-        background-size: 400% 400%;
-        animation: mistFlow 12s ease infinite;
-      }
-      
-      /* 4. Specific Pulse for Cyberpunk Buttons */
-      body.cyberpunk-theme .wii-button { animation: neonPulse 2s infinite; }
-
-      /* 5. Dark Mode & Switch (Subtle Pulse) */
-      body.dark-mode, body.switch-theme { animation: slowGlow 5s ease-in-out infinite alternate; }
-
     </style>
   </head>
   <body>
@@ -498,8 +378,8 @@
         </nav>
 
         <nav class="game-buttons" aria-label="Page 6">
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
+          <a data-href="/games/cldrawntolife.html" class="game-button" style="background-image: url('/assets/IMG_6778.jpeg');" title="Drawn to life"><span class="game-button-text">Drawn to life</span></a>
+          <a data-href="/games/cldrawntolife2.html" class="game-button" style="background-image: url('/assets/IMG_6779.jpeg');" title="Drawn to life: The next chapter"><span class="game-button-text">DTL: the next chapter</span></a>
           <div class="game-button placeholder">COMING SOON</div>
           <div class="game-button placeholder">COMING SOON</div>
           <div class="game-button placeholder">COMING SOON</div>
@@ -521,49 +401,49 @@
         </nav>
 
         <nav class="game-buttons" aria-label="Page 7">
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
         </nav>
-
-        <nav class="game-buttons" aria-label="Page 8">
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
+        
+         <nav class="game-buttons" aria-label="Page 8">
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
+           <div class="game-button placeholder">COMING SOON</div>
         </nav>
 
       </div>
@@ -583,9 +463,9 @@
                 <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
             </svg>
         </div>
-        <a href="index.html" class="wii-button" id="wii-menu-button" title="Home">
+        <a href="index.html" class="wii-button" id="wii-menu-button" title="Qbbic Menu">
             <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm0 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
             </svg>
         </a>
         <div class="wii-button" id="search-button" title="Search Games">
@@ -602,17 +482,55 @@
                 <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
             </svg>
         </div>
-        <div class="wii-button" id="theme-menu-toggle" title="Select Theme">
+        
+        <div class="wii-button" id="theme-menu-toggle" title="Theme Maker">
             <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
             </svg>
         </div>
+        
         <div class="wii-button" id="next-page-button" title="Next Page">
             <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
             </svg>
         </div>
       </div>
+    </div>
+
+    <div id="theme-menu">
+        <div class="theme-heading">Theme Maker</div>
+        
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">Background</span>
+            <input type="color" id="input-bg" value="#e6e8e7">
+        </div>
+
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">Wii Bar</span>
+            <input type="color" id="input-bar" value="#c9c5c2">
+        </div>
+        
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">TV Static / Grid</span>
+            <input type="color" id="input-static" value="#555555">
+        </div>
+
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">Button Shape</span>
+            <select id="input-shape">
+                <option value="round">Round</option>
+                <option value="squircle">Squircle</option>
+                <option value="rounded-square">Rounded Square</option>
+                <option value="square">Sharp Square</option>
+            </select>
+        </div>
+
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">3D Effects</span>
+            <input type="checkbox" id="input-3d">
+        </div>
+
+        <button id="reset-theme-btn">Reset Default</button>
     </div>
 
     <div id="music-menu">
@@ -622,33 +540,6 @@
         <hr class="music-divider">
         <div class="music-heading">Songs</div>
         <div id="music-list"></div>
-    </div>
-    
-    <div id="theme-menu">
-        <div class="theme-heading">Classic Modes</div>
-        <div class="theme-option" data-theme="light">Wii Mode</div>
-        <div class="theme-option" data-theme="dark">Dark Mode</div>
-        
-        <hr class="theme-divider">
-        <div class="theme-heading">Retro Consoles</div>
-        <div class="theme-option" data-theme="nes">NES (8-Bit)</div>
-        <div class="theme-option" data-theme="snes">SNES (16-Bit)</div>
-        <div class="theme-option" data-theme="n64">N64</div>
-        <div class="theme-option" data-theme="gamecube">GameCube</div>
-        <div class="theme-option" data-theme="ps1">PS1 (PlayStation)</div>
-        <div class="theme-option" data-theme="ps2">PS2 (BIOS)</div>
-        <div class="theme-option" data-theme="xbox">Xbox Original</div>
-        <div class="theme-option" data-theme="dreamcast">Dreamcast</div>
-        <div class="theme-option" data-theme="switch">Switch</div>
-        <div class="theme-option" data-theme="genesis">Genesis</div>
-        <div class="theme-option" data-theme="virtualboy">Virtual Boy</div>
-        <div class="theme-option" data-theme="retro-green">GameBoy</div>
-        
-        <hr class="theme-divider">
-        <div class="theme-heading">Styles</div>
-        <div class="theme-option" data-theme="cyberpunk">Cyberpunk</div>
-        <div class="theme-option" data-theme="vaporwave">Vaporwave</div>
-        <div class="theme-option" data-theme="ocean">Ocean Blue</div>
     </div>
 
     <div id="game-modal" role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
@@ -750,8 +641,17 @@
         setInterval(updateDateTime, 1000);
         
         // Init Themes
-        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
-        setTheme(savedTheme);
+        const savedTheme = localStorage.getItem('customTheme');
+        if (savedTheme) {
+            const theme = JSON.parse(savedTheme);
+            applyTheme(theme);
+            // Update input values
+            document.getElementById('input-bg').value = theme.bg || '#e6e8e7';
+            document.getElementById('input-bar').value = theme.bar || '#c9c5c2';
+            document.getElementById('input-static').value = theme.static || '#555555';
+            document.getElementById('input-shape').value = theme.shape || 'round';
+            document.getElementById('input-3d').checked = theme.is3d || false;
+        }
 
         // Init Music (Persistence)
         const savedBGM = localStorage.getItem('qbbic-bgm');
@@ -771,6 +671,14 @@
               const dot = document.createElement('div');
               dot.classList.add('page-dot');
               if (i === currentPage) dot.classList.add('active');
+              
+              // CLICKABLE DOT LOGIC
+              dot.addEventListener('click', () => {
+                  currentPage = i;
+                  updatePage();
+                  clickSound.currentTime = 0; clickSound.play().catch(()=>{});
+              });
+
               pageIndicatorDots.appendChild(dot);
           }
           prevPageButton.classList.toggle('disabled', currentPage === 0);
@@ -796,7 +704,6 @@
 
       // --- GAME CLICK LOGIC ---
       document.querySelectorAll('.game-button').forEach(btn => {
-          // Skip placeholders for click events
           if(btn.classList.contains('placeholder')) return;
 
           btn.addEventListener('mouseenter', () => {
@@ -865,34 +772,84 @@
           if (requestFS) requestFS.call(gameIframe);
       });
 
-      // --- THEME LOGIC ---
-      const customThemes = [
-          'dark', 'retro-green', 'cyberpunk', 'ocean', 'nes', 'snes', 
-          'gamecube', 'virtualboy', 'genesis', 'ps1', 'n64',
-          'xbox', 'dreamcast', 'switch', 'vaporwave', 'ps2'
-      ];
-      
-      function setTheme(themeName) {
-          document.body.className = ''; 
-          if (customThemes.includes(themeName)) {
-              if (themeName === 'dark') document.body.classList.add('dark-mode');
-              else document.body.classList.add(`${themeName}-theme`);
-          }
-          localStorage.setItem('selectedTheme', themeName);
+      // --- NEW THEME MAKER LOGIC ---
+      const inputBg = document.getElementById('input-bg');
+      const inputBar = document.getElementById('input-bar');
+      const inputStatic = document.getElementById('input-static');
+      const inputShape = document.getElementById('input-shape');
+      const input3d = document.getElementById('input-3d');
+      const btnReset = document.getElementById('reset-theme-btn');
+
+      function applyTheme(themeObj) {
+        const { bg, bar, static, shape, is3d } = themeObj;
+
+        // Colors
+        document.documentElement.style.setProperty('--bg-color', bg);
+        document.documentElement.style.setProperty('--bar-color', bar);
+        document.documentElement.style.setProperty('--static-color', static);
+        
+        // Shapes
+        let btnRad = '50%';
+        let cardRad = '12px';
+        if(shape === 'square') { btnRad = '0px'; cardRad = '0px'; }
+        else if(shape === 'rounded-square') { btnRad = '8px'; cardRad = '8px'; }
+        else if(shape === 'squircle') { btnRad = '20px'; cardRad = '20px'; }
+        
+        document.documentElement.style.setProperty('--btn-radius', btnRad);
+        document.documentElement.style.setProperty('--card-radius', cardRad);
+
+        // 3D Mode
+        if(is3d) document.body.classList.add('mode-3d');
+        else document.body.classList.remove('mode-3d');
+
+        // Regenerate SVG Background
+        const encodedColor = encodeURIComponent(static);
+        const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
+        document.body.style.backgroundImage = svg;
+
+        // Save
+        localStorage.setItem('customTheme', JSON.stringify(themeObj));
       }
 
+      function getCurrentThemeObj() {
+          return {
+              bg: inputBg.value,
+              bar: inputBar.value,
+              static: inputStatic.value,
+              shape: inputShape.value,
+              is3d: input3d.checked
+          };
+      }
+
+      // Listeners
+      [inputBg, inputBar, inputStatic, inputShape, input3d].forEach(input => {
+        input.addEventListener('change', () => {
+            applyTheme(getCurrentThemeObj());
+        });
+        // Real-time update for colors
+        if(input.type === 'color') {
+            input.addEventListener('input', () => applyTheme(getCurrentThemeObj()));
+        }
+      });
+
+      // Reset Button
+      btnReset.addEventListener('click', () => {
+          const defaults = { bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', shape: 'round', is3d: false };
+          applyTheme(defaults);
+          inputBg.value = defaults.bg;
+          inputBar.value = defaults.bar;
+          inputStatic.value = defaults.static;
+          inputShape.value = defaults.shape;
+          input3d.checked = defaults.is3d;
+          clickSound.currentTime = 0; clickSound.play().catch(()=>{});
+          showToast("Theme Reset");
+      });
+
+      // Toggle Menu
       document.getElementById('theme-menu-toggle').addEventListener('click', () => {
           const menu = document.getElementById('theme-menu');
           menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
           themeClickSound.currentTime = 0; themeClickSound.play().catch(()=>{});
-      });
-
-      document.querySelectorAll('.theme-option').forEach(opt => {
-          opt.addEventListener('click', () => {
-              setTheme(opt.dataset.theme);
-              document.getElementById('theme-menu').style.display = 'none';
-              clickSound.currentTime = 0; clickSound.play().catch(()=>{});
-          });
       });
 
       // --- SEARCH LOGIC ---
@@ -975,7 +932,7 @@
       }
       
       document.addEventListener('click', (e) => {
-          if (!e.target.closest('#theme-menu') && !e.target.closest('#theme-menu-toggle')) {
+          if (!e.target.closest('#theme-menu') && !e.target.closest('#theme-menu-toggle') && !e.target.closest('input') && !e.target.closest('select')) {
               document.getElementById('theme-menu').style.display = 'none';
           }
           if (!e.target.closest('#music-menu') && !e.target.closest('#music-menu-toggle')) {
