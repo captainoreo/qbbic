@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Qbbic Ultimate</title>
+    <title>Qbbic Ultimate - Wii Layout</title>
     <link rel="icon" href="/assets/fanny.gif" type="image/gif" />
     <link rel="stylesheet" href="https://qottlebup.nekoweb.org/banner.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
     <style>
-      /* --- CORE STYLES (Based on test.html) --- */
+      /* --- CORE STYLES --- */
       :root {
         /* DEFAULT COLORS */
         --bg-color: #e6e8e7;
@@ -19,11 +19,17 @@
         
         /* SHAPE & EFFECT VARIABLES */
         --btn-radius: 50%;
-        --card-radius: 12px;
+        --card-radius: 25px; 
         --card-opacity: 1;
-        --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        --box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
         --transform-hover: scale(1.05);
         --transform-active: scale(0.95);
+        
+        /* WII UI COLORS */
+        --wii-blue: #40c4ff;
+        --wii-blue-glow: rgba(64, 196, 255, 0.6);
+        --wii-gloss-top: #ffffff;
+        --wii-gloss-bottom: #dcdcdc;
         
         /* FONTS */
         --main-font: 'PopHappiness', sans-serif;
@@ -39,14 +45,15 @@
         font-family: var(--main-font);
         background-color: var(--bg-color);
         color: var(--static-color);
-        /* 10x10 Grid from test.html */
+        /* 10x10 Grid */
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
         background-size: 10px 10px;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
         align-items: center;
-        padding: 4rem 1rem;
+        justify-content: center;
+        padding: 0;
         box-sizing: border-box;
         cursor: url('/assets/cursor.png'), auto;
         overflow: hidden;
@@ -54,7 +61,7 @@
         animation: scrollGrid 10s linear infinite;
       }
 
-      /* THREE.JS CANVAS (Hidden by default) */
+      /* THREE.JS CANVAS */
       #three-canvas-container {
           position: fixed; top: 0; left: 0; width: 100%; height: 100%;
           z-index: -1; pointer-events: none;
@@ -66,7 +73,7 @@
       body.mode-3d {
         perspective: 1200px;
         overflow: hidden; 
-        background-image: none !important; /* ThreeJS takes over background */
+        background-image: none !important;
         animation: none;
       }
       
@@ -120,71 +127,89 @@
 
       /* Main Grid Container */
       #game-pages-container {
-        position: fixed; z-index: 10; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        width: 100%; max-width: 900px; padding-bottom: 120px; box-sizing: border-box; 
-        overflow: visible; /* Visible for 3D elements */
+        position: relative; 
+        z-index: 10; 
+        width: 100%; 
+        max-width: 1000px; 
+        height: 600px; 
+        padding-bottom: 0; 
+        box-sizing: border-box; 
+        overflow: visible;
         transform-style: preserve-3d;
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 60px;
       }
       #game-pages-wrapper { 
           display: flex; 
-          transition: transform 0.4s ease-in-out; 
+          transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); 
           width: 100%;
           transform-style: preserve-3d;
       }
       
-      /* Grid Layout (4x5) */
+      /* --- WII GRID LAYOUT (4x3) --- */
       .game-buttons {
-        display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr);
-        gap: 20px; width: 100%; height: 500px; justify-items: center; padding: 20px;
-        box-sizing: border-box; flex-shrink: 0;
+        display: grid; 
+        grid-template-columns: repeat(4, 1fr); 
+        grid-template-rows: repeat(3, 1fr); 
+        gap: 15px; 
+        width: 100%; 
+        height: 500px; 
+        justify-items: center; 
+        align-items: center;
+        padding: 0 40px; 
+        box-sizing: border-box; 
+        flex-shrink: 0;
         transform-style: preserve-3d;
       }
 
-      /* Game Cards */
+      /* --- WII CHANNEL CARD STYLES --- */
       .game-button {
-        width: 160px; height: 80px; background-color: #ffffff;
+        width: 220px; height: 130px;
+        background-color: #ffffff;
         border-radius: var(--card-radius); 
-        box-shadow: var(--box-shadow); 
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.1); 
         opacity: var(--card-opacity);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         text-decoration: none; color: black; font-weight: bold; text-align: center;
         position: relative; 
         cursor: url('/assets/cursor.png'), auto;
         background-size: cover; background-position: center; background-repeat: no-repeat;
-        transition: transform 0.1s, box-shadow 0.1s;
-        border: 1px solid rgba(0,0,0,0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        border: 4px solid #eaeaea;
         transform-style: preserve-3d;
       }
 
-      /* 2D Hover */
+      /* 2D Hover - The "Blue Glow" */
       body:not(.mode-3d) .game-button:hover { 
-          transform: var(--transform-hover);
-          box-shadow: 0 0 15px var(--static-color); 
+          transform: scale(1.02);
+          box-shadow: 0 0 0 6px var(--wii-blue-glow), 0 0 20px rgba(60, 180, 255, 0.4); 
+          border-color: #7bc6eb;
           z-index: 20; 
           cursor: url('/assets/Link-Select.png'), pointer; 
-          border-color: var(--static-color);
       }
 
       .game-button-text {
-        position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.9);
-        font-size: 0.8rem; padding: 2px 0; display: none; color: #000;
-        transform: translateZ(1px); /* Keep on top in 3D */
+        position: absolute; bottom: 0; width: 100%; 
+        background: rgba(255,255,255,0.85);
+        border-bottom-left-radius: var(--card-radius);
+        border-bottom-right-radius: var(--card-radius);
+        font-size: 0.9rem; padding: 4px 0; display: none; color: #333;
+        transform: translateZ(1px); 
       }
       .game-button:hover .game-button-text { display: block; }
       
-      /* Placeholder */
       .game-button.placeholder {
         background-image: none !important;
-        background-color: rgba(255,255,255,0.3);
-        border: 2px dashed var(--static-color);
+        background-color: rgba(255,255,255,0.4);
+        border: 2px dashed #cccccc;
         box-shadow: none;
-        color: var(--static-color);
-        font-size: 0.7rem;
-        opacity: 0.5;
+        color: #999;
+        font-size: 0.8rem;
+        opacity: 0.6;
         pointer-events: none;
       }
 
-      /* --- 3D MODE STYLES (CUBES) --- */
+      /* --- 3D MODE STYLES --- */
       body.mode-3d .game-button {
           transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
           box-shadow: none !important;
@@ -195,28 +220,31 @@
       
       .cube-face {
           position: absolute; width: 100%; height: 100%;
-          border: 1px solid rgba(0,0,0,0.1); box-sizing: border-box;
+          border: 1px solid rgba(0,0,0,0.05); box-sizing: border-box;
           background-color: #fff; display: none;
           border-radius: var(--card-radius);
       }
       body.mode-3d .cube-face { display: block; }
 
-      .cube-face.front { transform: translateZ(20px); background-size: cover; background-position: center; z-index: 2; }
-      .cube-face.back { transform: rotateY(180deg) translateZ(20px); background-color: var(--bar-color); }
-      .cube-face.right { width: 40px; right: -20px; transform: rotateY(90deg); background-color: #ddd; }
-      .cube-face.left { width: 40px; left: -20px; transform: rotateY(-90deg); background-color: #ddd; }
-      .cube-face.top { height: 40px; top: -20px; transform: rotateX(90deg); background-color: #eee; }
-      .cube-face.bottom { height: 40px; bottom: -20px; transform: rotateX(-90deg); background-color: #ccc; }
+      .cube-face.front { transform: translateZ(25px); background-size: cover; background-position: center; z-index: 2; border: 4px solid #eaeaea;}
+      .cube-face.back { transform: rotateY(180deg) translateZ(25px); background-color: var(--bar-color); }
+      .cube-face.right { width: 50px; right: -25px; transform: rotateY(90deg); background-color: #ddd; }
+      .cube-face.left { width: 50px; left: -25px; transform: rotateY(-90deg); background-color: #ddd; }
+      .cube-face.top { height: 50px; top: -25px; transform: rotateX(90deg); background-color: #eee; }
+      .cube-face.bottom { height: 50px; bottom: -25px; transform: rotateX(-90deg); background-color: #ccc; }
       
-      /* Fix corners */
       body.mode-3d .cube-face.right, body.mode-3d .cube-face.left, 
-      body.mode-3d .cube-face.top, body.mode-3d .cube-face.bottom { border-radius: 4px; }
+      body.mode-3d .cube-face.top, body.mode-3d .cube-face.bottom { border-radius: 8px; }
 
       /* 3D Hover */
       body.mode-3d .game-button:hover {
-          transform: translateZ(40px) scale(1.1) !important;
+          transform: translateZ(50px) scale(1.1) !important;
           z-index: 100;
           cursor: url('/assets/Link-Select.png'), pointer;
+      }
+      body.mode-3d .game-button:hover .cube-face.front {
+          box-shadow: 0 0 0 6px var(--wii-blue-glow);
+          border-color: #7bc6eb;
       }
 
       /* Fly In Animations */
@@ -230,30 +258,22 @@
       
       /* Stagger Logic */
       .game-buttons.animating .game-button:nth-child(1) { animation-delay: 0.05s; }
-      .game-buttons.animating .game-button:nth-child(2) { animation-delay: 0.08s; }
-      .game-buttons.animating .game-button:nth-child(3) { animation-delay: 0.11s; }
-      .game-buttons.animating .game-button:nth-child(4) { animation-delay: 0.14s; }
-      .game-buttons.animating .game-button:nth-child(5) { animation-delay: 0.17s; }
-      .game-buttons.animating .game-button:nth-child(6) { animation-delay: 0.20s; }
-      .game-buttons.animating .game-button:nth-child(7) { animation-delay: 0.23s; }
-      .game-buttons.animating .game-button:nth-child(8) { animation-delay: 0.26s; }
-      .game-buttons.animating .game-button:nth-child(9) { animation-delay: 0.29s; }
-      .game-buttons.animating .game-button:nth-child(10) { animation-delay: 0.32s; }
-      .game-buttons.animating .game-button:nth-child(11) { animation-delay: 0.35s; }
-      .game-buttons.animating .game-button:nth-child(12) { animation-delay: 0.38s; }
-      .game-buttons.animating .game-button:nth-child(13) { animation-delay: 0.41s; }
-      .game-buttons.animating .game-button:nth-child(14) { animation-delay: 0.44s; }
-      .game-buttons.animating .game-button:nth-child(15) { animation-delay: 0.47s; }
-      .game-buttons.animating .game-button:nth-child(16) { animation-delay: 0.50s; }
-      .game-buttons.animating .game-button:nth-child(17) { animation-delay: 0.53s; }
-      .game-buttons.animating .game-button:nth-child(18) { animation-delay: 0.56s; }
-      .game-buttons.animating .game-button:nth-child(19) { animation-delay: 0.59s; }
-      .game-buttons.animating .game-button:nth-child(20) { animation-delay: 0.62s; }
+      .game-buttons.animating .game-button:nth-child(2) { animation-delay: 0.10s; }
+      .game-buttons.animating .game-button:nth-child(3) { animation-delay: 0.15s; }
+      .game-buttons.animating .game-button:nth-child(4) { animation-delay: 0.20s; }
+      .game-buttons.animating .game-button:nth-child(5) { animation-delay: 0.25s; }
+      .game-buttons.animating .game-button:nth-child(6) { animation-delay: 0.30s; }
+      .game-buttons.animating .game-button:nth-child(7) { animation-delay: 0.35s; }
+      .game-buttons.animating .game-button:nth-child(8) { animation-delay: 0.40s; }
+      .game-buttons.animating .game-button:nth-child(9) { animation-delay: 0.45s; }
+      .game-buttons.animating .game-button:nth-child(10) { animation-delay: 0.50s; }
+      .game-buttons.animating .game-button:nth-child(11) { animation-delay: 0.55s; }
+      .game-buttons.animating .game-button:nth-child(12) { animation-delay: 0.60s; }
 
       /* Page Dots */
-      .page-indicator { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
+      .page-indicator { position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
       .page-dot { 
-          width: 14px; height: 14px; 
+          width: 12px; height: 12px; 
           background-color: var(--bar-color); 
           border: 2px solid var(--static-color); 
           border-radius: 50%; 
@@ -270,25 +290,20 @@
         color: #333;
       }
       
-      /* Search (Horizontal Layout from test.html) */
       #search-container { bottom: 110px; left: 50%; transform: translateX(-50%); padding: 10px; flex-direction: row; gap: 5px; }
       #search-input { padding: 5px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
       #search-submit-button { padding: 5px 12px; background: var(--static-color); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
 
-      /* Theme Menu (Restored Full Customization) */
       #theme-menu { bottom: 80px; right: 20px; width: 300px; padding: 15px; max-height: 80vh; overflow-y: auto; }
       .theme-heading { font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px; color: #444; }
       .theme-maker-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
       .theme-maker-label { font-size: 0.9rem; font-weight: bold; color: #555; }
-      
-      /* Inputs */
       input[type="color"] { width: 40px; height: 30px; border: none; cursor: pointer; background: none; }
       select, input[type="checkbox"] { cursor: pointer; }
       select { padding: 4px; border-radius: 4px; border: 1px solid #ccc; max-width: 140px; }
       input[type="text"] { width: 100%; padding: 5px; margin-bottom: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
       input[type="file"] { width: 100%; font-size: 0.8rem; }
       input[type="range"] { width: 100px; }
-
       .theme-btn-group { display: flex; gap: 5px; margin-top: 15px; }
       .theme-action-btn { flex: 1; padding: 8px; border: 1px solid #aaa; border-radius: 4px; cursor: pointer; font-weight: bold; background: #eee; font-size: 0.8rem; }
       .theme-action-btn:hover { background: #ddd; }
@@ -300,41 +315,82 @@
       .music-heading { font-weight: bold; color: #888; margin: 5px 0; font-size: 0.8rem; text-transform: uppercase; }
       .music-divider { border: 0; height: 1px; background: #ccc; margin: 5px 0; }
 
-      /* --- IFRAME MODAL STYLES --- */
+      /* --- UPDATED WII STYLE IFRAME MODAL --- */
       #game-modal {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background-color: rgba(0, 0, 0, 0.95);
+        background-color: rgba(0, 0, 0, 0.8); /* Slightly more transparent like a channel background */
         display: none; justify-content: center; align-items: center; z-index: 1000;
         opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+        backdrop-filter: blur(5px);
       }
       #game-modal.active { opacity: 1; pointer-events: auto; }
+      
+      /* The "Channel Window" Look */
       #game-modal-container {
-        width: 100%; height: 100%; max-width: 1280px; max-height: 95vh;
+        width: 100%; height: 100%; max-width: 1280px; max-height: 90vh;
         display: flex; flex-direction: column;
-        background-color: #111; border-radius: 16px;
-        overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        border: 1px solid rgba(255,255,255,0.1);
+        background-color: #f7f7f7; /* Glossy White */
+        border-radius: 24px;
+        overflow: hidden; 
+        box-shadow: 0 0 50px rgba(64, 196, 255, 0.3), 0 20px 40px rgba(0,0,0,0.4);
+        border: 5px solid #d4d4d4; /* Bezel */
       }
+      
       #game-modal-header {
-        flex-shrink: 0; padding: 12px; display: flex; justify-content: space-between; align-items: center;
-        background-color: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        flex-shrink: 0; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
+        background: linear-gradient(to bottom, #ffffff 0%, #eeeeee 100%);
+        border-bottom: 2px solid #ccc;
+        height: 60px;
       }
-      #game-modal-title { font-size: 1.25rem; font-weight: bold; color: #40c4ff; font-family: 'Arial', sans-serif; }
-      #game-modal-controls { display: flex; gap: 8px; align-items: center; }
+      
+      #game-modal-title { 
+          font-size: 1.5rem; 
+          font-weight: bold; 
+          color: #555; 
+          font-family: var(--main-font); 
+          text-shadow: 1px 1px 0px #fff;
+      }
+      
+      #game-modal-controls { display: flex; gap: 12px; align-items: center; }
 
+      /* Wii-Style "Capsule" Buttons */
       .control-btn {
-        background-color: rgba(255, 255, 255, 0.1); color: #e0e0e0;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 8px; width: 36px; height: 36px;
-        display: flex; align-items: center; justify-content: center;
+        background: linear-gradient(to bottom, #fcfcfc 0%, #dcdcdc 100%);
+        color: #555;
+        border: 2px solid #b0b0b0;
+        border-radius: 30px; /* Capsule Shape */
+        padding: 0 24px;
+        height: 40px;
+        width: auto;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
         cursor: pointer; transition: all 0.2s;
+        font-family: var(--main-font);
+        font-weight: bold;
+        font-size: 0.9rem;
       }
-      .control-btn:hover { background-color: rgba(255, 255, 255, 0.2); transform: scale(1.05); }
-      .control-btn svg { width: 20px; height: 20px; }
-      .control-btn.close-btn { background-color: #dc2626; border-color: #dc2626; color: white; }
+      
+      /* The Blue Glow Hover */
+      .control-btn:hover { 
+          border-color: #40c4ff;
+          box-shadow: 0 0 8px #40c4ff, inset 0 0 5px rgba(255,255,255,1); 
+          color: #0091ea;
+          transform: scale(1.05);
+      }
+      
+      .control-btn svg { width: 20px; height: 20px; fill: currentColor; }
+      
+      /* Specific Styling for Close Button */
+      .control-btn.close-btn { 
+         color: #d32f2f;
+         border-color: #ef9a9a;
+      }
+      .control-btn.close-btn:hover {
+          box-shadow: 0 0 8px #ff5252;
+          border-color: #ff1744;
+          color: #b71c1c;
+      }
 
-      #game-iframe-wrapper { flex-grow: 1; position: relative; background-color: #000; }
+      #game-iframe-wrapper { flex-grow: 1; position: relative; background-color: #000; border-top: 1px solid #999; }
       #game-iframe { width: 100%; height: 100%; border: none; display: block; }
       
       /* --- TOAST --- */
@@ -357,6 +413,7 @@
 
     <div id="game-pages-container">
       <div id="game-pages-wrapper">
+        
         <nav class="game-buttons" aria-label="Page 1">
           <a data-href="/games/clyumenikki.html" class="game-button" style="background-image: url('/assets/nikki.jpg');" title="Yume Nikki"><span class="game-button-text">Yume Nikki</span></a>
           <a data-href="/games/Cookie Clicker.html" class="game-button" style="background-image: url('/assets/cookie.png');" title="Cookie Clicker"><span class="game-button-text">Cookie Clicker</span></a>
@@ -370,6 +427,9 @@
           <a data-href="/games/n-gon.html" class="game-button" style="background-image: url('/assets/ngon.png');" title="N-GON"><span class="game-button-text">N-GON</span></a>
           <a data-href="https://deltacook.vercel.app/" class="game-button" style="background-image: url('/assets/hx2er6ahcrv11.gif');" title="Deltarune"><span class="game-button-text">Deltarune</span></a>
           <a data-href="/games/Half Life.html" class="game-button" style="background-image: url('/assets/2133.png');" title="Half-Life"><span class="game-button-text">Half-Life</span></a>
+        </nav>
+
+        <nav class="game-buttons" aria-label="Page 2">
           <a data-href="/games/Hollow Knight(1).html" class="game-button" style="background-image: url('/assets/knight.jpeg');" title="Hollow Knight"><span class="game-button-text">Hollow Knight</span></a>
           <a data-href="/games/clparappatherapperalt.html" class="game-button" style="background-image: url('/assets/Sony-playstation-parappa-the-rapper.png');" title="Parappa the Rapper"><span class="game-button-text">Parappa</span></a>
           <a data-href="/games/clsmashremix.html" class="game-button" style="background-image: url('/assets/remix.jpg');" title="Smash Remix"><span class="game-button-text">Smash Remix</span></a>
@@ -378,13 +438,13 @@
           <a data-href="/games/Kindergarten.html" class="game-button" style="background-image: url('/assets/garten1.png');" title="Kindergarten"><span class="game-button-text">Kindergarten</span></a>
           <a data-href="/games/Kindergarten 2.html" class="game-button" style="background-image: url('/assets/garten2.png');" title="Kindergarten 2"><span class="game-button-text">Kindergarten 2</span></a>
           <a data-href="/games/Kindergarten 3.html" class="game-button" style="background-image: url('/assets/garten3.png');" title="Kindergarten 3"><span class="game-button-text">Kindergarten 3</span></a>
-        </nav>
-
-        <nav class="game-buttons" aria-label="Page 2">
           <a data-href="/games/clkirbysadventure.html" class="game-button" style="background-image: url('/assets/kirby.png');" title="Kirby's Adventure"><span class="game-button-text">Kirby's Adventure</span></a>
           <a data-href="/games/clpacmana.html" class="game-button" style="background-image: url('/assets/pacman.png');" title="Pac-Man"><span class="game-button-text">Pac-Man</span></a>
           <a data-href="/games/clbindingofisaccsheeptime.html" class="game-button" style="background-image: url('/assets/350.png');" title="The Binding of Isaac"><span class="game-button-text">Isaac</span></a>
           <a data-href="/games/Dadish.html" class="game-button" style="background-image: url('/assets/IMG_6019.jpeg');" title="Dadish"><span class="game-button-text">Dadish</span></a>
+        </nav>
+
+        <nav class="game-buttons" aria-label="Page 3">
           <a data-href="/games/Dadish 2.html" class="game-button" style="background-image: url('/assets/IMG_6020.jpeg');" title="Dadish 2"><span class="game-button-text">Dadish 2</span></a>
           <a data-href="/games/Dadish 3.html" class="game-button" style="background-image: url('/assets/IMG_6021.jpeg');" title="Dadish 3"><span class="game-button-text">Dadish 3</span></a>
           <a data-href="/games/Dadish 3D.html" class="game-button" style="background-image: url('/assets/IMG_6022.jpeg');" title="Dadish 3D"><span class="game-button-text">Dadish 3D</span></a>
@@ -397,13 +457,13 @@
           <a data-href="/games/clundertale.html" class="game-button" style="background-image: url('/assets/undertale-pixel-art.gif');" title="Undertale"><span class="game-button-text">Undertale</span></a>
           <a data-href="/games/Balatro.html" class="game-button" style="background-image: url('/assets/Balatro_cover.jpg');" title="Balatro"><span class="game-button-text">Balatro</span></a>
           <a data-href="/games/clmonkeymart.html" class="game-button" style="background-image: url('/assets/IMG_6142.jpeg');" title="Monkey Mart"><span class="game-button-text">Monkey Mart</span></a>
+        </nav>
+        
+        <nav class="game-buttons" aria-label="Page 4">
           <a data-href="/games/pvz.html" class="game-button" style="background-image: url('/assets/Plantsvs.ZombiesNintendoDS.png');" title="Plants Vs Zombies"><span class="game-button-text">PvZ</span></a>
           <a data-href="/games/clctgpnitro.html" class="game-button" style="background-image: url('/assets/ctgp.jpg');" title="CTGP Nitro"><span class="game-button-text">CTGP Nitro</span></a>
           <a data-href="/games/clkirbysqueaksquad.html" class="game-button" style="background-image: url('/assets/squeak.png');" title="Kirby Squeak Squad"><span class="game-button-text">Squeak Squad</span></a>
           <a data-href="/games/clkirbysuperstarultra.html" class="game-button" style="background-image: url('/assets/ultra.jpg');" title="Kirby Super Star Ultra"><span class="game-button-text">Super Star Ultra</span></a>
-        </nav>
-
-        <nav class="game-buttons" aria-label="Page 3">
           <a data-href="/games/clgta2alt.html" class="game-button" style="background-image: url('/assets/gta2.jpg');" title="Grand Theft Auto 2"><span class="game-button-text">GTA 2</span></a>
           <a data-href="/games/clgtaalty.html" class="game-button" style="background-image: url('/assets/gta1.jpg');" title="Grand Theft Auto"><span class="game-button-text">GTA 1</span></a>
           <a data-href="/games/clocarinaoftime.html" class="game-button" style="background-image: url('/assets/oot.jpg');" title="Zelda: Ocarina of Time"><span class="game-button-text">Ocarina of Time</span></a>
@@ -412,6 +472,9 @@
           <a data-href="/games/cllearntofly.html" class="game-button" style="background-image: url('/assets/340.png');" title="Learn to Fly"><span class="game-button-text">Learn to Fly</span></a>
           <a data-href="/games/cllearntofly2.html" class="game-button" style="background-image: url('/assets/341.png');" title="Learn to Fly 2"><span class="game-button-text">Learn to Fly 2</span></a>
           <a data-href="/games/cllearntofly3.html" class="game-button" style="background-image: url('/assets/342.png');" title="Learn to Fly 3"><span class="game-button-text">Learn to Fly 3</span></a>
+        </nav>
+
+        <nav class="game-buttons" aria-label="Page 5">
           <a data-href="/games/cllearntoflyidle.html" class="game-button" style="background-image: url('/assets/343.png');" title="Learn to Fly Idle"><span class="game-button-text">Learn to Fly Idle</span></a>
           <a data-href="/games/clwebecomewhatwebehold.html" class="game-button" style="background-image: url('/assets/become.png');" title="We Become What We Behold"><span class="game-button-text">WBWWB</span></a>
           <a data-href="/games/ristar.html" class="game-button" style="background-image: url('/assets/ristar.jpeg');" title="Ristar"><span class="game-button-text">Ristar</span></a>
@@ -425,8 +488,8 @@
           <a data-href="/games/clfnafsl.html" class="game-button" style="background-image: url('/assets/fnafsl.png');" title="Sister Location"><span class="game-button-text">Sister Location</span></a>
           <a data-href="/games/clfnafps.html" class="game-button" style="background-image: url('/assets/FFPS.png');" title="Pizzeria Simulator"><span class="game-button-text">Pizzeria Sim</span></a>
         </nav>
-        
-        <nav class="game-buttons" aria-label="Page 4">
+
+        <nav class="game-buttons" aria-label="Page 6">
           <a data-href="/games/clfnac1.html" class="game-button" style="background-image: url('/assets/FNAC1ICON.png');" title="Five Nights at Candy's"><span class="game-button-text">FNAC 1</span></a>
           <a data-href="/games/clfridaynightfunkin.html" class="game-button" style="background-image: url('/assets/fnf.jpeg');" title="Friday Night Funkin"><span class="game-button-text">FNF</span></a>
           <a data-href="/games/clfruitninja.html" class="game-button" style="background-image: url('/assets/FruitNinja.jpg');" title="Fruit Ninja"><span class="game-button-text">Fruit Ninja</span></a>
@@ -439,6 +502,9 @@
           <a data-href="/games/clonebitadventure.html" class="game-button" style="background-image: url('/assets/onebit.png');" title="Onebit Adventure"><span class="game-button-text">Onebit</span></a>
           <a data-href="/games/clunitresdreams.html" class="game-button" style="background-image: url('/assets/IMG_6334.png');" title="Unitres Dreams"><span class="game-button-text">Unitres</span></a>
           <a data-href="/games/cltetris.html" class="game-button" style="background-image: url('/assets/IMG_6335.png');" title="Tetris"><span class="game-button-text">Tetris</span></a>
+        </nav>
+
+        <nav class="game-buttons" aria-label="Page 7">
           <a data-href="/games/clpeggle.html" class="game-button" style="background-image: url('/assets/IMG_6381.jpeg');" title="Peggle"><span class="game-button-text">Peggle</span></a>
           <a data-href="/games/clgranddad.html" class="game-button" style="background-image: url('/assets/IMG_6382.webp');" title="7 Grand Dad"><span class="game-button-text">Grand Dad</span></a>
           <a data-href="/games/clpicosschool.html" class="game-button" style="background-image: url('/assets/IMG_6383.png');" title="Pico's School"><span class="game-button-text">Pico's School</span></a>
@@ -447,13 +513,13 @@
           <a data-href="/games/clearthbound.html" class="game-button" style="background-image: url('/assets/IMG_6443.webp');" title="Mother"><span class="game-button-text">Mother</span></a>
           <a data-href="/games/clearthboundsnes.html" class="game-button" style="background-image: url('/assets/IMG_6444.jpeg');" title="Mother 2"><span class="game-button-text">Mother 2</span></a>
           <a data-href="/games/clearthbound3.html" class="game-button" style="background-image: url('/assets/IMG_6445.jpeg');" title="Mother 3"><span class="game-button-text">Mother 3</span></a>
-        </nav>
-        
-        <nav class="game-buttons" aria-label="Page 5 - New Games">
           <a data-href="/games/Buster Jam.html" class="game-button" style="background-image: url('/assets/boom.gif');" title="Buster Jam"><span class="game-button-text">Buster Jam</span></a>
           <a data-href="/games/clovofixed.html" class="game-button" style="background-image: url('/assets/ovo.jpeg');" title="OvO"><span class="game-button-text">OvO</span></a>
           <a data-href="/games/clmyteardrop.html" class="game-button" style="background-image: url('/assets/tear.gif');" title="My Teardrop"><span class="game-button-text">My Teardrop</span></a>
           <a data-href="/games/cljetpackjoyride(1).html" class="game-button" style="background-image: url('/assets/jetpack.jpeg');" title="Jetpack Joyride"><span class="game-button-text">Jetpack Joyride</span></a>
+        </nav>
+
+        <nav class="game-buttons" aria-label="Page 8">
           <a data-href="/games/clretrobowl.html" class="game-button" style="background-image: url('/assets/bowl.png');" title="Retro Bowl"><span class="game-button-text">Retro Bowl</span></a>
           <a data-href="/games/OMORI.html" class="game-button" style="background-image: url('/assets/IMG_6503.jpeg');" title="OMORI"><span class="game-button-text">OMORI</span></a>
           <a data-href="https://burritobison.vercel.app/" class="game-button" style="background-image: url('/assets/IMG_6510.png');" title="Burrito Bison"><span class="game-button-text">Burrito bison</span></a>
@@ -466,13 +532,13 @@
           <a data-href="/games/Grand Theft Auto_ Vice City.html" class="game-button" style="background-image: url('/assets/IMG_6556.jpeg');" title="GTA Vice city"><span class="game-button-text">GTA Vice city</span></a>
           <a data-href="/games/clsonicandfallingstar.html" class="game-button" style="background-image: url('/assets/IMG_6599.webp');" title="Sonic and the fallen star"><span class="game-button-text">Sonic and the fallen star</span></a>
           <a data-href="/games/clsuperfallingfred.html" class="game-button" style="background-image: url('/assets/IMG_6601.png');" title="Super falling fred"><span class="game-button-text">Super falling fred</span></a>
+        </nav>
+
+        <nav class="game-buttons" aria-label="Page 9">
           <a data-href="/games/clsolatrobo.html" class="game-button" style="background-image: url('/assets/IMG_6678.jpeg');" title="Solatorobo: Red the hunter"><span class="game-button-text">Solatorobo</span></a>
           <a data-href="/games/Please Dont Touch Anything.html" class="game-button" style="background-image: url('/assets/IMG_6691.png');" title="Please don't touch anything"><span class="game-button-text">don't touch anything</span></a>
           <a data-href="/games/1 Date Danger.html" class="game-button" style="background-image: url('/assets/IMG_6692.jpeg');" title="1 Date Danger"><span class="game-button-text">1 Date Danger</span></a>
           <a data-href="/games/cllozspirittracks.html" class="game-button" style="background-image: url('/assets/IMG_6744.png');" title="Zelda: Spirit tracks"><span class="game-button-text">Zelda: Spirit tracks</span></a>
-        </nav>
-
-        <nav class="game-buttons" aria-label="Page 6">
           <a data-href="/games/cldrawntolife.html" class="game-button" style="background-image: url('/assets/IMG_6778.jpeg');" title="Drawn to life"><span class="game-button-text">Drawn to life</span></a>
           <a data-href="/games/cldrawntolife2.html" class="game-button" style="background-image: url('/assets/IMG_6779.jpeg');" title="Drawn to life: The next chapter"><span class="game-button-text">DTL: the next chapter</span></a>
           <div class="game-button placeholder">COMING SOON</div>
@@ -481,64 +547,21 @@
           <div class="game-button placeholder">COMING SOON</div>
           <div class="game-button placeholder">COMING SOON</div>
           <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
-        </nav>
-
-        <nav class="game-buttons" aria-label="Page 7">
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
         </nav>
         
-         <nav class="game-buttons" aria-label="Page 8">
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
-           <div class="game-button placeholder">COMING SOON</div>
+        <nav class="game-buttons" aria-label="Page 10">
+          <div class="game-button placeholder">COMING SOON</div>
+          <div class="game-button placeholder">COMING SOON</div>
+          <div class="game-button placeholder">COMING SOON</div>
+          <div class="game-button placeholder">COMING SOON</div>
+          <div class="game-button placeholder">COMING SOON</div>
+          <div class="game-button placeholder">COMING SOON</div>
+          <div class="game-button placeholder">COMING SOON</div>
+          <div class="game-button placeholder">COMING SOON</div>
+          <div class="game-button placeholder">COMING SOON</div>
+          <div class="game-button placeholder">COMING SOON</div>
+          <div class="game-button placeholder">COMING SOON</div>
+          <div class="game-button placeholder">COMING SOON</div>
         </nav>
 
       </div>
@@ -555,23 +578,28 @@
       <div class="wii-bottom-bar-content">
         <div class="wii-button" id="prev-page-button" title="Previous Page">
             <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
             </svg>
         </div>
+        
         <a href="index.html" class="wii-button" id="wii-menu-button" title="Qbbic Menu">
             <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm0 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
+                <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm5 15h-2v-6H9v6H7v-7.81l5-4.5 5 4.5V18z"/>
+                <path d="M7 10.19V18h2v-6h6v6h2v-7.81l-5-4.5z" opacity="0.3"/>
             </svg>
         </a>
+        
         <div class="wii-button" id="search-button" title="Search Games">
             <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
             </svg>
         </div>
+        
         <div class="wii-date-time">
           <div class="time" id="current-time">12:00 AM</div>
           <div class="date" id="current-date">Fri 1/1</div>
         </div>
+        
         <div class="wii-button" id="music-menu-toggle" title="Select Music">
             <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
@@ -580,13 +608,13 @@
         
         <div class="wii-button" id="theme-menu-toggle" title="Theme Maker">
             <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/>
             </svg>
         </div>
         
         <div class="wii-button" id="next-page-button" title="Next Page">
             <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
             </svg>
         </div>
       </div>
@@ -666,29 +694,24 @@
                 <h2 id="game-modal-title">Game Title</h2>
                 <div id="game-modal-controls">
                     <button id="reload-game-btn" type="button" class="control-btn" title="Reload Game">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+                        <span>Reset</span>
                     </button>
                     <button id="open-new-tab-btn" type="button" class="control-btn" title="Open in New Tab">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                        <span>Tab</span>
                     </button>
                     <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloak)">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268-2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                        <span>Mask</span>
                     </button>
                     <button id="fullscreen-btn" type="button" class="control-btn" title="Fullscreen Game">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m0 11v-4m0 4h-4m4 0l-5-5m-5 5v-4m-5 4h4m-4 0l5-5" />
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                        <span>Max</span>
                     </button>
                     <button id="close-game-modal-btn" type="button" class="control-btn close-btn" title="Close Player">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
+                        <span>Close</span>
                     </button>
                 </div>
             </div>
@@ -1012,21 +1035,25 @@
         const fontVal = font === 'monospace' ? "'Courier New', monospace" : (font === 'sans-serif' ? "Arial, sans-serif" : "'PopHappiness', sans-serif");
         document.documentElement.style.setProperty('--main-font', fontVal);
         
-        let btnRad = '50%'; let cardRad = '12px';
+        let btnRad = '50%'; let cardRad = '25px'; 
         if(shape === 'square') { btnRad = '0px'; cardRad = '0px'; }
         else if(shape === 'rounded-square') { btnRad = '8px'; cardRad = '8px'; }
-        else if(shape === 'squircle') { btnRad = '20px'; cardRad = '20px'; }
+        else if(shape === 'squircle') { btnRad = '20px'; cardRad = '35px'; } 
+        
         document.documentElement.style.setProperty('--btn-radius', btnRad);
         document.documentElement.style.setProperty('--card-radius', cardRad);
 
         if(is3d) {
             document.body.classList.add('mode-3d');
             initThreeJS();
+            // Force redraw of page to reset transforms
+            gamePagesWrapper.style.transition = 'none';
             updatePage();
+            setTimeout(() => { gamePagesWrapper.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'; }, 50);
         } else {
             document.body.classList.remove('mode-3d');
             stopThreeJS();
-            gamePagesContainer.style.transform = 'translate(-50%, -50%)'; 
+            gamePagesContainer.style.transform = 'none'; 
         }
 
         if(bgImage && bgImage.trim() !== "") {
