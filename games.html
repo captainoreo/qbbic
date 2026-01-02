@@ -14,12 +14,13 @@
         /* DEFAULT COLORS */
         --bg-color: #e6e8e7;
         --bar-color: #c9c5c2;
-        --static-color: #555555;
+        --static-color: #555555; /* Grid lines */
+        --text-color: #555555;   /* Text color */
         --main-font: 'PopHappiness', sans-serif;
         
         /* SHAPE & EFFECT VARIABLES */
-        --btn-radius: 50%;   /* For bottom bar buttons */
-        --card-radius: 12px; /* For game cards */
+        --btn-radius: 50%;   
+        --card-radius: 12px; 
         --card-opacity: 1;
         --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         --transform-hover: scale(1.05);
@@ -44,7 +45,7 @@
       }
 
       body.mode-3d .wii-button, body.mode-3d .game-button {
-          border-bottom-width: 4px; /* Thicker bottom border for 3D look */
+          border-bottom-width: 4px; 
       }
 
       @font-face { font-family: 'PopHappiness'; src: url('/assets/PopHappiness.OTF') format('opentype'); }
@@ -56,8 +57,8 @@
         margin: 0;
         font-family: var(--main-font);
         background-color: var(--bg-color);
-        color: var(--static-color);
-        /* Default Grid Pattern - controlled by JS for updates */
+        color: var(--text-color);
+        /* Default Grid Pattern */
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
         background-size: auto;
         background-repeat: repeat;
@@ -74,7 +75,6 @@
         animation: scrollGrid 10s linear infinite;
       }
       
-      /* Stop animation if background is an image cover */
       body.bg-is-image {
           background-size: cover;
           background-position: center;
@@ -104,7 +104,7 @@
       .wii-button {
         background-color: rgba(255,255,255, 0.3);
         border: 2px solid var(--static-color); 
-        border-radius: var(--btn-radius); /* Dynamic Shape */
+        border-radius: var(--btn-radius); 
         width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
         cursor: pointer; 
         transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -117,15 +117,13 @@
       }
       .wii-button:active { transform: var(--transform-active); }
       
-      /* 3D Mode Specific Hovers */
       body.mode-3d .wii-button { box-shadow: var(--box-shadow); transition: transform 0.1s; }
       body.mode-3d .wii-button:hover { box-shadow: var(--box-shadow); }
       body.mode-3d .wii-button:active { box-shadow: 0 0 0 transparent; transform: translateY(4px); }
 
-      /* SVG Styling */
-      .wii-button-svg { width: 60%; height: 60%; transition: filter 0.3s ease, fill 0.3s ease; fill: var(--static-color); }
+      .wii-button-svg { width: 60%; height: 60%; transition: filter 0.3s ease, fill 0.3s ease; fill: var(--text-color); }
       
-      .wii-date-time { font-size: 1rem; text-align: center; color: var(--static-color); user-select: none; }
+      .wii-date-time { font-size: 1rem; text-align: center; color: var(--text-color); user-select: none; }
       .wii-date-time .time { font-size: 1.5rem; }
 
       /* Main Grid Container */
@@ -135,17 +133,29 @@
       }
       #game-pages-wrapper { display: flex; transition: transform 0.4s ease-in-out; width: 100%; }
       
+      /* RESPONSIVE GRID FIX */
       .game-buttons {
         display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr);
         gap: 20px; width: 100%; height: 500px; justify-items: center; padding: 20px;
         box-sizing: border-box; flex-shrink: 0;
       }
+      
+      @media (max-width: 768px) {
+          .game-buttons {
+              grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
+              grid-template-rows: repeat(6, 1fr);
+              height: 400px;
+              overflow-y: auto; 
+          }
+          .wii-bottom-bar { height: 70px; gap: 10px; }
+          .wii-button { width: 40px; height: 40px; }
+      }
 
       /* Game Cards (Buttons) */
       .game-button {
         width: 160px; height: 80px; background-color: #ffffff;
-        border-radius: var(--card-radius); /* Dynamic Shape */
-        box-shadow: var(--box-shadow); /* Dynamic 3D */
+        border-radius: var(--card-radius); 
+        box-shadow: var(--box-shadow); 
         opacity: var(--card-opacity);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         text-decoration: none; color: black; font-weight: bold; text-align: center;
@@ -161,10 +171,9 @@
           z-index: 20; 
           cursor: var(--cursor-pointer); 
           border-color: var(--static-color);
-          opacity: 1; /* Always full opacity on hover */
+          opacity: 1; 
       }
       
-      /* 3D Mode Game Button Specifics */
       body.mode-3d .game-button { border: 2px solid var(--static-color); border-bottom-width: 5px; }
       body.mode-3d .game-button:hover { box-shadow: 0 8px 0 var(--static-color); transform: translateY(-4px); }
       body.mode-3d .game-button:active { box-shadow: 0 0 0 transparent; transform: translateY(4px); }
@@ -182,16 +191,16 @@
         background-color: rgba(255,255,255,0.3);
         border: 2px dashed var(--static-color);
         box-shadow: none;
-        color: var(--static-color);
+        color: var(--text-color);
         font-size: 0.7rem;
         opacity: 0.5;
+        pointer-events: none;
       }
-      .game-button.placeholder:hover { transform: none; box-shadow: none; cursor: default; }
 
       /* Page Dots */
       .page-indicator { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
       .page-dot { 
-          width: 14px; height: 14px; /* Slightly larger for clicking */
+          width: 14px; height: 14px; 
           background-color: var(--bar-color); 
           border: 2px solid var(--static-color); 
           border-radius: 50%; 
@@ -208,7 +217,6 @@
         color: #333;
       }
       
-      /* --- UPGRADED SEARCH STYLES --- */
       #search-container { 
           bottom: 110px; left: 50%; transform: translateX(-50%); 
           width: 300px; padding: 0; overflow: hidden;
@@ -230,18 +238,25 @@
       .search-result-icon { width: 24px; height: 24px; background-size: cover; border-radius: 4px; background-color: #ddd; }
       .no-results { padding: 10px; text-align: center; color: #888; font-style: italic; }
 
-      /* Theme Maker Menu */
-      #theme-menu { bottom: 80px; right: 20px; width: 280px; padding: 15px; max-height: 80vh; overflow-y: auto; }
+      #theme-menu { bottom: 80px; right: 20px; width: 300px; padding: 15px; max-height: 80vh; overflow-y: auto; }
       .theme-maker-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
       .theme-maker-label { font-size: 0.9rem; font-weight: bold; color: #555; }
+      
       input[type="color"] { width: 40px; height: 30px; border: none; cursor: var(--cursor-pointer); background: none; }
       input[type="text"] { width: 120px; padding: 4px; border: 1px solid #ccc; border-radius: 4px; }
+      input[type="file"] { font-size: 0.8rem; width: 150px; }
       
       select, input[type="checkbox"], input[type="range"] { cursor: var(--cursor-pointer); }
       select { padding: 4px; border-radius: 4px; border: 1px solid #ccc; width: 130px; }
       
-      #reset-theme-btn { width: 100%; padding: 8px; background: #ddd; border: 1px solid #aaa; cursor: var(--cursor-pointer); margin-top: 10px; font-weight: bold; border-radius: 4px; }
-      #reset-theme-btn:hover { background: #ccc; }
+      .theme-btn { 
+          width: 100%; padding: 8px; background: #e0e0e0; border: 1px solid #aaa; 
+          cursor: var(--cursor-pointer); font-weight: bold; border-radius: 4px; text-align: center;
+          transition: background 0.2s;
+      }
+      .theme-btn:hover { background: #d0d0d0; }
+      .theme-btn.save-load { width: 48%; display: inline-block; font-size: 0.8rem; }
+      
       .theme-divider { height: 1px; background: #eee; margin: 10px 0; border: none; }
 
       #music-menu { bottom: 80px; left: 20px; width: 280px; padding: 10px; max-height: 400px; overflow-y: auto; }
@@ -292,7 +307,7 @@
       /* --- TOAST --- */
       #toast-notification {
         position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
-        background-color: var(--bar-color); color: var(--static-color);
+        background-color: var(--bar-color); color: var(--text-color);
         padding: 12px 24px; border-radius: 30px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000;
@@ -307,7 +322,6 @@
 
     <div id="game-pages-container">
       <div id="game-pages-wrapper">
-        
         <nav class="game-buttons" aria-label="Page 1">
           <a data-href="/games/clyumenikki.html" class="game-button" style="background-image: url('/assets/nikki.jpg');" title="Yume Nikki"><span class="game-button-text">Yume Nikki</span></a>
           <a data-href="/games/Cookie Clicker.html" class="game-button" style="background-image: url('/assets/cookie.png');" title="Cookie Clicker"><span class="game-button-text">Cookie Clicker</span></a>
@@ -551,13 +565,18 @@
         <div class="theme-heading">Theme Maker</div>
         
         <div class="theme-maker-row">
-            <span class="theme-maker-label">Background</span>
+            <span class="theme-maker-label">Background Color</span>
             <input type="color" id="input-bg" value="#e6e8e7">
         </div>
         
         <div class="theme-maker-row">
-            <span class="theme-maker-label">Custom Image (URL)</span>
+            <span class="theme-maker-label">Image URL</span>
             <input type="text" id="input-bg-image" placeholder="https://..." title="Paste direct image link">
+        </div>
+        
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">Upload Image</span>
+            <input type="file" id="input-bg-upload" accept="image/*">
         </div>
 
         <div class="theme-maker-row">
@@ -566,8 +585,13 @@
         </div>
         
         <div class="theme-maker-row">
-            <span class="theme-maker-label">TV Static / Grid</span>
+            <span class="theme-maker-label">Grid Lines</span>
             <input type="color" id="input-static" value="#555555">
+        </div>
+        
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">Text Color</span>
+            <input type="color" id="input-text" value="#555555">
         </div>
         
         <hr class="theme-divider">
@@ -608,7 +632,15 @@
             <input type="checkbox" id="input-cursor">
         </div>
 
-        <button id="reset-theme-btn">Reset Default</button>
+        <button id="reset-theme-btn" class="theme-btn">Reset Default</button>
+        
+        <hr class="theme-divider">
+        
+        <div class="theme-maker-row">
+            <button id="save-theme-btn" class="theme-btn save-load">Save Theme</button>
+            <button id="load-theme-btn" class="theme-btn save-load">Load Theme</button>
+            <input type="file" id="input-load-theme" accept=".json" style="display: none;">
+        </div>
     </div>
 
     <div id="music-menu">
@@ -728,11 +760,12 @@
                 document.getElementById('input-bg').value = theme.bg || '#e6e8e7';
                 document.getElementById('input-bar').value = theme.bar || '#c9c5c2';
                 document.getElementById('input-static').value = theme.static || '#555555';
+                document.getElementById('input-text').value = theme.text || '#555555';
                 document.getElementById('input-shape').value = theme.shape || 'round';
                 document.getElementById('input-3d').checked = theme.is3d || false;
                 
                 // New inputs init
-                if(theme.bgImage) document.getElementById('input-bg-image').value = theme.bgImage;
+                if(theme.bgImage && !theme.bgImage.startsWith('data:')) document.getElementById('input-bg-image').value = theme.bgImage;
                 if(theme.font) document.getElementById('input-font').value = theme.font;
                 if(theme.opacity) document.getElementById('input-opacity').value = theme.opacity;
                 if(theme.sysCursor) document.getElementById('input-cursor').checked = theme.sysCursor;
@@ -814,6 +847,12 @@
           currentGameUrl = url;
           gameModalTitle.textContent = title;
           gameIframe.src = url;
+          
+          // FIX: Force focus for keyboard support
+          gameIframe.onload = function() {
+              this.contentWindow.focus();
+          };
+          
           gameModal.style.display = 'flex';
           setTimeout(() => gameModal.classList.add('active'), 10);
           document.body.style.overflow = 'hidden';
@@ -838,6 +877,7 @@
           if (gameIframe.src && gameIframe.src !== 'about:blank') {
               gameIframe.src = gameIframe.src;
               showToast("Reloading game...");
+              setTimeout(() => { gameIframe.contentWindow.focus(); }, 500);
           }
       });
 
@@ -861,8 +901,10 @@
       // --- THEME MAKER LOGIC ---
       const inputBg = document.getElementById('input-bg');
       const inputBgImage = document.getElementById('input-bg-image');
+      const inputBgUpload = document.getElementById('input-bg-upload');
       const inputBar = document.getElementById('input-bar');
       const inputStatic = document.getElementById('input-static');
+      const inputText = document.getElementById('input-text');
       const inputShape = document.getElementById('input-shape');
       const inputFont = document.getElementById('input-font');
       const inputOpacity = document.getElementById('input-opacity');
@@ -870,13 +912,24 @@
       const inputCursor = document.getElementById('input-cursor');
       const btnReset = document.getElementById('reset-theme-btn');
 
+      // Helper function to manage local storage safely
+      function saveThemeToStorage(themeObj) {
+          try {
+              localStorage.setItem('customTheme', JSON.stringify(themeObj));
+          } catch(e) {
+              console.warn("Theme too large for storage (likely image size).", e);
+              showToast("Theme applied, but image too large to save!");
+          }
+      }
+
       function applyTheme(themeObj) {
-        const { bg, bar, static, shape, is3d, bgImage, font, opacity, sysCursor } = themeObj;
+        const { bg, bar, static, text, shape, is3d, bgImage, font, opacity, sysCursor } = themeObj;
 
         // Colors
         document.documentElement.style.setProperty('--bg-color', bg);
         document.documentElement.style.setProperty('--bar-color', bar);
         document.documentElement.style.setProperty('--static-color', static);
+        document.documentElement.style.setProperty('--text-color', text || static);
         
         // Font
         const fontVal = font === 'monospace' ? "'Courier New', monospace" : (font === 'sans-serif' ? "Arial, sans-serif" : "'PopHappiness', sans-serif");
@@ -914,16 +967,26 @@
             document.body.style.backgroundImage = svg;
         }
 
-        // Save
-        localStorage.setItem('customTheme', JSON.stringify(themeObj));
+        saveThemeToStorage(themeObj);
       }
 
       function getCurrentThemeObj() {
+          // Check if we have a base64 image currently applied, otherwise take URL
+          let currentBgImage = inputBgImage.value;
+          
+          // If the body has a base64 image (uploaded), prioritize that over text input
+          const currentBodyBg = document.body.style.backgroundImage;
+          if(currentBodyBg.includes('data:image')) {
+              // Extract url('...')
+              currentBgImage = currentBodyBg.slice(5, -2);
+          }
+
           return {
               bg: inputBg.value,
-              bgImage: inputBgImage.value,
+              bgImage: currentBgImage,
               bar: inputBar.value,
               static: inputStatic.value,
+              text: inputText.value,
               shape: inputShape.value,
               font: inputFont.value,
               opacity: inputOpacity.value,
@@ -933,20 +996,92 @@
       }
 
       // Listeners
-      [inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity, input3d, inputCursor].forEach(input => {
+      [inputBg, inputBar, inputStatic, inputText, inputShape, inputFont, inputOpacity, input3d, inputCursor].forEach(input => {
         input.addEventListener('change', () => applyTheme(getCurrentThemeObj()));
         if(input.type === 'color' || input.type === 'range') {
             input.addEventListener('input', () => applyTheme(getCurrentThemeObj()));
         }
       });
       
-      // Separate listener for text input to prevent lag
-      inputBgImage.addEventListener('change', () => applyTheme(getCurrentThemeObj()));
+      // Separate listener for text input
+      inputBgImage.addEventListener('change', () => {
+          // Clear file input if URL is used
+          inputBgUpload.value = '';
+          applyTheme(getCurrentThemeObj());
+      });
+
+      // --- NEW: UPLOAD LOGIC ---
+      inputBgUpload.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+              const reader = new FileReader();
+              reader.onload = (event) => {
+                  const dataUrl = event.target.result;
+                  const currentTheme = getCurrentThemeObj();
+                  currentTheme.bgImage = dataUrl;
+                  // Clear text input to avoid confusion
+                  inputBgImage.value = '';
+                  applyTheme(currentTheme);
+              };
+              reader.readAsDataURL(file);
+          }
+      });
+
+      // --- NEW: SAVE/LOAD LOGIC ---
+      document.getElementById('save-theme-btn').addEventListener('click', () => {
+          const theme = getCurrentThemeObj();
+          const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(theme));
+          const downloadAnchorNode = document.createElement('a');
+          downloadAnchorNode.setAttribute("href", dataStr);
+          downloadAnchorNode.setAttribute("download", "qbbic_theme.json");
+          document.body.appendChild(downloadAnchorNode);
+          downloadAnchorNode.click();
+          downloadAnchorNode.remove();
+          showToast("Theme Exported!");
+      });
+
+      document.getElementById('load-theme-btn').addEventListener('click', () => {
+          document.getElementById('input-load-theme').click();
+      });
+
+      document.getElementById('input-load-theme').addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if(!file) return;
+          const reader = new FileReader();
+          reader.onload = (event) => {
+              try {
+                  const theme = JSON.parse(event.target.result);
+                  applyTheme(theme);
+                  
+                  // Update UI controls to match loaded theme
+                  inputBg.value = theme.bg || '#e6e8e7';
+                  inputBar.value = theme.bar || '#c9c5c2';
+                  inputStatic.value = theme.static || '#555555';
+                  inputText.value = theme.text || '#555555';
+                  inputShape.value = theme.shape || 'round';
+                  inputFont.value = theme.font || 'PopHappiness';
+                  inputOpacity.value = theme.opacity || 1;
+                  input3d.checked = theme.is3d || false;
+                  inputCursor.checked = theme.sysCursor || false;
+                  
+                  if(theme.bgImage && !theme.bgImage.startsWith('data:')) {
+                      inputBgImage.value = theme.bgImage;
+                  } else {
+                      inputBgImage.value = '';
+                  }
+
+                  showToast("Theme Loaded!");
+              } catch(e) {
+                  showToast("Error Loading Theme File");
+              }
+          };
+          reader.readAsText(file);
+      });
 
       // Reset Button
       btnReset.addEventListener('click', () => {
           const defaults = { 
-              bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', 
+              bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', text: '#555555',
               shape: 'round', is3d: false, bgImage: '', 
               font: 'PopHappiness', opacity: 1, sysCursor: false 
           };
@@ -955,9 +1090,11 @@
           inputBg.value = defaults.bg;
           inputBar.value = defaults.bar;
           inputStatic.value = defaults.static;
+          inputText.value = defaults.text;
           inputShape.value = defaults.shape;
           input3d.checked = defaults.is3d;
           inputBgImage.value = '';
+          inputBgUpload.value = '';
           inputFont.value = 'PopHappiness';
           inputOpacity.value = 1;
           inputCursor.checked = false;
@@ -973,7 +1110,7 @@
           themeClickSound.currentTime = 0; themeClickSound.play().catch(()=>{});
       });
 
-      // --- UPGRADED SEARCH LOGIC ---
+      // --- SEARCH LOGIC ---
       const searchButton = document.getElementById('search-button');
       const searchContainer = document.getElementById('search-container');
       const searchInput = document.getElementById('search-input');
@@ -1011,7 +1148,6 @@
               const div = document.createElement('div');
               div.className = 'search-result-item';
               
-              // Clone the icon logic
               const iconDiv = document.createElement('div');
               iconDiv.className = 'search-result-icon';
               iconDiv.style.backgroundImage = btn.style.backgroundImage;
@@ -1039,7 +1175,6 @@
       });
 
       function navigateToGame(targetBtn) {
-          // Find which page the button is on
           const pageContainer = targetBtn.closest('.game-buttons');
           const allPages = document.querySelectorAll('.game-buttons');
           const pageIndex = Array.from(allPages).indexOf(pageContainer);
@@ -1048,18 +1183,20 @@
               currentPage = pageIndex;
               updatePage();
               
-              // Highlight effect
-              targetBtn.scrollIntoView({behavior: 'smooth', block: 'center'});
-              targetBtn.style.transition = "box-shadow 0.2s, transform 0.2s";
-              targetBtn.style.boxShadow = "0 0 40px #ffcc00";
-              targetBtn.style.transform = "scale(1.2)";
-              targetBtn.style.zIndex = "50";
-              
+              // Wait for slide animation to finish slightly before scrolling
               setTimeout(() => {
-                  targetBtn.style.boxShadow = "";
-                  targetBtn.style.transform = "";
-                  targetBtn.style.zIndex = "";
-              }, 1500);
+                  targetBtn.scrollIntoView({behavior: 'smooth', block: 'center'});
+                  targetBtn.style.transition = "box-shadow 0.2s, transform 0.2s";
+                  targetBtn.style.boxShadow = "0 0 40px #ffcc00";
+                  targetBtn.style.transform = "scale(1.2)";
+                  targetBtn.style.zIndex = "50";
+                  
+                  setTimeout(() => {
+                      targetBtn.style.boxShadow = "";
+                      targetBtn.style.transform = "";
+                      targetBtn.style.zIndex = "";
+                  }, 1500);
+              }, 100);
           }
       }
 
