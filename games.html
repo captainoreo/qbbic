@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Qbbic 3D</title>
+    <title>Qbbic Ultimate</title>
     <link rel="icon" href="/assets/fanny.gif" type="image/gif" />
     <link rel="stylesheet" href="https://qottlebup.nekoweb.org/banner.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
     <style>
-      /* --- CORE STYLES & VARIABLES (From test.html) --- */
+      /* --- CORE STYLES (Based on test.html) --- */
       :root {
         /* DEFAULT COLORS */
         --bg-color: #e6e8e7;
@@ -18,14 +18,12 @@
         --static-color: #555555;
         
         /* SHAPE & EFFECT VARIABLES */
-        --btn-radius: 50%;   /* For bottom bar buttons */
-        --card-radius: 12px; /* For game cards */
+        --btn-radius: 50%;
+        --card-radius: 12px;
+        --card-opacity: 1;
         --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         --transform-hover: scale(1.05);
         --transform-active: scale(0.95);
-        
-        /* 3D VARIABLES */
-        --cube-depth: 40px;
         
         /* FONTS */
         --main-font: 'PopHappiness', sans-serif;
@@ -43,7 +41,7 @@
         color: var(--static-color);
         /* 10x10 Grid from test.html */
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
-        background-size: 10px 10px; /* Tighter grid */
+        background-size: 10px 10px;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
@@ -56,21 +54,27 @@
         animation: scrollGrid 10s linear infinite;
       }
 
-      /* THREE.JS CANVAS CONTAINER */
+      /* THREE.JS CANVAS (Hidden by default) */
       #three-canvas-container {
           position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-          z-index: -1; /* Behind everything */
-          pointer-events: none;
+          z-index: -1; pointer-events: none;
           opacity: 0; transition: opacity 0.5s ease;
       }
       body.mode-3d #three-canvas-container { opacity: 1; }
 
-      /* 3D MODE BODY OVERRIDES */
+      /* 3D MODE OVERRIDES */
       body.mode-3d {
-        perspective: 1200px; /* Enable 3D space */
+        perspective: 1200px;
         overflow: hidden; 
-        background-image: none !important; /* Hide CSS grid in 3D mode */
+        background-image: none !important; /* ThreeJS takes over background */
         animation: none;
+      }
+      
+      body.bg-is-image {
+          background-size: cover !important;
+          background-position: center !important;
+          background-repeat: no-repeat !important;
+          animation: none;
       }
 
       /* Top Bar */
@@ -117,40 +121,41 @@
       /* Main Grid Container */
       #game-pages-container {
         position: fixed; z-index: 10; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        width: 100%; max-width: 900px; padding-bottom: 50px; box-sizing: border-box; 
-        overflow: visible;
+        width: 100%; max-width: 900px; padding-bottom: 120px; box-sizing: border-box; 
+        overflow: visible; /* Visible for 3D elements */
         transform-style: preserve-3d;
-        transition: transform 0.1s linear; 
       }
       #game-pages-wrapper { 
           display: flex; 
-          transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); 
+          transition: transform 0.4s ease-in-out; 
           width: 100%;
           transform-style: preserve-3d;
       }
       
-      /* Grid Layout (4x5 Fixed) */
+      /* Grid Layout (4x5) */
       .game-buttons {
         display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr);
-        gap: 15px; width: 100%; height: 520px; justify-items: center; align-items: center; padding: 10px;
-        box-sizing: border-box; flex-shrink: 0; transform-style: preserve-3d;
+        gap: 20px; width: 100%; height: 500px; justify-items: center; padding: 20px;
+        box-sizing: border-box; flex-shrink: 0;
+        transform-style: preserve-3d;
       }
 
-      /* Game Cards (Buttons) */
+      /* Game Cards */
       .game-button {
-        width: 180px; height: 90px; background-color: #ffffff;
+        width: 160px; height: 80px; background-color: #ffffff;
         border-radius: var(--card-radius); 
         box-shadow: var(--box-shadow); 
+        opacity: var(--card-opacity);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         text-decoration: none; color: black; font-weight: bold; text-align: center;
         position: relative; 
         cursor: url('/assets/cursor.png'), auto;
         background-size: cover; background-position: center; background-repeat: no-repeat;
-        transition: transform 0.2s, box-shadow 0.2s;
+        transition: transform 0.1s, box-shadow 0.1s;
         border: 1px solid rgba(0,0,0,0.1);
-        transform-style: preserve-3d; /* Key for 3D faces */
+        transform-style: preserve-3d;
       }
-      
+
       /* 2D Hover */
       body:not(.mode-3d) .game-button:hover { 
           transform: var(--transform-hover);
@@ -163,9 +168,7 @@
       .game-button-text {
         position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.9);
         font-size: 0.8rem; padding: 2px 0; display: none; color: #000;
-        font-family: var(--main-font);
-        border-radius: 0 0 var(--card-radius) var(--card-radius);
-        transform: translateZ(1px);
+        transform: translateZ(1px); /* Keep on top in 3D */
       }
       .game-button:hover .game-button-text { display: block; }
       
@@ -181,16 +184,15 @@
         pointer-events: none;
       }
 
-      /* --- 3D MODE CUBE STYLES --- */
+      /* --- 3D MODE STYLES (CUBES) --- */
       body.mode-3d .game-button {
-          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
           box-shadow: none !important;
           border: none;
           background-color: transparent !important;
-          background-image: none !important; /* Image moves to front face */
+          background-image: none !important;
       }
-
-      /* Cube Faces */
+      
       .cube-face {
           position: absolute; width: 100%; height: 100%;
           border: 1px solid rgba(0,0,0,0.1); box-sizing: border-box;
@@ -206,32 +208,27 @@
       .cube-face.top { height: 40px; top: -20px; transform: rotateX(90deg); background-color: #eee; }
       .cube-face.bottom { height: 40px; bottom: -20px; transform: rotateX(-90deg); background-color: #ccc; }
       
-      /* Radius fix for sides */
+      /* Fix corners */
       body.mode-3d .cube-face.right, body.mode-3d .cube-face.left, 
-      body.mode-3d .cube-face.top, body.mode-3d .cube-face.bottom { border-radius: 2px; }
+      body.mode-3d .cube-face.top, body.mode-3d .cube-face.bottom { border-radius: 4px; }
 
       /* 3D Hover */
       body.mode-3d .game-button:hover {
-          cursor: url('/assets/Link-Select.png'), pointer;
-          transform: translateZ(30px) scale(1.1) !important;
+          transform: translateZ(40px) scale(1.1) !important;
           z-index: 100;
+          cursor: url('/assets/Link-Select.png'), pointer;
       }
 
-      /* --- FLY IN ANIMATIONS --- */
+      /* Fly In Animations */
       @keyframes flyInStagger {
-          0% { opacity: 0; transform: translateZ(-400px) rotateX(45deg); }
-          60% { opacity: 1; transform: translateZ(20px) rotateX(-10deg); }
+          0% { opacity: 0; transform: translateZ(-500px) rotateX(45deg); }
           100% { opacity: 1; transform: translateZ(0) rotateX(0); }
       }
-      @keyframes flyInStagger2D {
-          0% { opacity: 0; transform: scale(0.5); }
-          100% { opacity: 1; transform: scale(1); }
+      body.mode-3d .game-buttons.animating .game-button {
+          animation: flyInStagger 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
       }
-
-      .game-buttons.animating .game-button { animation: flyInStagger2D 0.5s ease forwards; }
-      body.mode-3d .game-buttons.animating .game-button { animation: flyInStagger 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
       
-      /* Stagger Delays */
+      /* Stagger Logic */
       .game-buttons.animating .game-button:nth-child(1) { animation-delay: 0.05s; }
       .game-buttons.animating .game-button:nth-child(2) { animation-delay: 0.08s; }
       .game-buttons.animating .game-button:nth-child(3) { animation-delay: 0.11s; }
@@ -253,7 +250,6 @@
       .game-buttons.animating .game-button:nth-child(19) { animation-delay: 0.59s; }
       .game-buttons.animating .game-button:nth-child(20) { animation-delay: 0.62s; }
 
-
       /* Page Dots */
       .page-indicator { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
       .page-dot { 
@@ -267,28 +263,36 @@
       .page-dot:hover { transform: scale(1.3); background-color: rgba(255,255,255,0.5); }
       .page-dot.active { background-color: var(--static-color); pointer-events: none; }
 
-      /* Menus (Styled like test.html) */
+      /* Menus */
       #search-container, #theme-menu, #music-menu {
         position: fixed; background: #fff; border: 2px solid var(--static-color); border-radius: 10px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 200; display: none;
         color: #333;
       }
       
-      /* Theme Maker Menu (Layout from test.html) */
-      #theme-menu { bottom: 80px; right: 20px; width: 280px; padding: 15px; }
+      /* Search (Horizontal Layout from test.html) */
+      #search-container { bottom: 110px; left: 50%; transform: translateX(-50%); padding: 10px; flex-direction: row; gap: 5px; }
+      #search-input { padding: 5px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
+      #search-submit-button { padding: 5px 12px; background: var(--static-color); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
+      /* Theme Menu (Restored Full Customization) */
+      #theme-menu { bottom: 80px; right: 20px; width: 300px; padding: 15px; max-height: 80vh; overflow-y: auto; }
       .theme-heading { font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px; color: #444; }
       .theme-maker-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
       .theme-maker-label { font-size: 0.9rem; font-weight: bold; color: #555; }
+      
+      /* Inputs */
       input[type="color"] { width: 40px; height: 30px; border: none; cursor: pointer; background: none; }
       select, input[type="checkbox"] { cursor: pointer; }
-      select { padding: 4px; border-radius: 4px; border: 1px solid #ccc; }
-      #reset-theme-btn { width: 100%; padding: 8px; background: #ddd; border: 1px solid #aaa; cursor: pointer; margin-top: 10px; font-weight: bold; border-radius: 4px; }
-      #reset-theme-btn:hover { background: #ccc; }
+      select { padding: 4px; border-radius: 4px; border: 1px solid #ccc; max-width: 140px; }
+      input[type="text"] { width: 100%; padding: 5px; margin-bottom: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+      input[type="file"] { width: 100%; font-size: 0.8rem; }
+      input[type="range"] { width: 100px; }
 
-      /* Search Container (Layout from test.html) */
-      #search-container { bottom: 110px; left: 50%; transform: translateX(-50%); padding: 10px; display: none; flex-direction: row; gap: 5px;}
-      #search-input { padding: 5px; border: 1px solid #ccc; border-radius: 4px; }
-      #search-submit-button { padding: 5px 10px; background: var(--static-color); color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+      .theme-btn-group { display: flex; gap: 5px; margin-top: 15px; }
+      .theme-action-btn { flex: 1; padding: 8px; border: 1px solid #aaa; border-radius: 4px; cursor: pointer; font-weight: bold; background: #eee; font-size: 0.8rem; }
+      .theme-action-btn:hover { background: #ddd; }
+      .theme-action-btn.primary { background: #40c4ff; color: white; border-color: #0091ea; }
 
       #music-menu { bottom: 80px; left: 20px; width: 280px; padding: 10px; max-height: 400px; overflow-y: auto; }
       .music-option { padding: 5px; cursor: pointer; border-radius: 4px; }
@@ -296,7 +300,7 @@
       .music-heading { font-weight: bold; color: #888; margin: 5px 0; font-size: 0.8rem; text-transform: uppercase; }
       .music-divider { border: 0; height: 1px; background: #ccc; margin: 5px 0; }
 
-      /* --- IFRAME MODAL --- */
+      /* --- IFRAME MODAL STYLES --- */
       #game-modal {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background-color: rgba(0, 0, 0, 0.95);
@@ -304,7 +308,6 @@
         opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
       }
       #game-modal.active { opacity: 1; pointer-events: auto; }
-
       #game-modal-container {
         width: 100%; height: 100%; max-width: 1280px; max-height: 95vh;
         display: flex; flex-direction: column;
@@ -312,7 +315,6 @@
         overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         border: 1px solid rgba(255,255,255,0.1);
       }
-
       #game-modal-header {
         flex-shrink: 0; padding: 12px; display: flex; justify-content: space-between; align-items: center;
         background-color: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
@@ -597,33 +599,56 @@
             <span class="theme-maker-label">Background</span>
             <input type="color" id="input-bg" value="#e6e8e7">
         </div>
-
         <div class="theme-maker-row">
             <span class="theme-maker-label">Wii Bar</span>
             <input type="color" id="input-bar" value="#c9c5c2">
         </div>
-        
         <div class="theme-maker-row">
-            <span class="theme-maker-label">TV Static / Grid</span>
+            <span class="theme-maker-label">Static / Text</span>
             <input type="color" id="input-static" value="#555555">
         </div>
 
         <div class="theme-maker-row">
-            <span class="theme-maker-label">Button Shape</span>
+            <span class="theme-maker-label">Shape</span>
             <select id="input-shape">
                 <option value="round">Round</option>
                 <option value="squircle">Squircle</option>
-                <option value="rounded-square">Rounded Square</option>
-                <option value="square">Sharp Square</option>
+                <option value="rounded-square">Rounded</option>
+                <option value="square">Square</option>
+            </select>
+        </div>
+        
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">Font</span>
+            <select id="input-font">
+                <option value="PopHappiness">Wii Pop</option>
+                <option value="sans-serif">Clean Sans</option>
+                <option value="monospace">Retro Mono</option>
             </select>
         </div>
 
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">Opacity</span>
+            <input type="range" id="input-opacity" min="0.2" max="1" step="0.1" value="1">
+        </div>
+
+        <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
+        <div class="theme-maker-label" style="margin-bottom:5px;">Background Image</div>
+        <input type="text" id="input-bg-image" placeholder="Image URL...">
+        <input type="file" id="input-bg-upload" accept="image/*" style="margin-top:5px;">
+
+        <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
         <div class="theme-maker-row">
             <span class="theme-maker-label">3D Effects</span>
             <input type="checkbox" id="input-3d">
         </div>
 
-        <button id="reset-theme-btn">Reset Default</button>
+        <div class="theme-btn-group">
+             <button id="reset-theme-btn" class="theme-action-btn danger" style="color:#d32f2f; border-color:#ffcdd2;">Reset</button>
+             <button id="save-theme-btn" class="theme-action-btn primary">Save</button>
+             <button id="load-theme-btn" class="theme-action-btn">Load</button>
+             <input type="file" id="input-load-theme" accept=".json" style="display: none;">
+        </div>
     </div>
 
     <div id="music-menu">
@@ -694,7 +719,7 @@
       const searchClickSound = document.getElementById('search-click-sound');
       
       const gamePagesWrapper = document.getElementById('game-pages-wrapper');
-      const gamePagesContainer = document.getElementById('game-pages-container'); // Need this for 3D tilt
+      const gamePagesContainer = document.getElementById('game-pages-container'); 
       const pageIndicatorDots = document.getElementById('page-indicator-dots');
       const prevPageButton = document.getElementById('prev-page-button');
       const nextPageButton = document.getElementById('next-page-button');
@@ -735,8 +760,7 @@
 
       // --- INITIALIZATION ---
       window.addEventListener('load', () => {
-        // Init Cubes Structure
-        init3DCubeFaces();
+        init3DCubeFaces(); // Prepare 3D faces just in case
         
         updatePage();
         populateMusicMenu();
@@ -748,23 +772,21 @@
         if (savedTheme) {
             try {
                 const theme = JSON.parse(savedTheme);
-                // Pre-set inputs before applying theme to ensure Three.js knows the state
                 if(theme.is3d) document.getElementById('input-3d').checked = true;
                 applyTheme(theme);
                 
-                // Update input values
+                // Update Inputs
                 document.getElementById('input-bg').value = theme.bg || '#e6e8e7';
                 document.getElementById('input-bar').value = theme.bar || '#c9c5c2';
                 document.getElementById('input-static').value = theme.static || '#555555';
                 document.getElementById('input-shape').value = theme.shape || 'round';
+                document.getElementById('input-font').value = theme.font || 'PopHappiness';
+                document.getElementById('input-opacity').value = theme.opacity || 1;
             } catch(e) { console.error("Theme load error", e); }
         }
 
-        // Init Music (Persistence)
         const savedBGM = localStorage.getItem('qbbic-bgm');
-        if (savedBGM && savedBGM !== 'none') {
-            playBGM(savedBGM);
-        }
+        if (savedBGM && savedBGM !== 'none') playBGM(savedBGM);
       });
       
       // --- CUBE GENERATION ---
@@ -869,7 +891,6 @@
               if (wasMusicPlayingBeforeGame) bgMusic.play().catch(()=>{});
           }, 300);
       }
-      
       closeGameModalBtn.addEventListener('click', closeGameModal);
 
       // --- ADVANCED MODAL BUTTONS ---
@@ -969,6 +990,10 @@
       const inputBar = document.getElementById('input-bar');
       const inputStatic = document.getElementById('input-static');
       const inputShape = document.getElementById('input-shape');
+      const inputFont = document.getElementById('input-font');
+      const inputOpacity = document.getElementById('input-opacity');
+      const inputBgImage = document.getElementById('input-bg-image');
+      const inputBgUpload = document.getElementById('input-bg-upload');
       const input3d = document.getElementById('input-3d');
       const btnReset = document.getElementById('reset-theme-btn');
 
@@ -977,10 +1002,15 @@
       }
 
       function applyTheme(themeObj) {
-        const { bg, bar, static, shape, is3d } = themeObj;
+        const { bg, bar, static, shape, is3d, font, opacity, bgImage } = themeObj;
+        
         document.documentElement.style.setProperty('--bg-color', bg);
         document.documentElement.style.setProperty('--bar-color', bar);
         document.documentElement.style.setProperty('--static-color', static);
+        document.documentElement.style.setProperty('--card-opacity', opacity || 1);
+        
+        const fontVal = font === 'monospace' ? "'Courier New', monospace" : (font === 'sans-serif' ? "Arial, sans-serif" : "'PopHappiness', sans-serif");
+        document.documentElement.style.setProperty('--main-font', fontVal);
         
         let btnRad = '50%'; let cardRad = '12px';
         if(shape === 'square') { btnRad = '0px'; cardRad = '0px'; }
@@ -999,52 +1029,111 @@
             gamePagesContainer.style.transform = 'translate(-50%, -50%)'; 
         }
 
-        const encodedColor = encodeURIComponent(static);
-        const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
-        document.body.style.backgroundImage = svg;
+        if(bgImage && bgImage.trim() !== "") {
+            document.body.style.backgroundImage = `url('${bgImage}')`;
+            document.body.classList.add('bg-is-image');
+        } else {
+            document.body.classList.remove('bg-is-image');
+            const encodedColor = encodeURIComponent(static);
+            const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
+            document.body.style.backgroundImage = svg;
+            document.body.style.backgroundSize = '10px 10px';
+        }
 
         if(isThreeActive) updateThreeColors();
         saveThemeToStorage(themeObj);
       }
 
       function getCurrentThemeObj() {
+          let currentBgImage = inputBgImage.value;
+          const currentBodyBg = document.body.style.backgroundImage;
+          if(currentBodyBg.includes('data:image') && !currentBodyBg.includes('svg')) {
+              currentBgImage = currentBodyBg.slice(5, -2);
+          }
           return {
               bg: inputBg.value,
               bar: inputBar.value,
               static: inputStatic.value,
               shape: inputShape.value,
+              font: inputFont.value,
+              opacity: inputOpacity.value,
+              bgImage: currentBgImage,
               is3d: input3d.checked
           };
       }
 
-      [inputBg, inputBar, inputStatic, inputShape, input3d].forEach(input => {
+      // Listeners
+      [inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity, input3d].forEach(input => {
         input.addEventListener('change', () => applyTheme(getCurrentThemeObj()));
-        if(input.type === 'color') input.addEventListener('input', () => applyTheme(getCurrentThemeObj()));
+        if(input.type === 'color' || input.type === 'range') input.addEventListener('input', () => applyTheme(getCurrentThemeObj()));
+      });
+      
+      inputBgImage.addEventListener('change', () => { inputBgUpload.value = ''; applyTheme(getCurrentThemeObj()); });
+      inputBgUpload.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+              const reader = new FileReader();
+              reader.onload = (event) => {
+                  const dataUrl = event.target.result;
+                  const currentTheme = getCurrentThemeObj();
+                  currentTheme.bgImage = dataUrl;
+                  inputBgImage.value = '';
+                  applyTheme(currentTheme);
+              };
+              reader.readAsDataURL(file);
+          }
       });
 
+      // Reset
       btnReset.addEventListener('click', () => {
-          const defaults = { bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', shape: 'round', is3d: false };
+          const defaults = { bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', shape: 'round', is3d: false, font:'PopHappiness', opacity:1, bgImage:'' };
           applyTheme(defaults);
           inputBg.value = defaults.bg; inputBar.value = defaults.bar;
           inputStatic.value = defaults.static; inputShape.value = defaults.shape;
-          input3d.checked = defaults.is3d;
+          input3d.checked = defaults.is3d; inputFont.value = defaults.font;
+          inputOpacity.value = defaults.opacity; inputBgImage.value = '';
           clickSound.currentTime = 0; clickSound.play().catch(()=>{});
           showToast("Theme Reset");
       });
+      
+      // Save/Load
+      document.getElementById('save-theme-btn').addEventListener('click', () => {
+          const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getCurrentThemeObj()));
+          const anchor = document.createElement('a');
+          anchor.href = dataStr; anchor.download = "qbbic_theme.json";
+          anchor.click();
+      });
+      document.getElementById('load-theme-btn').addEventListener('click', () => document.getElementById('input-load-theme').click());
+      document.getElementById('input-load-theme').addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if(!file) return;
+          const reader = new FileReader();
+          reader.onload = (event) => {
+              try {
+                  const theme = JSON.parse(event.target.result);
+                  applyTheme(theme);
+                  inputBg.value = theme.bg; inputBar.value = theme.bar;
+                  inputStatic.value = theme.static; inputShape.value = theme.shape;
+                  input3d.checked = theme.is3d;
+                  showToast("Theme Loaded!");
+              } catch(e) { showToast("Error Loading File"); }
+          };
+          reader.readAsText(file);
+      });
 
+      // Toggle Menus
       document.getElementById('theme-menu-toggle').addEventListener('click', () => {
           const menu = document.getElementById('theme-menu');
           menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
           themeClickSound.currentTime = 0; themeClickSound.play().catch(()=>{});
       });
-
-      // --- SEARCH LOGIC (Updated to test.html style) ---
+      
+      // Search Logic
       document.getElementById('search-button').addEventListener('click', () => {
           const container = document.getElementById('search-container');
           container.style.display = container.style.display === 'flex' ? 'none' : 'flex';
           searchClickSound.currentTime = 0; searchClickSound.play().catch(()=>{});
       });
-
       document.getElementById('search-submit-button').addEventListener('click', performSearch);
       
       function performSearch() {
@@ -1057,7 +1146,7 @@
                   const pages = document.querySelectorAll('.game-buttons');
                   currentPage = Array.from(pages).indexOf(page);
                   updatePage();
-                  // 3D Pulse for Search
+                  // Visual Cue
                   btn.style.transition = "transform 0.5s";
                   btn.style.transform = document.body.classList.contains('mode-3d') ? "translateZ(50px) scale(1.5)" : "scale(1.5)";
                   btn.style.zIndex = "100";
@@ -1077,8 +1166,7 @@
 
       // --- MUSIC LOGIC ---
       function playBGM(url) {
-          bgMusic.src = url;
-          bgMusic.volume = 0.4; 
+          bgMusic.src = url; bgMusic.volume = 0.4; 
           bgMusic.play().catch(e => console.log("Autoplay blocked until interaction"));
           localStorage.setItem('qbbic-bgm', url);
       }
@@ -1102,15 +1190,12 @@
           themeClickSound.currentTime = 0; themeClickSound.play().catch(()=>{});
       });
       document.getElementById('music-option-stop').addEventListener('click', () => {
-          bgMusic.pause();
-          localStorage.setItem('qbbic-bgm', 'none');
-          document.getElementById('music-menu').style.display = 'none';
-          showToast("Music Stopped");
+          bgMusic.pause(); localStorage.setItem('qbbic-bgm', 'none');
+          document.getElementById('music-menu').style.display = 'none'; showToast("Music Stopped");
       });
       document.getElementById('music-option-random').addEventListener('click', () => {
           const randomSong = songs[Math.floor(Math.random() * songs.length)];
-          playBGM(randomSong.url);
-          document.getElementById('music-menu').style.display = 'none';
+          playBGM(randomSong.url); document.getElementById('music-menu').style.display = 'none';
           showToast("Playing Random: " + randomSong.name);
       });
 
