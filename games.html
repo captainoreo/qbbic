@@ -7,7 +7,6 @@
     <title>Qbbic Ultimate - Wii Layout</title>
     <link rel="icon" href="/assets/fanny.gif" type="image/gif" />
     <link rel="stylesheet" href="https://qottlebup.nekoweb.org/banner.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
     <style>
       /* --- CORE STYLES --- */
@@ -18,7 +17,7 @@
         --static-color: #555555;
         
         /* SHAPE & EFFECT VARIABLES */
-        --btn-radius: 50%;
+        --btn-radius: 12px; /* 3DS Style: Rounded Square */
         --card-radius: 25px; 
         --card-opacity: 1;
         --box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
@@ -28,8 +27,10 @@
         /* WII UI COLORS */
         --wii-blue: #40c4ff;
         --wii-blue-glow: rgba(64, 196, 255, 0.6);
-        --wii-gloss-top: #ffffff;
-        --wii-gloss-bottom: #dcdcdc;
+        
+        /* 3DS UI COLORS */
+        --3ds-orange: #ffae00;
+        --3ds-orange-glow: rgba(255, 174, 0, 0.8);
         
         /* FONTS */
         --main-font: 'PopHappiness', sans-serif;
@@ -39,6 +40,21 @@
 
       /* --- GLOBAL ANIMATIONS --- */
       @keyframes scrollGrid { from { background-position: 0 0; } to { background-position: 40px 40px; } }
+      
+      /* Static Noise Animation */
+      @keyframes noise-anim {
+        0% { transform: translate(0, 0); }
+        10% { transform: translate(-5%, -5%); }
+        20% { transform: translate(-10%, 5%); }
+        30% { transform: translate(5%, -10%); }
+        40% { transform: translate(-5%, 15%); }
+        50% { transform: translate(-10%, 5%); }
+        60% { transform: translate(15%, 0); }
+        70% { transform: translate(0, 10%); }
+        80% { transform: translate(-15%, 0); }
+        90% { transform: translate(10%, 5%); }
+        100% { transform: translate(5%, 0); }
+      }
 
       body {
         margin: 0;
@@ -59,22 +75,6 @@
         overflow: hidden;
         transition: background-color 0.3s ease, color 0.3s ease;
         animation: scrollGrid 10s linear infinite;
-      }
-
-      /* THREE.JS CANVAS */
-      #three-canvas-container {
-          position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-          z-index: -1; pointer-events: none;
-          opacity: 0; transition: opacity 0.5s ease;
-      }
-      body.mode-3d #three-canvas-container { opacity: 1; }
-
-      /* 3D MODE OVERRIDES */
-      body.mode-3d {
-        perspective: 1200px;
-        overflow: hidden; 
-        background-image: none !important;
-        animation: none;
       }
       
       body.bg-is-image {
@@ -103,24 +103,34 @@
       }
       .wii-bottom-bar-content { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 900px; }
 
-      /* Bottom Buttons */
+      /* --- 3DS STYLE BUTTONS --- */
       .wii-button {
-        background-color: rgba(255,255,255, 0.3);
-        border: 2px solid var(--static-color); 
-        border-radius: var(--btn-radius); 
+        background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%); /* 3DS Gloss */
+        border: 2px solid #aaaaaa; 
+        border-radius: var(--btn-radius); /* Squircle */
         width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
         cursor: pointer; 
-        transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
       }
-      .wii-button:hover { 
-          transform: var(--transform-hover); 
-          box-shadow: 0 0 8px var(--static-color); 
-          cursor: url('/assets/Link-Select.png'), pointer; 
-          background-color: rgba(255,255,255, 0.6);
-      }
-      .wii-button:active { transform: var(--transform-active); }
       
-      .wii-button-svg { width: 60%; height: 60%; transition: filter 0.3s ease, fill 0.3s ease; fill: var(--static-color); }
+      /* 3DS Hover: Orange Glow & Border */
+      .wii-button:hover { 
+          transform: translateY(-2px); 
+          border-color: var(--3ds-orange);
+          box-shadow: 0 0 8px var(--3ds-orange-glow), inset 0 0 5px #fff; 
+          cursor: url('/assets/Link-Select.png'), pointer; 
+      }
+      
+      .wii-button:active { 
+          transform: scale(0.95); 
+          background: #cccccc;
+      }
+      
+      .wii-button-svg { width: 60%; height: 60%; transition: filter 0.3s ease, fill 0.3s ease; fill: #333; }
+      .wii-button:hover .wii-button-svg { fill: #000; }
       
       .wii-date-time { font-size: 1rem; text-align: center; color: var(--static-color); user-select: none; }
       .wii-date-time .time { font-size: 1.5rem; }
@@ -135,7 +145,6 @@
         padding-bottom: 0; 
         box-sizing: border-box; 
         overflow: visible;
-        transform-style: preserve-3d;
         display: flex; align-items: center; justify-content: center;
         margin-bottom: 60px;
       }
@@ -143,7 +152,6 @@
           display: flex; 
           transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); 
           width: 100%;
-          transform-style: preserve-3d;
       }
       
       /* --- WII GRID LAYOUT (4x3) --- */
@@ -159,10 +167,9 @@
         padding: 0 40px; 
         box-sizing: border-box; 
         flex-shrink: 0;
-        transform-style: preserve-3d;
       }
 
-      /* --- WII CHANNEL CARD STYLES --- */
+      /* --- GAME CHANNEL CARD STYLES --- */
       .game-button {
         width: 220px; height: 130px;
         background-color: #ffffff;
@@ -176,11 +183,26 @@
         background-size: cover; background-position: center; background-repeat: no-repeat;
         transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
         border: 4px solid #eaeaea;
-        transform-style: preserve-3d;
+        overflow: hidden; /* Important for static effect */
       }
 
-      /* 2D Hover - The "Blue Glow" */
-      body:not(.mode-3d) .game-button:hover { 
+      /* --- WII TV STATIC EFFECT --- */
+      .game-button::before {
+        content: "";
+        position: absolute;
+        top: -50%; left: -50%; right: -50%; bottom: -50%;
+        width: 200%; height: 200%;
+        background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="1"/></svg>');
+        background-repeat: repeat;
+        opacity: 0.08; /* Subtle static */
+        pointer-events: none;
+        animation: noise-anim 0.5s steps(5) infinite;
+        z-index: 1;
+        mix-blend-mode: multiply;
+      }
+
+      /* Hover Effects */
+      .game-button:hover { 
           transform: scale(1.02);
           box-shadow: 0 0 0 6px var(--wii-blue-glow), 0 0 20px rgba(60, 180, 255, 0.4); 
           border-color: #7bc6eb;
@@ -194,7 +216,7 @@
         border-bottom-left-radius: var(--card-radius);
         border-bottom-right-radius: var(--card-radius);
         font-size: 0.9rem; padding: 4px 0; display: none; color: #333;
-        transform: translateZ(1px); 
+        z-index: 5;
       }
       .game-button:hover .game-button-text { display: block; }
       
@@ -208,67 +230,6 @@
         opacity: 0.6;
         pointer-events: none;
       }
-
-      /* --- 3D MODE STYLES --- */
-      body.mode-3d .game-button {
-          transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-          box-shadow: none !important;
-          border: none;
-          background-color: transparent !important;
-          background-image: none !important;
-      }
-      
-      .cube-face {
-          position: absolute; width: 100%; height: 100%;
-          border: 1px solid rgba(0,0,0,0.05); box-sizing: border-box;
-          background-color: #fff; display: none;
-          border-radius: var(--card-radius);
-      }
-      body.mode-3d .cube-face { display: block; }
-
-      .cube-face.front { transform: translateZ(25px); background-size: cover; background-position: center; z-index: 2; border: 4px solid #eaeaea;}
-      .cube-face.back { transform: rotateY(180deg) translateZ(25px); background-color: var(--bar-color); }
-      .cube-face.right { width: 50px; right: -25px; transform: rotateY(90deg); background-color: #ddd; }
-      .cube-face.left { width: 50px; left: -25px; transform: rotateY(-90deg); background-color: #ddd; }
-      .cube-face.top { height: 50px; top: -25px; transform: rotateX(90deg); background-color: #eee; }
-      .cube-face.bottom { height: 50px; bottom: -25px; transform: rotateX(-90deg); background-color: #ccc; }
-      
-      body.mode-3d .cube-face.right, body.mode-3d .cube-face.left, 
-      body.mode-3d .cube-face.top, body.mode-3d .cube-face.bottom { border-radius: 8px; }
-
-      /* 3D Hover */
-      body.mode-3d .game-button:hover {
-          transform: translateZ(50px) scale(1.1) !important;
-          z-index: 100;
-          cursor: url('/assets/Link-Select.png'), pointer;
-      }
-      body.mode-3d .game-button:hover .cube-face.front {
-          box-shadow: 0 0 0 6px var(--wii-blue-glow);
-          border-color: #7bc6eb;
-      }
-
-      /* Fly In Animations */
-      @keyframes flyInStagger {
-          0% { opacity: 0; transform: translateZ(-500px) rotateX(45deg); }
-          100% { opacity: 1; transform: translateZ(0) rotateX(0); }
-      }
-      body.mode-3d .game-buttons.animating .game-button {
-          animation: flyInStagger 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-      }
-      
-      /* Stagger Logic */
-      .game-buttons.animating .game-button:nth-child(1) { animation-delay: 0.05s; }
-      .game-buttons.animating .game-button:nth-child(2) { animation-delay: 0.10s; }
-      .game-buttons.animating .game-button:nth-child(3) { animation-delay: 0.15s; }
-      .game-buttons.animating .game-button:nth-child(4) { animation-delay: 0.20s; }
-      .game-buttons.animating .game-button:nth-child(5) { animation-delay: 0.25s; }
-      .game-buttons.animating .game-button:nth-child(6) { animation-delay: 0.30s; }
-      .game-buttons.animating .game-button:nth-child(7) { animation-delay: 0.35s; }
-      .game-buttons.animating .game-button:nth-child(8) { animation-delay: 0.40s; }
-      .game-buttons.animating .game-button:nth-child(9) { animation-delay: 0.45s; }
-      .game-buttons.animating .game-button:nth-child(10) { animation-delay: 0.50s; }
-      .game-buttons.animating .game-button:nth-child(11) { animation-delay: 0.55s; }
-      .game-buttons.animating .game-button:nth-child(12) { animation-delay: 0.60s; }
 
       /* Page Dots */
       .page-indicator { position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
@@ -318,22 +279,21 @@
       /* --- UPDATED WII STYLE IFRAME MODAL --- */
       #game-modal {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background-color: rgba(0, 0, 0, 0.8); /* Slightly more transparent like a channel background */
+        background-color: rgba(0, 0, 0, 0.8);
         display: none; justify-content: center; align-items: center; z-index: 1000;
         opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
         backdrop-filter: blur(5px);
       }
       #game-modal.active { opacity: 1; pointer-events: auto; }
       
-      /* The "Channel Window" Look */
       #game-modal-container {
         width: 100%; height: 100%; max-width: 1280px; max-height: 90vh;
         display: flex; flex-direction: column;
-        background-color: #f7f7f7; /* Glossy White */
+        background-color: #f7f7f7; 
         border-radius: 24px;
         overflow: hidden; 
         box-shadow: 0 0 50px rgba(64, 196, 255, 0.3), 0 20px 40px rgba(0,0,0,0.4);
-        border: 5px solid #d4d4d4; /* Bezel */
+        border: 5px solid #d4d4d4;
       }
       
       #game-modal-header {
@@ -353,12 +313,11 @@
       
       #game-modal-controls { display: flex; gap: 12px; align-items: center; }
 
-      /* Wii-Style "Capsule" Buttons */
       .control-btn {
         background: linear-gradient(to bottom, #fcfcfc 0%, #dcdcdc 100%);
         color: #555;
         border: 2px solid #b0b0b0;
-        border-radius: 30px; /* Capsule Shape */
+        border-radius: 30px;
         padding: 0 24px;
         height: 40px;
         width: auto;
@@ -369,7 +328,6 @@
         font-size: 0.9rem;
       }
       
-      /* The Blue Glow Hover */
       .control-btn:hover { 
           border-color: #40c4ff;
           box-shadow: 0 0 8px #40c4ff, inset 0 0 5px rgba(255,255,255,1); 
@@ -379,7 +337,6 @@
       
       .control-btn svg { width: 20px; height: 20px; fill: currentColor; }
       
-      /* Specific Styling for Close Button */
       .control-btn.close-btn { 
          color: #d32f2f;
          border-color: #ef9a9a;
@@ -407,7 +364,6 @@
     </style>
   </head>
   <body>
-    <div id="three-canvas-container"></div>
 
     <div class="wii-top-bar"></div>
 
@@ -639,8 +595,8 @@
         <div class="theme-maker-row">
             <span class="theme-maker-label">Shape</span>
             <select id="input-shape">
-                <option value="round">Round</option>
                 <option value="squircle">Squircle</option>
+                <option value="round">Round</option>
                 <option value="rounded-square">Rounded</option>
                 <option value="square">Square</option>
             </select>
@@ -664,12 +620,6 @@
         <div class="theme-maker-label" style="margin-bottom:5px;">Background Image</div>
         <input type="text" id="input-bg-image" placeholder="Image URL...">
         <input type="file" id="input-bg-upload" accept="image/*" style="margin-top:5px;">
-
-        <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">3D Effects</span>
-            <input type="checkbox" id="input-3d">
-        </div>
 
         <div class="theme-btn-group">
              <button id="reset-theme-btn" class="theme-action-btn danger" style="color:#d32f2f; border-color:#ffcdd2;">Reset</button>
@@ -748,12 +698,6 @@
       const nextPageButton = document.getElementById('next-page-button');
       let currentPage = 0;
 
-      // --- THREE.JS VARIABLES ---
-      let scene, camera, renderer, cubes = [];
-      let animationFrameId;
-      let isThreeActive = false;
-      const threeContainer = document.getElementById('three-canvas-container');
-
       // --- IFRAME MODAL LOGIC ---
       const gameModal = document.getElementById('game-modal');
       const gameModalTitle = document.getElementById('game-modal-title');
@@ -783,8 +727,6 @@
 
       // --- INITIALIZATION ---
       window.addEventListener('load', () => {
-        init3DCubeFaces(); // Prepare 3D faces just in case
-        
         updatePage();
         populateMusicMenu();
         updateDateTime();
@@ -795,14 +737,14 @@
         if (savedTheme) {
             try {
                 const theme = JSON.parse(savedTheme);
-                if(theme.is3d) document.getElementById('input-3d').checked = true;
+                // Remove 3D check from theme load
                 applyTheme(theme);
                 
                 // Update Inputs
                 document.getElementById('input-bg').value = theme.bg || '#e6e8e7';
                 document.getElementById('input-bar').value = theme.bar || '#c9c5c2';
                 document.getElementById('input-static').value = theme.static || '#555555';
-                document.getElementById('input-shape').value = theme.shape || 'round';
+                document.getElementById('input-shape').value = theme.shape || 'squircle';
                 document.getElementById('input-font').value = theme.font || 'PopHappiness';
                 document.getElementById('input-opacity').value = theme.opacity || 1;
             } catch(e) { console.error("Theme load error", e); }
@@ -812,26 +754,6 @@
         if (savedBGM && savedBGM !== 'none') playBGM(savedBGM);
       });
       
-      // --- CUBE GENERATION ---
-      function init3DCubeFaces() {
-          document.querySelectorAll('.game-button').forEach(btn => {
-              if(btn.querySelector('.cube-face')) return;
-              const bgImg = btn.style.backgroundImage;
-              const front = document.createElement('div'); front.className = 'cube-face front';
-              front.style.backgroundImage = bgImg;
-              const txt = btn.querySelector('.game-button-text');
-              if(txt) front.appendChild(txt);
-              
-              const back = document.createElement('div'); back.className = 'cube-face back';
-              const right = document.createElement('div'); right.className = 'cube-face right';
-              const left = document.createElement('div'); left.className = 'cube-face left';
-              const top = document.createElement('div'); top.className = 'cube-face top';
-              const bottom = document.createElement('div'); bottom.className = 'cube-face bottom';
-              
-              btn.appendChild(front); btn.appendChild(back); btn.appendChild(right);
-              btn.appendChild(left); btn.appendChild(top); btn.appendChild(bottom);
-          });
-      }
 
       // --- PAGE NAVIGATION ---
       function updatePage() {
@@ -839,11 +761,6 @@
           gamePagesWrapper.style.transform = `translateX(${offset}%)`;
           
           const allGamePages = document.querySelectorAll('.game-buttons');
-          allGamePages.forEach(p => p.classList.remove('animating'));
-          if(allGamePages[currentPage]) {
-              void allGamePages[currentPage].offsetWidth; 
-              allGamePages[currentPage].classList.add('animating');
-          }
 
           pageIndicatorDots.innerHTML = '';
           for (let i = 0; i < allGamePages.length; i++) {
@@ -939,75 +856,6 @@
           if (requestFS) requestFS.call(gameIframe);
       });
 
-      // --- THREE.JS LOGIC ---
-      function initThreeJS() {
-          if(isThreeActive) return;
-          isThreeActive = true;
-          scene = new THREE.Scene();
-          updateThreeColors();
-          camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-          camera.position.z = 5;
-          renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-          renderer.setSize(window.innerWidth, window.innerHeight);
-          threeContainer.innerHTML = '';
-          threeContainer.appendChild(renderer.domElement);
-          cubes = [];
-          const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-          for(let i=0; i<50; i++) {
-              const material = new THREE.MeshBasicMaterial({ color: document.getElementById('input-static').value || 0x555555, wireframe: true });
-              const cube = new THREE.Mesh(geometry, material);
-              cube.position.x = (Math.random() - 0.5) * 20;
-              cube.position.y = (Math.random() - 0.5) * 10;
-              cube.position.z = (Math.random() - 0.5) * 10 - 2;
-              cube.userData = { rotX: (Math.random() - 0.5) * 0.02, rotY: (Math.random() - 0.5) * 0.02 };
-              scene.add(cube); cubes.push(cube);
-          }
-          animateThree();
-          window.addEventListener('resize', onWindowResize, false);
-      }
-      
-      function stopThreeJS() {
-          isThreeActive = false;
-          cancelAnimationFrame(animationFrameId);
-          threeContainer.innerHTML = '';
-          window.removeEventListener('resize', onWindowResize);
-      }
-      
-      function onWindowResize() {
-          if(!camera || !renderer) return;
-          camera.aspect = window.innerWidth / window.innerHeight;
-          camera.updateProjectionMatrix();
-          renderer.setSize(window.innerWidth, window.innerHeight);
-      }
-      
-      function updateThreeColors() {
-          if(!scene) return;
-          const bgColor = document.getElementById('input-bg').value;
-          scene.background = new THREE.Color(bgColor);
-          scene.fog = new THREE.FogExp2(bgColor, 0.15);
-          const gridColor = document.getElementById('input-static').value;
-          if(cubes.length > 0) { cubes.forEach(cube => { cube.material.color.set(gridColor); }); }
-      }
-      
-      let mouseX = 0; let mouseY = 0;
-      document.addEventListener('mousemove', (e) => {
-          if(!isThreeActive) return;
-          mouseX = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
-          mouseY = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
-      });
-
-      function animateThree() {
-          if(!isThreeActive) return;
-          animationFrameId = requestAnimationFrame(animateThree);
-          cubes.forEach(cube => { cube.rotation.x += cube.userData.rotX; cube.rotation.y += cube.userData.rotY; });
-          camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
-          camera.position.y += (-mouseY * 0.5 - camera.position.y) * 0.05;
-          camera.lookAt(scene.position);
-          const tiltX = mouseY * -15; const tiltY = mouseX * 15;
-          gamePagesContainer.style.transform = `translate(-50%, -50%) perspective(1200px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
-          renderer.render(scene, camera);
-      }
-
       // --- THEME MAKER LOGIC ---
       const inputBg = document.getElementById('input-bg');
       const inputBar = document.getElementById('input-bar');
@@ -1017,7 +865,6 @@
       const inputOpacity = document.getElementById('input-opacity');
       const inputBgImage = document.getElementById('input-bg-image');
       const inputBgUpload = document.getElementById('input-bg-upload');
-      const input3d = document.getElementById('input-3d');
       const btnReset = document.getElementById('reset-theme-btn');
 
       function saveThemeToStorage(themeObj) {
@@ -1025,7 +872,7 @@
       }
 
       function applyTheme(themeObj) {
-        const { bg, bar, static, shape, is3d, font, opacity, bgImage } = themeObj;
+        const { bg, bar, static, shape, font, opacity, bgImage } = themeObj;
         
         document.documentElement.style.setProperty('--bg-color', bg);
         document.documentElement.style.setProperty('--bar-color', bar);
@@ -1035,26 +882,14 @@
         const fontVal = font === 'monospace' ? "'Courier New', monospace" : (font === 'sans-serif' ? "Arial, sans-serif" : "'PopHappiness', sans-serif");
         document.documentElement.style.setProperty('--main-font', fontVal);
         
-        let btnRad = '50%'; let cardRad = '25px'; 
+        let btnRad = '12px'; let cardRad = '25px'; 
         if(shape === 'square') { btnRad = '0px'; cardRad = '0px'; }
         else if(shape === 'rounded-square') { btnRad = '8px'; cardRad = '8px'; }
-        else if(shape === 'squircle') { btnRad = '20px'; cardRad = '35px'; } 
+        else if(shape === 'squircle') { btnRad = '18px'; cardRad = '35px'; } 
+        else if(shape === 'round') { btnRad = '50%'; cardRad = '25px'; }
         
         document.documentElement.style.setProperty('--btn-radius', btnRad);
         document.documentElement.style.setProperty('--card-radius', cardRad);
-
-        if(is3d) {
-            document.body.classList.add('mode-3d');
-            initThreeJS();
-            // Force redraw of page to reset transforms
-            gamePagesWrapper.style.transition = 'none';
-            updatePage();
-            setTimeout(() => { gamePagesWrapper.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'; }, 50);
-        } else {
-            document.body.classList.remove('mode-3d');
-            stopThreeJS();
-            gamePagesContainer.style.transform = 'none'; 
-        }
 
         if(bgImage && bgImage.trim() !== "") {
             document.body.style.backgroundImage = `url('${bgImage}')`;
@@ -1067,7 +902,6 @@
             document.body.style.backgroundSize = '10px 10px';
         }
 
-        if(isThreeActive) updateThreeColors();
         saveThemeToStorage(themeObj);
       }
 
@@ -1084,13 +918,12 @@
               shape: inputShape.value,
               font: inputFont.value,
               opacity: inputOpacity.value,
-              bgImage: currentBgImage,
-              is3d: input3d.checked
+              bgImage: currentBgImage
           };
       }
 
       // Listeners
-      [inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity, input3d].forEach(input => {
+      [inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity].forEach(input => {
         input.addEventListener('change', () => applyTheme(getCurrentThemeObj()));
         if(input.type === 'color' || input.type === 'range') input.addEventListener('input', () => applyTheme(getCurrentThemeObj()));
       });
@@ -1113,11 +946,11 @@
 
       // Reset
       btnReset.addEventListener('click', () => {
-          const defaults = { bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', shape: 'round', is3d: false, font:'PopHappiness', opacity:1, bgImage:'' };
+          const defaults = { bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', shape: 'squircle', font:'PopHappiness', opacity:1, bgImage:'' };
           applyTheme(defaults);
           inputBg.value = defaults.bg; inputBar.value = defaults.bar;
           inputStatic.value = defaults.static; inputShape.value = defaults.shape;
-          input3d.checked = defaults.is3d; inputFont.value = defaults.font;
+          inputFont.value = defaults.font;
           inputOpacity.value = defaults.opacity; inputBgImage.value = '';
           clickSound.currentTime = 0; clickSound.play().catch(()=>{});
           showToast("Theme Reset");
@@ -1141,7 +974,6 @@
                   applyTheme(theme);
                   inputBg.value = theme.bg; inputBar.value = theme.bar;
                   inputStatic.value = theme.static; inputShape.value = theme.shape;
-                  input3d.checked = theme.is3d;
                   showToast("Theme Loaded!");
               } catch(e) { showToast("Error Loading File"); }
           };
@@ -1175,7 +1007,7 @@
                   updatePage();
                   // Visual Cue
                   btn.style.transition = "transform 0.5s";
-                  btn.style.transform = document.body.classList.contains('mode-3d') ? "translateZ(50px) scale(1.5)" : "scale(1.5)";
+                  btn.style.transform = "scale(1.5)";
                   btn.style.zIndex = "100";
                   btn.style.boxShadow = "0 0 30px #40c4ff";
                   setTimeout(() => {
