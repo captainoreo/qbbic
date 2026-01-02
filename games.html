@@ -7,6 +7,7 @@
     <title>Qbbic</title>
     <link rel="icon" href="/assets/fanny.gif" type="image/gif" />
     <link rel="stylesheet" href="https://qottlebup.nekoweb.org/banner.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
     <style>
       /* --- CORE STYLES & VARIABLES --- */
@@ -31,21 +32,28 @@
         --cursor-pointer: url('/assets/Link-Select.png'), pointer;
       }
 
-      /* 3D MODE OVERRIDES */
+      /* 3D MODE OVERRIDES (CSS Layer) */
       body.mode-3d {
-        --box-shadow: 0 6px 0 var(--static-color), 0 10px 10px rgba(0,0,0,0.2);
-        --transform-hover: translateY(-4px);
-        --transform-active: translateY(2px) !important;
+        --box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        --transform-hover: translateZ(20px);
+        --transform-active: translateZ(5px);
+        perspective: 1000px; /* Enable 3D space for HTML elements */
+        overflow: hidden; /* Hide scrollbars during 3D */
       }
       
+      /* THREE.JS CANVAS CONTAINER */
+      #three-canvas-container {
+          position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+          z-index: -1; /* Behind everything */
+          pointer-events: none;
+          opacity: 0; transition: opacity 0.5s ease;
+      }
+      body.mode-3d #three-canvas-container { opacity: 1; }
+
       /* SYSTEM CURSOR OVERRIDE */
       body.use-sys-cursor {
         --cursor-default: default;
         --cursor-pointer: pointer;
-      }
-
-      body.mode-3d .wii-button, body.mode-3d .game-button {
-          border-bottom-width: 4px; 
       }
 
       @font-face { font-family: 'PopHappiness'; src: url('/assets/PopHappiness.OTF') format('opentype'); }
@@ -58,9 +66,9 @@
         font-family: var(--main-font);
         background-color: var(--bg-color);
         color: var(--text-color);
-        /* Default Grid Pattern */
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
-        background-size: auto;
+        /* FIXED GRID */
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path d="M 10 0 L 10 20 M 0 10 L 20 10" stroke="%23555555" stroke-width="0.5" fill="none"/></svg>');
+        background-size: 40px 40px;
         background-repeat: repeat;
         display: flex;
         flex-direction: column;
@@ -74,6 +82,9 @@
         transition: background-color 0.3s ease, color 0.3s ease;
         animation: scrollGrid 10s linear infinite;
       }
+      
+      /* When 3D mode is ON, hide the CSS grid background so Three.js shows */
+      body.mode-3d { background-image: none !important; animation: none; }
       
       body.bg-is-image {
           background-size: cover;
@@ -117,10 +128,6 @@
       }
       .wii-button:active { transform: var(--transform-active); }
       
-      body.mode-3d .wii-button { box-shadow: var(--box-shadow); transition: transform 0.1s; }
-      body.mode-3d .wii-button:hover { box-shadow: var(--box-shadow); }
-      body.mode-3d .wii-button:active { box-shadow: 0 0 0 transparent; transform: translateY(4px); }
-
       .wii-button-svg { width: 60%; height: 60%; transition: filter 0.3s ease, fill 0.3s ease; fill: var(--text-color); }
       
       .wii-date-time { font-size: 1rem; text-align: center; color: var(--text-color); user-select: none; }
@@ -129,20 +136,29 @@
       /* Main Grid Container */
       #game-pages-container {
         position: fixed; z-index: 10; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        width: 100%; max-width: 900px; padding-bottom: 120px; box-sizing: border-box; overflow: hidden;
+        width: 100%; max-width: 900px; padding-bottom: 120px; box-sizing: border-box; overflow: visible;
+        /* Prepare for 3D tilt */
+        transform-style: preserve-3d;
+        transition: transform 0.1s linear; 
       }
-      #game-pages-wrapper { display: flex; transition: transform 0.4s ease-in-out; width: 100%; }
+      #game-pages-wrapper { 
+          display: flex; 
+          transition: transform 0.4s ease-in-out; 
+          width: 100%;
+          transform-style: preserve-3d; /* Key for children to pop out */
+      }
       
       /* RESPONSIVE GRID FIX */
       .game-buttons {
         display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr);
         gap: 20px; width: 100%; height: 500px; justify-items: center; padding: 20px;
         box-sizing: border-box; flex-shrink: 0;
+        transform-style: preserve-3d;
       }
       
       @media (max-width: 768px) {
           .game-buttons {
-              grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
+              grid-template-columns: repeat(2, 1fr);
               grid-template-rows: repeat(6, 1fr);
               height: 400px;
               overflow-y: auto; 
@@ -164,6 +180,7 @@
         background-size: cover; background-position: center; background-repeat: no-repeat;
         transition: transform 0.1s, box-shadow 0.1s, border-color 0.2s;
         border: 1px solid rgba(0,0,0,0.1);
+        transform-style: preserve-3d; /* For the 3D effect */
       }
       .game-button:hover { 
           transform: var(--transform-hover);
@@ -174,9 +191,11 @@
           opacity: 1; 
       }
       
-      body.mode-3d .game-button { border: 2px solid var(--static-color); border-bottom-width: 5px; }
-      body.mode-3d .game-button:hover { box-shadow: 0 8px 0 var(--static-color); transform: translateY(-4px); }
-      body.mode-3d .game-button:active { box-shadow: 0 0 0 transparent; transform: translateY(4px); }
+      /* 3D Mode Specific Button Styles */
+      body.mode-3d .game-button { 
+          box-shadow: 0 15px 30px rgba(0,0,0,0.2); 
+          border: 1px solid rgba(255,255,255,0.5);
+      }
 
       .game-button-text {
         position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.9);
@@ -212,55 +231,88 @@
 
       /* Menus */
       #search-container, #theme-menu, #music-menu {
-        position: fixed; background: #fff; border: 2px solid var(--static-color); border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 200; display: none;
+        position: fixed; background: #fff; border: 2px solid var(--static-color); border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.25); z-index: 200; display: none;
         color: #333;
       }
       
+      /* Search Fix */
       #search-container { 
-          bottom: 110px; left: 50%; transform: translateX(-50%); 
+          bottom: 100px; left: 50%; transform: translateX(-50%); 
           width: 300px; padding: 0; overflow: hidden;
           flex-direction: column;
       }
       #search-header { padding: 10px; display: flex; border-bottom: 1px solid #eee; background: #f9f9f9; }
       #search-input { 
           flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; 
-          font-family: var(--main-font); outline: none;
+          font-family: var(--main-font); outline: none; color: #000; background: #fff;
       }
       #search-results {
-          max-height: 250px; overflow-y: auto; background: #fff;
+          max-height: 300px; overflow-y: auto; background: #fff;
       }
       .search-result-item {
           padding: 8px 12px; cursor: var(--cursor-pointer); border-bottom: 1px solid #f0f0f0;
-          display: flex; align-items: center; gap: 10px; font-size: 0.9rem;
+          display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: #333;
       }
       .search-result-item:hover { background-color: #eef; }
-      .search-result-icon { width: 24px; height: 24px; background-size: cover; border-radius: 4px; background-color: #ddd; }
+      .search-result-icon { width: 32px; height: 32px; background-size: cover; border-radius: 4px; background-color: #ddd; flex-shrink: 0; }
       .no-results { padding: 10px; text-align: center; color: #888; font-style: italic; }
 
-      #theme-menu { bottom: 80px; right: 20px; width: 300px; padding: 15px; max-height: 80vh; overflow-y: auto; }
-      .theme-maker-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-      .theme-maker-label { font-size: 0.9rem; font-weight: bold; color: #555; }
-      
-      input[type="color"] { width: 40px; height: 30px; border: none; cursor: var(--cursor-pointer); background: none; }
-      input[type="text"] { width: 120px; padding: 4px; border: 1px solid #ccc; border-radius: 4px; }
-      input[type="file"] { font-size: 0.8rem; width: 150px; }
-      
-      select, input[type="checkbox"], input[type="range"] { cursor: var(--cursor-pointer); }
-      select { padding: 4px; border-radius: 4px; border: 1px solid #ccc; width: 130px; }
-      
-      .theme-btn { 
-          width: 100%; padding: 8px; background: #e0e0e0; border: 1px solid #aaa; 
-          cursor: var(--cursor-pointer); font-weight: bold; border-radius: 4px; text-align: center;
-          transition: background 0.2s;
+      /* Theme Menu */
+      #theme-menu { 
+          bottom: 80px; right: 20px; width: 320px; padding: 0; 
+          max-height: 80vh; overflow-y: auto; 
+          font-family: sans-serif;
       }
-      .theme-btn:hover { background: #d0d0d0; }
-      .theme-btn.save-load { width: 48%; display: inline-block; font-size: 0.8rem; }
+      .theme-header {
+          padding: 12px; background: #f0f0f0; border-bottom: 1px solid #ddd;
+          font-weight: bold; text-align: center; color: #444; font-size: 1rem;
+      }
+      .theme-section {
+          padding: 15px; border-bottom: 1px solid #eee;
+      }
+      .theme-section-title {
+          font-size: 0.75rem; text-transform: uppercase; color: #888; 
+          margin-bottom: 10px; font-weight: bold; letter-spacing: 0.5px;
+      }
+      .color-grid {
+          display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+      }
+      .color-item {
+          display: flex; flex-direction: column; gap: 4px;
+      }
+      .color-label { font-size: 0.8rem; color: #555; }
       
-      .theme-divider { height: 1px; background: #eee; margin: 10px 0; border: none; }
+      input[type="color"] { 
+          width: 100%; height: 30px; border: 1px solid #ccc; 
+          cursor: var(--cursor-pointer); background: none; border-radius: 4px; padding: 0;
+      }
+      .theme-row { margin-bottom: 8px; }
+      input[type="text"], select { 
+          width: 100%; padding: 6px; border: 1px solid #ccc; 
+          border-radius: 4px; color: #333; box-sizing: border-box; 
+          font-size: 0.9rem;
+      }
+      input[type="file"] { font-size: 0.8rem; width: 100%; margin-top: 5px;}
+      input[type="range"] { width: 100%; cursor: var(--cursor-pointer); }
+      .toggle-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+      .toggle-label { font-size: 0.9rem; color: #333; }
+      
+      .theme-actions { display: flex; gap: 8px; margin-top: 10px; }
+      .theme-btn { 
+          flex: 1; padding: 8px; border: 1px solid #bbb; 
+          cursor: var(--cursor-pointer); font-weight: bold; border-radius: 6px; 
+          text-align: center; font-size: 0.8rem; background: #fff;
+          transition: background 0.2s; color: #333;
+      }
+      .theme-btn:hover { background: #f0f0f0; }
+      .theme-btn.primary { background: #40c4ff; color: white; border-color: #0091ea; }
+      .theme-btn.primary:hover { background: #00b0ff; }
+      .theme-btn.danger { color: #d32f2f; border-color: #ffcdd2; }
+      .theme-btn.danger:hover { background: #ffebee; }
 
       #music-menu { bottom: 80px; left: 20px; width: 280px; padding: 10px; max-height: 400px; overflow-y: auto; }
-      .music-option { padding: 5px; cursor: var(--cursor-pointer); border-radius: 4px; }
+      .music-option { padding: 5px; cursor: var(--cursor-pointer); border-radius: 4px; color: #333; }
       .music-option:hover { background-color: #e0e0e0; }
       .music-heading { font-weight: bold; color: #888; margin: 5px 0; font-size: 0.8rem; text-transform: uppercase; }
       .music-divider { border: 0; height: 1px; background: #ccc; margin: 5px 0; }
@@ -318,6 +370,8 @@
     </style>
   </head>
   <body>
+    <div id="three-canvas-container"></div>
+
     <div class="wii-top-bar"></div>
 
     <div id="game-pages-container">
@@ -562,84 +616,81 @@
     </div>
 
     <div id="theme-menu">
-        <div class="theme-heading">Theme Maker</div>
+        <div class="theme-header">Personalize</div>
         
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Background Color</span>
-            <input type="color" id="input-bg" value="#e6e8e7">
-        </div>
-        
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Image URL</span>
-            <input type="text" id="input-bg-image" placeholder="https://..." title="Paste direct image link">
-        </div>
-        
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Upload Image</span>
-            <input type="file" id="input-bg-upload" accept="image/*">
-        </div>
-
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Wii Bar</span>
-            <input type="color" id="input-bar" value="#c9c5c2">
-        </div>
-        
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Grid Lines</span>
-            <input type="color" id="input-static" value="#555555">
-        </div>
-        
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Text Color</span>
-            <input type="color" id="input-text" value="#555555">
-        </div>
-        
-        <hr class="theme-divider">
-
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Button Shape</span>
-            <select id="input-shape">
-                <option value="round">Round</option>
-                <option value="squircle">Squircle</option>
-                <option value="rounded-square">Rounded Square</option>
-                <option value="square">Sharp Square</option>
-            </select>
-        </div>
-        
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Font Style</span>
-            <select id="input-font">
-                <option value="PopHappiness">PopHappiness</option>
-                <option value="sans-serif">Clean Sans</option>
-                <option value="monospace">Retro Mono</option>
-            </select>
-        </div>
-        
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Grid Opacity</span>
-            <input type="range" id="input-opacity" min="0.2" max="1" step="0.1" value="1" title="Adjust game button opacity">
+        <div class="theme-section">
+            <div class="theme-section-title">Colors</div>
+            <div class="color-grid">
+                <div class="color-item">
+                    <span class="color-label">Background</span>
+                    <input type="color" id="input-bg" value="#e6e8e7">
+                </div>
+                <div class="color-item">
+                    <span class="color-label">Menu Bar</span>
+                    <input type="color" id="input-bar" value="#c9c5c2">
+                </div>
+                <div class="color-item">
+                    <span class="color-label">Grid Lines</span>
+                    <input type="color" id="input-static" value="#555555">
+                </div>
+                <div class="color-item">
+                    <span class="color-label">Text Color</span>
+                    <input type="color" id="input-text" value="#555555">
+                </div>
+            </div>
         </div>
 
-        <hr class="theme-divider">
-
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">3D Effects</span>
-            <input type="checkbox" id="input-3d">
-        </div>
-        
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">System Cursor</span>
-            <input type="checkbox" id="input-cursor">
+        <div class="theme-section">
+            <div class="theme-section-title">Background Image</div>
+            <div class="theme-row">
+                <input type="text" id="input-bg-image" placeholder="Paste Image URL..." title="Paste direct image link">
+            </div>
+            <div class="theme-row">
+                <input type="file" id="input-bg-upload" accept="image/*">
+            </div>
         </div>
 
-        <button id="reset-theme-btn" class="theme-btn">Reset Default</button>
+        <div class="theme-section">
+            <div class="theme-section-title">Style</div>
+            <div class="theme-row">
+                <select id="input-shape">
+                    <option value="round">Round Buttons</option>
+                    <option value="squircle">Squircle Buttons</option>
+                    <option value="rounded-square">Rounded Square</option>
+                    <option value="square">Sharp Square</option>
+                </select>
+            </div>
+            <div class="theme-row">
+                <select id="input-font">
+                    <option value="PopHappiness">Font: Wii Pop</option>
+                    <option value="sans-serif">Font: Clean Sans</option>
+                    <option value="monospace">Font: Retro Mono</option>
+                </select>
+            </div>
+            <div class="theme-row">
+                <label style="font-size:0.8rem; color:#555;">Button Transparency</label>
+                <input type="range" id="input-opacity" min="0.2" max="1" step="0.1" value="1">
+            </div>
+            
+            <div class="toggle-row">
+                <span class="toggle-label">3D Effect (Three.js)</span>
+                <input type="checkbox" id="input-3d">
+            </div>
+            <div class="toggle-row">
+                <span class="toggle-label">System Cursor</span>
+                <input type="checkbox" id="input-cursor">
+            </div>
+        </div>
         
-        <hr class="theme-divider">
-        
-        <div class="theme-maker-row">
-            <button id="save-theme-btn" class="theme-btn save-load">Save Theme</button>
-            <button id="load-theme-btn" class="theme-btn save-load">Load Theme</button>
-            <input type="file" id="input-load-theme" accept=".json" style="display: none;">
+        <div class="theme-section">
+            <div class="theme-actions">
+                <button id="reset-theme-btn" class="theme-btn danger">Reset</button>
+            </div>
+            <div class="theme-actions">
+                <button id="save-theme-btn" class="theme-btn primary">Save File</button>
+                <button id="load-theme-btn" class="theme-btn">Load File</button>
+                <input type="file" id="input-load-theme" accept=".json" style="display: none;">
+            </div>
         </div>
     </div>
 
@@ -711,10 +762,17 @@
       const searchClickSound = document.getElementById('search-click-sound');
       
       const gamePagesWrapper = document.getElementById('game-pages-wrapper');
+      const gamePagesContainer = document.getElementById('game-pages-container'); // Need this for 3D tilt
       const pageIndicatorDots = document.getElementById('page-indicator-dots');
       const prevPageButton = document.getElementById('prev-page-button');
       const nextPageButton = document.getElementById('next-page-button');
       let currentPage = 0;
+
+      // --- THREE.JS VARIABLES ---
+      let scene, camera, renderer, cubes = [];
+      let animationFrameId;
+      let isThreeActive = false;
+      const threeContainer = document.getElementById('three-canvas-container');
 
       // --- IFRAME MODAL LOGIC ---
       const gameModal = document.getElementById('game-modal');
@@ -755,14 +813,16 @@
         if (savedTheme) {
             try {
                 const theme = JSON.parse(savedTheme);
+                // Pre-set inputs before applying theme to ensure Three.js knows the state
+                if(theme.is3d) document.getElementById('input-3d').checked = true;
                 applyTheme(theme);
+                
                 // Update input values
                 document.getElementById('input-bg').value = theme.bg || '#e6e8e7';
                 document.getElementById('input-bar').value = theme.bar || '#c9c5c2';
                 document.getElementById('input-static').value = theme.static || '#555555';
                 document.getElementById('input-text').value = theme.text || '#555555';
                 document.getElementById('input-shape').value = theme.shape || 'round';
-                document.getElementById('input-3d').checked = theme.is3d || false;
                 
                 // New inputs init
                 if(theme.bgImage && !theme.bgImage.startsWith('data:')) document.getElementById('input-bg-image').value = theme.bgImage;
@@ -898,6 +958,126 @@
           if (requestFS) requestFS.call(gameIframe);
       });
 
+      // --- THREE.JS LOGIC ---
+      function initThreeJS() {
+          if(isThreeActive) return; // Already running
+          isThreeActive = true;
+          
+          // Setup Scene
+          scene = new THREE.Scene();
+          // Use current theme colors immediately
+          updateThreeColors();
+          
+          camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+          camera.position.z = 5;
+          
+          renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+          renderer.setSize(window.innerWidth, window.innerHeight);
+          threeContainer.innerHTML = ''; // Clear old canvas
+          threeContainer.appendChild(renderer.domElement);
+          
+          // Add Cubes ("Qbbic")
+          cubes = [];
+          const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+          
+          // Create 50 random cubes
+          for(let i=0; i<50; i++) {
+              // Wireframe material to look technical/grid-like
+              const material = new THREE.MeshBasicMaterial({ 
+                  color: document.getElementById('input-static').value || 0x555555, 
+                  wireframe: true 
+              });
+              const cube = new THREE.Mesh(geometry, material);
+              
+              // Random spread
+              cube.position.x = (Math.random() - 0.5) * 20;
+              cube.position.y = (Math.random() - 0.5) * 10;
+              cube.position.z = (Math.random() - 0.5) * 10 - 2;
+              
+              // Random Rotation Speed
+              cube.userData = {
+                  rotX: (Math.random() - 0.5) * 0.02,
+                  rotY: (Math.random() - 0.5) * 0.02
+              };
+              
+              scene.add(cube);
+              cubes.push(cube);
+          }
+          
+          animateThree();
+          
+          // Resize listener
+          window.addEventListener('resize', onWindowResize, false);
+      }
+      
+      function stopThreeJS() {
+          isThreeActive = false;
+          cancelAnimationFrame(animationFrameId);
+          threeContainer.innerHTML = '';
+          window.removeEventListener('resize', onWindowResize);
+      }
+      
+      function onWindowResize() {
+          if(!camera || !renderer) return;
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+      
+      function updateThreeColors() {
+          if(!scene) return;
+          
+          // Update Fog/Background based on Theme
+          const bgColor = document.getElementById('input-bg').value;
+          scene.background = new THREE.Color(bgColor);
+          scene.fog = new THREE.FogExp2(bgColor, 0.15);
+          
+          // Update Cube Colors
+          const gridColor = document.getElementById('input-static').value;
+          if(cubes.length > 0) {
+              cubes.forEach(cube => {
+                  cube.material.color.set(gridColor);
+              });
+          }
+      }
+      
+      // Mouse Interaction for 3D Tilt
+      let mouseX = 0;
+      let mouseY = 0;
+      let targetX = 0;
+      let targetY = 0;
+      
+      document.addEventListener('mousemove', (e) => {
+          if(!isThreeActive) return;
+          // Normalize mouse position -1 to 1
+          mouseX = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
+          mouseY = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
+      });
+
+      function animateThree() {
+          if(!isThreeActive) return;
+          animationFrameId = requestAnimationFrame(animateThree);
+          
+          // Rotate Cubes
+          cubes.forEach(cube => {
+              cube.rotation.x += cube.userData.rotX;
+              cube.rotation.y += cube.userData.rotY;
+          });
+          
+          // Camera Sway (Subtle)
+          camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+          camera.position.y += (-mouseY * 0.5 - camera.position.y) * 0.05;
+          camera.lookAt(scene.position);
+          
+          // CSS 3D Tilt Effect on the HTML Interface
+          // We apply this to the #game-pages-container to make the menu tilt
+          const tiltX = mouseY * -5; // Max 5 deg tilt
+          const tiltY = mouseX * 5;
+          gamePagesContainer.style.transform = `translate(-50%, -50%) perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+
+          renderer.render(scene, camera);
+      }
+
       // --- THEME MAKER LOGIC ---
       const inputBg = document.getElementById('input-bg');
       const inputBgImage = document.getElementById('input-bg-image');
@@ -948,24 +1128,36 @@
         document.documentElement.style.setProperty('--btn-radius', btnRad);
         document.documentElement.style.setProperty('--card-radius', cardRad);
 
-        // 3D Mode
-        if(is3d) document.body.classList.add('mode-3d');
-        else document.body.classList.remove('mode-3d');
+        // 3D Mode Handling
+        if(is3d) {
+            document.body.classList.add('mode-3d');
+            initThreeJS();
+        } else {
+            document.body.classList.remove('mode-3d');
+            stopThreeJS();
+            // Reset CSS transform manually
+            gamePagesContainer.style.transform = 'translate(-50%, -50%)'; 
+        }
 
         // Cursor
         if(sysCursor) document.body.classList.add('use-sys-cursor');
         else document.body.classList.remove('use-sys-cursor');
 
-        // Background Logic (Image vs SVG)
+        // Background Logic (Image vs SVG vs Three.js)
         if(bgImage && bgImage.trim() !== "") {
             document.body.style.backgroundImage = `url('${bgImage}')`;
             document.body.classList.add('bg-is-image');
         } else {
             document.body.classList.remove('bg-is-image');
             const encodedColor = encodeURIComponent(static);
-            const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
+            // GRID FIX: Updated path to include both vertical and horizontal lines
+            const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path d="M 10 0 L 10 20 M 0 10 L 20 10" stroke="${encodedColor}" stroke-width="0.5" fill="none" opacity="0.5"/></svg>')`;
             document.body.style.backgroundImage = svg;
+            document.body.style.backgroundSize = "40px 40px";
         }
+        
+        // Update Three.js Colors if active
+        if(isThreeActive) updateThreeColors();
 
         saveThemeToStorage(themeObj);
       }
@@ -976,7 +1168,7 @@
           
           // If the body has a base64 image (uploaded), prioritize that over text input
           const currentBodyBg = document.body.style.backgroundImage;
-          if(currentBodyBg.includes('data:image')) {
+          if(currentBodyBg.includes('data:image') && !currentBodyBg.includes('svg')) {
               // Extract url('...')
               currentBgImage = currentBodyBg.slice(5, -2);
           }
@@ -1174,6 +1366,7 @@
           }
       });
 
+      // SEARCH NAV FIX: Replaced scrollIntoView with logic that works with transforms
       function navigateToGame(targetBtn) {
           const pageContainer = targetBtn.closest('.game-buttons');
           const allPages = document.querySelectorAll('.game-buttons');
@@ -1183,18 +1376,26 @@
               currentPage = pageIndex;
               updatePage();
               
-              // Wait for slide animation to finish slightly before scrolling
+              // Wait for slide animation to finish slightly
               setTimeout(() => {
-                  targetBtn.scrollIntoView({behavior: 'smooth', block: 'center'});
-                  targetBtn.style.transition = "box-shadow 0.2s, transform 0.2s";
-                  targetBtn.style.boxShadow = "0 0 40px #ffcc00";
-                  targetBtn.style.transform = "scale(1.2)";
+                  // Only use scrollIntoView on mobile where overflow exists
+                  if(window.innerWidth <= 768) {
+                      targetBtn.scrollIntoView({behavior: 'smooth', block: 'center'});
+                  }
+                  
+                  // Visual highlight effect
+                  targetBtn.style.transition = "box-shadow 0.2s, transform 0.2s, background-color 0.2s";
+                  const oldZ = targetBtn.style.zIndex;
                   targetBtn.style.zIndex = "50";
+                  targetBtn.style.transform = "scale(1.3)";
+                  targetBtn.style.boxShadow = "0 0 30px #40c4ff, 0 0 10px #40c4ff inset";
+                  targetBtn.style.borderColor = "#40c4ff";
                   
                   setTimeout(() => {
-                      targetBtn.style.boxShadow = "";
+                      targetBtn.style.zIndex = oldZ;
                       targetBtn.style.transform = "";
-                      targetBtn.style.zIndex = "";
+                      targetBtn.style.boxShadow = "";
+                      targetBtn.style.borderColor = "";
                   }, 1500);
               }, 100);
           }
