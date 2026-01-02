@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Qbbic</title>
+    <title>Qbbic 3D</title>
     <link rel="icon" href="/assets/fanny.gif" type="image/gif" />
     <link rel="stylesheet" href="https://qottlebup.nekoweb.org/banner.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -27,28 +27,13 @@
         --transform-hover: scale(1.05);
         --transform-active: scale(0.95);
         
+        /* 3D VARIABLES */
+        --cube-depth: 40px; /* Thickness of the 3D buttons */
+        
         /* CURSOR VARIABLES */
         --cursor-default: url('/assets/cursor.png'), auto;
         --cursor-pointer: url('/assets/Link-Select.png'), pointer;
       }
-
-      /* 3D MODE OVERRIDES (CSS Layer) */
-      body.mode-3d {
-        --box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        --transform-hover: translateZ(20px);
-        --transform-active: translateZ(5px);
-        perspective: 1000px; /* Enable 3D space for HTML elements */
-        overflow: hidden; /* Hide scrollbars during 3D */
-      }
-      
-      /* THREE.JS CANVAS CONTAINER */
-      #three-canvas-container {
-          position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-          z-index: -1; /* Behind everything */
-          pointer-events: none;
-          opacity: 0; transition: opacity 0.5s ease;
-      }
-      body.mode-3d #three-canvas-container { opacity: 1; }
 
       /* SYSTEM CURSOR OVERRIDE */
       body.use-sys-cursor {
@@ -77,18 +62,34 @@
         padding: 4rem 1rem;
         box-sizing: border-box;
         cursor: var(--cursor-default);
-        overflow-x: hidden;
-        overflow-y: hidden;
+        overflow: hidden; /* Prevent scrolling, handle navigation via JS */
         transition: background-color 0.3s ease, color 0.3s ease;
         animation: scrollGrid 10s linear infinite;
       }
+      
+      /* 3D MODE OVERRIDES (CSS Layer) */
+      body.mode-3d {
+        perspective: 1200px; /* Enable 3D space for HTML elements */
+        overflow: hidden; 
+      }
+      
+      /* THREE.JS CANVAS CONTAINER */
+      #three-canvas-container {
+          position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+          z-index: -1; /* Behind everything */
+          pointer-events: none;
+          opacity: 0; transition: opacity 0.5s ease;
+      }
+      body.mode-3d #three-canvas-container { opacity: 1; }
       
       /* When 3D mode is ON, hide the CSS grid background so Three.js shows */
       body.mode-3d { background-image: none !important; animation: none; }
       
       body.bg-is-image {
-          background-size: cover;
-          background-position: center;
+          background-size: cover !important; /* Forces image to fill screen */
+          background-position: center !important;
+          background-attachment: fixed !important;
+          background-repeat: no-repeat !important;
           animation: none;
       }
 
@@ -136,53 +137,66 @@
       /* Main Grid Container */
       #game-pages-container {
         position: fixed; z-index: 10; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        width: 100%; max-width: 900px; padding-bottom: 120px; box-sizing: border-box; overflow: visible;
+        width: 100%; max-width: 900px; padding-bottom: 50px; box-sizing: border-box; 
+        overflow: visible;
         /* Prepare for 3D tilt */
         transform-style: preserve-3d;
         transition: transform 0.1s linear; 
       }
+      
+      /* Wrapper holds all pages side-by-side */
       #game-pages-wrapper { 
           display: flex; 
-          transition: transform 0.4s ease-in-out; 
+          transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); /* Smoother slide */
           width: 100%;
-          transform-style: preserve-3d; /* Key for children to pop out */
+          transform-style: preserve-3d; 
       }
       
-      /* RESPONSIVE GRID FIX */
+      /* --- GRID LAYOUT (Strict 4x5) --- */
       .game-buttons {
-        display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr);
-        gap: 20px; width: 100%; height: 500px; justify-items: center; padding: 20px;
-        box-sizing: border-box; flex-shrink: 0;
+        display: grid; 
+        grid-template-columns: repeat(4, 1fr); 
+        grid-template-rows: repeat(5, 1fr);
+        gap: 15px; 
+        width: 100%; 
+        height: 520px; /* Fixed height to fit 5 rows */
+        justify-items: center; 
+        align-items: center;
+        padding: 10px;
+        box-sizing: border-box; 
+        flex-shrink: 0;
         transform-style: preserve-3d;
       }
       
-      @media (max-width: 768px) {
-          .game-buttons {
-              grid-template-columns: repeat(2, 1fr);
-              grid-template-rows: repeat(6, 1fr);
-              height: 400px;
-              overflow-y: auto; 
+      /* On very small screens, scale down the whole grid instead of reflowing to 2 columns */
+      @media (max-width: 850px) {
+          #game-pages-container {
+              transform: translate(-50%, -50%) scale(0.8);
+              width: 95%;
           }
-          .wii-bottom-bar { height: 70px; gap: 10px; }
-          .wii-button { width: 40px; height: 40px; }
       }
 
-      /* Game Cards (Buttons) */
+      /* --- GAME BUTTON STYLES --- */
       .game-button {
-        width: 160px; height: 80px; background-color: #ffffff;
+        width: 180px; height: 90px; 
+        background-color: #ffffff;
         border-radius: var(--card-radius); 
         box-shadow: var(--box-shadow); 
         opacity: var(--card-opacity);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         text-decoration: none; color: black; font-weight: bold; text-align: center;
-        position: relative; overflow: hidden; 
+        position: relative; 
+        /* Important for 3D Mode */
+        transform-style: preserve-3d;
         cursor: var(--cursor-default);
+        /* Image is applied to background usually, but in 3D mode we might move it */
         background-size: cover; background-position: center; background-repeat: no-repeat;
-        transition: transform 0.1s, box-shadow 0.1s, border-color 0.2s;
+        transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s, opacity 0.2s;
         border: 1px solid rgba(0,0,0,0.1);
-        transform-style: preserve-3d; /* For the 3D effect */
       }
-      .game-button:hover { 
+
+      /* Hover Effects (2D Mode) */
+      body:not(.mode-3d) .game-button:hover { 
           transform: var(--transform-hover);
           box-shadow: 0 0 15px var(--static-color); 
           z-index: 20; 
@@ -190,21 +204,16 @@
           border-color: var(--static-color);
           opacity: 1; 
       }
-      
-      /* 3D Mode Specific Button Styles */
-      body.mode-3d .game-button { 
-          box-shadow: 0 15px 30px rgba(0,0,0,0.2); 
-          border: 1px solid rgba(255,255,255,0.5);
-      }
 
       .game-button-text {
         position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.9);
         font-size: 0.8rem; padding: 2px 0; display: none; color: #000;
         font-family: var(--main-font);
+        border-radius: 0 0 var(--card-radius) var(--card-radius);
+        transform: translateZ(1px); /* Keep text on top */
       }
       .game-button:hover .game-button-text { display: block; }
       
-      /* Placeholder Style */
       .game-button.placeholder {
         background-image: none !important;
         background-color: rgba(255,255,255,0.3);
@@ -215,6 +224,132 @@
         opacity: 0.5;
         pointer-events: none;
       }
+
+      /* --- 3D MODE SPECIFIC CSS --- */
+      
+      /* When in 3D Mode, buttons become Cuboids */
+      body.mode-3d .game-button {
+          /* Remove default hover transform, we handle it differently */
+          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); 
+          box-shadow: none !important; /* Shadows handled by Three.js or not needed on faces */
+          border: none;
+          background-color: transparent !important; /* Hide container bg */
+          background-image: none !important; /* Hide container image, it moves to .face-front */
+      }
+      
+      /* Faces of the Cube */
+      .cube-face {
+          position: absolute;
+          width: 100%; height: 100%;
+          border: 1px solid rgba(0,0,0,0.1);
+          box-sizing: border-box;
+          background-color: #fff;
+          display: none; /* Hidden by default in 2D */
+          backface-visibility: hidden; /* Optimization */
+          border-radius: var(--card-radius);
+      }
+      
+      body.mode-3d .cube-face { display: block; }
+
+      /* Front Face: Has the Image */
+      .cube-face.front {
+          transform: translateZ(20px); /* Half depth */
+          background-size: cover; background-position: center;
+          z-index: 2;
+      }
+      
+      /* Back Face */
+      .cube-face.back {
+          transform: rotateY(180deg) translateZ(20px);
+          background-color: var(--bar-color);
+          display: flex; align-items: center; justify-content: center;
+      }
+      .cube-face.back::after { content: ''; display: block; width: 20px; height: 20px; background: var(--static-color); opacity: 0.2; border-radius: 50%; }
+
+      /* Side Faces */
+      .cube-face.right {
+          width: 40px; /* Depth */
+          right: -20px; /* Half depth */
+          transform: rotateY(90deg);
+          background-color: #ddd; /* Darker for shading */
+      }
+      .cube-face.left {
+          width: 40px; 
+          left: -20px;
+          transform: rotateY(-90deg);
+          background-color: #ddd;
+      }
+      .cube-face.top {
+          height: 40px;
+          top: -20px;
+          transform: rotateX(90deg);
+          background-color: #eee;
+      }
+      .cube-face.bottom {
+          height: 40px;
+          bottom: -20px;
+          transform: rotateX(-90deg);
+          background-color: #ccc; /* Darkest for shadow */
+      }
+      
+      /* Fix border radius on sides to look clean */
+      body.mode-3d .cube-face.right, body.mode-3d .cube-face.left, 
+      body.mode-3d .cube-face.top, body.mode-3d .cube-face.bottom {
+          border-radius: 2px;
+      }
+
+      /* 3D Hover Effect */
+      body.mode-3d .game-button:hover {
+          cursor: var(--cursor-pointer);
+          transform: translateZ(30px) scale(1.1) !important;
+          z-index: 100;
+      }
+      
+      /* --- PAGE TRANSITION ANIMATIONS --- */
+      
+      /* Keyframes for items flying in */
+      @keyframes flyInStagger {
+          0% { opacity: 0; transform: translateZ(-400px) rotateX(45deg); }
+          60% { opacity: 1; transform: translateZ(20px) rotateX(-10deg); }
+          100% { opacity: 1; transform: translateZ(0) rotateX(0); }
+      }
+
+      @keyframes flyInStagger2D {
+          0% { opacity: 0; transform: scale(0.5); }
+          100% { opacity: 1; transform: scale(1); }
+      }
+
+      /* Trigger class for animations */
+      .game-buttons.animating .game-button {
+          animation: flyInStagger2D 0.5s ease forwards;
+      }
+      
+      body.mode-3d .game-buttons.animating .game-button {
+          animation: flyInStagger 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      }
+      
+      /* Stagger delays manually for 20 items (4x5) */
+      .game-buttons.animating .game-button:nth-child(1) { animation-delay: 0.05s; }
+      .game-buttons.animating .game-button:nth-child(2) { animation-delay: 0.08s; }
+      .game-buttons.animating .game-button:nth-child(3) { animation-delay: 0.11s; }
+      .game-buttons.animating .game-button:nth-child(4) { animation-delay: 0.14s; }
+      .game-buttons.animating .game-button:nth-child(5) { animation-delay: 0.17s; }
+      .game-buttons.animating .game-button:nth-child(6) { animation-delay: 0.20s; }
+      .game-buttons.animating .game-button:nth-child(7) { animation-delay: 0.23s; }
+      .game-buttons.animating .game-button:nth-child(8) { animation-delay: 0.26s; }
+      .game-buttons.animating .game-button:nth-child(9) { animation-delay: 0.29s; }
+      .game-buttons.animating .game-button:nth-child(10) { animation-delay: 0.32s; }
+      .game-buttons.animating .game-button:nth-child(11) { animation-delay: 0.35s; }
+      .game-buttons.animating .game-button:nth-child(12) { animation-delay: 0.38s; }
+      .game-buttons.animating .game-button:nth-child(13) { animation-delay: 0.41s; }
+      .game-buttons.animating .game-button:nth-child(14) { animation-delay: 0.44s; }
+      .game-buttons.animating .game-button:nth-child(15) { animation-delay: 0.47s; }
+      .game-buttons.animating .game-button:nth-child(16) { animation-delay: 0.50s; }
+      .game-buttons.animating .game-button:nth-child(17) { animation-delay: 0.53s; }
+      .game-buttons.animating .game-button:nth-child(18) { animation-delay: 0.56s; }
+      .game-buttons.animating .game-button:nth-child(19) { animation-delay: 0.59s; }
+      .game-buttons.animating .game-button:nth-child(20) { animation-delay: 0.62s; }
+
 
       /* Page Dots */
       .page-indicator { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
@@ -803,6 +938,9 @@
 
       // --- INITIALIZATION ---
       window.addEventListener('load', () => {
+        // Init Cubes Structure
+        init3DCubeFaces();
+        
         updatePage();
         populateMusicMenu();
         updateDateTime();
@@ -838,6 +976,37 @@
             playBGM(savedBGM);
         }
       });
+      
+      // --- CUBE GENERATION ---
+      // Adds the "sides" to every button so they can be 3D
+      function init3DCubeFaces() {
+          document.querySelectorAll('.game-button').forEach(btn => {
+              if(btn.querySelector('.cube-face')) return; // Already done
+              
+              // Get existing Image from background
+              const bgImg = btn.style.backgroundImage;
+              
+              // Create Faces
+              const front = document.createElement('div'); front.className = 'cube-face front';
+              front.style.backgroundImage = bgImg;
+              // Move existing text into front face
+              const txt = btn.querySelector('.game-button-text');
+              if(txt) front.appendChild(txt);
+              
+              const back = document.createElement('div'); back.className = 'cube-face back';
+              const right = document.createElement('div'); right.className = 'cube-face right';
+              const left = document.createElement('div'); left.className = 'cube-face left';
+              const top = document.createElement('div'); top.className = 'cube-face top';
+              const bottom = document.createElement('div'); bottom.className = 'cube-face bottom';
+              
+              btn.appendChild(front);
+              btn.appendChild(back);
+              btn.appendChild(right);
+              btn.appendChild(left);
+              btn.appendChild(top);
+              btn.appendChild(bottom);
+          });
+      }
 
       // --- PAGE NAVIGATION ---
       function updatePage() {
@@ -845,6 +1014,18 @@
           gamePagesWrapper.style.transform = `translateX(${offset}%)`;
           
           const allGamePages = document.querySelectorAll('.game-buttons');
+          
+          // Remove animation classes from all
+          allGamePages.forEach(p => p.classList.remove('animating'));
+          
+          // Add animation to CURRENT page (Fly in effect)
+          // We use a slight timeout to let the slide happen/reset
+          if(allGamePages[currentPage]) {
+              // Resetting animation needs a reflow hack sometimes, but adding class usually works
+              void allGamePages[currentPage].offsetWidth; 
+              allGamePages[currentPage].classList.add('animating');
+          }
+
           pageIndicatorDots.innerHTML = '';
           for (let i = 0; i < allGamePages.length; i++) {
               const dot = document.createElement('div');
@@ -976,7 +1157,7 @@
           threeContainer.innerHTML = ''; // Clear old canvas
           threeContainer.appendChild(renderer.domElement);
           
-          // Add Cubes ("Qbbic")
+          // Add Background Decorations (Floating Wireframes)
           cubes = [];
           const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
           
@@ -1044,8 +1225,6 @@
       // Mouse Interaction for 3D Tilt
       let mouseX = 0;
       let mouseY = 0;
-      let targetX = 0;
-      let targetY = 0;
       
       document.addEventListener('mousemove', (e) => {
           if(!isThreeActive) return;
@@ -1058,7 +1237,7 @@
           if(!isThreeActive) return;
           animationFrameId = requestAnimationFrame(animateThree);
           
-          // Rotate Cubes
+          // Rotate Decoration Cubes
           cubes.forEach(cube => {
               cube.rotation.x += cube.userData.rotX;
               cube.rotation.y += cube.userData.rotY;
@@ -1070,10 +1249,9 @@
           camera.lookAt(scene.position);
           
           // CSS 3D Tilt Effect on the HTML Interface
-          // We apply this to the #game-pages-container to make the menu tilt
-          const tiltX = mouseY * -5; // Max 5 deg tilt
-          const tiltY = mouseX * 5;
-          gamePagesContainer.style.transform = `translate(-50%, -50%) perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+          const tiltX = mouseY * -15; // Increased tilt
+          const tiltY = mouseX * 15;
+          gamePagesContainer.style.transform = `translate(-50%, -50%) perspective(1200px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
 
           renderer.render(scene, camera);
       }
@@ -1132,6 +1310,7 @@
         if(is3d) {
             document.body.classList.add('mode-3d');
             initThreeJS();
+            updatePage(); // Retrigger animation check
         } else {
             document.body.classList.remove('mode-3d');
             stopThreeJS();
@@ -1387,7 +1566,13 @@
                   targetBtn.style.transition = "box-shadow 0.2s, transform 0.2s, background-color 0.2s";
                   const oldZ = targetBtn.style.zIndex;
                   targetBtn.style.zIndex = "50";
-                  targetBtn.style.transform = "scale(1.3)";
+                  
+                  // Pulse in 3D or 2D
+                  if(document.body.classList.contains('mode-3d')) {
+                     targetBtn.style.transform = "translateZ(50px) scale(1.3)";
+                  } else {
+                     targetBtn.style.transform = "scale(1.3)";
+                  }
                   targetBtn.style.boxShadow = "0 0 30px #40c4ff, 0 0 10px #40c4ff inset";
                   targetBtn.style.borderColor = "#40c4ff";
                   
