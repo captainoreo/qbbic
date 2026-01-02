@@ -169,21 +169,42 @@
         flex-shrink: 0;
       }
 
-      /* --- GAME CHANNEL CARD STYLES --- */
+      /* --- GAME CHANNEL CARD STYLES (UPDATED WITH GLASS) --- */
       .game-button {
         width: 220px; height: 130px;
         background-color: #ffffff;
         border-radius: var(--card-radius); 
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.1); 
         opacity: var(--card-opacity);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         text-decoration: none; color: black; font-weight: bold; text-align: center;
         position: relative; 
         cursor: url('/assets/cursor.png'), auto;
         background-size: cover; background-position: center; background-repeat: no-repeat;
-        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.3s ease, filter 0.3s ease;
         border: 4px solid #eaeaea;
-        overflow: hidden; /* Important for static effect */
+        overflow: hidden;
+        /* Glass Shadow Effect */
+        box-shadow: 
+            inset 0 0 0 1px rgba(255,255,255,0.4), 
+            2px 4px 10px rgba(0,0,0,0.15);
+      }
+
+      /* --- GLASS/GLOSS GRADIENT OVERLAY --- */
+      .game-button::after {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        /* A subtle top-down white gradient to simulate a glass curve */
+        background: linear-gradient(
+            180deg, 
+            rgba(255, 255, 255, 0.5) 0%, 
+            rgba(255, 255, 255, 0.1) 40%, 
+            rgba(255, 255, 255, 0) 50%, 
+            rgba(255, 255, 255, 0) 100%
+        );
+        border-radius: calc(var(--card-radius) - 4px); /* Slightly smaller than parent to fit inside border */
+        pointer-events: none;
+        z-index: 2;
       }
 
       /* --- WII TV STATIC EFFECT --- */
@@ -208,6 +229,8 @@
           border-color: #7bc6eb;
           z-index: 20; 
           cursor: url('/assets/Link-Select.png'), pointer; 
+          opacity: 1 !important; /* Always fully visible on hover even during search */
+          filter: grayscale(0%) !important;
       }
 
       .game-button-text {
@@ -217,6 +240,7 @@
         border-bottom-right-radius: var(--card-radius);
         font-size: 0.9rem; padding: 4px 0; display: none; color: #333;
         z-index: 5;
+        backdrop-filter: blur(4px);
       }
       .game-button:hover .game-button-text { display: block; }
       
@@ -230,6 +254,7 @@
         opacity: 0.6;
         pointer-events: none;
       }
+      .game-button.placeholder::after { display: none; } /* No glass on placeholders */
 
       /* Page Dots */
       .page-indicator { position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
@@ -246,9 +271,11 @@
 
       /* Menus */
       #search-container, #theme-menu, #music-menu {
-        position: fixed; background: #fff; border: 2px solid var(--static-color); border-radius: 10px;
+        position: fixed; background: rgba(255, 255, 255, 0.95); 
+        border: 2px solid var(--static-color); border-radius: 10px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 200; display: none;
         color: #333;
+        backdrop-filter: blur(5px);
       }
       
       #search-container { bottom: 110px; left: 50%; transform: translateX(-50%); padding: 10px; flex-direction: row; gap: 5px; }
@@ -526,8 +553,8 @@
     <div class="page-indicator" id="page-indicator-dots"></div>
     
     <div id="search-container">
-      <input type="text" id="search-input" placeholder="Enter game name...">
-      <button id="search-submit-button">Find</button>
+      <input type="text" id="search-input" placeholder="Search games...">
+      <button id="search-submit-button">Find Next</button>
     </div>
 
     <div class="wii-bottom-bar">
@@ -680,6 +707,10 @@
     <audio id="next-page-sound" src="/assets/WSD-SELECT.wav" preload="auto"></audio>
     <audio id="theme-click-sound" src="/assets/Sample_0002.wav" preload="auto"></audio>
     <audio id="search-click-sound" src="/assets/Sample_0001.wav" preload="auto"></audio>
+    
+    <audio id="menu-hover-sound" src="/assets/Sample_0004.wav" preload="auto"></audio>
+    <audio id="game-open-sound" src="/assets/Sample_0000.wav" preload="auto"></audio>
+    <audio id="game-close-sound" src="/assets/WSD-SELECT.wav" preload="auto"></audio>
 
     <script>
       // --- CORE VARIABLES ---
@@ -690,6 +721,11 @@
       const nextPageSound = document.getElementById('next-page-sound');
       const themeClickSound = document.getElementById('theme-click-sound');
       const searchClickSound = document.getElementById('search-click-sound');
+      
+      // New Sounds
+      const menuHoverSound = document.getElementById('menu-hover-sound');
+      const gameOpenSound = document.getElementById('game-open-sound');
+      const gameCloseSound = document.getElementById('game-close-sound');
       
       const gamePagesWrapper = document.getElementById('game-pages-wrapper');
       const gamePagesContainer = document.getElementById('game-pages-container'); 
@@ -801,7 +837,7 @@
           btn.addEventListener('mouseenter', () => { hoverSound.currentTime = 0; hoverSound.play().catch(()=>{}); });
           btn.addEventListener('click', (e) => {
               e.preventDefault();
-              clickSound.currentTime = 0; clickSound.play().catch(()=>{});
+              // Sound handled in openGameModal
               const url = btn.dataset.href;
               const title = btn.title || "Game";
               if(url && url !== '#') { openGameModal(url, title); }
@@ -809,6 +845,7 @@
       });
 
       function openGameModal(url, title) {
+          gameOpenSound.currentTime = 0; gameOpenSound.play().catch(()=>{}); // Play Open Sound
           wasMusicPlayingBeforeGame = !bgMusic.paused;
           bgMusic.pause();
           currentGameUrl = url;
@@ -822,6 +859,7 @@
       }
 
       function closeGameModal() {
+          gameCloseSound.currentTime = 0; gameCloseSound.play().catch(()=>{}); // Play Close Sound
           gameModal.classList.remove('active');
           setTimeout(() => {
               gameModal.style.display = 'none';
@@ -832,6 +870,17 @@
           }, 300);
       }
       closeGameModalBtn.addEventListener('click', closeGameModal);
+
+      // --- MENU BAR SOUNDS ---
+      // Add sounds to all bottom bar buttons
+      document.querySelectorAll('.wii-bottom-bar .wii-button').forEach(btn => {
+          btn.addEventListener('mouseenter', () => {
+              menuHoverSound.currentTime = 0;
+              menuHoverSound.play().catch(()=>{});
+          });
+          // Note: specific buttons already have click handlers, 
+          // but we can add a generic one if needed or rely on existing ones.
+      });
 
       // --- ADVANCED MODAL BUTTONS ---
       document.getElementById('reload-game-btn').addEventListener('click', () => {
@@ -991,37 +1040,95 @@
       document.getElementById('search-button').addEventListener('click', () => {
           const container = document.getElementById('search-container');
           container.style.display = container.style.display === 'flex' ? 'none' : 'flex';
+          const input = document.getElementById('search-input');
+          input.focus();
           searchClickSound.currentTime = 0; searchClickSound.play().catch(()=>{});
       });
       document.getElementById('search-submit-button').addEventListener('click', performSearch);
       
+      // Live Filter Listener
+      document.getElementById('search-input').addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase();
+          const buttons = document.querySelectorAll('.game-button');
+          
+          buttons.forEach(btn => {
+              if(btn.classList.contains('placeholder')) return;
+              const title = (btn.title || "").toLowerCase();
+              if(title.includes(query)) {
+                  btn.style.opacity = '1';
+                  btn.style.filter = 'grayscale(0%)';
+              } else {
+                  btn.style.opacity = '0.1';
+                  btn.style.filter = 'grayscale(100%)';
+              }
+          });
+      });
+
+      let lastFoundIndex = -1;
+      
       function performSearch() {
           const query = document.getElementById('search-input').value.toLowerCase();
-          const buttons = document.querySelectorAll('.game-button');
-          let found = false;
-          for(let btn of buttons) {
-              if(btn.title && btn.title.toLowerCase().includes(query)) {
-                  const page = btn.closest('.game-buttons');
-                  const pages = document.querySelectorAll('.game-buttons');
-                  currentPage = Array.from(pages).indexOf(page);
-                  updatePage();
-                  // Visual Cue
-                  btn.style.transition = "transform 0.5s";
-                  btn.style.transform = "scale(1.5)";
-                  btn.style.zIndex = "100";
-                  btn.style.boxShadow = "0 0 30px #40c4ff";
-                  setTimeout(() => {
-                      btn.style.transform = "";
-                      btn.style.zIndex = "";
-                      btn.style.boxShadow = "";
-                  }, 1500);
-                  found = true;
-                  document.getElementById('search-container').style.display = 'none';
+          if(!query) return;
+
+          const buttons = Array.from(document.querySelectorAll('.game-button')).filter(b => !b.classList.contains('placeholder'));
+          let foundButton = null;
+
+          // Find next match
+          for(let i = lastFoundIndex + 1; i < buttons.length; i++) {
+              if(buttons[i].title && buttons[i].title.toLowerCase().includes(query)) {
+                  foundButton = buttons[i];
+                  lastFoundIndex = i;
                   break;
               }
           }
-          if(!found) showToast("Game not found!");
+          
+          // Loop back to start if no new match found
+          if(!foundButton) {
+              for(let i = 0; i <= lastFoundIndex; i++) {
+                 if(buttons[i].title && buttons[i].title.toLowerCase().includes(query)) {
+                      foundButton = buttons[i];
+                      lastFoundIndex = i;
+                      break;
+                  }
+              }
+          }
+
+          if(foundButton) {
+              const page = foundButton.closest('.game-buttons');
+              const pages = document.querySelectorAll('.game-buttons');
+              currentPage = Array.from(pages).indexOf(page);
+              updatePage();
+              
+              // Visual Cue
+              foundButton.style.transition = "transform 0.5s";
+              foundButton.style.transform = "scale(1.4)";
+              foundButton.style.zIndex = "100";
+              foundButton.style.boxShadow = "0 0 30px #40c4ff";
+              setTimeout(() => {
+                  foundButton.style.transform = "";
+                  foundButton.style.zIndex = "";
+                  foundButton.style.boxShadow = "";
+              }, 1500);
+          } else {
+              showToast("No matches found!");
+          }
       }
+
+      // Clear search effects on close
+      document.addEventListener('click', (e) => {
+          if (!e.target.closest('#search-container') && !e.target.closest('#search-button')) {
+             // If clicking outside search, restore all buttons
+             if(document.getElementById('search-container').style.display === 'flex') {
+                const buttons = document.querySelectorAll('.game-button');
+                buttons.forEach(btn => {
+                    if(!btn.classList.contains('placeholder')) {
+                        btn.style.opacity = '';
+                        btn.style.filter = '';
+                    }
+                });
+             }
+          }
+      });
 
       // --- MUSIC LOGIC ---
       function playBGM(url) {
