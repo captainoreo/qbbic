@@ -544,7 +544,7 @@
             </svg>
         </div>
         
-        <a href="index.html" class="wii-button" id="wii-menu-button" title="Qbbic Menu">
+        <a href="#" class="wii-button" id="wii-menu-button" title="Qbbic Menu">
             <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm5 15h-2v-6H9v6H7v-7.81l5-4.5 5 4.5V18z"/>
                 <path d="M7 10.19V18h2v-6h6v6h2v-7.81l-5-4.5z" opacity="0.3"/>
@@ -1230,6 +1230,22 @@
           }
           if (!e.target.closest('#search-container') && !e.target.closest('#search-button')) {
               document.getElementById('search-container').style.display = 'none';
+          }
+      });
+
+      // --- SECRET HOME BUTTON LOGIC ---
+      document.getElementById('wii-menu-button').addEventListener('click', (e) => {
+          e.preventDefault();
+          
+          // Play click sound if available
+          const clickSnd = document.getElementById('click-sound');
+          if(clickSnd) { clickSnd.currentTime = 0; clickSnd.play().catch(()=>{}); }
+
+          // 10% chance (0.1)
+          if (Math.random() < 0.1) {
+              window.location.href = 'path.html';
+          } else {
+              window.location.href = 'index.html';
           }
       });
     </script>
