@@ -2,131 +2,440 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Wolf's Watch: Evening Stars</title>
+    <title>VOID ADMINISTRATOR // SYSTEM CORE</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #fffaf0; font-family: 'Segoe UI', sans-serif; }
-        #ui-box {
-            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 600px; background: rgba(255, 255, 255, 0.95);
-            padding: 20px; border-radius: 20px; border: 2px solid #ffccd5;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 10;
+        :root {
+            --bg: #050505;
+            --term-green: #33ff00;
+            --term-amber: #ffb000;
+            --term-red: #ff3333;
+            --term-dim: #1a4d1a;
+            --scanline: rgba(0, 0, 0, 0.5);
         }
-        #text-display { color: #d63384; font-size: 18px; margin-bottom: 15px; min-height: 50px; }
-        .btn-group { display: flex; gap: 10px; }
-        .choice-btn {
-            flex: 1; padding: 12px; border: none; border-radius: 12px;
-            background: #ff85a1; color: white; cursor: pointer; font-weight: bold;
+
+        body {
+            background-color: var(--bg);
+            color: var(--term-green);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            text-transform: uppercase;
         }
-        .choice-btn:hover { background: #ff5c8d; }
+
+        /* CRT Effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        h1, h2, h3 { margin: 0; padding: 0; font-weight: normal; }
+        
+        #layout {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            grid-template-rows: 60px 1fr 200px;
+            gap: 10px;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .panel {
+            border: 1px solid var(--term-dim);
+            padding: 10px;
+            background: rgba(0, 20, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--term-green); }
+        
+        .stat-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9em; }
+        .bar-container { width: 100%; background: #111; height: 8px; margin-top: 2px; }
+        .bar-fill { height: 100%; background: var(--term-green); transition: width 0.3s; }
+        .warning .bar-fill { background: var(--term-red); }
+        .caution .bar-fill { background: var(--term-amber); }
+
+        #log-panel { grid-column: 2; grid-row: 2; overflow-y: auto; display: flex; flex-direction: column-reverse; font-size: 0.9em; border: 1px solid var(--term-green); }
+        .log-entry { margin-bottom: 4px; border-left: 2px solid var(--term-dim); padding-left: 5px; }
+        .log-bad { color: var(--term-red); border-color: var(--term-red); }
+        .log-good { color: var(--term-green); border-color: var(--term-green); }
+        .log-sys { color: var(--term-amber); }
+
+        .btn {
+            background: black;
+            border: 1px solid var(--term-green);
+            color: var(--term-green);
+            padding: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 5px;
+            text-align: left;
+            font-family: inherit;
+            transition: all 0.1s;
+        }
+        .btn:hover { background: var(--term-green); color: black; }
+        .btn:disabled { border-color: #333; color: #333; cursor: not-allowed; }
+        
+        .tooltip { font-size: 0.7em; color: #888; display: block; margin-top: 2px;}
+
+        #cycle-btn {
+            background: var(--term-dim);
+            text-align: center;
+            font-weight: bold;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        #cycle-btn:hover { background: var(--term-green); }
+
+        .flicker { animation: flick 0.1s infinite; }
+        @keyframes flick { 0% { opacity: 0.9; } 50% { opacity: 1.0; } 100% { opacity: 0.95; } }
+
     </style>
 </head>
 <body>
 
-    <div id="ui-box">
-        <div id="text-display">"Oh! You're still here? I was hoping I'd catch you before you finished your shift..."</div>
-        <div class="btn-group">
-            <button class="choice-btn" onclick="next('stay')">"I'm glad you did."</button>
-            <button class="choice-btn" onclick="next('busy')">"Just finishing up!"</button>
+    <div id="layout">
+        <div class="panel header">
+            <h1>VOID ADMINISTRATOR</h1>
+            <div id="turn-counter">CYCLE: 4022.0</div>
+            <div id="entropy-display" style="color:var(--term-red)">ENTROPY: 0.00%</div>
+        </div>
+
+        <div class="panel">
+            <h3>SYSTEM DIAGNOSTICS</h3>
+            <hr style="border-color: var(--term-dim)">
+            
+            <div class="stat-group">
+                <div class="stat-row"><span>HULL INTEGRITY</span> <span id="val-hull">100%</span></div>
+                <div class="bar-container"><div id="bar-hull" class="bar-fill" style="width: 100%"></div></div>
+            </div>
+            <br>
+            <div class="stat-group">
+                <div class="stat-row"><span>REACTOR CORE</span> <span id="val-reactor">100%</span></div>
+                <div class="bar-container"><div id="bar-reactor" class="bar-fill" style="width: 100%"></div></div>
+            </div>
+            <br>
+            <div class="stat-group">
+                <div class="stat-row"><span>LIFE SUPPORT</span> <span id="val-life">100%</span></div>
+                <div class="bar-container"><div id="bar-life" class="bar-fill" style="width: 100%"></div></div>
+            </div>
+            <br>
+            <div class="stat-group">
+                <div class="stat-row"><span>PSYCH MATRIX</span> <span id="val-sanity">100%</span></div>
+                <div class="bar-container"><div id="bar-sanity" class="bar-fill" style="width: 100%"></div></div>
+            </div>
+        </div>
+
+        <div id="log-panel" class="panel">
+            <div class="log-entry log-sys">SYSTEM INITIALIZED... WAITING FOR INPUT.</div>
+        </div>
+
+        <div class="panel">
+            <h3>RESOURCE LEDGER</h3>
+            <hr style="border-color: var(--term-dim)">
+            <div class="stat-row"><span>ENERGY (MW)</span> <span id="res-energy">1000</span></div>
+            <div class="stat-row"><span>BIOMASS</span> <span id="res-bio">500</span></div>
+            <div class="stat-row"><span>NANITES</span> <span id="res-nanites">50</span></div>
+            <div class="stat-row"><span>CREW</span> <span id="res-crew">4000</span></div>
+            <br>
+            <div class="stat-row" style="color:var(--term-amber)"><span>ALERT LEVEL</span> <span id="res-risk">LOW</span></div>
+        </div>
+
+        <div class="panel" style="grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px;">
+            
+            <div>
+                <h3>ENGINEERING</h3>
+                <button class="btn" onclick="game.action('repair_hull')">
+                    SPOT WELD
+                    <span class="tooltip">-10 Nanites, -50 Energy</span>
+                </button>
+                <button class="btn" onclick="game.action('vent_heat')">
+                    VENT COOLANT
+                    <span class="tooltip">-20 Hull, +15 Reactor</span>
+                </button>
+            </div>
+
+            <div>
+                <h3>PRODUCTION</h3>
+                <button class="btn" onclick="game.action('fabricate')">
+                    FABRICATE NANITES
+                    <span class="tooltip">-200 Energy, -10 Bio</span>
+                </button>
+                <button class="btn" onclick="game.action('overclock')">
+                    OVERCLOCK REACTOR
+                    <span class="tooltip">+400 Energy, -5 Reactor</span>
+                </button>
+            </div>
+
+            <div>
+                <h3>CREW COMMAND</h3>
+                <button class="btn" onclick="game.action('rationing')">
+                    STRICT RATIONING
+                    <span class="tooltip">-Consumption, -Sanity</span>
+                </button>
+                <button class="btn" onclick="game.action('reclaim')">
+                    RECLAMATION PROTOCOL
+                    <span class="tooltip">Recycle Dead Crew -> Biomass</span>
+                </button>
+            </div>
+
+            <div>
+                <button id="cycle-btn" class="btn" onclick="game.nextTurn()">
+                    [ EXECUTE CYCLE ]
+                    <span class="tooltip">Advance Time</span>
+                </button>
+            </div>
+
         </div>
     </div>
 
-    <script type="module">
-        import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
-
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xfff0f5);
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-        camera.position.set(0, 1.2, 4.5);
-
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
-
-        scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.4);
-        dirLight.position.set(2, 4, 5);
-        scene.add(dirLight);
-
-        // --- STYLIZED BODY CONSTRUCTION ---
-        const wolf = new THREE.Group();
-        const mat = new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.7 });
-
-        // 1. Torso (Hourglass/Stylized)
-        // Upper Chest
-        const chest = new THREE.Mesh(new THREE.SphereGeometry(0.28, 16, 16), mat);
-        chest.scale.set(1, 0.8, 0.8);
-        chest.position.y = 1.35;
-        wolf.add(chest);
-
-        // Waist/Hips
-        const hips = new THREE.Mesh(new THREE.SphereGeometry(0.32, 16, 16), mat);
-        hips.scale.set(1, 0.9, 0.8);
-        hips.position.y = 0.85;
-        wolf.add(hips);
-
-        // 2. Limbs (Long & Tapered)
-        const limbMat = new THREE.MeshStandardMaterial({ color: 0x3d3d3d });
+<script>
+class VoidGame {
+    constructor() {
+        this.turn = 4022;
+        this.entropy = 0;
         
-        // Legs
-        const createLeg = (x) => {
-            const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.12, 1.0, 4, 8), limbMat);
-            leg.position.set(x, 0.35, 0);
-            return leg;
+        // System Health (0-100)
+        this.systems = {
+            hull: 100,
+            reactor: 100,
+            lifeSupport: 100,
+            sanity: 100
         };
-        wolf.add(createLeg(-0.16), createLeg(0.16));
 
-        // Arms
-        const createArm = (x, rot) => {
-            const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.08, 0.7, 4, 8), limbMat);
-            arm.position.set(x, 1.25, 0);
-            arm.rotation.z = rot;
-            return arm;
+        // Resources
+        this.resources = {
+            energy: 1200,
+            biomass: 500,
+            nanites: 50,
+            crew: 4000
         };
-        const armL = createArm(-0.38, 0.1);
-        const armR = createArm(0.38, -0.1);
-        wolf.add(armL, armR);
 
-        // 3. Head & Ears
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.32), mat);
-        head.position.y = 1.95;
-        wolf.add(head);
+        // Flags
+        this.rationing = false;
+        this.gameOver = false;
+        this.popCap = 4000;
+    }
 
-        const earGeo = new THREE.ConeGeometry(0.14, 0.5, 3);
-        const earL = new THREE.Mesh(earGeo, mat);
-        earL.position.set(-0.2, 2.35, 0);
-        earL.rotation.z = 0.3;
-        const earR = earL.clone();
-        earR.position.x = 0.2;
-        earR.rotation.z = -0.3;
-        wolf.add(earL, earR);
+    log(msg, type = 'log-sys') {
+        const panel = document.getElementById('log-panel');
+        const entry = document.createElement('div');
+        entry.className = `log-entry ${type}`;
+        entry.innerText = `[${this.turn}] ${msg}`;
+        panel.prepend(entry);
+    }
 
-        // Eyes
-        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.04), new THREE.MeshBasicMaterial({ color: 0xff69b4 }));
-        eye.position.set(-0.12, 1.98, 0.3);
-        const eyeR = eye.clone(); eyeR.position.x = 0.12;
-        wolf.add(eye, eyeR);
+    updateUI() {
+        // Stats
+        document.getElementById('turn-counter').innerText = `CYCLE: ${this.turn.toFixed(1)}`;
+        document.getElementById('entropy-display').innerText = `ENTROPY: ${this.entropy.toFixed(2)}%`;
 
-        scene.add(wolf);
-
-        // --- ANIMATION ---
-        function animate() {
-            requestAnimationFrame(animate);
-            const time = Date.now() * 0.001;
+        // Bars
+        const updateBar = (id, val) => {
+            const el = document.getElementById('bar-' + id);
+            const num = document.getElementById('val-' + id);
+            el.style.width = val + '%';
+            num.innerText = Math.floor(val) + '%';
             
-            // Gentle breathing/idle pose
-            wolf.position.y = Math.sin(time) * 0.03;
-            armL.rotation.x = Math.sin(time * 0.5) * 0.1;
-            armR.rotation.x = Math.cos(time * 0.5) * 0.1;
-            
-            renderer.render(scene, camera);
+            el.parentElement.className = 'bar-container'; // reset
+            if(val < 30) el.parentElement.classList.add('warning');
+            else if(val < 60) el.parentElement.classList.add('caution');
+        };
+
+        updateBar('hull', this.systems.hull);
+        updateBar('reactor', this.systems.reactor);
+        updateBar('life', this.systems.lifeSupport);
+        updateBar('sanity', this.systems.sanity);
+
+        // Resources
+        document.getElementById('res-energy').innerText = Math.floor(this.resources.energy);
+        document.getElementById('res-bio').innerText = Math.floor(this.resources.biomass);
+        document.getElementById('res-nanites').innerText = Math.floor(this.resources.nanites);
+        document.getElementById('res-crew').innerText = Math.floor(this.resources.crew);
+        
+        // Risk
+        const riskEl = document.getElementById('res-risk');
+        if(this.entropy > 50) { riskEl.innerText = "CRITICAL"; riskEl.style.color = "red"; }
+        else if(this.entropy > 20) { riskEl.innerText = "UNSTABLE"; riskEl.style.color = "orange"; }
+        else { riskEl.innerText = "STABLE"; riskEl.style.color = "green"; }
+    }
+
+    action(type) {
+        if(this.gameOver) return;
+
+        switch(type) {
+            case 'repair_hull':
+                if(this.resources.nanites >= 10 && this.resources.energy >= 50) {
+                    this.resources.nanites -= 10;
+                    this.resources.energy -= 50;
+                    this.systems.hull = Math.min(100, this.systems.hull + 8);
+                    this.log("Hull plates welded. Integrity increased.", "log-good");
+                } else this.log("INSUFFICIENT RESOURCES FOR REPAIR.", "log-bad");
+                break;
+            case 'vent_heat':
+                if(this.systems.hull > 20) {
+                    this.systems.hull -= 15;
+                    this.systems.reactor = Math.min(100, this.systems.reactor + 20);
+                    this.log("Emergency venting complete. Hull damaged.", "log-sys");
+                } else this.log("HULL CRITICAL. VENTING ABORTED.", "log-bad");
+                break;
+            case 'fabricate':
+                if(this.resources.energy >= 200 && this.resources.biomass >= 10) {
+                    this.resources.energy -= 200;
+                    this.resources.biomass -= 10;
+                    this.resources.nanites += 15;
+                    this.log("Nanite batch synthesized.", "log-good");
+                } else this.log("INSUFFICIENT ENERGY/BIOMASS.", "log-bad");
+                break;
+            case 'overclock':
+                this.resources.energy += 400;
+                this.systems.reactor -= 8;
+                this.log("Reactor limiters removed. Output spiked.", "log-sys");
+                break;
+            case 'rationing':
+                this.rationing = !this.rationing;
+                this.log(this.rationing ? "STRICT RATIONING ENABLED." : "RATIONING DISABLED.", "log-sys");
+                break;
+            case 'reclaim':
+                // The dark logic: Dead crew don't disappear immediately, we assume "Crew" count is living.
+                // We fake this by converting sanity to biomass.
+                if(this.systems.sanity > 10) {
+                    this.systems.sanity -= 15;
+                    this.resources.biomass += 40;
+                    this.log("Organic reclamation protocol executed. Crew is horrified.", "log-bad");
+                }
+                break;
         }
-        animate();
+        this.updateUI();
+    }
 
-        window.next = (choice) => {
-            const display = document.getElementById('text-display');
-            if(choice === 'stay') display.innerText = "She smiles softly. 'I'm glad too. It's much better than being out there in the dark alone...'";
-            else display.innerText = "She nods understandingly. 'Work comes first, I know. But don't push yourself too hard, okay?'";
-        };
-    </script>
+    nextTurn() {
+        if(this.gameOver) return;
+
+        // 1. ENTROPY INCREASE
+        // Entropy accelerates. 
+        this.entropy += 0.5 + (this.turn - 4022) * 0.1;
+        
+        // 2. CONSUMPTION
+        let basePopDraw = this.resources.crew * 0.05; // Base food need
+        if(this.rationing) basePopDraw *= 0.5;
+        
+        this.resources.biomass -= basePopDraw;
+        this.resources.energy -= 150; // Life support base drain
+
+        // 3. SYSTEM DECAY (Based on Entropy)
+        const decay = 1 + (this.entropy / 10);
+        this.systems.reactor -= (0.5 * decay);
+        this.systems.lifeSupport -= (0.3 * decay);
+        
+        // 4. CONSEQUENCES
+        
+        // Starvation
+        if(this.resources.biomass < 0) {
+            let dead = Math.abs(this.resources.biomass) * 5;
+            this.resources.crew -= dead;
+            this.resources.biomass = 0;
+            this.systems.sanity -= 5;
+            this.log(`STARVATION WARNING: ${Math.floor(dead)} crew casualties.`, "log-bad");
+        }
+
+        // Energy Failure
+        if(this.resources.energy < 0) {
+            this.systems.lifeSupport -= 10;
+            this.systems.sanity -= 5;
+            this.resources.energy = 0;
+            this.log("BLACKOUT: Life support failing.", "log-bad");
+        }
+
+        // Life Support Failure
+        if(this.systems.lifeSupport < 50) {
+            let suffocated = (50 - this.systems.lifeSupport) * 10;
+            this.resources.crew -= suffocated;
+            this.log(`AIR TOXICITY: ${Math.floor(suffocated)} crew casualties.`, "log-bad");
+        }
+
+        // Reactor Meltdown Check
+        if(this.systems.reactor < 20) {
+            this.systems.hull -= 10;
+            this.resources.crew -= 50;
+            this.log("RADIATION LEAK DETECTED.", "log-bad");
+        }
+
+        // Crew Check
+        if(this.resources.crew <= 0) {
+            this.endGame("ALL CREW DECEASED. MISSION FAILED.");
+            return;
+        }
+
+        // 5. RANDOM EVENTS (Weighted by Entropy)
+        const roll = Math.random() * 100;
+        if(roll < (10 + this.entropy)) {
+            this.triggerEvent();
+        }
+
+        // 6. SANITY CHECKS
+        if(this.rationing) this.systems.sanity -= 1;
+        if(this.systems.sanity < 0) this.systems.sanity = 0;
+
+        // Check Integrity
+        if(this.systems.hull <= 0) this.endGame("HULL BREACH. DECOMPRESSION IMMINENT.");
+        if(this.systems.reactor <= 0) this.endGame("REACTOR CRITICAL MASS. DETONATION.");
+        if(this.entropy >= 100) this.endGame("REALITY DISSOLUTION. THE VOID CONSUMES ALL.");
+
+        this.turn += 0.1;
+        this.updateUI();
+    }
+
+    triggerEvent() {
+        const events = [
+            {
+                msg: "METEOR STRIKE DETECTED.",
+                effect: () => { this.systems.hull -= 15; }
+            },
+            {
+                msg: "CULTIST UPRISING IN SECTOR 9.",
+                effect: () => { this.resources.crew -= 100; this.systems.sanity -= 10; }
+            },
+            {
+                msg: "DATA ROT. NANITE SCHEMATICS CORRUPTED.",
+                effect: () => { this.resources.nanites = 0; }
+            },
+            {
+                msg: "GRAVITY FLUCTUATION.",
+                effect: () => { this.resources.energy -= 300; }
+            },
+            {
+                msg: "SPACE WHALE COLLISION.",
+                effect: () => { this.systems.hull -= 5; this.systems.sanity -= 15; }
+            }
+        ];
+        
+        const ev = events[Math.floor(Math.random() * events.length)];
+        this.log("ALERT: " + ev.msg, "log-bad");
+        ev.effect();
+    }
+
+    endGame(reason) {
+        this.gameOver = true;
+        this.log("CRITICAL FAILURE // " + reason, "log-bad");
+        document.body.style.filter = "grayscale(100%) contrast(200%)";
+        alert("GAME OVER\n\n" + reason + "\n\nCycles Survived: " + this.turn.toFixed(1));
+    }
+}
+
+const game = new VoidGame();
+game.updateUI();
+
+</script>
 </body>
 </html>
