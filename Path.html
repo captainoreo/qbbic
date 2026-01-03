@@ -2,201 +2,157 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Wolf's Watch: Heartbeat Protocol</title>
+    <title>Wolf's Watch: A New Friend</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Courier New', monospace; color: #ff007f; }
+        body { margin: 0; overflow: hidden; background-color: #fff0f5; font-family: 'Segoe UI', sans-serif; color: #ff4da6; }
         
-        /* Scanlines and Pink Glow */
-        #crt-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(255, 0, 127, 0.05) 50%, rgba(0, 0, 0, 0.2) 50%);
-            z-index: 50; background-size: 100% 4px; pointer-events: none;
+        #top-ui {
+            position: absolute; top: 20px; left: 20px; z-index: 20;
+            background: rgba(255, 255, 255, 0.9); padding: 15px 25px; border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2); font-weight: bold;
         }
 
-        #ui-top {
-            position: absolute; top: 20px; left: 20px; z-index: 10;
-            background: rgba(20, 0, 10, 0.8); padding: 15px; border: 2px solid #ff007f;
-            box-shadow: 0 0 10px #ff007f;
+        #messenger {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: 500px; background: white; border-radius: 25px;
+            padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); z-index: 20;
+            border: 2px solid #ffb3d9;
         }
 
-        /* Dating Sim Style Messenger */
-        #pager-container {
-            position: absolute; bottom: 20px; right: 20px; width: 350px;
-            background: #1a000a; border: 3px solid #ff007f; padding: 5px; z-index: 20;
-            box-shadow: 0 0 15px #ff007f;
-        }
-
-        #pager-screen {
-            background: #2b0011; color: #ff80bf; padding: 15px; height: 300px;
-            display: flex; flex-direction: column; overflow: hidden;
-        }
-
-        #msg-history { font-size: 13px; flex-grow: 1; overflow-y: auto; margin-bottom: 10px; border-bottom: 1px solid #ff007f; }
-        
-        .choice-container { display: flex; flex-direction: column; gap: 8px; }
+        #chat-log { height: 120px; overflow-y: auto; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .choice-btn {
-            background: #40001a; color: #ff80bf; border: 1px solid #ff007f;
-            cursor: pointer; padding: 10px; font-size: 12px; transition: 0.2s;
-            text-align: left;
+            background: #ff80bf; color: white; border: none; padding: 12px;
+            border-radius: 15px; cursor: pointer; transition: 0.3s; font-size: 14px;
         }
-        .choice-btn:hover { background: #ff007f; color: #fff; }
+        .choice-btn:hover { background: #ff4da6; transform: scale(1.02); }
 
-        #affection-meter { font-size: 10px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
-        .bar-bg { width: 100%; height: 12px; background: #330014; border: 1px solid #ff007f; margin-bottom: 10px; }
-        #affection-bar { width: 50%; height: 100%; background: #ff007f; transition: width 0.5s; }
-
-        #cutscene-overlay {
+        #cutscene-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: black; z-index: 200; display: none;
-            color: white; align-items: center; justify-content: center; text-align: center;
+            background: white; z-index: 100; display: none;
+            flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <div id="crt-overlay"></div>
-    <div id="ui-top">
-        TIME: <span id="clock-val">12:00</span> AM<br>
-        HEART RATE: <span id="bpm">72</span> BPM
+    <div id="top-ui">AFFECTION: <span id="aff-val">50</span>%</div>
+
+    <div id="messenger">
+        <div id="chat-log"></div>
+        <div id="choice-ui" class="choices"></div>
     </div>
 
-    <div id="pager-container">
-        <div id="pager-screen">
-            <div id="affection-meter">Affection Level</div>
-            <div class="bar-bg"><div id="affection-bar"></div></div>
-            <div id="msg-history"><div>[USER LOGGED IN]</div></div>
-            <div id="choice-ui" style="display:none;" class="choice-container">
-                </div>
-            <div id="pager-idle" style="text-align:center; font-size:11px; opacity: 0.6;">She is typing...</div>
-        </div>
-    </div>
-
-    <div id="cutscene-overlay"><div id="cutscene-text" style="font-size: 24px; padding: 40px;"></div></div>
+    <div id="cutscene-layer"><p id="cutscene-text" style="font-size: 28px; max-width: 70%;"></p></div>
 
     <script type="module">
         import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
-        // --- DATING SIM LOGIC ---
-        window.game = {
-            affection: 50, time: 0, isDead: false, active: true, 
-            waiting: false, wolfSpeed: 1.2,
-            
-            scenarios: [
-                { q: "WOLF: Do you think I'm scary like this?", 
-                  a1: { t: "No, you look cute.", v: 15, s: 0.5 }, 
-                  a2: { t: "A little bit...", v: -5, s: -0.2 } },
-                { q: "WOLF: I want to come into the office. Is that okay?", 
-                  a1: { t: "Please, come closer.", v: 20, s: 1.0 }, 
-                  a2: { t: "Stay back there.", v: -10, s: -0.5 } },
-                { q: "WOLF: Are you lonely? I can hear your heart beating.", 
-                  a1: { t: "I'm lonely for you.", v: 15, s: 0.5 }, 
-                  a2: { t: "It's just the machinery.", v: -5, s: 0 } }
-            ],
+        // --- GAME LOGIC ---
+        let affection = 50;
+        let step = 0;
 
-            reply: (val, speedMod) => {
-                game.affection = Math.max(0, Math.min(100, game.affection + val));
-                game.wolfSpeed += speedMod;
-                game.waiting = false;
-                document.getElementById('choice-ui').style.display = 'none';
-                document.getElementById('pager-idle').style.display = 'block';
-                document.getElementById('affection-bar').style.width = game.affection + "%";
-                
-                const h = document.getElementById('msg-history');
-                h.innerHTML += `<div style="color:#ff80bf; margin-top:5px;">> YOU sent a response.</div>`;
-                h.scrollTop = 999;
-            }
-        };
+        const story = [
+            { q: "WOLF: Hi! I noticed you were working late again. I brought some tea!", 
+              a1: "That's so thoughtful! Come sit.", a1v: 15, 
+              a2: "Oh, thanks. Just put it there.", a2v: -5 },
+            { q: "WOLF: The moon looks so pretty from this window... do you ever look at the stars?", 
+              a1: "They're beautiful, just like you.", a1v: 20, 
+              a2: "I'm usually too busy with paperwork.", a2v: 0 }
+        ];
 
-        // --- THREE.JS SETUP ---
+        // --- THREE.JS FULL BODY MODEL ---
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x000000, 0.1);
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 100);
+        scene.background = new THREE.Color(0xfff5f8);
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 100);
+        camera.position.set(0, 1, 5);
+        
         const renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Hallway
-        const hall = new THREE.Mesh(new THREE.BoxGeometry(8,8,60), new THREE.MeshStandardMaterial({color: 0x111111, side: THREE.BackSide}));
-        hall.position.z = -25;
-        scene.add(hall);
-        const light = new THREE.SpotLight(0xff007f, 30); // Pink tint flashlight
-        scene.add(light); scene.add(light.target);
+        scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+        const light = new THREE.DirectionalLight(0xffffff, 0.5);
+        light.position.set(5, 5, 5);
+        scene.add(light);
 
-        // Wolf Model
         const wolf = new THREE.Group();
-        const mat = new THREE.MeshStandardMaterial({color: 0x050505});
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.4), mat); head.position.y = 1.3;
-        const earL = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.6), mat); earL.position.set(-0.25, 1.7, 0);
-        const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.06), new THREE.MeshBasicMaterial({color: 0xff007f})); eyeL.position.set(-0.15, 1.35, 0.35);
-        const eyeR = eyeL.clone(); eyeR.position.x = 0.3;
-        wolf.add(new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 2), mat), head, earL, earL.clone().translateX(0.5), eyeL, eyeR);
-        wolf.position.set(0, -1.5, -20);
+        const mat = new THREE.MeshStandardMaterial({color: 0x555555});
+        
+        // Torso
+        const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.3, 0.8, 4, 8), mat);
+        torso.position.y = 1;
+        wolf.add(torso);
+
+        // Head
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.35), mat);
+        head.position.y = 1.9;
+        wolf.add(head);
+
+        // Ears
+        const earGeo = new THREE.ConeGeometry(0.12, 0.4, 4);
+        const earL = new THREE.Mesh(earGeo, mat); earL.position.set(-0.2, 2.3, 0);
+        const earR = earL.clone(); earR.position.x = 0.2;
+        wolf.add(earL, earR);
+
+        // Arms
+        const armGeo = new THREE.CapsuleGeometry(0.08, 0.6, 4, 8);
+        const armL = new THREE.Mesh(armGeo, mat); armL.position.set(-0.45, 1.2, 0);
+        const armR = armL.clone(); armR.position.x = 0.45;
+        wolf.add(armL, armR);
+
+        // Legs
+        const legGeo = new THREE.CapsuleGeometry(0.12, 0.8, 4, 8);
+        const legL = new THREE.Mesh(legGeo, mat); legL.position.set(-0.18, 0.2, 0);
+        const legR = legL.clone(); legR.position.x = 0.18;
+        wolf.add(legL, legR);
+
+        // Glowing Eyes
+        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.04), new THREE.MeshBasicMaterial({color: 0xff69b4}));
+        const eL = eye.clone(); eL.position.set(-0.12, 1.95, 0.3);
+        const eR = eye.clone(); eR.position.set(0.12, 1.95, 0.3);
+        wolf.add(eL, eR);
+
         scene.add(wolf);
 
-        // --- CORE LOOP ---
-        let mx = 0;
-        window.addEventListener('mousemove', (e) => mx = (e.clientX/window.innerWidth)*2-1);
-
-        const clock = new THREE.Clock();
-        function update() {
-            if(!game.active) return;
-            requestAnimationFrame(update);
-            const dt = clock.getDelta();
-            game.time += dt;
-
-            // UI Updates
-            document.getElementById('clock-val').innerText = `12:${Math.floor(game.time).toString().padStart(2, '0')}`;
-            document.getElementById('bpm').innerText = Math.floor(70 + (100 - game.affection/2) + Math.sin(game.time)*5);
-
-            // Camera
-            camera.rotation.y += (-mx * 1.2 - camera.rotation.y) * 0.1;
-            light.target.position.set(Math.sin(camera.rotation.y)*-10, 0, Math.cos(camera.rotation.y)*-10);
-
-            // Stalker Logic
-            const camDir = new THREE.Vector3(); camera.getWorldDirection(camDir);
-            const mDir = wolf.position.clone().sub(camera.position).normalize();
-            if(camDir.angleTo(mDir) > 0.8) wolf.position.z += dt * game.wolfSpeed;
-
-            // Dialogue Trigger
-            if(!game.waiting && Math.random() > 0.99) {
-                const sc = game.scenarios[Math.floor(Math.random()*game.scenarios.length)];
-                game.waiting = true;
-                const h = document.getElementById('msg-history');
-                h.innerHTML += `<div style="margin-top:10px;">${sc.q}</div>`;
-                h.scrollTop = 999;
-                
-                const ui = document.getElementById('choice-ui');
-                ui.innerHTML = `
-                    <button class="choice-btn" onclick="game.reply(${sc.a1.v}, ${sc.a1.s})">1: ${sc.a1.t}</button>
-                    <button class="choice-btn" onclick="game.reply(${sc.a2.v}, ${sc.a2.s})">2: ${sc.a2.t}</button>
-                `;
-                ui.style.display = 'flex';
-                document.getElementById('pager-idle').style.display = 'none';
+        // --- UI FUNCTIONS ---
+        async function nextStep() {
+            if (step >= story.length) {
+                const final = affection > 70 ? "HAPPY ENDING: You two spent the whole night talking." : "END: The shift ended quietly.";
+                document.getElementById('cutscene-layer').style.display = 'flex';
+                document.getElementById('cutscene-text').innerText = final;
+                return;
             }
 
-            // Endings
-            if(game.time > 45) {
-                game.active = false;
-                const ov = document.getElementById('cutscene-overlay');
-                ov.style.display = 'flex';
-                const txt = document.getElementById('cutscene-text');
-                if(game.affection > 75) txt.innerText = "SWEET ENDING: She reached the door. She didn't attack. She just wanted to hold your hand... forever.";
-                else if(game.affection < 30) txt.innerText = "COLD ENDING: You were too distant. She left with a broken heart, and you were left in the dark.";
-                else txt.innerText = "NEUTRAL ENDING: The sun rose. You survived, but you feel like you missed something special.";
-                txt.innerHTML += `<br><button onclick="location.reload()" style="color:#ff007f; border:1px solid #ff007f; background:none; padding:10px; margin-top:20px;">PLAY AGAIN</button>`;
-            }
+            const data = story[step];
+            document.getElementById('chat-log').innerHTML += `<div style="color:#444; margin-bottom:10px;">${data.q}</div>`;
+            document.getElementById('choice-ui').innerHTML = `
+                <button class="choice-btn" onclick="choose(1)">${data.a1}</button>
+                <button class="choice-btn" onclick="choose(2)">${data.a2}</button>
+            `;
+            document.getElementById('chat-log').scrollTop = 999;
+        }
 
-            // Game Over
-            if(wolf.position.z > 1.8) {
-                game.active = false;
-                document.getElementById('cutscene-overlay').style.display = 'flex';
-                document.getElementById('cutscene-text').innerText = "BAD ENDING: She got too excited and... things got messy.";
-                document.getElementById('cutscene-text').innerHTML += `<br><button onclick="location.reload()">RETRY</button>`;
-            }
+        window.choose = (n) => {
+            const data = story[step];
+            affection += (n === 1 ? data.a1v : data.a2v);
+            document.getElementById('aff-val').innerText = affection;
+            step++;
+            nextStep();
+        };
 
+        nextStep();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            // Character breathes and looks around
+            wolf.position.y = Math.sin(Date.now() * 0.002) * 0.05;
+            armL.rotation.z = Math.sin(Date.now() * 0.001) * 0.1 - 0.2;
+            armR.rotation.z = -Math.sin(Date.now() * 0.001) * 0.1 + 0.2;
             renderer.render(scene, camera);
         }
-        update();
+        animate();
     </script>
 </body>
 </html>
