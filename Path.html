@@ -2,210 +2,196 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Wolf's Watch: The Final Shift</title>
+    <title>Wolf's Watch: Heartbeat Protocol</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Courier New', monospace; color: #0f0; }
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Courier New', monospace; color: #ff007f; }
         
-        /* CRT Effect Overlay */
+        /* Scanlines and Pink Glow */
         #crt-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 50; background-size: 100% 3px, 3px 100%; pointer-events: none; opacity: 0.3;
+            background: linear-gradient(rgba(255, 0, 127, 0.05) 50%, rgba(0, 0, 0, 0.2) 50%);
+            z-index: 50; background-size: 100% 4px; pointer-events: none;
         }
 
         #ui-top {
             position: absolute; top: 20px; left: 20px; z-index: 10;
-            background: rgba(0,20,0,0.8); padding: 15px; border: 1px solid #0f0;
+            background: rgba(20, 0, 10, 0.8); padding: 15px; border: 2px solid #ff007f;
+            box-shadow: 0 0 10px #ff007f;
         }
 
+        /* Dating Sim Style Messenger */
         #pager-container {
-            position: absolute; bottom: 20px; right: 20px; width: 320px;
-            background: #111; border: 4px solid #333; padding: 10px; z-index: 20;
+            position: absolute; bottom: 20px; right: 20px; width: 350px;
+            background: #1a000a; border: 3px solid #ff007f; padding: 5px; z-index: 20;
+            box-shadow: 0 0 15px #ff007f;
         }
 
         #pager-screen {
-            background: #051a05; color: #0f0; padding: 10px; height: 220px;
-            display: flex; flex-direction: column; border: 2px solid #003300;
+            background: #2b0011; color: #ff80bf; padding: 15px; height: 300px;
+            display: flex; flex-direction: column; overflow: hidden;
         }
 
-        #msg-history { font-size: 12px; flex-grow: 1; overflow-y: hidden; margin-bottom: 5px; }
+        #msg-history { font-size: 13px; flex-grow: 1; overflow-y: auto; margin-bottom: 10px; border-bottom: 1px solid #ff007f; }
         
-        .bar-label { font-size: 10px; }
-        .bar-bg { width: 100%; height: 8px; background: #002200; border: 1px solid #0f0; margin-bottom: 10px; }
-        #patience-bar { width: 100%; height: 100%; background: #0f0; transition: width 0.1s; }
-
+        .choice-container { display: flex; flex-direction: column; gap: 8px; }
         .choice-btn {
-            background: #000; color: #0f0; border: 1px solid #0f0;
-            cursor: pointer; padding: 5px; margin-top: 5px; font-size: 11px; text-align: left;
+            background: #40001a; color: #ff80bf; border: 1px solid #ff007f;
+            cursor: pointer; padding: 10px; font-size: 12px; transition: 0.2s;
+            text-align: left;
         }
-        .choice-btn:hover { background: #004400; }
+        .choice-btn:hover { background: #ff007f; color: #fff; }
+
+        #affection-meter { font-size: 10px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
+        .bar-bg { width: 100%; height: 12px; background: #330014; border: 1px solid #ff007f; margin-bottom: 10px; }
+        #affection-bar { width: 50%; height: 100%; background: #ff007f; transition: width 0.5s; }
 
         #cutscene-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: black; z-index: 200; display: none;
             color: white; align-items: center; justify-content: center; text-align: center;
         }
-
-        #danger-vignette {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 40%, rgba(150,0,0,0.5) 100%);
-            pointer-events: none; z-index: 5; opacity: 0;
-        }
     </style>
 </head>
 <body>
 
     <div id="crt-overlay"></div>
-    <div id="danger-vignette"></div>
-
     <div id="ui-top">
         TIME: <span id="clock-val">12:00</span> AM<br>
-        STATUS: <span id="player-thought" style="font-style: italic; color: #8f8;">"Steady..."</span>
+        HEART RATE: <span id="bpm">72</span> BPM
     </div>
 
     <div id="pager-container">
         <div id="pager-screen">
-            <div id="msg-history"><div>[SYSTEM ONLINE]</div></div>
-            <div class="bar-label">WOLF_MOOD</div>
-            <div class="bar-bg"><div id="patience-bar"></div></div>
-            <div id="choice-ui" style="display:none; flex-direction:column;">
-                <button class="choice-btn" onclick="game.reply('kind')">1: (Kind) I'm watching you.</button>
-                <button class="choice-btn" onclick="game.reply('cold')">2: (Cold) Leave me alone.</button>
-            </div>
-            <div id="pager-idle" style="text-align:center; font-size:10px; opacity: 0.5;">WAITING...</div>
+            <div id="affection-meter">Affection Level</div>
+            <div class="bar-bg"><div id="affection-bar"></div></div>
+            <div id="msg-history"><div>[USER LOGGED IN]</div></div>
+            <div id="choice-ui" style="display:none;" class="choice-container">
+                </div>
+            <div id="pager-idle" style="text-align:center; font-size:11px; opacity: 0.6;">She is typing...</div>
         </div>
     </div>
 
-    <div id="cutscene-overlay">
-        <div style="max-width: 600px;">
-            <p id="cutscene-text" style="font-size: 24px;"></p>
-        </div>
-    </div>
+    <div id="cutscene-overlay"><div id="cutscene-text" style="font-size: 24px; padding: 40px;"></div></div>
 
     <script type="module">
         import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
-        // --- GAME STATE ---
+        // --- DATING SIM LOGIC ---
         window.game = {
-            patience: 100, faith: 0, time: 0, isDead: false, active: true,
-            waiting: false, lastMsg: 0, wolfSpeed: 1.8,
-            reply: (type) => {
+            affection: 50, time: 0, isDead: false, active: true, 
+            waiting: false, wolfSpeed: 1.2,
+            
+            scenarios: [
+                { q: "WOLF: Do you think I'm scary like this?", 
+                  a1: { t: "No, you look cute.", v: 15, s: 0.5 }, 
+                  a2: { t: "A little bit...", v: -5, s: -0.2 } },
+                { q: "WOLF: I want to come into the office. Is that okay?", 
+                  a1: { t: "Please, come closer.", v: 20, s: 1.0 }, 
+                  a2: { t: "Stay back there.", v: -10, s: -0.5 } },
+                { q: "WOLF: Are you lonely? I can hear your heart beating.", 
+                  a1: { t: "I'm lonely for you.", v: 15, s: 0.5 }, 
+                  a2: { t: "It's just the machinery.", v: -5, s: 0 } }
+            ],
+
+            reply: (val, speedMod) => {
+                game.affection = Math.max(0, Math.min(100, game.affection + val));
+                game.wolfSpeed += speedMod;
                 game.waiting = false;
                 document.getElementById('choice-ui').style.display = 'none';
                 document.getElementById('pager-idle').style.display = 'block';
+                document.getElementById('affection-bar').style.width = game.affection + "%";
+                
                 const h = document.getElementById('msg-history');
-                if(type === 'kind') {
-                    h.innerHTML += `<div style="color:#0f0">> YOU: I'm here. I like you.</div>`;
-                    game.faith++; game.patience = Math.min(100, game.patience+20);
-                    game.wolfSpeed += 0.4;
-                } else {
-                    h.innerHTML += `<div style="color:#f00">> YOU: Stop it. It's creepy.</div>`;
-                    game.faith--; game.patience = Math.min(100, game.patience+5);
-                    game.wolfSpeed = Math.max(0.5, game.wolfSpeed - 0.2);
-                }
+                h.innerHTML += `<div style="color:#ff80bf; margin-top:5px;">> YOU sent a response.</div>`;
                 h.scrollTop = 999;
             }
         };
 
+        // --- THREE.JS SETUP ---
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x000000, 0.15);
+        scene.fog = new THREE.FogExp2(0x000000, 0.1);
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 100);
-        const renderer = new THREE.WebGLRenderer({antialias: false});
+        const renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // --- THE ENVIRONMENT ---
-        const hall = new THREE.Mesh(new THREE.BoxGeometry(6,6,60), new THREE.MeshStandardMaterial({color: 0x111111, side: THREE.BackSide}));
+        // Hallway
+        const hall = new THREE.Mesh(new THREE.BoxGeometry(8,8,60), new THREE.MeshStandardMaterial({color: 0x111111, side: THREE.BackSide}));
         hall.position.z = -25;
         scene.add(hall);
-        const light = new THREE.SpotLight(0xffffff, 40);
+        const light = new THREE.SpotLight(0xff007f, 30); // Pink tint flashlight
         scene.add(light); scene.add(light.target);
 
-        // --- THE WOLF GIRL SILHOUETTE ---
+        // Wolf Model
         const wolf = new THREE.Group();
         const mat = new THREE.MeshStandardMaterial({color: 0x050505});
-        const body = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 2), mat);
         const head = new THREE.Mesh(new THREE.SphereGeometry(0.4), mat); head.position.y = 1.3;
-        const earL = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.5), mat); earL.position.set(-0.2, 1.7, 0);
-        const earR = earL.clone(); earR.position.x = 0.2;
-        const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.05), new THREE.MeshBasicMaterial({color: 0xff0000})); eyeL.position.set(-0.15, 1.35, 0.35);
-        const eyeR = eyeL.clone(); eyeR.position.x = 0.15;
-        wolf.add(body, head, earL, earR, eyeL, eyeR);
+        const earL = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.6), mat); earL.position.set(-0.25, 1.7, 0);
+        const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.06), new THREE.MeshBasicMaterial({color: 0xff007f})); eyeL.position.set(-0.15, 1.35, 0.35);
+        const eyeR = eyeL.clone(); eyeR.position.x = 0.3;
+        wolf.add(new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 2), mat), head, earL, earL.clone().translateX(0.5), eyeL, eyeR);
         wolf.position.set(0, -1.5, -20);
         scene.add(wolf);
 
-        // --- INPUT ---
+        // --- CORE LOOP ---
         let mx = 0;
         window.addEventListener('mousemove', (e) => mx = (e.clientX/window.innerWidth)*2-1);
 
-        // --- ENDING SEQUENCES ---
-        async function playEnding(type) {
-            game.active = false;
-            const ov = document.getElementById('cutscene-overlay');
-            const txt = document.getElementById('cutscene-text');
-            ov.style.display = 'flex';
-            const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-
-            const script = type === 'love' ? 
-                ["6:00 AM. The shift ends.", "But she made it to the door.", "The pager buzzes: 'Mine now.'", "OBSESSION ENDING: FOREVER."] :
-                ["6:00 AM. Silence.", "You check the hall... she's gone.", "You broke her heart.", "LONELY ENDING: SHE RAN AWAY."];
-
-            for(let l of script) { txt.innerText = l; await sleep(2500); }
-            txt.innerHTML += `<br><button onclick="location.reload()" style="color:white; border:1px solid white; background:none; padding:10px; cursor:pointer;">RESTART</button>`;
-        }
-
         const clock = new THREE.Clock();
-        const wolfQuotes = ["Are you looking for me?", "Do you think I'm cute?", "Stay forever?", "Answer me!"];
-
         function update() {
             if(!game.active) return;
             requestAnimationFrame(update);
             const dt = clock.getDelta();
             game.time += dt;
 
-            // Clock
-            const minutes = Math.floor(game.time % 60);
-            document.getElementById('clock-val').innerText = `12:${minutes < 10 ? '0'+minutes : minutes}`;
-            if(game.time > 60) {
-                if(game.faith >= 3) playEnding('love');
-                else if(game.faith <= -3) playEnding('cry');
-                else playEnding('cry');
-                return;
-            }
+            // UI Updates
+            document.getElementById('clock-val').innerText = `12:${Math.floor(game.time).toString().padStart(2, '0')}`;
+            document.getElementById('bpm').innerText = Math.floor(70 + (100 - game.affection/2) + Math.sin(game.time)*5);
 
-            // Camera & Light
-            camera.rotation.y += (-mx * 1.3 - camera.rotation.y) * 0.1;
+            // Camera
+            camera.rotation.y += (-mx * 1.2 - camera.rotation.y) * 0.1;
             light.target.position.set(Math.sin(camera.rotation.y)*-10, 0, Math.cos(camera.rotation.y)*-10);
 
-            // Wolf AI
+            // Stalker Logic
             const camDir = new THREE.Vector3(); camera.getWorldDirection(camDir);
             const mDir = wolf.position.clone().sub(camera.position).normalize();
-            const lookingAt = camDir.angleTo(mDir) < 0.7;
+            if(camDir.angleTo(mDir) > 0.8) wolf.position.z += dt * game.wolfSpeed;
 
-            if(!lookingAt) wolf.position.z += dt * game.wolfSpeed;
-            
-            // Visual Distortion (Sanity)
-            if(lookingAt && game.faith > 2) {
-                renderer.domElement.style.filter = `contrast(1.5) hue-rotate(${Math.sin(game.time)*20}deg)`;
-            }
-
-            // Pager Logic
-            game.patience -= dt * 4;
-            document.getElementById('patience-bar').style.width = game.patience + "%";
-            if(!game.waiting && game.time - game.lastMsg > 8) {
-                game.waiting = true; game.lastMsg = game.time;
-                const d = document.createElement('div'); d.innerText = "WOLF: " + wolfQuotes[Math.floor(Math.random()*wolfQuotes.length)];
-                document.getElementById('msg-history').appendChild(d);
-                document.getElementById('choice-ui').style.display = 'flex';
+            // Dialogue Trigger
+            if(!game.waiting && Math.random() > 0.99) {
+                const sc = game.scenarios[Math.floor(Math.random()*game.scenarios.length)];
+                game.waiting = true;
+                const h = document.getElementById('msg-history');
+                h.innerHTML += `<div style="margin-top:10px;">${sc.q}</div>`;
+                h.scrollTop = 999;
+                
+                const ui = document.getElementById('choice-ui');
+                ui.innerHTML = `
+                    <button class="choice-btn" onclick="game.reply(${sc.a1.v}, ${sc.a1.s})">1: ${sc.a1.t}</button>
+                    <button class="choice-btn" onclick="game.reply(${sc.a2.v}, ${sc.a2.s})">2: ${sc.a2.t}</button>
+                `;
+                ui.style.display = 'flex';
                 document.getElementById('pager-idle').style.display = 'none';
             }
 
-            // Death Check
-            if(game.patience <= 0 || wolf.position.z > 1.5) {
+            // Endings
+            if(game.time > 45) {
+                game.active = false;
+                const ov = document.getElementById('cutscene-overlay');
+                ov.style.display = 'flex';
+                const txt = document.getElementById('cutscene-text');
+                if(game.affection > 75) txt.innerText = "SWEET ENDING: She reached the door. She didn't attack. She just wanted to hold your hand... forever.";
+                else if(game.affection < 30) txt.innerText = "COLD ENDING: You were too distant. She left with a broken heart, and you were left in the dark.";
+                else txt.innerText = "NEUTRAL ENDING: The sun rose. You survived, but you feel like you missed something special.";
+                txt.innerHTML += `<br><button onclick="location.reload()" style="color:#ff007f; border:1px solid #ff007f; background:none; padding:10px; margin-top:20px;">PLAY AGAIN</button>`;
+            }
+
+            // Game Over
+            if(wolf.position.z > 1.8) {
                 game.active = false;
                 document.getElementById('cutscene-overlay').style.display = 'flex';
-                document.getElementById('cutscene-text').innerText = "CONNECTION LOST. SHE FOUND YOU.";
-                document.getElementById('cutscene-text').innerHTML += `<br><button onclick="location.reload()">TRY AGAIN</button>`;
+                document.getElementById('cutscene-text').innerText = "BAD ENDING: She got too excited and... things got messy.";
+                document.getElementById('cutscene-text').innerHTML += `<br><button onclick="location.reload()">RETRY</button>`;
             }
 
             renderer.render(scene, camera);
