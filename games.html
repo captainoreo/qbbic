@@ -74,7 +74,8 @@
         cursor: url('/assets/cursor.png'), auto;
         overflow: hidden;
         transition: background-color 0.3s ease, color 0.3s ease;
-        animation: scrollGrid 10s linear infinite;
+        /* UPDATED: Removed animation: scrollGrid ... */
+        animation: none; 
       }
       
       body.bg-is-image {
@@ -797,6 +798,15 @@
           gamePagesWrapper.style.transform = `translateX(${offset}%)`;
           
           const allGamePages = document.querySelectorAll('.game-buttons');
+
+          // UPDATED LOGIC: Disable pointer events on non-active pages
+          allGamePages.forEach((page, index) => {
+              if (index === currentPage) {
+                  page.style.pointerEvents = 'auto'; // Enable for current page
+              } else {
+                  page.style.pointerEvents = 'none'; // Disable for others
+              }
+          });
 
           pageIndicatorDots.innerHTML = '';
           for (let i = 0; i < allGamePages.length; i++) {
