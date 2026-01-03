@@ -2,157 +2,131 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Wolf's Watch: A New Friend</title>
+    <title>Wolf's Watch: Evening Stars</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #fff0f5; font-family: 'Segoe UI', sans-serif; color: #ff4da6; }
-        
-        #top-ui {
-            position: absolute; top: 20px; left: 20px; z-index: 20;
-            background: rgba(255, 255, 255, 0.9); padding: 15px 25px; border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2); font-weight: bold;
+        body { margin: 0; overflow: hidden; background-color: #fffaf0; font-family: 'Segoe UI', sans-serif; }
+        #ui-box {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 600px; background: rgba(255, 255, 255, 0.95);
+            padding: 20px; border-radius: 20px; border: 2px solid #ffccd5;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 10;
         }
-
-        #messenger {
-            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 500px; background: white; border-radius: 25px;
-            padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); z-index: 20;
-            border: 2px solid #ffb3d9;
-        }
-
-        #chat-log { height: 120px; overflow-y: auto; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        #text-display { color: #d63384; font-size: 18px; margin-bottom: 15px; min-height: 50px; }
+        .btn-group { display: flex; gap: 10px; }
         .choice-btn {
-            background: #ff80bf; color: white; border: none; padding: 12px;
-            border-radius: 15px; cursor: pointer; transition: 0.3s; font-size: 14px;
+            flex: 1; padding: 12px; border: none; border-radius: 12px;
+            background: #ff85a1; color: white; cursor: pointer; font-weight: bold;
         }
-        .choice-btn:hover { background: #ff4da6; transform: scale(1.02); }
-
-        #cutscene-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 100; display: none;
-            flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; cursor: pointer;
-        }
+        .choice-btn:hover { background: #ff5c8d; }
     </style>
 </head>
 <body>
 
-    <div id="top-ui">AFFECTION: <span id="aff-val">50</span>%</div>
-
-    <div id="messenger">
-        <div id="chat-log"></div>
-        <div id="choice-ui" class="choices"></div>
+    <div id="ui-box">
+        <div id="text-display">"Oh! You're still here? I was hoping I'd catch you before you finished your shift..."</div>
+        <div class="btn-group">
+            <button class="choice-btn" onclick="next('stay')">"I'm glad you did."</button>
+            <button class="choice-btn" onclick="next('busy')">"Just finishing up!"</button>
+        </div>
     </div>
-
-    <div id="cutscene-layer"><p id="cutscene-text" style="font-size: 28px; max-width: 70%;"></p></div>
 
     <script type="module">
         import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
-        // --- GAME LOGIC ---
-        let affection = 50;
-        let step = 0;
-
-        const story = [
-            { q: "WOLF: Hi! I noticed you were working late again. I brought some tea!", 
-              a1: "That's so thoughtful! Come sit.", a1v: 15, 
-              a2: "Oh, thanks. Just put it there.", a2v: -5 },
-            { q: "WOLF: The moon looks so pretty from this window... do you ever look at the stars?", 
-              a1: "They're beautiful, just like you.", a1v: 20, 
-              a2: "I'm usually too busy with paperwork.", a2v: 0 }
-        ];
-
-        // --- THREE.JS FULL BODY MODEL ---
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xfff5f8);
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 100);
-        camera.position.set(0, 1, 5);
-        
-        const renderer = new THREE.WebGLRenderer({antialias: true});
+        scene.background = new THREE.Color(0xfff0f5);
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 1.2, 4.5);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-        const light = new THREE.DirectionalLight(0xffffff, 0.5);
-        light.position.set(5, 5, 5);
-        scene.add(light);
+        scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.4);
+        dirLight.position.set(2, 4, 5);
+        scene.add(dirLight);
 
+        // --- STYLIZED BODY CONSTRUCTION ---
         const wolf = new THREE.Group();
-        const mat = new THREE.MeshStandardMaterial({color: 0x555555});
+        const mat = new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.7 });
+
+        // 1. Torso (Hourglass/Stylized)
+        // Upper Chest
+        const chest = new THREE.Mesh(new THREE.SphereGeometry(0.28, 16, 16), mat);
+        chest.scale.set(1, 0.8, 0.8);
+        chest.position.y = 1.35;
+        wolf.add(chest);
+
+        // Waist/Hips
+        const hips = new THREE.Mesh(new THREE.SphereGeometry(0.32, 16, 16), mat);
+        hips.scale.set(1, 0.9, 0.8);
+        hips.position.y = 0.85;
+        wolf.add(hips);
+
+        // 2. Limbs (Long & Tapered)
+        const limbMat = new THREE.MeshStandardMaterial({ color: 0x3d3d3d });
         
-        // Torso
-        const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.3, 0.8, 4, 8), mat);
-        torso.position.y = 1;
-        wolf.add(torso);
-
-        // Head
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.35), mat);
-        head.position.y = 1.9;
-        wolf.add(head);
-
-        // Ears
-        const earGeo = new THREE.ConeGeometry(0.12, 0.4, 4);
-        const earL = new THREE.Mesh(earGeo, mat); earL.position.set(-0.2, 2.3, 0);
-        const earR = earL.clone(); earR.position.x = 0.2;
-        wolf.add(earL, earR);
+        // Legs
+        const createLeg = (x) => {
+            const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.12, 1.0, 4, 8), limbMat);
+            leg.position.set(x, 0.35, 0);
+            return leg;
+        };
+        wolf.add(createLeg(-0.16), createLeg(0.16));
 
         // Arms
-        const armGeo = new THREE.CapsuleGeometry(0.08, 0.6, 4, 8);
-        const armL = new THREE.Mesh(armGeo, mat); armL.position.set(-0.45, 1.2, 0);
-        const armR = armL.clone(); armR.position.x = 0.45;
+        const createArm = (x, rot) => {
+            const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.08, 0.7, 4, 8), limbMat);
+            arm.position.set(x, 1.25, 0);
+            arm.rotation.z = rot;
+            return arm;
+        };
+        const armL = createArm(-0.38, 0.1);
+        const armR = createArm(0.38, -0.1);
         wolf.add(armL, armR);
 
-        // Legs
-        const legGeo = new THREE.CapsuleGeometry(0.12, 0.8, 4, 8);
-        const legL = new THREE.Mesh(legGeo, mat); legL.position.set(-0.18, 0.2, 0);
-        const legR = legL.clone(); legR.position.x = 0.18;
-        wolf.add(legL, legR);
+        // 3. Head & Ears
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.32), mat);
+        head.position.y = 1.95;
+        wolf.add(head);
 
-        // Glowing Eyes
-        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.04), new THREE.MeshBasicMaterial({color: 0xff69b4}));
-        const eL = eye.clone(); eL.position.set(-0.12, 1.95, 0.3);
-        const eR = eye.clone(); eR.position.set(0.12, 1.95, 0.3);
-        wolf.add(eL, eR);
+        const earGeo = new THREE.ConeGeometry(0.14, 0.5, 3);
+        const earL = new THREE.Mesh(earGeo, mat);
+        earL.position.set(-0.2, 2.35, 0);
+        earL.rotation.z = 0.3;
+        const earR = earL.clone();
+        earR.position.x = 0.2;
+        earR.rotation.z = -0.3;
+        wolf.add(earL, earR);
+
+        // Eyes
+        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.04), new THREE.MeshBasicMaterial({ color: 0xff69b4 }));
+        eye.position.set(-0.12, 1.98, 0.3);
+        const eyeR = eye.clone(); eyeR.position.x = 0.12;
+        wolf.add(eye, eyeR);
 
         scene.add(wolf);
 
-        // --- UI FUNCTIONS ---
-        async function nextStep() {
-            if (step >= story.length) {
-                const final = affection > 70 ? "HAPPY ENDING: You two spent the whole night talking." : "END: The shift ended quietly.";
-                document.getElementById('cutscene-layer').style.display = 'flex';
-                document.getElementById('cutscene-text').innerText = final;
-                return;
-            }
-
-            const data = story[step];
-            document.getElementById('chat-log').innerHTML += `<div style="color:#444; margin-bottom:10px;">${data.q}</div>`;
-            document.getElementById('choice-ui').innerHTML = `
-                <button class="choice-btn" onclick="choose(1)">${data.a1}</button>
-                <button class="choice-btn" onclick="choose(2)">${data.a2}</button>
-            `;
-            document.getElementById('chat-log').scrollTop = 999;
-        }
-
-        window.choose = (n) => {
-            const data = story[step];
-            affection += (n === 1 ? data.a1v : data.a2v);
-            document.getElementById('aff-val').innerText = affection;
-            step++;
-            nextStep();
-        };
-
-        nextStep();
-
+        // --- ANIMATION ---
         function animate() {
             requestAnimationFrame(animate);
-            // Character breathes and looks around
-            wolf.position.y = Math.sin(Date.now() * 0.002) * 0.05;
-            armL.rotation.z = Math.sin(Date.now() * 0.001) * 0.1 - 0.2;
-            armR.rotation.z = -Math.sin(Date.now() * 0.001) * 0.1 + 0.2;
+            const time = Date.now() * 0.001;
+            
+            // Gentle breathing/idle pose
+            wolf.position.y = Math.sin(time) * 0.03;
+            armL.rotation.x = Math.sin(time * 0.5) * 0.1;
+            armR.rotation.x = Math.cos(time * 0.5) * 0.1;
+            
             renderer.render(scene, camera);
         }
         animate();
+
+        window.next = (choice) => {
+            const display = document.getElementById('text-display');
+            if(choice === 'stay') display.innerText = "She smiles softly. 'I'm glad too. It's much better than being out there in the dark alone...'";
+            else display.innerText = "She nods understandingly. 'Work comes first, I know. But don't push yourself too hard, okay?'";
+        };
     </script>
 </body>
 </html>
