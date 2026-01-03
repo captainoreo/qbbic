@@ -4,30 +4,25 @@
     <meta charset="UTF-8">
     <title>path.html</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Courier New', Courier, monospace; }
-        #instructions {
-            position: absolute;
-            top: 50%; width: 100%; text-align: center;
-            color: #ffffff;
-            pointer-events: none;
-            font-size: 20px;
-            text-shadow: 0 0 5px #ff0000;
-            transition: opacity 1s;
-        }
-        #vignette {
+        body { margin: 0; overflow: hidden; background-color: #000; cursor: crosshair; }
+        #overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            box-shadow: inset 0 0 150px #000000;
-            pointer-events: none;
-            mix-blend-mode: multiply;
+            background: #000;
+            display: flex; justify-content: center; align-items: center;
+            color: #444; font-family: 'Courier New', monospace;
+            z-index: 99; transition: opacity 0.5s;
         }
         #noise {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0.05; pointer-events: none;
+            pointer-events: none; opacity: 0.08;
             background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAGFBMVEUAAAA5OTkAAABMTExERERmZmYzMzMyMjJ4D3W4AAAACHRSTlMAMwAyzMzMzO0Uk5UAAAAJcEhZcwAAFxEAABcRAcom8z8AAABMSURBVDjLY2AYBaNgKLHgAAg7BwgpBwgpBwgpBwgpBwgpBwgpBwgpBwgpBwgpBwgpBwgpBwgpBwgpBwgpBwgpBwgpBwgpBwgpBwgwUA4AAMu3Mx20+okAAAAASUVORK5CYII=');
+        }
+        #blink {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; opacity: 0; pointer-events: none;
         }
     </style>
     <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
-    
     <script type="importmap">
       {
         "imports": {
@@ -38,232 +33,264 @@
     </script>
 </head>
 <body>
-    <div id="vignette"></div>
+    <div id="overlay"><h1>CLICK TO WAKE UP</h1></div>
     <div id="noise"></div>
-    <div id="instructions">
-        CLICK TO ENTER THE PATH<br>
-        <span style="font-size:14px; color:#888;">(W,A,S,D to Walk)</span>
-    </div>
+    <div id="blink"></div>
 
     <script type="module">
         import * as THREE from 'three';
         import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
-        let camera, scene, renderer, controls;
-        let moveForward = false;
-        let moveBackward = false;
-        let moveLeft = false;
-        let moveRight = false;
-        let raycaster;
+        // --- AUDIO ENGINE (Procedural Horror Sounds) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let droneOsc;
+        let gainNode;
 
-        // Game State
-        const objects = [];
+        function startAudio() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            // Low Drone
+            droneOsc = audioCtx.createOscillator();
+            gainNode = audioCtx.createGain();
+            
+            droneOsc.type = 'sawtooth';
+            droneOsc.frequency.setValueAtTime(50, audioCtx.currentTime);
+            
+            // Low pass filter to make it muffled
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 120;
+
+            gainNode.gain.value = 0.1;
+
+            droneOsc.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            droneOsc.start();
+        }
+
+        function screamSound() {
+            const osc = audioCtx.createOscillator();
+            const gn = audioCtx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1);
+            
+            // Random modulation
+            osc.frequency.linearRampToValueAtTime(Math.random() * 2000, audioCtx.currentTime + 0.5);
+
+            gn.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gn.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1);
+
+            osc.connect(gn);
+            gn.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 1);
+        }
+
+        // --- 3D SCENE SETUP ---
+        let camera, scene, renderer, controls;
+        let moveForward = false, moveBackward = false, moveLeft = false, moveRight = false;
+        let velocity = new THREE.Vector3();
+        let direction = new THREE.Vector3();
         let prevTime = performance.now();
-        const velocity = new THREE.Vector3();
-        const direction = new THREE.Vector3();
         
-        // Horror Elements
         let flashLight;
-        let ambientLight;
-        let walkDistance = 0;
-        let spookyEventTriggered = false;
-        let heartBeatTime = 0;
+        let shakeIntensity = 0;
+        let isScared = false;
 
         init();
         animate();
 
         function init() {
-            // 1. Scene Setup
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x050505);
-            // Thick black fog for limited visibility
-            scene.fog = new THREE.FogExp2(0x000000, 0.035);
+            scene.fog = new THREE.FogExp2(0x000000, 0.05); // Denser fog
 
-            // 2. Camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.y = 1.6; // Eye level
+            camera.position.y = 1.7;
 
-            // 3. Audio Listener (Ready for sound expansion)
-            const listener = new THREE.AudioListener();
-            camera.add(listener);
-
-            // 4. Lighting (The Flashlight)
-            ambientLight = new THREE.AmbientLight(0xffffff, 0.02); // Very dark
-            scene.add(ambientLight);
-
-            flashLight = new THREE.SpotLight(0xffffee, 20, 40, Math.PI/6, 0.5, 2);
+            // Flashlight
+            flashLight = new THREE.SpotLight(0xffffff, 50, 25, Math.PI/7, 0.5, 1);
             flashLight.position.set(0, 0, 0);
             flashLight.target.position.set(0, 0, -1);
-            
-            // Attach flashlight to camera so it moves with view
             camera.add(flashLight);
             camera.add(flashLight.target);
             scene.add(camera);
 
-            // 5. The Path (Floor)
-            const floorGeometry = new THREE.PlaneGeometry(4, 2000);
-            floorGeometry.rotateX(-Math.PI / 2);
-            // Rough texture using noise via vertex colors could be here, but using basic material for code simplicity
-            const floorMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x333333, 
-                roughness: 0.8,
-                metalness: 0.2
+            // Floor
+            const floorGeo = new THREE.PlaneGeometry(6, 2000);
+            floorGeo.rotateX(-Math.PI / 2);
+            const floorMat = new THREE.MeshStandardMaterial({ 
+                color: 0x111111, roughness: 1.0 
             });
-            const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-            floor.position.z = -900; // Extend far into the dark
+            const floor = new THREE.Mesh(floorGeo, floorMat);
+            floor.position.z = -900;
             scene.add(floor);
 
-            // Add walls (invisible barriers or visible pillars)
-            const pillarGeo = new THREE.BoxGeometry(0.5, 10, 0.5);
-            const pillarMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
-            
-            for(let i = 0; i < 100; i++) {
-                const pillarL = new THREE.Mesh(pillarGeo, pillarMat);
-                pillarL.position.set(-3, 5, -i * 10);
-                scene.add(pillarL);
+            // Ceiling (makes it claustrophobic)
+            const ceiling = floor.clone();
+            ceiling.position.y = 4;
+            ceiling.rotation.x = Math.PI / 2; 
+            scene.add(ceiling);
 
-                const pillarR = new THREE.Mesh(pillarGeo, pillarMat);
-                pillarR.position.set(3, 5, -i * 10);
-                scene.add(pillarR);
+            // Walls (Pillars)
+            const pillarGeo = new THREE.BoxGeometry(0.5, 4, 0.5);
+            const pillarMat = new THREE.MeshStandardMaterial({ color: 0x050505 });
+            
+            for(let i = 0; i < 150; i++) {
+                let zPos = -i * 8;
+                const pLeft = new THREE.Mesh(pillarGeo, pillarMat);
+                pLeft.position.set(-3.2, 2, zPos);
+                scene.add(pLeft);
+
+                const pRight = new THREE.Mesh(pillarGeo, pillarMat);
+                pRight.position.set(3.2, 2, zPos);
+                scene.add(pRight);
             }
 
-            // 6. Controls
-            controls = new PointerLockControls(camera, document.body);
+            // The Entity (The "Watcher")
+            const watcherGeo = new THREE.BoxGeometry(0.6, 2.5, 0.6);
+            const watcherMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            const watcher = new THREE.Mesh(watcherGeo, watcherMat);
+            
+            // Eyes
+            const eyeGeo = new THREE.SphereGeometry(0.05);
+            const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            const eyeL = new THREE.Mesh(eyeGeo, eyeMat);
+            const eyeR = new THREE.Mesh(eyeGeo, eyeMat);
+            eyeL.position.set(-0.15, 0.8, 0.31);
+            eyeR.position.set(0.15, 0.8, 0.31);
+            watcher.add(eyeL); 
+            watcher.add(eyeR);
+            
+            watcher.name = "entity";
+            watcher.position.set(0, 1.25, 5); // Starts behind
+            scene.add(watcher);
 
-            const instructions = document.getElementById('instructions');
 
-            instructions.addEventListener('click', function () {
-                controls.lock();
-            });
-
-            controls.addEventListener('lock', function () {
-                instructions.style.display = 'none';
-            });
-
-            controls.addEventListener('unlock', function () {
-                instructions.style.display = 'block';
-                instructions.innerHTML = "PAUSED";
-            });
-
-            scene.add(controls.getObject());
-
-            // Key Listeners
-            const onKeyDown = function (event) {
-                switch (event.code) {
-                    case 'ArrowUp': case 'KeyW': moveForward = true; break;
-                    case 'ArrowLeft': case 'KeyA': moveLeft = true; break;
-                    case 'ArrowDown': case 'KeyS': moveBackward = true; break;
-                    case 'ArrowRight': case 'KeyD': moveRight = true; break;
-                }
-            };
-
-            const onKeyUp = function (event) {
-                switch (event.code) {
-                    case 'ArrowUp': case 'KeyW': moveForward = false; break;
-                    case 'ArrowLeft': case 'KeyA': moveLeft = false; break;
-                    case 'ArrowDown': case 'KeyS': moveBackward = false; break;
-                    case 'ArrowRight': case 'KeyD': moveRight = false; break;
-                }
-            };
-
-            document.addEventListener('keydown', onKeyDown);
-            document.addEventListener('keyup', onKeyUp);
-
-            // 7. Renderer
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setPixelRatio(window.devicePixelRatio);
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: false }); // False makes it grittier
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
 
+            // Controls
+            controls = new PointerLockControls(camera, document.body);
+            
+            const overlay = document.getElementById('overlay');
+            overlay.addEventListener('click', () => {
+                controls.lock();
+                startAudio();
+                overlay.style.opacity = 0;
+                setTimeout(() => { overlay.style.display = 'none'; }, 500);
+            });
+
+            document.addEventListener('keydown', onKeyDown);
+            document.addEventListener('keyup', onKeyUp);
             window.addEventListener('resize', onWindowResize);
         }
 
+        function onKeyDown(event) {
+            switch (event.code) {
+                case 'KeyW': moveForward = true; break;
+                case 'KeyA': moveLeft = true; break;
+                case 'KeyS': moveBackward = true; break;
+                case 'KeyD': moveRight = true; break;
+            }
+        }
+        function onKeyUp(event) {
+            switch (event.code) {
+                case 'KeyW': moveForward = false; break;
+                case 'KeyA': moveLeft = false; break;
+                case 'KeyS': moveBackward = false; break;
+                case 'KeyD': moveRight = false; break;
+            }
+        }
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        // 8. The "Entity" (A surprise element)
-        const entityGeo = new THREE.IcosahedronGeometry(1, 0);
-        const entityMat = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
-        const entity = new THREE.Mesh(entityGeo, entityMat);
-        entity.position.set(0, 1.5, 10); // Starts behind you
-        scene.add(entity);
-
-
         function animate() {
             requestAnimationFrame(animate);
 
             const time = performance.now();
+            const delta = (time - prevTime) / 1000;
+            prevTime = time;
 
-            if (controls.isLocked === true) {
-
-                const delta = (time - prevTime) / 1000;
-
+            if (controls.isLocked) {
                 velocity.x -= velocity.x * 10.0 * delta;
                 velocity.z -= velocity.z * 10.0 * delta;
-
                 direction.z = Number(moveForward) - Number(moveBackward);
                 direction.x = Number(moveRight) - Number(moveLeft);
-                direction.normalize(); // consistent movement in all directions
+                direction.normalize();
 
-                if (moveForward || moveBackward) velocity.z -= direction.z * 30.0 * delta; // Speed
-                if (moveLeft || moveRight) velocity.x -= direction.x * 30.0 * delta;
+                if (moveForward || moveBackward) velocity.z -= direction.z * 35.0 * delta;
+                if (moveLeft || moveRight) velocity.x -= direction.x * 35.0 * delta;
 
-                // Move Controls
                 controls.moveRight(-velocity.x * delta);
                 controls.moveForward(-velocity.z * delta);
 
-                // Update Walk Distance
-                walkDistance = -camera.position.z;
+                // --- HORROR MECHANICS ---
 
-                // --- HORROR LOGIC --- //
-
-                // 1. Flashlight Flickering
-                if (Math.random() > 0.95) {
-                    flashLight.intensity = (Math.random() * 20) + 10;
+                // 1. Blinking
+                const blinkDiv = document.getElementById('blink');
+                if(Math.random() > 0.995) {
+                    blinkDiv.style.opacity = 1;
+                    setTimeout(() => blinkDiv.style.opacity = 0, 100);
                 }
 
-                // 2. Head Bobbing (Breathing effect)
-                if (moveForward || moveBackward || moveLeft || moveRight) {
-                    camera.position.y = 1.6 + Math.sin(time * 0.015) * 0.05;
-                }
+                // 2. Flashlight Flicker
+                flashLight.intensity = 50 + Math.sin(time * 0.05) * 20 + (Math.random() * 10);
+                
+                // 3. Check "Looking Back"
+                const lookDir = new THREE.Vector3();
+                camera.getWorldDirection(lookDir);
+                const entity = scene.getObjectByName('entity');
 
-                // 3. The "Don't Look Back" Mechanic
-                // If user walks far enough and turns around...
-                const lookDirection = new THREE.Vector3();
-                camera.getWorldDirection(lookDirection);
+                if (lookDir.z > 0.3) { // Looking backwards
+                    if (!isScared) {
+                        isScared = true;
+                        screamSound();
+                    }
+                    
+                    shakeIntensity = 0.1; // VIOLENT SHAKE
+                    scene.fog.color.setHex(0x550000); // RED FOG
+                    
+                    // Teleport entity closer
+                    entity.position.set(
+                        camera.position.x, 
+                        1.25, 
+                        camera.position.z + 3
+                    );
+                    entity.lookAt(camera.position);
 
-                // Logic: If looking positive Z (backwards) and moved far enough
-                if (lookDirection.z > 0.5 && walkDistance > 20) {
-                     // Teleport entity closer
-                     entity.position.z = camera.position.z + 5;
-                     entity.position.x = camera.position.x;
-                     entity.rotation.x += 0.1;
-                     entity.rotation.y += 0.1;
-                     
-                     // Make screen redder
-                     scene.fog.color.setHex(0x330000);
-                     scene.fog.density = 0.1;
                 } else {
-                     // Reset fog if looking forward
-                     scene.fog.color.setHex(0x000000);
-                     if(scene.fog.density > 0.035) scene.fog.density -= 0.005;
-                     
-                     // Keep entity behind
-                     if(entity.position.z < camera.position.z + 10) {
-                        entity.position.z = camera.position.z + 15;
-                     }
+                    // Looking Forward (Safety)
+                    isScared = false;
+                    shakeIntensity = THREE.MathUtils.lerp(shakeIntensity, 0, 0.1);
+                    scene.fog.color.setHex(0x000000);
+                    
+                    // Entity follows slowly behind
+                    if(entity.position.z < camera.position.z + 5) {
+                        entity.position.z = camera.position.z + 10; 
+                    }
                 }
 
-                // 4. Boundary Check (Don't fall off the path)
-                if (camera.position.x < -2) camera.position.x = -2;
-                if (camera.position.x > 2) camera.position.x = 2;
+                // 4. Camera Shake Application
+                if(shakeIntensity > 0.001) {
+                    camera.rotation.z = (Math.random() - 0.5) * shakeIntensity;
+                    camera.rotation.x += (Math.random() - 0.5) * shakeIntensity;
+                } else {
+                    camera.rotation.z = 0;
+                }
 
+                // 5. Breathing / Bobbing
+                if(moveForward || moveBackward) {
+                    camera.position.y = 1.7 + Math.sin(time * 0.01) * 0.05;
+                }
             }
 
-            prevTime = time;
             renderer.render(scene, camera);
         }
     </script>
