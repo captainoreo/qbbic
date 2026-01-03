@@ -11,6 +11,7 @@
             display: flex; justify-content: center; align-items: center;
             color: #444; font-family: 'Courier New', monospace;
             z-index: 99; transition: opacity 0.5s;
+            text-align: center;
         }
         #noise {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -33,7 +34,12 @@
     </script>
 </head>
 <body>
-    <div id="overlay"><h1>CLICK TO WAKE UP</h1></div>
+    <div id="overlay">
+        <div>
+            <h1>CLICK TO WAKE UP</h1>
+            <p style="font-size: 12px; color: #888;">[W,A,S,D] Fly &nbsp;&nbsp; [SPACE] Look Behind</p>
+        </div>
+    </div>
     <div id="noise"></div>
     <div id="blink"></div>
 
@@ -41,22 +47,19 @@
         import * as THREE from 'three';
         import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
-        // --- AUDIO ENGINE (Procedural Horror Sounds) ---
+        // --- AUDIO ENGINE ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        let droneOsc;
-        let gainNode;
+        let droneOsc, gainNode;
 
         function startAudio() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             
-            // Low Drone
             droneOsc = audioCtx.createOscillator();
             gainNode = audioCtx.createGain();
             
             droneOsc.type = 'sawtooth';
             droneOsc.frequency.setValueAtTime(50, audioCtx.currentTime);
             
-            // Low pass filter to make it muffled
             const filter = audioCtx.createBiquadFilter();
             filter.type = 'lowpass';
             filter.frequency.value = 120;
@@ -74,9 +77,7 @@
             const gn = audioCtx.createGain();
             osc.type = 'sawtooth';
             osc.frequency.setValueAtTime(100, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1);
-            
-            // Random modulation
+            osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
             osc.frequency.linearRampToValueAtTime(Math.random() * 2000, audioCtx.currentTime + 0.5);
 
             gn.gain.setValueAtTime(0.2, audioCtx.currentTime);
@@ -91,85 +92,92 @@
         // --- 3D SCENE SETUP ---
         let camera, scene, renderer, controls;
         let moveForward = false, moveBackward = false, moveLeft = false, moveRight = false;
-        let velocity = new THREE.Vector3();
-        let direction = new THREE.Vector3();
         let prevTime = performance.now();
         
+        // Game State
         let flashLight;
         let shakeIntensity = 0;
         let isScared = false;
+        let spacePressed = false; // Debounce for spacebar
 
         init();
         animate();
 
         function init() {
             scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x000000, 0.05); // Denser fog
+            // Fog color will adapt to the sun later, but start dark
+            scene.fog = new THREE.FogExp2(0x000000, 0.02); 
 
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.y = 1.7;
+            // 1. FREE CAMERA (Start in air)
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+            camera.position.set(0, 5, 0); 
 
-            // Flashlight
-            flashLight = new THREE.SpotLight(0xffffff, 50, 25, Math.PI/7, 0.5, 1);
+            // 2. THE WHITE SUN
+            const sunGeo = new THREE.SphereGeometry(20, 32, 32);
+            const sunMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const sun = new THREE.Mesh(sunGeo, sunMat);
+            // Place it far away and high up
+            sun.position.set(0, 200, -800); 
+            scene.add(sun);
+
+            // Sun Light
+            const sunLight = new THREE.PointLight(0xffffff, 1, 1500);
+            sunLight.position.copy(sun.position);
+            scene.add(sunLight);
+
+            // Flashlight (still useful for close corners)
+            flashLight = new THREE.SpotLight(0xffffff, 20, 50, Math.PI/6, 0.5, 1);
             flashLight.position.set(0, 0, 0);
             flashLight.target.position.set(0, 0, -1);
             camera.add(flashLight);
             camera.add(flashLight.target);
             scene.add(camera);
 
-            // Floor
-            const floorGeo = new THREE.PlaneGeometry(6, 2000);
+            // 3. Environment
+            const floorGeo = new THREE.PlaneGeometry(20, 2000);
             floorGeo.rotateX(-Math.PI / 2);
             const floorMat = new THREE.MeshStandardMaterial({ 
-                color: 0x111111, roughness: 1.0 
+                color: 0x050505, roughness: 0.9, metalness: 0.1 
             });
             const floor = new THREE.Mesh(floorGeo, floorMat);
             floor.position.z = -900;
             scene.add(floor);
 
-            // Ceiling (makes it claustrophobic)
-            const ceiling = floor.clone();
-            ceiling.position.y = 4;
-            ceiling.rotation.x = Math.PI / 2; 
-            scene.add(ceiling);
-
-            // Walls (Pillars)
-            const pillarGeo = new THREE.BoxGeometry(0.5, 4, 0.5);
-            const pillarMat = new THREE.MeshStandardMaterial({ color: 0x050505 });
+            // Pillars (floating in void now)
+            const pillarGeo = new THREE.BoxGeometry(1, 40, 1);
+            const pillarMat = new THREE.MeshStandardMaterial({ color: 0x000000 });
             
-            for(let i = 0; i < 150; i++) {
-                let zPos = -i * 8;
+            for(let i = 0; i < 100; i++) {
+                const zPos = -i * 15;
                 const pLeft = new THREE.Mesh(pillarGeo, pillarMat);
-                pLeft.position.set(-3.2, 2, zPos);
+                pLeft.position.set(-6, 0, zPos);
                 scene.add(pLeft);
 
                 const pRight = new THREE.Mesh(pillarGeo, pillarMat);
-                pRight.position.set(3.2, 2, zPos);
+                pRight.position.set(6, 0, zPos);
                 scene.add(pRight);
             }
 
-            // The Entity (The "Watcher")
-            const watcherGeo = new THREE.BoxGeometry(0.6, 2.5, 0.6);
+            // The Entity
+            const watcherGeo = new THREE.BoxGeometry(1, 4, 1);
             const watcherMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
             const watcher = new THREE.Mesh(watcherGeo, watcherMat);
             
-            // Eyes
-            const eyeGeo = new THREE.SphereGeometry(0.05);
+            const eyeGeo = new THREE.SphereGeometry(0.1);
             const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
             const eyeL = new THREE.Mesh(eyeGeo, eyeMat);
             const eyeR = new THREE.Mesh(eyeGeo, eyeMat);
-            eyeL.position.set(-0.15, 0.8, 0.31);
-            eyeR.position.set(0.15, 0.8, 0.31);
+            eyeL.position.set(-0.2, 1.2, 0.5);
+            eyeR.position.set(0.2, 1.2, 0.5);
             watcher.add(eyeL); 
             watcher.add(eyeR);
             
             watcher.name = "entity";
-            watcher.position.set(0, 1.25, 5); // Starts behind
+            watcher.position.set(0, 1, 10);
             scene.add(watcher);
 
-
             // Renderer
-            renderer = new THREE.WebGLRenderer({ antialias: false }); // False makes it grittier
+            renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
 
@@ -195,16 +203,28 @@
                 case 'KeyA': moveLeft = true; break;
                 case 'KeyS': moveBackward = true; break;
                 case 'KeyD': moveRight = true; break;
+                
+                // 4. SPACEBAR LOOK BACK LOGIC
+                case 'Space': 
+                    if (!spacePressed && controls.isLocked) {
+                        spacePressed = true;
+                        // Instant 180 flip
+                        controls.getObject().rotation.y += Math.PI; 
+                    }
+                    break;
             }
         }
+
         function onKeyUp(event) {
             switch (event.code) {
                 case 'KeyW': moveForward = false; break;
                 case 'KeyA': moveLeft = false; break;
                 case 'KeyS': moveBackward = false; break;
                 case 'KeyD': moveRight = false; break;
+                case 'Space': spacePressed = false; break;
             }
         }
+
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
@@ -219,75 +239,85 @@
             prevTime = time;
 
             if (controls.isLocked) {
-                velocity.x -= velocity.x * 10.0 * delta;
-                velocity.z -= velocity.z * 10.0 * delta;
-                direction.z = Number(moveForward) - Number(moveBackward);
-                direction.x = Number(moveRight) - Number(moveLeft);
-                direction.normalize();
+                
+                // --- FREE CAM MOVEMENT LOGIC ---
+                // We calculate movement manually to allow flying in direction of view
+                const moveSpeed = 40.0 * delta;
+                
+                // Forward/Back vector based on camera direction
+                const forward = new THREE.Vector3();
+                camera.getWorldDirection(forward);
+                
+                // Right/Left vector
+                const right = new THREE.Vector3();
+                right.crossVectors(forward, camera.up).normalize();
 
-                if (moveForward || moveBackward) velocity.z -= direction.z * 35.0 * delta;
-                if (moveLeft || moveRight) velocity.x -= direction.x * 35.0 * delta;
+                if (moveForward) camera.position.addScaledVector(forward, moveSpeed);
+                if (moveBackward) camera.position.addScaledVector(forward, -moveSpeed);
+                if (moveRight) camera.position.addScaledVector(right, moveSpeed);
+                if (moveLeft) camera.position.addScaledVector(right, -moveSpeed);
 
-                controls.moveRight(-velocity.x * delta);
-                controls.moveForward(-velocity.z * delta);
+                // --- HORROR LOGIC ---
 
-                // --- HORROR MECHANICS ---
-
-                // 1. Blinking
+                // 1. Blink
                 const blinkDiv = document.getElementById('blink');
                 if(Math.random() > 0.995) {
                     blinkDiv.style.opacity = 1;
-                    setTimeout(() => blinkDiv.style.opacity = 0, 100);
+                    setTimeout(() => blinkDiv.style.opacity = 0, 80);
                 }
 
-                // 2. Flashlight Flicker
-                flashLight.intensity = 50 + Math.sin(time * 0.05) * 20 + (Math.random() * 10);
+                // 2. Flicker Light
+                flashLight.intensity = 50 + Math.sin(time * 0.05) * 20;
                 
-                // 3. Check "Looking Back"
-                const lookDir = new THREE.Vector3();
-                camera.getWorldDirection(lookDir);
+                // 3. Entity & Look Back Logic
                 const entity = scene.getObjectByName('entity');
+                
+                // Check relative direction
+                // Get vector from camera to entity
+                const toEntity = new THREE.Vector3().subVectors(entity.position, camera.position).normalize();
+                const camDir = new THREE.Vector3();
+                camera.getWorldDirection(camDir);
+                
+                // Dot product: 1 means looking directly at it
+                const dot = camDir.dot(toEntity);
 
-                if (lookDir.z > 0.3) { // Looking backwards
+                // If entity is somewhat in front of us (visible) AND close enough
+                const dist = camera.position.distanceTo(entity.position);
+
+                if (dot > 0.5) { 
+                    // WE ARE LOOKING AT IT
                     if (!isScared) {
                         isScared = true;
                         screamSound();
                     }
                     
-                    shakeIntensity = 0.1; // VIOLENT SHAKE
-                    scene.fog.color.setHex(0x550000); // RED FOG
+                    shakeIntensity = 0.2; 
+                    scene.fog.color.setHex(0x550000); // Red Fog
                     
-                    // Teleport entity closer
-                    entity.position.set(
-                        camera.position.x, 
-                        1.25, 
-                        camera.position.z + 3
-                    );
+                    // Entity aggro movement
+                    entity.position.lerp(camera.position, 0.05); // Rush towards player
                     entity.lookAt(camera.position);
 
                 } else {
-                    // Looking Forward (Safety)
+                    // WE ARE LOOKING AWAY
                     isScared = false;
-                    shakeIntensity = THREE.MathUtils.lerp(shakeIntensity, 0, 0.1);
+                    shakeIntensity *= 0.9; // Fade out shake
                     scene.fog.color.setHex(0x000000);
                     
-                    // Entity follows slowly behind
-                    if(entity.position.z < camera.position.z + 5) {
-                        entity.position.z = camera.position.z + 10; 
-                    }
+                    // Teleport entity behind player (stalking)
+                    // It tries to stay behind you
+                    const behind = camDir.clone().negate().multiplyScalar(15);
+                    const targetPos = camera.position.clone().add(behind);
+                    
+                    // Smoothly move entity to "stalking" position
+                    entity.position.lerp(targetPos, 0.02);
                 }
 
-                // 4. Camera Shake Application
+                // Camera Shake
                 if(shakeIntensity > 0.001) {
                     camera.rotation.z = (Math.random() - 0.5) * shakeIntensity;
-                    camera.rotation.x += (Math.random() - 0.5) * shakeIntensity;
                 } else {
                     camera.rotation.z = 0;
-                }
-
-                // 5. Breathing / Bobbing
-                if(moveForward || moveBackward) {
-                    camera.position.y = 1.7 + Math.sin(time * 0.01) * 0.05;
                 }
             }
 
