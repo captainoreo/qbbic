@@ -16,6 +16,9 @@
         --bar-color: #c9c5c2;
         --static-color: #555555;
         
+        /* CUSTOMIZABLE ACCENT */
+        --btn-hover-color: #40c4ff; /* Default Wii Blue */
+        
         /* SHAPE & EFFECT VARIABLES */
         --btn-radius: 12px; /* 3DS Style: Rounded Square */
         --card-radius: 25px; 
@@ -24,13 +27,8 @@
         --transform-hover: scale(1.05);
         --transform-active: scale(0.95);
         
-        /* WII UI COLORS */
-        --wii-blue: #40c4ff;
-        --wii-blue-glow: rgba(64, 196, 255, 0.6);
-        
         /* 3DS UI COLORS */
         --3ds-orange: #ffae00;
-        --3ds-orange-glow: rgba(255, 174, 0, 0.8);
         
         /* FONTS */
         --main-font: 'PopHappiness', sans-serif;
@@ -74,7 +72,6 @@
         cursor: url('/assets/cursor.png'), auto;
         overflow: hidden;
         transition: background-color 0.3s ease, color 0.3s ease;
-        /* UPDATED: Removed animation: scrollGrid ... */
         animation: none; 
       }
       
@@ -108,7 +105,7 @@
       .wii-button {
         background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%); /* 3DS Gloss */
         border: 2px solid #aaaaaa; 
-        border-radius: var(--btn-radius); /* Squircle */
+        border-radius: var(--btn-radius);
         width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
         cursor: pointer; 
         transition: all 0.2s ease;
@@ -117,11 +114,11 @@
         overflow: hidden;
       }
       
-      /* 3DS Hover: Orange Glow & Border */
+      /* 3DS Hover: Custom Glow & Border */
       .wii-button:hover { 
           transform: translateY(-2px); 
-          border-color: var(--3ds-orange);
-          box-shadow: 0 0 8px var(--3ds-orange-glow), inset 0 0 5px #fff; 
+          border-color: var(--btn-hover-color);
+          box-shadow: 0 0 8px var(--btn-hover-color), inset 0 0 5px #fff; 
           cursor: url('/assets/Link-Select.png'), pointer; 
       }
       
@@ -170,7 +167,7 @@
         flex-shrink: 0;
       }
 
-      /* --- GAME CHANNEL CARD STYLES (UPDATED WITH GLASS) --- */
+      /* --- GAME CHANNEL CARD STYLES --- */
       .game-button {
         width: 220px; height: 130px;
         background-color: #ffffff;
@@ -184,10 +181,7 @@
         transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.3s ease, filter 0.3s ease;
         border: 4px solid #eaeaea;
         overflow: hidden;
-        /* Glass Shadow Effect */
-        box-shadow: 
-            inset 0 0 0 1px rgba(255,255,255,0.4), 
-            2px 4px 10px rgba(0,0,0,0.15);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4), 2px 4px 10px rgba(0,0,0,0.15);
       }
 
       /* --- GLASS/GLOSS GRADIENT OVERLAY --- */
@@ -195,15 +189,8 @@
         content: "";
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
-        /* A subtle top-down white gradient to simulate a glass curve */
-        background: linear-gradient(
-            180deg, 
-            rgba(255, 255, 255, 0.5) 0%, 
-            rgba(255, 255, 255, 0.1) 40%, 
-            rgba(255, 255, 255, 0) 50%, 
-            rgba(255, 255, 255, 0) 100%
-        );
-        border-radius: calc(var(--card-radius) - 4px); /* Slightly smaller than parent to fit inside border */
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.1) 40%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0) 100%);
+        border-radius: calc(var(--card-radius) - 4px);
         pointer-events: none;
         z-index: 2;
       }
@@ -226,11 +213,11 @@
       /* Hover Effects */
       .game-button:hover { 
           transform: scale(1.02);
-          box-shadow: 0 0 0 6px var(--wii-blue-glow), 0 0 20px rgba(60, 180, 255, 0.4); 
+          box-shadow: 0 0 0 6px rgba(64, 196, 255, 0.6), 0 0 20px rgba(60, 180, 255, 0.4); 
           border-color: #7bc6eb;
           z-index: 20; 
           cursor: url('/assets/Link-Select.png'), pointer; 
-          opacity: 1 !important; /* Always fully visible on hover even during search */
+          opacity: 1 !important; 
           filter: grayscale(0%) !important;
       }
 
@@ -255,7 +242,7 @@
         opacity: 0.6;
         pointer-events: none;
       }
-      .game-button.placeholder::after { display: none; } /* No glass on placeholders */
+      .game-button.placeholder::after { display: none; }
 
       /* Page Dots */
       .page-indicator { position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
@@ -284,25 +271,37 @@
       #search-submit-button { padding: 5px 12px; background: var(--static-color); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
 
       #theme-menu { bottom: 80px; right: 20px; width: 300px; padding: 15px; max-height: 80vh; overflow-y: auto; }
-      .theme-heading { font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px; color: #444; }
-      .theme-maker-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+      .theme-heading { font-weight: bold; margin-bottom: 10px; border-bottom: 2px solid #eee; padding-bottom: 5px; color: #444; margin-top: 15px; }
+      .theme-heading:first-child { margin-top: 0; }
+      
+      .theme-maker-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
       .theme-maker-label { font-size: 0.9rem; font-weight: bold; color: #555; }
       input[type="color"] { width: 40px; height: 30px; border: none; cursor: pointer; background: none; }
       select, input[type="checkbox"] { cursor: pointer; }
       select { padding: 4px; border-radius: 4px; border: 1px solid #ccc; max-width: 140px; }
       input[type="text"] { width: 100%; padding: 5px; margin-bottom: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
       input[type="file"] { width: 100%; font-size: 0.8rem; }
-      input[type="range"] { width: 100px; }
+      input[type="range"] { width: 100%; cursor: pointer; }
+      
       .theme-btn-group { display: flex; gap: 5px; margin-top: 15px; }
       .theme-action-btn { flex: 1; padding: 8px; border: 1px solid #aaa; border-radius: 4px; cursor: pointer; font-weight: bold; background: #eee; font-size: 0.8rem; }
       .theme-action-btn:hover { background: #ddd; }
       .theme-action-btn.primary { background: #40c4ff; color: white; border-color: #0091ea; }
 
+      /* Music Menu Styles */
       #music-menu { bottom: 80px; left: 20px; width: 280px; padding: 10px; max-height: 400px; overflow-y: auto; }
-      .music-option { padding: 5px; cursor: pointer; border-radius: 4px; }
+      .music-option { padding: 6px 8px; cursor: pointer; border-radius: 4px; font-size: 0.9rem; margin-bottom: 2px; }
       .music-option:hover { background-color: #e0e0e0; }
       .music-heading { font-weight: bold; color: #888; margin: 5px 0; font-size: 0.8rem; text-transform: uppercase; }
       .music-divider { border: 0; height: 1px; background: #ccc; margin: 5px 0; }
+      
+      #now-playing {
+          font-size: 0.85rem; color: #40c4ff; font-weight: bold; 
+          margin-bottom: 10px; text-align: center; font-style: italic;
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .volume-control { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding: 0 5px; }
+      .volume-label { font-size: 0.8rem; font-weight: bold; color: #555; }
 
       /* --- UPDATED WII STYLE IFRAME MODAL --- */
       #game-modal {
@@ -332,48 +331,27 @@
       }
       
       #game-modal-title { 
-          font-size: 1.5rem; 
-          font-weight: bold; 
-          color: #555; 
-          font-family: var(--main-font); 
-          text-shadow: 1px 1px 0px #fff;
+          font-size: 1.5rem; font-weight: bold; color: #555; 
+          font-family: var(--main-font); text-shadow: 1px 1px 0px #fff;
       }
       
       #game-modal-controls { display: flex; gap: 12px; align-items: center; }
 
       .control-btn {
         background: linear-gradient(to bottom, #fcfcfc 0%, #dcdcdc 100%);
-        color: #555;
-        border: 2px solid #b0b0b0;
-        border-radius: 30px;
-        padding: 0 24px;
-        height: 40px;
-        width: auto;
-        display: flex; align-items: center; justify-content: center; gap: 8px;
-        cursor: pointer; transition: all 0.2s;
-        font-family: var(--main-font);
-        font-weight: bold;
-        font-size: 0.9rem;
+        color: #555; border: 2px solid #b0b0b0; border-radius: 30px;
+        padding: 0 24px; height: 40px; display: flex; align-items: center; justify-content: center; gap: 8px;
+        cursor: pointer; transition: all 0.2s; font-family: var(--main-font); font-weight: bold; font-size: 0.9rem;
       }
       
       .control-btn:hover { 
-          border-color: #40c4ff;
-          box-shadow: 0 0 8px #40c4ff, inset 0 0 5px rgba(255,255,255,1); 
-          color: #0091ea;
-          transform: scale(1.05);
+          border-color: #40c4ff; box-shadow: 0 0 8px #40c4ff, inset 0 0 5px rgba(255,255,255,1); 
+          color: #0091ea; transform: scale(1.05);
       }
       
       .control-btn svg { width: 20px; height: 20px; fill: currentColor; }
-      
-      .control-btn.close-btn { 
-         color: #d32f2f;
-         border-color: #ef9a9a;
-      }
-      .control-btn.close-btn:hover {
-          box-shadow: 0 0 8px #ff5252;
-          border-color: #ff1744;
-          color: #b71c1c;
-      }
+      .control-btn.close-btn { color: #d32f2f; border-color: #ef9a9a; }
+      .control-btn.close-btn:hover { box-shadow: 0 0 8px #ff5252; border-color: #ff1744; color: #b71c1c; }
 
       #game-iframe-wrapper { flex-grow: 1; position: relative; background-color: #000; border-top: 1px solid #999; }
       #game-iframe { width: 100%; height: 100%; border: none; display: block; }
@@ -579,7 +557,7 @@
             </svg>
         </div>
         
-        <div class="wii-date-time">
+        <div class="wii-date-time" id="wii-date-time-display">
           <div class="time" id="current-time">12:00 AM</div>
           <div class="date" id="current-date">Fri 1/1</div>
         </div>
@@ -641,11 +619,33 @@
 
         <div class="theme-maker-row">
             <span class="theme-maker-label">Opacity</span>
-            <input type="range" id="input-opacity" min="0.2" max="1" step="0.1" value="1">
+            <input type="range" id="input-opacity" min="0.2" max="1" step="0.1" value="1" style="width:100px;">
+        </div>
+        
+        <div class="theme-heading">Menu Layout</div>
+        
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">Show Home</span>
+            <input type="checkbox" id="check-show-home" checked>
+        </div>
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">Show Search</span>
+            <input type="checkbox" id="check-show-search" checked>
+        </div>
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">Show Clock</span>
+            <input type="checkbox" id="check-show-clock" checked>
+        </div>
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">Show Music</span>
+            <input type="checkbox" id="check-show-music" checked>
+        </div>
+        <div class="theme-maker-row">
+             <span class="theme-maker-label">Btn Hover Color</span>
+             <input type="color" id="input-btn-hover" value="#40c4ff">
         </div>
 
-        <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
-        <div class="theme-maker-label" style="margin-bottom:5px;">Background Image</div>
+        <div class="theme-heading">Background Image</div>
         <input type="text" id="input-bg-image" placeholder="Image URL...">
         <input type="file" id="input-bg-upload" accept="image/*" style="margin-top:5px;">
 
@@ -658,6 +658,14 @@
     </div>
 
     <div id="music-menu">
+        <div class="music-heading">Now Playing</div>
+        <div id="now-playing">No Music Playing</div>
+        <hr class="music-divider">
+        <div class="volume-control">
+            <span class="volume-label">Vol:</span>
+            <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.4">
+        </div>
+        <hr class="music-divider">
         <div class="music-heading">Music Options</div>
         <div class="music-option" id="music-option-random">Random (Auto-play)</div>
         <div class="music-option" id="music-option-stop">Stop Music</div>
@@ -723,13 +731,11 @@
       const themeClickSound = document.getElementById('theme-click-sound');
       const searchClickSound = document.getElementById('search-click-sound');
       
-      // New Sounds
       const menuHoverSound = document.getElementById('menu-hover-sound');
       const gameOpenSound = document.getElementById('game-open-sound');
       const gameCloseSound = document.getElementById('game-close-sound');
       
       const gamePagesWrapper = document.getElementById('game-pages-wrapper');
-      const gamePagesContainer = document.getElementById('game-pages-container'); 
       const pageIndicatorDots = document.getElementById('page-indicator-dots');
       const prevPageButton = document.getElementById('prev-page-button');
       const nextPageButton = document.getElementById('next-page-button');
@@ -774,7 +780,6 @@
         if (savedTheme) {
             try {
                 const theme = JSON.parse(savedTheme);
-                // Remove 3D check from theme load
                 applyTheme(theme);
                 
                 // Update Inputs
@@ -784,11 +789,25 @@
                 document.getElementById('input-shape').value = theme.shape || 'squircle';
                 document.getElementById('input-font').value = theme.font || 'PopHappiness';
                 document.getElementById('input-opacity').value = theme.opacity || 1;
+                
+                // Update New Inputs
+                if(theme.layout) {
+                    document.getElementById('check-show-home').checked = theme.layout.home !== false;
+                    document.getElementById('check-show-search').checked = theme.layout.search !== false;
+                    document.getElementById('check-show-clock').checked = theme.layout.clock !== false;
+                    document.getElementById('check-show-music').checked = theme.layout.music !== false;
+                }
+                document.getElementById('input-btn-hover').value = theme.btnHover || '#40c4ff';
+
             } catch(e) { console.error("Theme load error", e); }
         }
 
         const savedBGM = localStorage.getItem('qbbic-bgm');
-        if (savedBGM && savedBGM !== 'none') playBGM(savedBGM);
+        if (savedBGM && savedBGM !== 'none') {
+             // Find name
+             const song = songs.find(s => s.url === savedBGM);
+             playBGM(savedBGM, song ? song.name : "Unknown");
+        }
       });
       
 
@@ -798,13 +817,11 @@
           gamePagesWrapper.style.transform = `translateX(${offset}%)`;
           
           const allGamePages = document.querySelectorAll('.game-buttons');
-
-          // UPDATED LOGIC: Disable pointer events on non-active pages
           allGamePages.forEach((page, index) => {
               if (index === currentPage) {
-                  page.style.pointerEvents = 'auto'; // Enable for current page
+                  page.style.pointerEvents = 'auto'; 
               } else {
-                  page.style.pointerEvents = 'none'; // Disable for others
+                  page.style.pointerEvents = 'none';
               }
           });
 
@@ -847,7 +864,6 @@
           btn.addEventListener('mouseenter', () => { hoverSound.currentTime = 0; hoverSound.play().catch(()=>{}); });
           btn.addEventListener('click', (e) => {
               e.preventDefault();
-              // Sound handled in openGameModal
               const url = btn.dataset.href;
               const title = btn.title || "Game";
               if(url && url !== '#') { openGameModal(url, title); }
@@ -855,7 +871,7 @@
       });
 
       function openGameModal(url, title) {
-          gameOpenSound.currentTime = 0; gameOpenSound.play().catch(()=>{}); // Play Open Sound
+          gameOpenSound.currentTime = 0; gameOpenSound.play().catch(()=>{});
           wasMusicPlayingBeforeGame = !bgMusic.paused;
           bgMusic.pause();
           currentGameUrl = url;
@@ -869,7 +885,7 @@
       }
 
       function closeGameModal() {
-          gameCloseSound.currentTime = 0; gameCloseSound.play().catch(()=>{}); // Play Close Sound
+          gameCloseSound.currentTime = 0; gameCloseSound.play().catch(()=>{});
           gameModal.classList.remove('active');
           setTimeout(() => {
               gameModal.style.display = 'none';
@@ -882,14 +898,11 @@
       closeGameModalBtn.addEventListener('click', closeGameModal);
 
       // --- MENU BAR SOUNDS ---
-      // Add sounds to all bottom bar buttons
       document.querySelectorAll('.wii-bottom-bar .wii-button').forEach(btn => {
           btn.addEventListener('mouseenter', () => {
               menuHoverSound.currentTime = 0;
               menuHoverSound.play().catch(()=>{});
           });
-          // Note: specific buttons already have click handlers, 
-          // but we can add a generic one if needed or rely on existing ones.
       });
 
       // --- ADVANCED MODAL BUTTONS ---
@@ -924,6 +937,14 @@
       const inputOpacity = document.getElementById('input-opacity');
       const inputBgImage = document.getElementById('input-bg-image');
       const inputBgUpload = document.getElementById('input-bg-upload');
+      
+      // New Layout Inputs
+      const checkHome = document.getElementById('check-show-home');
+      const checkSearch = document.getElementById('check-show-search');
+      const checkClock = document.getElementById('check-show-clock');
+      const checkMusic = document.getElementById('check-show-music');
+      const inputBtnHover = document.getElementById('input-btn-hover');
+      
       const btnReset = document.getElementById('reset-theme-btn');
 
       function saveThemeToStorage(themeObj) {
@@ -931,12 +952,13 @@
       }
 
       function applyTheme(themeObj) {
-        const { bg, bar, static, shape, font, opacity, bgImage } = themeObj;
+        const { bg, bar, static, shape, font, opacity, bgImage, layout, btnHover } = themeObj;
         
         document.documentElement.style.setProperty('--bg-color', bg);
         document.documentElement.style.setProperty('--bar-color', bar);
         document.documentElement.style.setProperty('--static-color', static);
         document.documentElement.style.setProperty('--card-opacity', opacity || 1);
+        document.documentElement.style.setProperty('--btn-hover-color', btnHover || '#40c4ff');
         
         const fontVal = font === 'monospace' ? "'Courier New', monospace" : (font === 'sans-serif' ? "Arial, sans-serif" : "'PopHappiness', sans-serif");
         document.documentElement.style.setProperty('--main-font', fontVal);
@@ -960,6 +982,14 @@
             document.body.style.backgroundImage = svg;
             document.body.style.backgroundSize = '10px 10px';
         }
+        
+        // Apply Visibility Layout
+        if(layout) {
+            document.getElementById('wii-menu-button').style.display = layout.home === false ? 'none' : 'flex';
+            document.getElementById('search-button').style.display = layout.search === false ? 'none' : 'flex';
+            document.getElementById('wii-date-time-display').style.display = layout.clock === false ? 'none' : 'block';
+            document.getElementById('music-menu-toggle').style.display = layout.music === false ? 'none' : 'flex';
+        }
 
         saveThemeToStorage(themeObj);
       }
@@ -977,12 +1007,19 @@
               shape: inputShape.value,
               font: inputFont.value,
               opacity: inputOpacity.value,
-              bgImage: currentBgImage
+              bgImage: currentBgImage,
+              btnHover: inputBtnHover.value,
+              layout: {
+                  home: checkHome.checked,
+                  search: checkSearch.checked,
+                  clock: checkClock.checked,
+                  music: checkMusic.checked
+              }
           };
       }
 
       // Listeners
-      [inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity].forEach(input => {
+      [inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity, checkHome, checkSearch, checkClock, checkMusic, inputBtnHover].forEach(input => {
         input.addEventListener('change', () => applyTheme(getCurrentThemeObj()));
         if(input.type === 'color' || input.type === 'range') input.addEventListener('input', () => applyTheme(getCurrentThemeObj()));
       });
@@ -1005,12 +1042,20 @@
 
       // Reset
       btnReset.addEventListener('click', () => {
-          const defaults = { bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', shape: 'squircle', font:'PopHappiness', opacity:1, bgImage:'' };
+          const defaults = { 
+              bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', 
+              shape: 'squircle', font:'PopHappiness', opacity:1, bgImage:'', btnHover:'#40c4ff',
+              layout: { home:true, search:true, clock:true, music:true }
+          };
           applyTheme(defaults);
+          // Update Inputs to match defaults
           inputBg.value = defaults.bg; inputBar.value = defaults.bar;
           inputStatic.value = defaults.static; inputShape.value = defaults.shape;
           inputFont.value = defaults.font;
           inputOpacity.value = defaults.opacity; inputBgImage.value = '';
+          inputBtnHover.value = defaults.btnHover;
+          checkHome.checked = true; checkSearch.checked = true; checkClock.checked = true; checkMusic.checked = true;
+          
           clickSound.currentTime = 0; clickSound.play().catch(()=>{});
           showToast("Theme Reset");
       });
@@ -1056,20 +1101,16 @@
       });
       document.getElementById('search-submit-button').addEventListener('click', performSearch);
       
-      // Live Filter Listener
       document.getElementById('search-input').addEventListener('input', (e) => {
           const query = e.target.value.toLowerCase();
           const buttons = document.querySelectorAll('.game-button');
-          
           buttons.forEach(btn => {
               if(btn.classList.contains('placeholder')) return;
               const title = (btn.title || "").toLowerCase();
               if(title.includes(query)) {
-                  btn.style.opacity = '1';
-                  btn.style.filter = 'grayscale(0%)';
+                  btn.style.opacity = '1'; btn.style.filter = 'grayscale(0%)';
               } else {
-                  btn.style.opacity = '0.1';
-                  btn.style.filter = 'grayscale(100%)';
+                  btn.style.opacity = '0.1'; btn.style.filter = 'grayscale(100%)';
               }
           });
       });
@@ -1086,19 +1127,13 @@
           // Find next match
           for(let i = lastFoundIndex + 1; i < buttons.length; i++) {
               if(buttons[i].title && buttons[i].title.toLowerCase().includes(query)) {
-                  foundButton = buttons[i];
-                  lastFoundIndex = i;
-                  break;
+                  foundButton = buttons[i]; lastFoundIndex = i; break;
               }
           }
-          
-          // Loop back to start if no new match found
           if(!foundButton) {
               for(let i = 0; i <= lastFoundIndex; i++) {
                  if(buttons[i].title && buttons[i].title.toLowerCase().includes(query)) {
-                      foundButton = buttons[i];
-                      lastFoundIndex = i;
-                      break;
+                      foundButton = buttons[i]; lastFoundIndex = i; break;
                   }
               }
           }
@@ -1108,32 +1143,23 @@
               const pages = document.querySelectorAll('.game-buttons');
               currentPage = Array.from(pages).indexOf(page);
               updatePage();
-              
-              // Visual Cue
               foundButton.style.transition = "transform 0.5s";
               foundButton.style.transform = "scale(1.4)";
               foundButton.style.zIndex = "100";
               foundButton.style.boxShadow = "0 0 30px #40c4ff";
               setTimeout(() => {
-                  foundButton.style.transform = "";
-                  foundButton.style.zIndex = "";
-                  foundButton.style.boxShadow = "";
+                  foundButton.style.transform = ""; foundButton.style.zIndex = ""; foundButton.style.boxShadow = "";
               }, 1500);
-          } else {
-              showToast("No matches found!");
-          }
+          } else { showToast("No matches found!"); }
       }
 
-      // Clear search effects on close
       document.addEventListener('click', (e) => {
           if (!e.target.closest('#search-container') && !e.target.closest('#search-button')) {
-             // If clicking outside search, restore all buttons
              if(document.getElementById('search-container').style.display === 'flex') {
                 const buttons = document.querySelectorAll('.game-button');
                 buttons.forEach(btn => {
                     if(!btn.classList.contains('placeholder')) {
-                        btn.style.opacity = '';
-                        btn.style.filter = '';
+                        btn.style.opacity = ''; btn.style.filter = '';
                     }
                 });
              }
@@ -1141,11 +1167,21 @@
       });
 
       // --- MUSIC LOGIC ---
-      function playBGM(url) {
-          bgMusic.src = url; bgMusic.volume = 0.4; 
+      const volumeSlider = document.getElementById('volume-slider');
+      const nowPlayingText = document.getElementById('now-playing');
+
+      volumeSlider.addEventListener('input', (e) => {
+          bgMusic.volume = e.target.value;
+      });
+
+      function playBGM(url, name) {
+          bgMusic.src = url; 
+          bgMusic.volume = volumeSlider.value;
           bgMusic.play().catch(e => console.log("Autoplay blocked until interaction"));
           localStorage.setItem('qbbic-bgm', url);
+          nowPlayingText.textContent = name || "Unknown Track";
       }
+
       function populateMusicMenu() {
           const list = document.getElementById('music-list');
           songs.forEach((song, idx) => {
@@ -1153,8 +1189,9 @@
               div.className = 'music-option';
               div.textContent = song.name;
               div.onclick = () => {
-                  playBGM(song.url);
-                  document.getElementById('music-menu').style.display = 'none';
+                  playBGM(song.url, song.name);
+                  // Optional: Keep menu open or close it
+                  // document.getElementById('music-menu').style.display = 'none';
                   showToast("Playing: " + song.name);
               };
               list.appendChild(div);
@@ -1167,11 +1204,13 @@
       });
       document.getElementById('music-option-stop').addEventListener('click', () => {
           bgMusic.pause(); localStorage.setItem('qbbic-bgm', 'none');
+          nowPlayingText.textContent = "Stopped";
           document.getElementById('music-menu').style.display = 'none'; showToast("Music Stopped");
       });
       document.getElementById('music-option-random').addEventListener('click', () => {
           const randomSong = songs[Math.floor(Math.random() * songs.length)];
-          playBGM(randomSong.url); document.getElementById('music-menu').style.display = 'none';
+          playBGM(randomSong.url, randomSong.name); 
+          document.getElementById('music-menu').style.display = 'none';
           showToast("Playing Random: " + randomSong.name);
       });
 
