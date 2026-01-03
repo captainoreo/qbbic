@@ -2,191 +2,214 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Wolf's Watch: Final Shift</title>
+    <title>Wolf's Watch: The Final Shift</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Courier New', Courier, monospace; color: #0f0; }
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Courier New', monospace; color: #0f0; }
         
-        /* Scanline Effect */
-        body::before {
-            content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
+        /* CRT Effect Overlay */
+        #crt-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 15; background-size: 100% 4px, 3px 100%; pointer-events: none;
+            z-index: 50; background-size: 100% 3px, 3px 100%; pointer-events: none; opacity: 0.3;
         }
 
         #ui-top {
             position: absolute; top: 20px; left: 20px; z-index: 10;
-            background: rgba(0,20,0,0.8); padding: 10px; border: 1px solid #0f0;
+            background: rgba(0,20,0,0.8); padding: 15px; border: 1px solid #0f0;
         }
 
         #pager-container {
-            position: absolute; bottom: 20px; right: 20px;
-            width: 320px; background: #111; border: 4px solid #333;
-            padding: 10px; z-index: 20;
+            position: absolute; bottom: 20px; right: 20px; width: 320px;
+            background: #111; border: 4px solid #333; padding: 10px; z-index: 20;
         }
 
         #pager-screen {
-            background: #051a05; color: #0f0; padding: 10px; height: 200px;
+            background: #051a05; color: #0f0; padding: 10px; height: 220px;
             display: flex; flex-direction: column; border: 2px solid #003300;
         }
 
-        #msg-history { font-size: 13px; flex-grow: 1; overflow-y: hidden; }
+        #msg-history { font-size: 12px; flex-grow: 1; overflow-y: hidden; margin-bottom: 5px; }
         
-        .bar-label { font-size: 10px; margin-top: 5px; }
-        .bar-bg { width: 100%; height: 100%; background: #002200; border: 1px solid #0f0; height: 10px; }
-        #patience-bar, #power-bar { width: 100%; height: 100%; background: #0f0; transition: width 0.1s; }
+        .bar-label { font-size: 10px; }
+        .bar-bg { width: 100%; height: 8px; background: #002200; border: 1px solid #0f0; margin-bottom: 10px; }
+        #patience-bar { width: 100%; height: 100%; background: #0f0; transition: width 0.1s; }
 
-        #reply-btn {
+        .choice-btn {
             background: #000; color: #0f0; border: 1px solid #0f0;
-            cursor: pointer; padding: 8px; margin-top: 10px; font-weight: bold;
+            cursor: pointer; padding: 5px; margin-top: 5px; font-size: 11px; text-align: left;
+        }
+        .choice-btn:hover { background: #004400; }
+
+        #cutscene-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; z-index: 200; display: none;
+            color: white; align-items: center; justify-content: center; text-align: center;
         }
 
-        #jumpscare {
-            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: black; z-index: 100; flex-direction: column; align-items: center; justify-content: center;
+        #danger-vignette {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 40%, rgba(150,0,0,0.5) 100%);
+            pointer-events: none; z-index: 5; opacity: 0;
         }
     </style>
 </head>
 <body>
 
+    <div id="crt-overlay"></div>
+    <div id="danger-vignette"></div>
+
     <div id="ui-top">
-        POWER: <span id="power-val">100</span>%<br>
-        <div class="bar-bg" style="width: 150px;"><div id="power-bar"></div></div>
-        TIME: <span id="clock-val">12:00</span> AM
+        TIME: <span id="clock-val">12:00</span> AM<br>
+        STATUS: <span id="player-thought" style="font-style: italic; color: #8f8;">"Steady..."</span>
     </div>
 
     <div id="pager-container">
         <div id="pager-screen">
-            <div id="msg-history"><div>[CONNECTION SECURE]</div></div>
-            <div class="bar-label">AFFECTION/PATIENCE</div>
+            <div id="msg-history"><div>[SYSTEM ONLINE]</div></div>
+            <div class="bar-label">WOLF_MOOD</div>
             <div class="bar-bg"><div id="patience-bar"></div></div>
-            <button id="reply-btn">REPLY (SPACE)</button>
+            <div id="choice-ui" style="display:none; flex-direction:column;">
+                <button class="choice-btn" onclick="game.reply('kind')">1: (Kind) I'm watching you.</button>
+                <button class="choice-btn" onclick="game.reply('cold')">2: (Cold) Leave me alone.</button>
+            </div>
+            <div id="pager-idle" style="text-align:center; font-size:10px; opacity: 0.5;">WAITING...</div>
         </div>
     </div>
 
-    <div id="jumpscare">
-        <h1 style="color:red; font-size: 80px; margin: 0;">CONNECTION LOST</h1>
-        <p style="color:white;">She didn't like being ignored.</p>
-        <button onclick="location.reload()" style="background:none; color:white; border:1px solid white; padding:10px; cursor:pointer;">RETRY</button>
+    <div id="cutscene-overlay">
+        <div style="max-width: 600px;">
+            <p id="cutscene-text" style="font-size: 24px;"></p>
+        </div>
     </div>
 
     <script type="module">
         import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
-        // --- ENGINE CONFIG ---
-        let power = 100, patience = 100, isDead = false, gameActive = false;
-        let lastMsgTime = 0, hour = 0;
-        const msgs = ["Don't look at the hall...", "Look at me instead.", "Are you bored of me?", "I'm getting closer...", "Can you hear my heart?"];
+        // --- GAME STATE ---
+        window.game = {
+            patience: 100, faith: 0, time: 0, isDead: false, active: true,
+            waiting: false, lastMsg: 0, wolfSpeed: 1.8,
+            reply: (type) => {
+                game.waiting = false;
+                document.getElementById('choice-ui').style.display = 'none';
+                document.getElementById('pager-idle').style.display = 'block';
+                const h = document.getElementById('msg-history');
+                if(type === 'kind') {
+                    h.innerHTML += `<div style="color:#0f0">> YOU: I'm here. I like you.</div>`;
+                    game.faith++; game.patience = Math.min(100, game.patience+20);
+                    game.wolfSpeed += 0.4;
+                } else {
+                    h.innerHTML += `<div style="color:#f00">> YOU: Stop it. It's creepy.</div>`;
+                    game.faith--; game.patience = Math.min(100, game.patience+5);
+                    game.wolfSpeed = Math.max(0.5, game.wolfSpeed - 0.2);
+                }
+                h.scrollTop = 999;
+            }
+        };
 
-        // --- SCENE SETUP ---
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x000000, 0.12);
-        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
-        const renderer = new THREE.WebGLRenderer({ antialias: false });
+        scene.fog = new THREE.FogExp2(0x000000, 0.15);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 100);
+        const renderer = new THREE.WebGLRenderer({antialias: false});
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // --- OFFICE & HALLWAY ---
-        const hallwayGeo = new THREE.BoxGeometry(8, 8, 100);
-        const hallwayMat = new THREE.MeshStandardMaterial({ color: 0x111111, side: THREE.BackSide });
-        const hallway = new THREE.Mesh(hallwayGeo, hallwayMat);
-        hallway.position.z = -45;
-        scene.add(hallway);
+        // --- THE ENVIRONMENT ---
+        const hall = new THREE.Mesh(new THREE.BoxGeometry(6,6,60), new THREE.MeshStandardMaterial({color: 0x111111, side: THREE.BackSide}));
+        hall.position.z = -25;
+        scene.add(hall);
+        const light = new THREE.SpotLight(0xffffff, 40);
+        scene.add(light); scene.add(light.target);
 
-        const flashlight = new THREE.SpotLight(0xffffff, 40, 30, Math.PI/6, 0.5);
-        scene.add(flashlight);
-        scene.add(flashlight.target);
-
-        // --- THE ENTITY (Wolf-Like) ---
+        // --- THE WOLF GIRL SILHOUETTE ---
         const wolf = new THREE.Group();
-        const body = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.2, 3), new THREE.MeshStandardMaterial({color: 0x000000}));
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.4), new THREE.MeshStandardMaterial({color: 0x000000}));
-        head.position.y = 1.6;
-        
-        // Wolf Ears (Geometric)
-        const ear = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.4, 3), new THREE.MeshStandardMaterial({color: 0x000000}));
-        const earL = ear.clone(); earL.position.set(-0.2, 2, 0);
-        const earR = ear.clone(); earR.position.set(0.2, 2, 0);
-        
-        // Glowing Eyes
-        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.05), new THREE.MeshBasicMaterial({color: 0xff0000}));
-        const eyeL = eye.clone(); eyeL.position.set(-0.15, 1.7, 0.3);
-        const eyeR = eye.clone(); eyeR.position.set(0.15, 1.7, 0.3);
-
+        const mat = new THREE.MeshStandardMaterial({color: 0x050505});
+        const body = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 2), mat);
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.4), mat); head.position.y = 1.3;
+        const earL = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.5), mat); earL.position.set(-0.2, 1.7, 0);
+        const earR = earL.clone(); earR.position.x = 0.2;
+        const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.05), new THREE.MeshBasicMaterial({color: 0xff0000})); eyeL.position.set(-0.15, 1.35, 0.35);
+        const eyeR = eyeL.clone(); eyeR.position.x = 0.15;
         wolf.add(body, head, earL, earR, eyeL, eyeR);
-        wolf.position.set(0, -1.5, -25);
+        wolf.position.set(0, -1.5, -20);
         scene.add(wolf);
 
-        // --- INPUTS ---
-        let mouseX = 0;
-        window.addEventListener('mousemove', (e) => mouseX = (e.clientX / window.innerWidth) * 2 - 1);
-        window.addEventListener('keydown', (e) => { if(e.code === 'Space') sendReply(); });
-        document.getElementById('reply-btn').addEventListener('click', sendReply);
+        // --- INPUT ---
+        let mx = 0;
+        window.addEventListener('mousemove', (e) => mx = (e.clientX/window.innerWidth)*2-1);
 
-        function sendReply() {
-            if (isDead) return;
-            patience = Math.min(100, patience + 12);
-            const d = document.createElement('div');
-            d.innerHTML = `<span style="color:#8f8">> YOU: I'm here.</span>`;
-            document.getElementById('msg-history').appendChild(d);
-            document.getElementById('msg-history').scrollTop = 999;
+        // --- ENDING SEQUENCES ---
+        async function playEnding(type) {
+            game.active = false;
+            const ov = document.getElementById('cutscene-overlay');
+            const txt = document.getElementById('cutscene-text');
+            ov.style.display = 'flex';
+            const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+            const script = type === 'love' ? 
+                ["6:00 AM. The shift ends.", "But she made it to the door.", "The pager buzzes: 'Mine now.'", "OBSESSION ENDING: FOREVER."] :
+                ["6:00 AM. Silence.", "You check the hall... she's gone.", "You broke her heart.", "LONELY ENDING: SHE RAN AWAY."];
+
+            for(let l of script) { txt.innerText = l; await sleep(2500); }
+            txt.innerHTML += `<br><button onclick="location.reload()" style="color:white; border:1px solid white; background:none; padding:10px; cursor:pointer;">RESTART</button>`;
         }
 
-        // --- MAIN LOOP ---
         const clock = new THREE.Clock();
+        const wolfQuotes = ["Are you looking for me?", "Do you think I'm cute?", "Stay forever?", "Answer me!"];
+
         function update() {
-            if (isDead) return;
+            if(!game.active) return;
             requestAnimationFrame(update);
-
             const dt = clock.getDelta();
-            const time = clock.getElapsedTime();
+            game.time += dt;
 
-            // 1. Manage Power & Time
-            power -= dt * 0.8; // Constant drain
-            if (Math.abs(mouseX) > 0.5) power -= dt * 1.5; // Drain more when moving camera fast
-            
-            document.getElementById('power-bar').style.width = power + "%";
-            document.getElementById('power-val').innerText = Math.ceil(power);
-            document.getElementById('clock-val').innerText = `12:0${Math.floor(time/10)} `; // Speeded up time
-
-            // 2. Manage Patience
-            patience -= dt * 5; 
-            document.getElementById('patience-bar').style.width = patience + "%";
-            if (time - lastMsgTime > 5) {
-                lastMsgTime = time;
-                const d = document.createElement('div');
-                d.innerText = "WOLF: " + msgs[Math.floor(Math.random()*msgs.length)];
-                document.getElementById('msg-history').appendChild(d);
+            // Clock
+            const minutes = Math.floor(game.time % 60);
+            document.getElementById('clock-val').innerText = `12:${minutes < 10 ? '0'+minutes : minutes}`;
+            if(game.time > 60) {
+                if(game.faith >= 3) playEnding('love');
+                else if(game.faith <= -3) playEnding('cry');
+                else playEnding('cry');
+                return;
             }
 
-            // 3. Camera & Flashlight
-            camera.rotation.y += (-mouseX * 1.4 - camera.rotation.y) * 0.05;
-            flashlight.position.copy(camera.position);
-            flashlight.target.position.set(Math.sin(camera.rotation.y)*-10, 0, Math.cos(camera.rotation.y)*-10);
-            
-            // Flashlight flickering as power dies
-            if (power < 20 && Math.random() > 0.9) flashlight.intensity = 0;
-            else flashlight.intensity = 40;
+            // Camera & Light
+            camera.rotation.y += (-mx * 1.3 - camera.rotation.y) * 0.1;
+            light.target.position.set(Math.sin(camera.rotation.y)*-10, 0, Math.cos(camera.rotation.y)*-10);
 
-            // 4. Monster Movement
+            // Wolf AI
             const camDir = new THREE.Vector3(); camera.getWorldDirection(camDir);
             const mDir = wolf.position.clone().sub(camera.position).normalize();
-            const lookingAt = camDir.angleTo(mDir) < 0.6;
+            const lookingAt = camDir.angleTo(mDir) < 0.7;
 
-            if (!lookingAt) {
-                wolf.position.z += dt * 2.5; // Moves when you aren't looking
+            if(!lookingAt) wolf.position.z += dt * game.wolfSpeed;
+            
+            // Visual Distortion (Sanity)
+            if(lookingAt && game.faith > 2) {
+                renderer.domElement.style.filter = `contrast(1.5) hue-rotate(${Math.sin(game.time)*20}deg)`;
             }
 
-            // 5. Lose Conditions
-            if (power <= 0 || patience <= 0 || wolf.position.z > 2) {
-                isDead = true;
-                document.getElementById('jumpscare').style.display = 'flex';
-                // Trigger visual glitch
-                renderer.domElement.style.filter = "invert(1) contrast(2)";
+            // Pager Logic
+            game.patience -= dt * 4;
+            document.getElementById('patience-bar').style.width = game.patience + "%";
+            if(!game.waiting && game.time - game.lastMsg > 8) {
+                game.waiting = true; game.lastMsg = game.time;
+                const d = document.createElement('div'); d.innerText = "WOLF: " + wolfQuotes[Math.floor(Math.random()*wolfQuotes.length)];
+                document.getElementById('msg-history').appendChild(d);
+                document.getElementById('choice-ui').style.display = 'flex';
+                document.getElementById('pager-idle').style.display = 'none';
+            }
+
+            // Death Check
+            if(game.patience <= 0 || wolf.position.z > 1.5) {
+                game.active = false;
+                document.getElementById('cutscene-overlay').style.display = 'flex';
+                document.getElementById('cutscene-text').innerText = "CONNECTION LOST. SHE FOUND YOU.";
+                document.getElementById('cutscene-text').innerHTML += `<br><button onclick="location.reload()">TRY AGAIN</button>`;
             }
 
             renderer.render(scene, camera);
         }
-
         update();
     </script>
 </body>
