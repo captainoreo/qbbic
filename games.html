@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Qbbic Ultimate - Wii Layout</title>
+    <title>Qbbic Ultimate - Multi-Console Layout</title>
     <link rel="icon" href="/assets/fanny.gif" type="image/gif" />
     <link rel="stylesheet" href="https://qottlebup.nekoweb.org/banner.css" />
     <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
@@ -17,18 +17,14 @@
         --static-color: #555555;
         
         /* CUSTOMIZABLE ACCENT */
-        --btn-hover-color: #40c4ff; /* Default Wii Blue */
+        --btn-hover-color: #40c4ff; 
         
         /* SHAPE & EFFECT VARIABLES */
-        --btn-radius: 12px; /* 3DS Style: Rounded Square */
+        --btn-radius: 12px; 
         --card-radius: 25px; 
         --card-opacity: 1;
         --box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
         --transform-hover: scale(1.05);
-        --transform-active: scale(0.95);
-        
-        /* 3DS UI COLORS */
-        --3ds-orange: #ffae00;
         
         /* FONTS */
         --main-font: 'PopHappiness', sans-serif;
@@ -37,9 +33,6 @@
       @font-face { font-family: 'PopHappiness'; src: url('/assets/PopHappiness.OTF') format('opentype'); }
 
       /* --- GLOBAL ANIMATIONS --- */
-      @keyframes scrollGrid { from { background-position: 0 0; } to { background-position: 40px 40px; } }
-      
-      /* Static Noise Animation */
       @keyframes noise-anim {
         0% { transform: translate(0, 0); }
         10% { transform: translate(-5%, -5%); }
@@ -54,14 +47,12 @@
         100% { transform: translate(5%, 0); }
       }
 
+      /* Base Body */
       body {
         margin: 0;
         font-family: var(--main-font);
         background-color: var(--bg-color);
         color: var(--static-color);
-        /* 10x10 Grid */
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
-        background-size: 10px 10px;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
@@ -71,10 +62,35 @@
         box-sizing: border-box;
         cursor: url('/assets/cursor.png'), auto;
         overflow: hidden;
-        transition: background-color 0.3s ease, color 0.3s ease;
-        animation: none; 
+        transition: background-color 0.3s ease, color 0.3s ease, background-image 0.3s ease;
+      }
+
+      /* --- CONSOLE SPECIFIC BACKGROUNDS --- */
+      
+      /* Default Wii: 10x10 Grid */
+      body.bg-wii {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
+        background-size: 10px 10px;
+        background-repeat: repeat;
+      }
+
+      /* DSi: Dotted/Checkered Pattern */
+      body.bg-dsi {
+        background-color: #ffffff;
+        background-image: radial-gradient(#d0d0d0 1px, transparent 1px), radial-gradient(#d0d0d0 1px, transparent 1px);
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+      }
+
+      /* PS2: Deep Abyss Gradient with "Fog" */
+      body.bg-ps2 {
+        background-color: #000;
+        background: linear-gradient(180deg, #000000 0%, #050510 40%, #001133 100%);
+        background-size: cover;
+        background-attachment: fixed;
       }
       
+      /* Image Override */
       body.bg-is-image {
           background-size: cover !important;
           background-position: center !important;
@@ -103,18 +119,16 @@
 
       /* --- 3DS STYLE BUTTONS --- */
       .wii-button {
-        background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%); /* 3DS Gloss */
+        background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
         border: 2px solid #aaaaaa; 
         border-radius: var(--btn-radius);
         width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
         cursor: pointer; 
         transition: all 0.2s ease;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        position: relative;
-        overflow: hidden;
+        position: relative; overflow: hidden;
       }
       
-      /* 3DS Hover: Custom Glow & Border */
       .wii-button:hover { 
           transform: translateY(-2px); 
           border-color: var(--btn-hover-color);
@@ -122,10 +136,7 @@
           cursor: url('/assets/Link-Select.png'), pointer; 
       }
       
-      .wii-button:active { 
-          transform: scale(0.95); 
-          background: #cccccc;
-      }
+      .wii-button:active { transform: scale(0.95); background: #cccccc; }
       
       .wii-button-svg { width: 60%; height: 60%; transition: filter 0.3s ease, fill 0.3s ease; fill: #333; }
       .wii-button:hover .wii-button-svg { fill: #000; }
@@ -135,39 +146,20 @@
 
       /* Main Grid Container */
       #game-pages-container {
-        position: relative; 
-        z-index: 10; 
-        width: 100%; 
-        max-width: 1000px; 
-        height: 600px; 
-        padding-bottom: 0; 
-        box-sizing: border-box; 
+        position: relative; z-index: 10; width: 100%; max-width: 1000px; height: 600px; 
+        display: flex; align-items: center; justify-content: center; margin-bottom: 60px;
         overflow: visible;
-        display: flex; align-items: center; justify-content: center;
-        margin-bottom: 60px;
       }
-      #game-pages-wrapper { 
-          display: flex; 
-          transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); 
-          width: 100%;
-      }
+      #game-pages-wrapper { display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); width: 100%; }
       
       /* --- WII GRID LAYOUT (4x3) --- */
       .game-buttons {
-        display: grid; 
-        grid-template-columns: repeat(4, 1fr); 
-        grid-template-rows: repeat(3, 1fr); 
-        gap: 15px; 
-        width: 100%; 
-        height: 500px; 
-        justify-items: center; 
-        align-items: center;
-        padding: 0 40px; 
-        box-sizing: border-box; 
-        flex-shrink: 0;
+        display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); 
+        gap: 15px; width: 100%; height: 500px; justify-items: center; align-items: center;
+        padding: 0 40px; box-sizing: border-box; flex-shrink: 0;
       }
 
-      /* --- GAME CHANNEL CARD STYLES --- */
+      /* --- GAME CHANNEL CARD --- */
       .game-button {
         width: 220px; height: 130px;
         background-color: #ffffff;
@@ -175,84 +167,54 @@
         opacity: var(--card-opacity);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         text-decoration: none; color: black; font-weight: bold; text-align: center;
-        position: relative; 
-        cursor: url('/assets/cursor.png'), auto;
+        position: relative; cursor: url('/assets/cursor.png'), auto;
         background-size: cover; background-position: center; background-repeat: no-repeat;
-        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.3s ease, filter 0.3s ease;
-        border: 4px solid #eaeaea;
-        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.3s ease;
+        border: 4px solid #eaeaea; overflow: hidden;
         box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4), 2px 4px 10px rgba(0,0,0,0.15);
       }
 
-      /* --- GLASS/GLOSS GRADIENT OVERLAY --- */
+      /* Gloss Overlay */
       .game-button::after {
-        content: "";
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
+        content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.1) 40%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0) 100%);
-        border-radius: calc(var(--card-radius) - 4px);
-        pointer-events: none;
-        z-index: 2;
+        border-radius: calc(var(--card-radius) - 4px); pointer-events: none; z-index: 2;
       }
 
-      /* --- WII TV STATIC EFFECT --- */
+      /* Static Effect */
       .game-button::before {
-        content: "";
-        position: absolute;
-        top: -50%; left: -50%; right: -50%; bottom: -50%;
+        content: ""; position: absolute; top: -50%; left: -50%; right: -50%; bottom: -50%;
         width: 200%; height: 200%;
         background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="1"/></svg>');
-        background-repeat: repeat;
-        opacity: 0.08; /* Subtle static */
-        pointer-events: none;
-        animation: noise-anim 0.5s steps(5) infinite;
-        z-index: 1;
-        mix-blend-mode: multiply;
+        background-repeat: repeat; opacity: 0.08; pointer-events: none;
+        animation: noise-anim 0.5s steps(5) infinite; z-index: 1; mix-blend-mode: multiply;
       }
 
-      /* Hover Effects */
       .game-button:hover { 
           transform: scale(1.02);
-          box-shadow: 0 0 0 6px rgba(64, 196, 255, 0.6), 0 0 20px rgba(60, 180, 255, 0.4); 
-          border-color: #7bc6eb;
-          z-index: 20; 
-          cursor: url('/assets/Link-Select.png'), pointer; 
-          opacity: 1 !important; 
-          filter: grayscale(0%) !important;
+          box-shadow: 0 0 0 6px var(--btn-hover-color), 0 0 20px var(--btn-hover-color); 
+          border-color: #7bc6eb; z-index: 20; 
+          cursor: url('/assets/Link-Select.png'), pointer; opacity: 1 !important; filter: grayscale(0%) !important;
       }
 
       .game-button-text {
-        position: absolute; bottom: 0; width: 100%; 
-        background: rgba(255,255,255,0.85);
-        border-bottom-left-radius: var(--card-radius);
-        border-bottom-right-radius: var(--card-radius);
-        font-size: 0.9rem; padding: 4px 0; display: none; color: #333;
-        z-index: 5;
-        backdrop-filter: blur(4px);
+        position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.85);
+        border-bottom-left-radius: var(--card-radius); border-bottom-right-radius: var(--card-radius);
+        font-size: 0.9rem; padding: 4px 0; display: none; color: #333; z-index: 5; backdrop-filter: blur(4px);
       }
       .game-button:hover .game-button-text { display: block; }
       
       .game-button.placeholder {
-        background-image: none !important;
-        background-color: rgba(255,255,255,0.4);
-        border: 2px dashed #cccccc;
-        box-shadow: none;
-        color: #999;
-        font-size: 0.8rem;
-        opacity: 0.6;
-        pointer-events: none;
+        background-image: none !important; background-color: rgba(255,255,255,0.4);
+        border: 2px dashed #cccccc; color: #999; font-size: 0.8rem; opacity: 0.6; pointer-events: none;
       }
       .game-button.placeholder::after { display: none; }
 
       /* Page Dots */
       .page-indicator { position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
       .page-dot { 
-          width: 12px; height: 12px; 
-          background-color: var(--bar-color); 
-          border: 2px solid var(--static-color); 
-          border-radius: 50%; 
-          transition: all 0.3s;
-          cursor: pointer;
+          width: 12px; height: 12px; background-color: var(--bar-color); border: 2px solid var(--static-color); 
+          border-radius: 50%; transition: all 0.3s; cursor: pointer;
       }
       .page-dot:hover { transform: scale(1.3); background-color: rgba(255,255,255,0.5); }
       .page-dot.active { background-color: var(--static-color); pointer-events: none; }
@@ -262,8 +224,7 @@
         position: fixed; background: rgba(255, 255, 255, 0.95); 
         border: 2px solid var(--static-color); border-radius: 10px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 200; display: none;
-        color: #333;
-        backdrop-filter: blur(5px);
+        color: #333; backdrop-filter: blur(5px);
       }
       
       #search-container { bottom: 110px; left: 50%; transform: translateX(-50%); padding: 10px; flex-direction: row; gap: 5px; }
@@ -288,88 +249,56 @@
       .theme-action-btn:hover { background: #ddd; }
       .theme-action-btn.primary { background: #40c4ff; color: white; border-color: #0091ea; }
 
-      /* Music Menu Styles */
+      /* Music Menu */
       #music-menu { bottom: 80px; left: 20px; width: 280px; padding: 10px; max-height: 400px; overflow-y: auto; }
       .music-option { padding: 6px 8px; cursor: pointer; border-radius: 4px; font-size: 0.9rem; margin-bottom: 2px; }
       .music-option:hover { background-color: #e0e0e0; }
       .music-heading { font-weight: bold; color: #888; margin: 5px 0; font-size: 0.8rem; text-transform: uppercase; }
       .music-divider { border: 0; height: 1px; background: #ccc; margin: 5px 0; }
-      
-      #now-playing {
-          font-size: 0.85rem; color: #40c4ff; font-weight: bold; 
-          margin-bottom: 10px; text-align: center; font-style: italic;
-          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      }
+      #now-playing { font-size: 0.85rem; color: #40c4ff; font-weight: bold; margin-bottom: 10px; text-align: center; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .volume-control { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding: 0 5px; }
-      .volume-label { font-size: 0.8rem; font-weight: bold; color: #555; }
 
-      /* --- UPDATED WII STYLE IFRAME MODAL --- */
+      /* Modal and Iframe */
       #game-modal {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        display: none; justify-content: center; align-items: center; z-index: 1000;
-        opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
-        backdrop-filter: blur(5px);
+        background-color: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 1000;
+        opacity: 0; transition: opacity 0.3s ease; pointer-events: none; backdrop-filter: blur(5px);
       }
       #game-modal.active { opacity: 1; pointer-events: auto; }
-      
       #game-modal-container {
-        width: 100%; height: 100%; max-width: 1280px; max-height: 90vh;
-        display: flex; flex-direction: column;
-        background-color: #f7f7f7; 
-        border-radius: 24px;
-        overflow: hidden; 
-        box-shadow: 0 0 50px rgba(64, 196, 255, 0.3), 0 20px 40px rgba(0,0,0,0.4);
-        border: 5px solid #d4d4d4;
+        width: 100%; height: 100%; max-width: 1280px; max-height: 90vh; display: flex; flex-direction: column;
+        background-color: #f7f7f7; border-radius: 24px; overflow: hidden; 
+        box-shadow: 0 0 50px rgba(64, 196, 255, 0.3), 0 20px 40px rgba(0,0,0,0.4); border: 5px solid #d4d4d4;
       }
-      
       #game-modal-header {
         flex-shrink: 0; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
-        background: linear-gradient(to bottom, #ffffff 0%, #eeeeee 100%);
-        border-bottom: 2px solid #ccc;
-        height: 60px;
+        background: linear-gradient(to bottom, #ffffff 0%, #eeeeee 100%); border-bottom: 2px solid #ccc; height: 60px;
       }
-      
-      #game-modal-title { 
-          font-size: 1.5rem; font-weight: bold; color: #555; 
-          font-family: var(--main-font); text-shadow: 1px 1px 0px #fff;
-      }
-      
+      #game-modal-title { font-size: 1.5rem; font-weight: bold; color: #555; font-family: var(--main-font); text-shadow: 1px 1px 0px #fff; }
       #game-modal-controls { display: flex; gap: 12px; align-items: center; }
-
       .control-btn {
-        background: linear-gradient(to bottom, #fcfcfc 0%, #dcdcdc 100%);
-        color: #555; border: 2px solid #b0b0b0; border-radius: 30px;
-        padding: 0 24px; height: 40px; display: flex; align-items: center; justify-content: center; gap: 8px;
+        background: linear-gradient(to bottom, #fcfcfc 0%, #dcdcdc 100%); color: #555; border: 2px solid #b0b0b0; 
+        border-radius: 30px; padding: 0 24px; height: 40px; display: flex; align-items: center; justify-content: center; gap: 8px;
         cursor: pointer; transition: all 0.2s; font-family: var(--main-font); font-weight: bold; font-size: 0.9rem;
       }
-      
-      .control-btn:hover { 
-          border-color: #40c4ff; box-shadow: 0 0 8px #40c4ff, inset 0 0 5px rgba(255,255,255,1); 
-          color: #0091ea; transform: scale(1.05);
-      }
-      
+      .control-btn:hover { border-color: #40c4ff; box-shadow: 0 0 8px #40c4ff, inset 0 0 5px rgba(255,255,255,1); color: #0091ea; transform: scale(1.05); }
       .control-btn svg { width: 20px; height: 20px; fill: currentColor; }
       .control-btn.close-btn { color: #d32f2f; border-color: #ef9a9a; }
       .control-btn.close-btn:hover { box-shadow: 0 0 8px #ff5252; border-color: #ff1744; color: #b71c1c; }
-
       #game-iframe-wrapper { flex-grow: 1; position: relative; background-color: #000; border-top: 1px solid #999; }
       #game-iframe { width: 100%; height: 100%; border: none; display: block; }
       
-      /* --- TOAST --- */
+      /* Toast */
       #toast-notification {
         position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
-        background-color: var(--bar-color); color: var(--static-color);
-        padding: 12px 24px; border-radius: 30px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000;
-        font-weight: bold; border: 2px solid var(--static-color); text-align: center;
-        font-family: sans-serif;
+        background-color: var(--bar-color); color: var(--static-color); padding: 12px 24px; border-radius: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000;
+        font-weight: bold; border: 2px solid var(--static-color); text-align: center; font-family: sans-serif;
       }
       #toast-notification.show { transform: translateX(-50%) translateY(0); }
     </style>
   </head>
-  <body>
+  <body class="bg-wii">
 
     <div class="wii-top-bar"></div>
 
@@ -405,125 +334,9 @@
           <a data-href="/games/clbindingofisaccsheeptime.html" class="game-button" style="background-image: url('/assets/350.png');" title="The Binding of Isaac"><span class="game-button-text">Isaac</span></a>
           <a data-href="/games/Dadish.html" class="game-button" style="background-image: url('/assets/IMG_6019.jpeg');" title="Dadish"><span class="game-button-text">Dadish</span></a>
         </nav>
-
+        
         <nav class="game-buttons" aria-label="Page 3">
-          <a data-href="/games/Dadish 2.html" class="game-button" style="background-image: url('/assets/IMG_6020.jpeg');" title="Dadish 2"><span class="game-button-text">Dadish 2</span></a>
-          <a data-href="/games/Dadish 3.html" class="game-button" style="background-image: url('/assets/IMG_6021.jpeg');" title="Dadish 3"><span class="game-button-text">Dadish 3</span></a>
-          <a data-href="/games/Dadish 3D.html" class="game-button" style="background-image: url('/assets/IMG_6022.jpeg');" title="Dadish 3D"><span class="game-button-text">Dadish 3D</span></a>
-          <a data-href="/games/clgoldensun.html" class="game-button" style="background-image: url('/assets/IMG_6027.jpeg');" title="Godzilla Domination"><span class="game-button-text">Godzilla</span></a>
-          <a data-href="/games/clmariosmysterymeat.html" class="game-button" style="background-image: url('/assets/IMG_6034.png');" title="Mario's Mystery Meat"><span class="game-button-text">Mystery Meat</span></a>
-          <a data-href="/games/cldonkeykong64.html" class="game-button" style="background-image: url('/assets/IMG_6033.jpeg');" title="Donkey Kong 64"><span class="game-button-text">DK 64</span></a>
-          <a data-href="/games/clcheesechompers3d.html" class="game-button" style="background-image: url('/assets/IMG_6060.jpeg');" title="Cheese Chompers 3D"><span class="game-button-text">Cheese Chompers</span></a>
-          <a data-href="/games/Postal.html" class="game-button" style="background-image: url('/assets/686592.png');" title="Postal"><span class="game-button-text">Postal</span></a>
-          <a data-href="/games/cliwbtg.html" class="game-button" style="background-image: url('/assets/IMG_6121.png');" title="I Wanna Be The Guy"><span class="game-button-text">IWBTG</span></a>
-          <a data-href="/games/clundertale.html" class="game-button" style="background-image: url('/assets/undertale-pixel-art.gif');" title="Undertale"><span class="game-button-text">Undertale</span></a>
-          <a data-href="/games/Balatro.html" class="game-button" style="background-image: url('/assets/Balatro_cover.jpg');" title="Balatro"><span class="game-button-text">Balatro</span></a>
-          <a data-href="/games/clmonkeymart.html" class="game-button" style="background-image: url('/assets/IMG_6142.jpeg');" title="Monkey Mart"><span class="game-button-text">Monkey Mart</span></a>
-        </nav>
-        
-        <nav class="game-buttons" aria-label="Page 4">
-          <a data-href="/games/pvz.html" class="game-button" style="background-image: url('/assets/Plantsvs.ZombiesNintendoDS.png');" title="Plants Vs Zombies"><span class="game-button-text">PvZ</span></a>
-          <a data-href="/games/clctgpnitro.html" class="game-button" style="background-image: url('/assets/ctgp.jpg');" title="CTGP Nitro"><span class="game-button-text">CTGP Nitro</span></a>
-          <a data-href="/games/clkirbysqueaksquad.html" class="game-button" style="background-image: url('/assets/squeak.png');" title="Kirby Squeak Squad"><span class="game-button-text">Squeak Squad</span></a>
-          <a data-href="/games/clkirbysuperstarultra.html" class="game-button" style="background-image: url('/assets/ultra.jpg');" title="Kirby Super Star Ultra"><span class="game-button-text">Super Star Ultra</span></a>
-          <a data-href="/games/clgta2alt.html" class="game-button" style="background-image: url('/assets/gta2.jpg');" title="Grand Theft Auto 2"><span class="game-button-text">GTA 2</span></a>
-          <a data-href="/games/clgtaalty.html" class="game-button" style="background-image: url('/assets/gta1.jpg');" title="Grand Theft Auto"><span class="game-button-text">GTA 1</span></a>
-          <a data-href="/games/clocarinaoftime.html" class="game-button" style="background-image: url('/assets/oot.jpg');" title="Zelda: Ocarina of Time"><span class="game-button-text">Ocarina of Time</span></a>
-          <a data-href="/games/clmajorasmask.html" class="game-button" style="background-image: url('/assets/majora.jpg');" title="Zelda: Majora's Mask"><span class="game-button-text">Majora's Mask</span></a>
-          <a data-href="/games/cldrmario(1).html" class="game-button" style="background-image: url('/assets/drmario.jpg');" title="Dr. Mario"><span class="game-button-text">Dr. Mario</span></a>
-          <a data-href="/games/cllearntofly.html" class="game-button" style="background-image: url('/assets/340.png');" title="Learn to Fly"><span class="game-button-text">Learn to Fly</span></a>
-          <a data-href="/games/cllearntofly2.html" class="game-button" style="background-image: url('/assets/341.png');" title="Learn to Fly 2"><span class="game-button-text">Learn to Fly 2</span></a>
-          <a data-href="/games/cllearntofly3.html" class="game-button" style="background-image: url('/assets/342.png');" title="Learn to Fly 3"><span class="game-button-text">Learn to Fly 3</span></a>
-        </nav>
-
-        <nav class="game-buttons" aria-label="Page 5">
-          <a data-href="/games/cllearntoflyidle.html" class="game-button" style="background-image: url('/assets/343.png');" title="Learn to Fly Idle"><span class="game-button-text">Learn to Fly Idle</span></a>
-          <a data-href="/games/clwebecomewhatwebehold.html" class="game-button" style="background-image: url('/assets/become.png');" title="We Become What We Behold"><span class="game-button-text">WBWWB</span></a>
-          <a data-href="/games/ristar.html" class="game-button" style="background-image: url('/assets/ristar.jpeg');" title="Ristar"><span class="game-button-text">Ristar</span></a>
-          <a data-href="/games/cldynamiteheaddy.html" class="game-button" style="background-image: url('/assets/headdy.jpg');" title="Dynamite Headdy"><span class="game-button-text">Dynamite Headdy</span></a>
-          <a data-href="https://mariosixty.vercel.app/sm64/index.html" class="game-button" style="background-image: url('/assets/IMG_6233.jpeg');" title="Super Mario 64"><span class="game-button-text">Mario 64</span></a>
-          <a data-href="/games/clFNAF.html" class="game-button" style="background-image: url('/assets/FNaF1.jpg');" title="FNAF 1"><span class="game-button-text">FNAF 1</span></a>
-          <a data-href="/games/clFNAF2.html" class="game-button" style="background-image: url('/assets/FNAF 2.png');" title="FNAF 2"><span class="game-button-text">FNAF 2</span></a>
-          <a data-href="/games/clFNAF3.html" class="game-button" style="background-image: url('/assets/FNaF3.png');" title="FNAF 3"><span class="game-button-text">FNAF 3</span></a>
-          <a data-href="/games/clFNAF4.html" class="game-button" style="background-image: url('/assets/Fnaf4.png');" title="FNAF 4"><span class="game-button-text">FNAF 4</span></a>
-          <a data-href="/games/clfnafworldd.html" class="game-button" style="background-image: url('/assets/FNaFWorld.png');" title="FNAF World"><span class="game-button-text">FNAF World</span></a>
-          <a data-href="/games/clfnafsl.html" class="game-button" style="background-image: url('/assets/fnafsl.png');" title="Sister Location"><span class="game-button-text">Sister Location</span></a>
-          <a data-href="/games/clfnafps.html" class="game-button" style="background-image: url('/assets/FFPS.png');" title="Pizzeria Simulator"><span class="game-button-text">Pizzeria Sim</span></a>
-        </nav>
-
-        <nav class="game-buttons" aria-label="Page 6">
-          <a data-href="/games/clfnac1.html" class="game-button" style="background-image: url('/assets/FNAC1ICON.png');" title="Five Nights at Candy's"><span class="game-button-text">FNAC 1</span></a>
-          <a data-href="/games/clfridaynightfunkin.html" class="game-button" style="background-image: url('/assets/fnf.jpeg');" title="Friday Night Funkin"><span class="game-button-text">FNF</span></a>
-          <a data-href="/games/clfruitninja.html" class="game-button" style="background-image: url('/assets/FruitNinja.jpg');" title="Fruit Ninja"><span class="game-button-text">Fruit Ninja</span></a>
-          <a data-href="/games/clrunningfred.html" class="game-button" style="background-image: url('/assets/fred.png');" title="Running Fred"><span class="game-button-text">Running Fred</span></a>
-          <a data-href="/games/clspelunky.html" class="game-button" style="background-image: url('/assets/spelunky.png');" title="Spelunky"><span class="game-button-text">Spelunky</span></a>
-          <a data-href="/games/Oneshot (LEGACY).html" class="game-button" style="background-image: url('/assets/oneshot.png');" title="Oneshot"><span class="game-button-text">Oneshot</span></a>
-          <a data-href="/games/Off.html" class="game-button" style="background-image: url('/assets/off.jpg');" title="OFF"><span class="game-button-text">OFF</span></a>
-          <a data-href="/games/BFDIA 5b_ 5_30.html" class="game-button" style="background-image: url('/assets/ruby.gif');" title="BFDIA 5b: 5*30"><span class="game-button-text">BFDIA 5b</span></a>
-          <a data-href="/games/clpico8edu.html" class="game-button" style="background-image: url('/assets/pico.png');" title="Pico-8"><span class="game-button-text">Pico-8</span></a>
-          <a data-href="/games/clonebitadventure.html" class="game-button" style="background-image: url('/assets/onebit.png');" title="Onebit Adventure"><span class="game-button-text">Onebit</span></a>
-          <a data-href="/games/clunitresdreams.html" class="game-button" style="background-image: url('/assets/IMG_6334.png');" title="Unitres Dreams"><span class="game-button-text">Unitres</span></a>
-          <a data-href="/games/cltetris.html" class="game-button" style="background-image: url('/assets/IMG_6335.png');" title="Tetris"><span class="game-button-text">Tetris</span></a>
-        </nav>
-
-        <nav class="game-buttons" aria-label="Page 7">
-          <a data-href="/games/clpeggle.html" class="game-button" style="background-image: url('/assets/IMG_6381.jpeg');" title="Peggle"><span class="game-button-text">Peggle</span></a>
-          <a data-href="/games/clgranddad.html" class="game-button" style="background-image: url('/assets/IMG_6382.webp');" title="7 Grand Dad"><span class="game-button-text">Grand Dad</span></a>
-          <a data-href="/games/clpicosschool.html" class="game-button" style="background-image: url('/assets/IMG_6383.png');" title="Pico's School"><span class="game-button-text">Pico's School</span></a>
-          <a data-href="/games/clpomgetsinternet.html" class="game-button" style="background-image: url('/assets/IMG_6386.png');" title="Pom Gets Wifi"><span class="game-button-text">Pom Gets Wifi</span></a>
-          <a data-href="/games/clpunchout.html" class="game-button" style="background-image: url('/assets/IMG_6437.jpeg');" title="Punch-Out"><span class="game-button-text">Punch-Out</span></a>
-          <a data-href="/games/clearthbound.html" class="game-button" style="background-image: url('/assets/IMG_6443.webp');" title="Mother"><span class="game-button-text">Mother</span></a>
-          <a data-href="/games/clearthboundsnes.html" class="game-button" style="background-image: url('/assets/IMG_6444.jpeg');" title="Mother 2"><span class="game-button-text">Mother 2</span></a>
-          <a data-href="/games/clearthbound3.html" class="game-button" style="background-image: url('/assets/IMG_6445.jpeg');" title="Mother 3"><span class="game-button-text">Mother 3</span></a>
-          <a data-href="/games/Buster Jam.html" class="game-button" style="background-image: url('/assets/boom.gif');" title="Buster Jam"><span class="game-button-text">Buster Jam</span></a>
-          <a data-href="/games/clovofixed.html" class="game-button" style="background-image: url('/assets/ovo.jpeg');" title="OvO"><span class="game-button-text">OvO</span></a>
-          <a data-href="/games/clmyteardrop.html" class="game-button" style="background-image: url('/assets/tear.gif');" title="My Teardrop"><span class="game-button-text">My Teardrop</span></a>
-          <a data-href="/games/cljetpackjoyride(1).html" class="game-button" style="background-image: url('/assets/jetpack.jpeg');" title="Jetpack Joyride"><span class="game-button-text">Jetpack Joyride</span></a>
-        </nav>
-
-        <nav class="game-buttons" aria-label="Page 8">
-          <a data-href="/games/clretrobowl.html" class="game-button" style="background-image: url('/assets/bowl.png');" title="Retro Bowl"><span class="game-button-text">Retro Bowl</span></a>
-          <a data-href="/games/OMORI.html" class="game-button" style="background-image: url('/assets/IMG_6503.jpeg');" title="OMORI"><span class="game-button-text">OMORI</span></a>
-          <a data-href="https://burritobison.vercel.app/" class="game-button" style="background-image: url('/assets/IMG_6510.png');" title="Burrito Bison"><span class="game-button-text">Burrito bison</span></a>
-          <a data-href="/games/clgtachina.html" class="game-button" style="background-image: url('/assets/IMG_6525.jpeg');" title="GTA chinatown wars"><span class="game-button-text">GTA chinatown wars</span></a>
-          <a data-href="/games/clkirbyandtheamzingmirror.html" class="game-button" style="background-image: url('/assets/IMG_6526.jpeg');" title="Kirby and the amazing mirror"><span class="game-button-text">Kirby and the amazing mirror</span></a>
-          <a data-href="/games/clpokeruby.html" class="game-button" style="background-image: url('/assets/IMG_6527.jpeg');" title="Pokemon Ruby"><span class="game-button-text">Pokemon Ruby</span></a>
-          <a data-href="/games/clpokeblack2alt.html" class="game-button" style="background-image: url('/assets/IMG_6528.jpeg');" title="Pokemon Black 2"><span class="game-button-text">Pokemon Black 2</span></a>
-          <a data-href="/games/clpokemonleafgreen.html" class="game-button" style="background-image: url('/assets/IMG_6529.jpeg');" title="Pokemon Leafgreen"><span class="game-button-text">Pokemon Leafgreen</span></a>
-          <a data-href="/games/clmeatboyflash.html" class="game-button" style="background-image: url('/assets/IMG_6530.jpeg');" title="MeatBoy"><span class="game-button-text">MeatBoy</span></a>
-          <a data-href="/games/Grand Theft Auto_ Vice City.html" class="game-button" style="background-image: url('/assets/IMG_6556.jpeg');" title="GTA Vice city"><span class="game-button-text">GTA Vice city</span></a>
-          <a data-href="/games/clsonicandfallingstar.html" class="game-button" style="background-image: url('/assets/IMG_6599.webp');" title="Sonic and the fallen star"><span class="game-button-text">Sonic and the fallen star</span></a>
-          <a data-href="/games/clsuperfallingfred.html" class="game-button" style="background-image: url('/assets/IMG_6601.png');" title="Super falling fred"><span class="game-button-text">Super falling fred</span></a>
-        </nav>
-
-        <nav class="game-buttons" aria-label="Page 9">
-          <a data-href="/games/clsolatrobo.html" class="game-button" style="background-image: url('/assets/IMG_6678.jpeg');" title="Solatorobo: Red the hunter"><span class="game-button-text">Solatorobo</span></a>
-          <a data-href="/games/Please Dont Touch Anything.html" class="game-button" style="background-image: url('/assets/IMG_6691.png');" title="Please don't touch anything"><span class="game-button-text">don't touch anything</span></a>
-          <a data-href="/games/1 Date Danger.html" class="game-button" style="background-image: url('/assets/IMG_6692.jpeg');" title="1 Date Danger"><span class="game-button-text">1 Date Danger</span></a>
-          <a data-href="/games/cllozspirittracks.html" class="game-button" style="background-image: url('/assets/IMG_6744.png');" title="Zelda: Spirit tracks"><span class="game-button-text">Zelda: Spirit tracks</span></a>
-          <a data-href="/games/cldrawntolife.html" class="game-button" style="background-image: url('/assets/IMG_6778.jpeg');" title="Drawn to life"><span class="game-button-text">Drawn to life</span></a>
-          <a data-href="/games/cldrawntolife2.html" class="game-button" style="background-image: url('/assets/IMG_6779.jpeg');" title="Drawn to life: The next chapter"><span class="game-button-text">DTL: the next chapter</span></a>
-          <a data-href="/games/cltouhou.html" class="game-button" style="background-image: url('/assets/IMG_6837.webp');" title="Touhou 1"><span class="game-button-text">Touhou 1</span></a>
-          <a data-href="/games/cltouhou2.html" class="game-button" style="background-image: url('/assets/IMG_6838.webp');" title="Touhou 2"><span class="game-button-text">Touhou 2</span></a>
-          <a data-href="/games/cltouhou3.html" class="game-button" style="background-image: url('/assets/IMG_6839.webp');" title="Touhou 3"><span class="game-button-text">Touhou 3</span></a>
-          <a data-href="/games/cltouhou4.html" class="game-button" style="background-image: url('/assets/IMG_6840.jpeg');" title="Touhou 4"><span class="game-button-text">Touhou 4</span></a>
-          <a data-href="/games/cltouhou5.html" class="game-button" style="background-image: url('/assets/IMG_6841.jpeg');" title="Touhou 5"><span class="game-button-text">Touhou 5</span></a>
-          <a data-href="/games/Happy Wheels.html" class="game-button" style="background-image: url('/assets/IMG_6847.png');" title="Happy Wheels"><span class="game-button-text">Happy Wheels</span></a>
-        </nav>
-        
-        <nav class="game-buttons" aria-label="Page 10">
-          <a data-href="/games/Papa's Wingeria.html" class="game-button" style="background-image: url('/assets/IMG_6842.jpeg');" title="Papa's Wingeria"><span class="game-button-text">Papa's Wingeria</span></a>
-          <a data-href="/games/Papa's Sushiria.html" class="game-button" style="background-image: url('/assets/IMG_6843.jpeg');" title="Papa's Sushiria"><span class="game-button-text">Papa's Sushiria</span></a>
-          <a data-href="/games/Papa's Cheeseria.html" class="game-button" style="background-image: url('/assets/IMG_6844.png');" title="Papa's Cheeseria"><span class="game-button-text">Papa's Cheeseria</span></a>
-          <a data-href="/games/Papa's Hot Doggeria.html" class="game-button" style="background-image: url('/assets/IMG_6857.jpeg');" title="Papa's Hot Doggeria"><span class="game-button-text">Papa's Hot Doggeria</span></a>
-          <a data-href="/games/Pizza Tower_ Scoutdigo.html" class="game-button" style="background-image: url('/assets/IMG_6859.webp');" title="Pizza Tower Scoutdigo"><span class="game-button-text">Pizza Tower Scoutdigo</span></a>
-          <a data-href="/games/Chiikawa Puzzle.html" class="game-button" style="background-image: url('/assets/IMG_6858.png');" title="Chiikawa Puzzle"><span class="game-button-text">Chiikawa Puzzle</span></a>
-          <a data-href="/games/A Dance of Fire and Ice.html" class="game-button" style="background-image: url('/assets/IMG_6860.png');" title="A Dance of Fire and Ice"><span class="game-button-text">A Dance of Fire and Ice</span></a>
-          <a data-href="/games/Baldi's Basics Plus.html" class="game-button" style="background-image: url('/assets/IMG_6861.webp');" title="Baldi's Basics Plus"><span class="game-button-text">Baldi's Basics Plus</span></a>
-          <a data-href="/games/In Stars and Time.html" class="game-button" style="background-image: url('/assets/IMG_6869.jpeg');" title="In Stars and Time"><span class="game-button-text">In Stars and Time</span></a>
-          <a data-href="/games/Buckshot.html" class="game-button" style="background-image: url('/assets/IMG_6870.jpeg');" title="Buckshot Roulette"><span class="game-button-text">Buckshot Roulette</span></a>
-          <div class="game-button placeholder">COMING SOON</div>
-          <div class="game-button placeholder">COMING SOON</div>
+          <div class="game-button placeholder">More Games</div>
         </nav>
 
       </div>
@@ -539,15 +352,12 @@
     <div class="wii-bottom-bar">
       <div class="wii-bottom-bar-content">
         <div class="wii-button" id="prev-page-button" title="Previous Page">
-            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-            </svg>
+            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
         </div>
         
         <a href="#" class="wii-button" id="wii-menu-button" title="Qbbic Menu">
             <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm5 15h-2v-6H9v6H7v-7.81l5-4.5 5 4.5V18z"/>
-                <path d="M7 10.19V18h2v-6h6v6h2v-7.81l-5-4.5z" opacity="0.3"/>
             </svg>
         </a>
         
@@ -575,15 +385,23 @@
         </div>
         
         <div class="wii-button" id="next-page-button" title="Next Page">
-            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-            </svg>
+            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
         </div>
       </div>
     </div>
 
     <div id="theme-menu">
         <div class="theme-heading">Theme Maker</div>
+        
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">Load Preset</span>
+            <select id="input-preset">
+                <option value="custom">Custom</option>
+                <option value="wii" selected>Wii Menu</option>
+                <option value="dsi">Nintendo DSi</option>
+                <option value="ps2">PS2 Browser</option>
+            </select>
+        </div>
         
         <div class="theme-maker-row">
             <span class="theme-maker-label">Background</span>
@@ -809,7 +627,6 @@
 
         const savedBGM = localStorage.getItem('qbbic-bgm');
         if (savedBGM && savedBGM !== 'none') {
-             // Find name
              const song = songs.find(s => s.url === savedBGM);
              playBGM(savedBGM, song ? song.name : "Unknown");
         }
@@ -943,7 +760,6 @@
       const inputBgImage = document.getElementById('input-bg-image');
       const inputBgUpload = document.getElementById('input-bg-upload');
       
-      // New Layout Inputs
       const checkHome = document.getElementById('check-show-home');
       const checkSearch = document.getElementById('check-show-search');
       const checkClock = document.getElementById('check-show-clock');
@@ -951,6 +767,29 @@
       const inputBtnHover = document.getElementById('input-btn-hover');
       
       const btnReset = document.getElementById('reset-theme-btn');
+      const inputPreset = document.getElementById('input-preset');
+
+      // PRESET DATA CONFIGURATION
+      const themePresets = {
+          wii: {
+              bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555',
+              shape: 'squircle', font: 'PopHappiness', opacity: 1, 
+              bgImage: '', btnHover: '#40c4ff',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          dsi: {
+              bg: '#ffffff', bar: '#f2f2f2', static: '#333333',
+              shape: 'square', font: 'sans-serif', opacity: 1, 
+              bgImage: '', btnHover: '#5DD1E8', // DSi Cyan Highlight
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          ps2: {
+              bg: '#080810', bar: '#101020', static: '#6070aa',
+              shape: 'rounded-square', font: 'sans-serif', opacity: 0.9, 
+              bgImage: '', btnHover: '#ff0055', // PS2 Red Highlight
+              layout: { home: true, search: true, clock: true, music: true }
+          }
+      };
 
       function saveThemeToStorage(themeObj) {
           try { localStorage.setItem('customTheme', JSON.stringify(themeObj)); } catch(e) {}
@@ -977,25 +816,38 @@
         document.documentElement.style.setProperty('--btn-radius', btnRad);
         document.documentElement.style.setProperty('--card-radius', cardRad);
 
+        // HANDLE BACKGROUND CLASSES FOR AUTHENTICITY
+        document.body.className = ''; // clear previous classes
+        const currentPreset = inputPreset.value;
+
         if(bgImage && bgImage.trim() !== "") {
             document.body.style.backgroundImage = `url('${bgImage}')`;
             document.body.classList.add('bg-is-image');
         } else {
             document.body.classList.remove('bg-is-image');
-            const encodedColor = encodeURIComponent(static);
-            const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
-            document.body.style.backgroundImage = svg;
-            document.body.style.backgroundSize = '10px 10px';
+            
+            // Apply CSS Pattern based on preset selection
+            if(currentPreset === 'dsi') {
+                 document.body.classList.add('bg-dsi');
+            } else if (currentPreset === 'ps2') {
+                 document.body.classList.add('bg-ps2');
+            } else if (currentPreset === 'wii') {
+                 document.body.classList.add('bg-wii');
+            } else {
+                 // Fallback for Custom user colors
+                 const encodedColor = encodeURIComponent(static);
+                 const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
+                 document.body.style.backgroundImage = svg;
+                 document.body.style.backgroundSize = '10px 10px';
+            }
         }
         
-        // Apply Visibility Layout
         if(layout) {
             document.getElementById('wii-menu-button').style.display = layout.home === false ? 'none' : 'flex';
             document.getElementById('search-button').style.display = layout.search === false ? 'none' : 'flex';
             document.getElementById('wii-date-time-display').style.display = layout.clock === false ? 'none' : 'block';
             document.getElementById('music-menu-toggle').style.display = layout.music === false ? 'none' : 'flex';
         }
-
         saveThemeToStorage(themeObj);
       }
 
@@ -1023,13 +875,53 @@
           };
       }
 
-      // Listeners
+      function updateInputsFromTheme(theme) {
+          inputBg.value = theme.bg;
+          inputBar.value = theme.bar;
+          inputStatic.value = theme.static;
+          inputShape.value = theme.shape;
+          inputFont.value = theme.font;
+          inputOpacity.value = theme.opacity;
+          inputBtnHover.value = theme.btnHover;
+          inputBgImage.value = theme.bgImage || '';
+          if (theme.layout) {
+              checkHome.checked = theme.layout.home !== false;
+              checkSearch.checked = theme.layout.search !== false;
+              checkClock.checked = theme.layout.clock !== false;
+              checkMusic.checked = theme.layout.music !== false;
+          }
+      }
+
+      // PRESET LISTENER
+      inputPreset.addEventListener('change', (e) => {
+          const val = e.target.value;
+          if (val === 'custom') return;
+          const selectedTheme = themePresets[val];
+          if (selectedTheme) {
+              updateInputsFromTheme(selectedTheme); // Sync UI sliders to preset
+              applyTheme(selectedTheme);
+              clickSound.currentTime = 0; clickSound.play().catch(()=>{});
+              showToast(`Loaded ${val.toUpperCase()} Theme`);
+          }
+      });
+
+      // SWITCH TO CUSTOM ON EDIT
       [inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity, checkHome, checkSearch, checkClock, checkMusic, inputBtnHover].forEach(input => {
-        input.addEventListener('change', () => applyTheme(getCurrentThemeObj()));
-        if(input.type === 'color' || input.type === 'range') input.addEventListener('input', () => applyTheme(getCurrentThemeObj()));
+        input.addEventListener('change', () => { 
+            inputPreset.value = 'custom'; // Force dropdown to 'Custom'
+            applyTheme(getCurrentThemeObj()); 
+        });
+        if(input.type === 'color' || input.type === 'range') input.addEventListener('input', () => {
+             inputPreset.value = 'custom';
+             applyTheme(getCurrentThemeObj());
+        });
       });
       
-      inputBgImage.addEventListener('change', () => { inputBgUpload.value = ''; applyTheme(getCurrentThemeObj()); });
+      inputBgImage.addEventListener('change', () => { 
+          inputBgUpload.value = ''; 
+          inputPreset.value = 'custom';
+          applyTheme(getCurrentThemeObj()); 
+      });
       inputBgUpload.addEventListener('change', (e) => {
           const file = e.target.files[0];
           if (file) {
@@ -1039,6 +931,7 @@
                   const currentTheme = getCurrentThemeObj();
                   currentTheme.bgImage = dataUrl;
                   inputBgImage.value = '';
+                  inputPreset.value = 'custom';
                   applyTheme(currentTheme);
               };
               reader.readAsDataURL(file);
@@ -1047,20 +940,10 @@
 
       // Reset
       btnReset.addEventListener('click', () => {
-          const defaults = { 
-              bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', 
-              shape: 'squircle', font:'PopHappiness', opacity:1, bgImage:'', btnHover:'#40c4ff',
-              layout: { home:true, search:true, clock:true, music:true }
-          };
+          const defaults = themePresets.wii;
+          updateInputsFromTheme(defaults);
+          inputPreset.value = 'wii';
           applyTheme(defaults);
-          // Update Inputs to match defaults
-          inputBg.value = defaults.bg; inputBar.value = defaults.bar;
-          inputStatic.value = defaults.static; inputShape.value = defaults.shape;
-          inputFont.value = defaults.font;
-          inputOpacity.value = defaults.opacity; inputBgImage.value = '';
-          inputBtnHover.value = defaults.btnHover;
-          checkHome.checked = true; checkSearch.checked = true; checkClock.checked = true; checkMusic.checked = true;
-          
           clickSound.currentTime = 0; clickSound.play().catch(()=>{});
           showToast("Theme Reset");
       });
@@ -1083,6 +966,7 @@
                   applyTheme(theme);
                   inputBg.value = theme.bg; inputBar.value = theme.bar;
                   inputStatic.value = theme.static; inputShape.value = theme.shape;
+                  inputPreset.value = 'custom';
                   showToast("Theme Loaded!");
               } catch(e) { showToast("Error Loading File"); }
           };
@@ -1195,8 +1079,6 @@
               div.textContent = song.name;
               div.onclick = () => {
                   playBGM(song.url, song.name);
-                  // Optional: Keep menu open or close it
-                  // document.getElementById('music-menu').style.display = 'none';
                   showToast("Playing: " + song.name);
               };
               list.appendChild(div);
@@ -1241,12 +1123,8 @@
       // --- SECRET HOME BUTTON LOGIC ---
       document.getElementById('wii-menu-button').addEventListener('click', (e) => {
           e.preventDefault();
-          
-          // Play click sound if available
           const clickSnd = document.getElementById('click-sound');
           if(clickSnd) { clickSnd.currentTime = 0; clickSnd.play().catch(()=>{}); }
-
-          // 10% chance (0.1)
           if (Math.random() < 0.1) {
               window.location.href = 'path.html';
           } else {
