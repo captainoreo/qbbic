@@ -4,162 +4,194 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Qbbic Ultimate - Multi-Console Layout</title>
+    <title>Qbbic Ultimate - Console UI Loader</title>
     <link rel="icon" href="/assets/fanny.gif" type="image/gif" />
     <link rel="stylesheet" href="https://qottlebup.nekoweb.org/banner.css" />
     <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
     <style>
-      /* --- CORE STYLES --- */
+      /* --- CORE VARIABLES --- */
       :root {
-        /* DEFAULT COLORS */
         --bg-color: #e6e8e7;
         --bar-color: #c9c5c2;
         --static-color: #555555;
-        
-        /* CUSTOMIZABLE ACCENT */
-        --btn-hover-color: #40c4ff; 
-        
-        /* SHAPE & EFFECT VARIABLES */
-        --btn-radius: 12px; 
-        --card-radius: 25px; 
+        --btn-hover-color: #40c4ff;
+        --btn-radius: 12px;
+        --card-radius: 25px;
         --card-opacity: 1;
-        --box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-        --transform-hover: scale(1.05);
-        
-        /* FONTS */
         --main-font: 'PopHappiness', sans-serif;
       }
-
       @font-face { font-family: 'PopHappiness'; src: url('/assets/PopHappiness.OTF') format('opentype'); }
 
-      /* --- GLOBAL ANIMATIONS --- */
-      @keyframes noise-anim {
-        0% { transform: translate(0, 0); }
-        10% { transform: translate(-5%, -5%); }
-        20% { transform: translate(-10%, 5%); }
-        30% { transform: translate(5%, -10%); }
-        40% { transform: translate(-5%, 15%); }
-        50% { transform: translate(-10%, 5%); }
-        60% { transform: translate(15%, 0); }
-        70% { transform: translate(0, 10%); }
-        80% { transform: translate(-15%, 0); }
-        90% { transform: translate(10%, 5%); }
-        100% { transform: translate(5%, 0); }
-      }
-
-      /* Base Body */
+      /* --- BASE LAYOUT --- */
       body {
-        margin: 0;
-        font-family: var(--main-font);
-        background-color: var(--bg-color);
-        color: var(--static-color);
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        box-sizing: border-box;
-        cursor: url('/assets/cursor.png'), auto;
-        overflow: hidden;
-        transition: background-color 0.3s ease, color 0.3s ease, background-image 0.3s ease;
-      }
-
-      /* --- CONSOLE SPECIFIC BACKGROUNDS --- */
-      
-      /* Default Wii: 10x10 Grid */
-      body.bg-wii {
+        margin: 0; font-family: var(--main-font); background-color: var(--bg-color); color: var(--static-color);
+        display: flex; flex-direction: column; min-height: 100vh; align-items: center; justify-content: center;
+        overflow: hidden; transition: all 0.5s ease;
+        /* Default Wii Grid Pattern */
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
         background-size: 10px 10px;
-        background-repeat: repeat;
       }
 
-      /* DSi: Dotted/Checkered Pattern */
-      body.bg-dsi {
-        background-color: #ffffff;
-        background-image: radial-gradient(#d0d0d0 1px, transparent 1px), radial-gradient(#d0d0d0 1px, transparent 1px);
-        background-size: 20px 20px;
-        background-position: 0 0, 10px 10px;
-      }
-
-      /* PS2: Deep Abyss Gradient with "Fog" */
-      body.bg-ps2 {
-        background-color: #000;
-        background: linear-gradient(180deg, #000000 0%, #050510 40%, #001133 100%);
-        background-size: cover;
-        background-attachment: fixed;
-      }
-      
-      /* Image Override */
-      body.bg-is-image {
-          background-size: cover !important;
-          background-position: center !important;
-          background-repeat: no-repeat !important;
-          animation: none;
-      }
-
-      /* Top Bar */
+      /* =========================================
+         THEME: WII (DEFAULT)
+         ========================================= */
+      /* Top Bar Gradient */
       .wii-top-bar {
         position: absolute; top: 0; left: 0; width: 100%; height: 100px;
         background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
         pointer-events: none; z-index: 100;
       }
 
-      /* Bottom Bar */
+      /* Bottom Bar Container */
       .wii-bottom-bar {
         position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
-        background-color: var(--bar-color); 
-        border-top: 2px solid var(--static-color);
+        background-color: var(--bar-color); border-top: 2px solid var(--static-color);
         box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
         display: flex; justify-content: center; align-items: center;
-        gap: 20px; padding: 0 20px; box-sizing: border-box; z-index: 100;
-        transition: background-color 0.3s ease, border-color 0.3s ease;
+        padding: 0 20px; z-index: 100; transition: all 0.5s ease;
       }
-      .wii-bottom-bar-content { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 900px; }
+      .wii-bottom-bar-content { 
+          display: flex; justify-content: space-between; align-items: center; 
+          width: 100%; max-width: 900px; position: relative;
+      }
 
-      /* --- 3DS STYLE BUTTONS --- */
+      /* Wii Buttons */
       .wii-button {
         background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
-        border: 2px solid #aaaaaa; 
-        border-radius: var(--btn-radius);
+        border: 2px solid #aaaaaa; border-radius: 50%; /* Round for Wii */
         width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
-        cursor: pointer; 
-        transition: all 0.2s ease;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        position: relative; overflow: hidden;
+        cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       }
-      
       .wii-button:hover { 
-          transform: translateY(-2px); 
-          border-color: var(--btn-hover-color);
-          box-shadow: 0 0 8px var(--btn-hover-color), inset 0 0 5px #fff; 
-          cursor: url('/assets/Link-Select.png'), pointer; 
+          transform: translateY(-2px); border-color: var(--btn-hover-color);
+          box-shadow: 0 0 15px var(--btn-hover-color), inset 0 0 5px #fff; 
       }
-      
-      .wii-button:active { transform: scale(0.95); background: #cccccc; }
-      
-      .wii-button-svg { width: 60%; height: 60%; transition: filter 0.3s ease, fill 0.3s ease; fill: #333; }
-      .wii-button:hover .wii-button-svg { fill: #000; }
-      
-      .wii-date-time { font-size: 1rem; text-align: center; color: var(--static-color); user-select: none; }
+      .wii-button svg { width: 60%; height: 60%; fill: #333; transition: fill 0.2s; }
+
+      /* Clock */
+      .wii-date-time { 
+          font-size: 1rem; text-align: center; color: var(--static-color); 
+          transition: all 0.5s ease;
+      }
       .wii-date-time .time { font-size: 1.5rem; }
 
-      /* Main Grid Container */
+      /* =========================================
+         THEME: DSi (Nintendo DSi Layout)
+         ========================================= */
+      body[data-theme="dsi"] {
+        background-color: #fff;
+        /* DSi Polka Dot Pattern */
+        background-image: radial-gradient(#e0e0e0 2px, transparent 2px);
+        background-size: 15px 15px;
+      }
+      
+      body[data-theme="dsi"] .wii-top-bar { display: none; } /* Hide Wii gradient */
+
+      /* DSi Bottom Bar (Touch Area) */
+      body[data-theme="dsi"] .wii-bottom-bar {
+        height: 60px; background-color: #e8e8e8; border-top: 2px solid #aaa;
+        box-shadow: none;
+      }
+      
+      /* DSi Buttons (Square & Flat) */
+      body[data-theme="dsi"] .wii-button {
+        border-radius: 4px; border: 2px solid #999;
+        background: #fff; width: 40px; height: 40px;
+        box-shadow: none;
+      }
+      body[data-theme="dsi"] .wii-button:hover {
+        border-color: #5DD1E8; background: #e0f7fa;
+        transform: none;
+      }
+
+      /* DSi Clock (Moves to Top Right) */
+      body[data-theme="dsi"] .wii-date-time {
+          position: fixed; top: 15px; right: 20px;
+          text-align: right; z-index: 1000;
+          background: rgba(255,255,255,0.8); padding: 5px 10px; border-radius: 10px;
+          border: 1px solid #ccc;
+      }
+      body[data-theme="dsi"] .wii-date-time .time { font-size: 1.2rem; font-weight: bold; }
+      body[data-theme="dsi"] .wii-date-time .date { font-size: 0.8rem; }
+
+      /* DSi Game Cards (Square) */
+      body[data-theme="dsi"] .game-button {
+          border-radius: 6px; border: 2px solid #ccc;
+          box-shadow: 2px 2px 0px #bbb;
+      }
+      body[data-theme="dsi"] .game-button:hover {
+          border-color: #5DD1E8; box-shadow: 0 0 0 3px #5DD1E8;
+      }
+
+      /* =========================================
+         THEME: PS2 (PlayStation 2 Browser)
+         ========================================= */
+      body[data-theme="ps2"] {
+        /* Deep Abyss Gradient */
+        background: radial-gradient(circle at 50% 30%, #1a1a2e 0%, #000000 70%);
+        color: #fff;
+      }
+
+      body[data-theme="ps2"] .wii-top-bar { display: none; }
+
+      /* PS2 "Floating" Bottom Menu */
+      body[data-theme="ps2"] .wii-bottom-bar {
+        background: transparent; border: none; box-shadow: none;
+        bottom: 20px; height: auto;
+      }
+      
+      /* PS2 Buttons (Text Only / Minimal) */
+      body[data-theme="ps2"] .wii-button {
+        background: transparent; border: none; box-shadow: none;
+        color: rgba(255,255,255,0.7); width: auto; padding: 0 10px;
+        text-shadow: 0 0 5px rgba(255,255,255,0.5);
+      }
+      body[data-theme="ps2"] .wii-button svg { fill: #fff; filter: drop-shadow(0 0 5px white); }
+      body[data-theme="ps2"] .wii-button:hover { transform: scale(1.1); color: #fff; }
+
+      /* PS2 Clock (Top Right Crystal) */
+      body[data-theme="ps2"] .wii-date-time {
+          position: fixed; top: 30px; right: 40px;
+          color: rgba(255,255,255,0.8); text-shadow: 0 0 10px #40c4ff;
+      }
+
+      /* PS2 Game Cards (3D Memory Blocks) */
+      body[data-theme="ps2"] .game-button {
+          border-radius: 2px;
+          background-color: rgba(20, 20, 30, 0.8);
+          border: 1px solid rgba(255,255,255,0.2);
+          box-shadow: 10px 10px 20px rgba(0,0,0,0.5);
+          transform: perspective(1000px) rotateY(0deg);
+          transition: transform 0.4s ease, box-shadow 0.4s ease;
+      }
+      body[data-theme="ps2"] .game-button::after {
+          background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+      }
+      body[data-theme="ps2"] .game-button:hover {
+          transform: perspective(1000px) translateZ(20px) scale(1.05);
+          border-color: #fff;
+          box-shadow: 0 0 20px rgba(64, 196, 255, 0.6);
+          z-index: 100;
+      }
+      body[data-theme="ps2"] .game-button-text {
+          background: rgba(0,0,0,0.8); color: #fff;
+      }
+
+      /* =========================================
+         SHARED GAME GRID
+         ========================================= */
       #game-pages-container {
         position: relative; z-index: 10; width: 100%; max-width: 1000px; height: 600px; 
-        display: flex; align-items: center; justify-content: center; margin-bottom: 60px;
-        overflow: visible;
+        display: flex; align-items: center; justify-content: center;
       }
       #game-pages-wrapper { display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); width: 100%; }
       
-      /* --- WII GRID LAYOUT (4x3) --- */
       .game-buttons {
         display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); 
         gap: 15px; width: 100%; height: 500px; justify-items: center; align-items: center;
         padding: 0 40px; box-sizing: border-box; flex-shrink: 0;
       }
 
-      /* --- GAME CHANNEL CARD --- */
       .game-button {
         width: 220px; height: 130px;
         background-color: #ffffff;
@@ -167,59 +199,36 @@
         opacity: var(--card-opacity);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         text-decoration: none; color: black; font-weight: bold; text-align: center;
-        position: relative; cursor: url('/assets/cursor.png'), auto;
+        position: relative; cursor: pointer;
         background-size: cover; background-position: center; background-repeat: no-repeat;
-        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.3s ease;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
         border: 4px solid #eaeaea; overflow: hidden;
-        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4), 2px 4px 10px rgba(0,0,0,0.15);
       }
 
-      /* Gloss Overlay */
-      .game-button::after {
-        content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.1) 40%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0) 100%);
-        border-radius: calc(var(--card-radius) - 4px); pointer-events: none; z-index: 2;
-      }
-
-      /* Static Effect */
-      .game-button::before {
-        content: ""; position: absolute; top: -50%; left: -50%; right: -50%; bottom: -50%;
-        width: 200%; height: 200%;
-        background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="1"/></svg>');
-        background-repeat: repeat; opacity: 0.08; pointer-events: none;
-        animation: noise-anim 0.5s steps(5) infinite; z-index: 1; mix-blend-mode: multiply;
-      }
-
-      .game-button:hover { 
-          transform: scale(1.02);
-          box-shadow: 0 0 0 6px var(--btn-hover-color), 0 0 20px var(--btn-hover-color); 
-          border-color: #7bc6eb; z-index: 20; 
-          cursor: url('/assets/Link-Select.png'), pointer; opacity: 1 !important; filter: grayscale(0%) !important;
-      }
-
+      /* Game Text Overlay */
       .game-button-text {
-        position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.85);
-        border-bottom-left-radius: var(--card-radius); border-bottom-right-radius: var(--card-radius);
-        font-size: 0.9rem; padding: 4px 0; display: none; color: #333; z-index: 5; backdrop-filter: blur(4px);
+        position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.9);
+        font-size: 0.9rem; padding: 4px 0; display: none; color: #333; z-index: 5;
       }
       .game-button:hover .game-button-text { display: block; }
       
+      /* Placeholder */
       .game-button.placeholder {
         background-image: none !important; background-color: rgba(255,255,255,0.4);
-        border: 2px dashed #cccccc; color: #999; font-size: 0.8rem; opacity: 0.6; pointer-events: none;
+        border: 2px dashed #cccccc; color: #999; pointer-events: none;
       }
-      .game-button.placeholder::after { display: none; }
 
-      /* Page Dots */
+      /* Page Indicators */
       .page-indicator { position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 101; }
       .page-dot { 
           width: 12px; height: 12px; background-color: var(--bar-color); border: 2px solid var(--static-color); 
           border-radius: 50%; transition: all 0.3s; cursor: pointer;
       }
-      .page-dot:hover { transform: scale(1.3); background-color: rgba(255,255,255,0.5); }
       .page-dot.active { background-color: var(--static-color); pointer-events: none; }
+      /* DSi Square Dots */
+      body[data-theme="dsi"] .page-dot { border-radius: 2px; }
 
-      /* Menus */
+      /* MENUS (Search, Theme, Music) */
       #search-container, #theme-menu, #music-menu {
         position: fixed; background: rgba(255, 255, 255, 0.95); 
         border: 2px solid var(--static-color); border-radius: 10px;
@@ -228,84 +237,45 @@
       }
       
       #search-container { bottom: 110px; left: 50%; transform: translateX(-50%); padding: 10px; flex-direction: row; gap: 5px; }
-      #search-input { padding: 5px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
-      #search-submit-button { padding: 5px 12px; background: var(--static-color); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-
+      #search-input { padding: 5px; outline: none; }
       #theme-menu { bottom: 80px; right: 20px; width: 300px; padding: 15px; max-height: 80vh; overflow-y: auto; }
-      .theme-heading { font-weight: bold; margin-bottom: 10px; border-bottom: 2px solid #eee; padding-bottom: 5px; color: #444; margin-top: 15px; }
+      #music-menu { bottom: 80px; left: 20px; width: 280px; padding: 10px; }
+      
+      /* Theme Maker UI */
+      .theme-heading { font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 5px; margin: 15px 0 10px 0; }
       .theme-heading:first-child { margin-top: 0; }
-      
       .theme-maker-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-      .theme-maker-label { font-size: 0.9rem; font-weight: bold; color: #555; }
-      input[type="color"] { width: 40px; height: 30px; border: none; cursor: pointer; background: none; }
-      select, input[type="checkbox"] { cursor: pointer; }
-      select { padding: 4px; border-radius: 4px; border: 1px solid #ccc; max-width: 140px; }
-      input[type="text"] { width: 100%; padding: 5px; margin-bottom: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-      input[type="file"] { width: 100%; font-size: 0.8rem; }
-      input[type="range"] { width: 100%; cursor: pointer; }
-      
       .theme-btn-group { display: flex; gap: 5px; margin-top: 15px; }
-      .theme-action-btn { flex: 1; padding: 8px; border: 1px solid #aaa; border-radius: 4px; cursor: pointer; font-weight: bold; background: #eee; font-size: 0.8rem; }
-      .theme-action-btn:hover { background: #ddd; }
+      .theme-action-btn { flex: 1; padding: 8px; cursor: pointer; border: 1px solid #aaa; border-radius: 4px; background: #eee; }
       .theme-action-btn.primary { background: #40c4ff; color: white; border-color: #0091ea; }
 
-      /* Music Menu */
-      #music-menu { bottom: 80px; left: 20px; width: 280px; padding: 10px; max-height: 400px; overflow-y: auto; }
-      .music-option { padding: 6px 8px; cursor: pointer; border-radius: 4px; font-size: 0.9rem; margin-bottom: 2px; }
-      .music-option:hover { background-color: #e0e0e0; }
-      .music-heading { font-weight: bold; color: #888; margin: 5px 0; font-size: 0.8rem; text-transform: uppercase; }
-      .music-divider { border: 0; height: 1px; background: #ccc; margin: 5px 0; }
-      #now-playing { font-size: 0.85rem; color: #40c4ff; font-weight: bold; margin-bottom: 10px; text-align: center; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .volume-control { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding: 0 5px; }
-
-      /* Modal and Iframe */
+      /* Modal & Toast (Styles mostly same, shortened for brevity) */
       #game-modal {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background-color: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 1000;
-        opacity: 0; transition: opacity 0.3s ease; pointer-events: none; backdrop-filter: blur(5px);
       }
-      #game-modal.active { opacity: 1; pointer-events: auto; }
+      #game-modal.active { display: flex; }
       #game-modal-container {
         width: 100%; height: 100%; max-width: 1280px; max-height: 90vh; display: flex; flex-direction: column;
-        background-color: #f7f7f7; border-radius: 24px; overflow: hidden; 
-        box-shadow: 0 0 50px rgba(64, 196, 255, 0.3), 0 20px 40px rgba(0,0,0,0.4); border: 5px solid #d4d4d4;
+        background-color: #f7f7f7; border-radius: 24px; overflow: hidden; border: 5px solid #d4d4d4;
       }
-      #game-modal-header {
-        flex-shrink: 0; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
-        background: linear-gradient(to bottom, #ffffff 0%, #eeeeee 100%); border-bottom: 2px solid #ccc; height: 60px;
-      }
-      #game-modal-title { font-size: 1.5rem; font-weight: bold; color: #555; font-family: var(--main-font); text-shadow: 1px 1px 0px #fff; }
-      #game-modal-controls { display: flex; gap: 12px; align-items: center; }
-      .control-btn {
-        background: linear-gradient(to bottom, #fcfcfc 0%, #dcdcdc 100%); color: #555; border: 2px solid #b0b0b0; 
-        border-radius: 30px; padding: 0 24px; height: 40px; display: flex; align-items: center; justify-content: center; gap: 8px;
-        cursor: pointer; transition: all 0.2s; font-family: var(--main-font); font-weight: bold; font-size: 0.9rem;
-      }
-      .control-btn:hover { border-color: #40c4ff; box-shadow: 0 0 8px #40c4ff, inset 0 0 5px rgba(255,255,255,1); color: #0091ea; transform: scale(1.05); }
-      .control-btn svg { width: 20px; height: 20px; fill: currentColor; }
-      .control-btn.close-btn { color: #d32f2f; border-color: #ef9a9a; }
-      .control-btn.close-btn:hover { box-shadow: 0 0 8px #ff5252; border-color: #ff1744; color: #b71c1c; }
-      #game-iframe-wrapper { flex-grow: 1; position: relative; background-color: #000; border-top: 1px solid #999; }
-      #game-iframe { width: 100%; height: 100%; border: none; display: block; }
-      
-      /* Toast */
+      #game-modal-header { height: 50px; background: #eee; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+      #game-iframe { width: 100%; height: 100%; border: none; background: black; flex-grow: 1; }
       #toast-notification {
         position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
-        background-color: var(--bar-color); color: var(--static-color); padding: 12px 24px; border-radius: 30px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000;
-        font-weight: bold; border: 2px solid var(--static-color); text-align: center; font-family: sans-serif;
+        background: #333; color: #fff; padding: 10px 20px; border-radius: 20px; transition: transform 0.3s; z-index: 2000;
       }
       #toast-notification.show { transform: translateX(-50%) translateY(0); }
+
     </style>
   </head>
-  <body class="bg-wii">
+  <body data-theme="wii">
 
     <div class="wii-top-bar"></div>
 
     <div id="game-pages-container">
       <div id="game-pages-wrapper">
-        
-        <nav class="game-buttons" aria-label="Page 1">
+        <nav class="game-buttons">
           <a data-href="/games/clyumenikki.html" class="game-button" style="background-image: url('/assets/nikki.jpg');" title="Yume Nikki"><span class="game-button-text">Yume Nikki</span></a>
           <a data-href="/games/Cookie Clicker.html" class="game-button" style="background-image: url('/assets/cookie.png');" title="Cookie Clicker"><span class="game-button-text">Cookie Clicker</span></a>
           <a data-href="/games/DOOM.html" class="game-button" style="background-image: url('/assets/doom1.jpg');" title="Doom 1"><span class="game-button-text">Doom 1</span></a>
@@ -320,7 +290,7 @@
           <a data-href="/games/Half Life.html" class="game-button" style="background-image: url('/assets/2133.png');" title="Half-Life"><span class="game-button-text">Half-Life</span></a>
         </nav>
 
-        <nav class="game-buttons" aria-label="Page 2">
+        <nav class="game-buttons">
           <a data-href="/games/Hollow Knight(1).html" class="game-button" style="background-image: url('/assets/knight.jpeg');" title="Hollow Knight"><span class="game-button-text">Hollow Knight</span></a>
           <a data-href="/games/clparappatherapperalt.html" class="game-button" style="background-image: url('/assets/Sony-playstation-parappa-the-rapper.png');" title="Parappa the Rapper"><span class="game-button-text">Parappa</span></a>
           <a data-href="/games/clsmashremix.html" class="game-button" style="background-image: url('/assets/remix.jpg');" title="Smash Remix"><span class="game-button-text">Smash Remix</span></a>
@@ -335,7 +305,7 @@
           <a data-href="/games/Dadish.html" class="game-button" style="background-image: url('/assets/IMG_6019.jpeg');" title="Dadish"><span class="game-button-text">Dadish</span></a>
         </nav>
 
-        <nav class="game-buttons" aria-label="Page 3">
+        <nav class="game-buttons">
           <a data-href="/games/Dadish 2.html" class="game-button" style="background-image: url('/assets/IMG_6020.jpeg');" title="Dadish 2"><span class="game-button-text">Dadish 2</span></a>
           <a data-href="/games/Dadish 3.html" class="game-button" style="background-image: url('/assets/IMG_6021.jpeg');" title="Dadish 3"><span class="game-button-text">Dadish 3</span></a>
           <a data-href="/games/Dadish 3D.html" class="game-button" style="background-image: url('/assets/IMG_6022.jpeg');" title="Dadish 3D"><span class="game-button-text">Dadish 3D</span></a>
@@ -350,7 +320,7 @@
           <a data-href="/games/clmonkeymart.html" class="game-button" style="background-image: url('/assets/IMG_6142.jpeg');" title="Monkey Mart"><span class="game-button-text">Monkey Mart</span></a>
         </nav>
         
-        <nav class="game-buttons" aria-label="Page 4">
+        <nav class="game-buttons">
           <a data-href="/games/pvz.html" class="game-button" style="background-image: url('/assets/Plantsvs.ZombiesNintendoDS.png');" title="Plants Vs Zombies"><span class="game-button-text">PvZ</span></a>
           <a data-href="/games/clctgpnitro.html" class="game-button" style="background-image: url('/assets/ctgp.jpg');" title="CTGP Nitro"><span class="game-button-text">CTGP Nitro</span></a>
           <a data-href="/games/clkirbysqueaksquad.html" class="game-button" style="background-image: url('/assets/squeak.png');" title="Kirby Squeak Squad"><span class="game-button-text">Squeak Squad</span></a>
@@ -365,7 +335,7 @@
           <a data-href="/games/cllearntofly3.html" class="game-button" style="background-image: url('/assets/342.png');" title="Learn to Fly 3"><span class="game-button-text">Learn to Fly 3</span></a>
         </nav>
 
-        <nav class="game-buttons" aria-label="Page 5">
+        <nav class="game-buttons">
           <a data-href="/games/cllearntoflyidle.html" class="game-button" style="background-image: url('/assets/343.png');" title="Learn to Fly Idle"><span class="game-button-text">Learn to Fly Idle</span></a>
           <a data-href="/games/clwebecomewhatwebehold.html" class="game-button" style="background-image: url('/assets/become.png');" title="We Become What We Behold"><span class="game-button-text">WBWWB</span></a>
           <a data-href="/games/ristar.html" class="game-button" style="background-image: url('/assets/ristar.jpeg');" title="Ristar"><span class="game-button-text">Ristar</span></a>
@@ -380,7 +350,7 @@
           <a data-href="/games/clfnafps.html" class="game-button" style="background-image: url('/assets/FFPS.png');" title="Pizzeria Simulator"><span class="game-button-text">Pizzeria Sim</span></a>
         </nav>
 
-        <nav class="game-buttons" aria-label="Page 6">
+        <nav class="game-buttons">
           <a data-href="/games/clfnac1.html" class="game-button" style="background-image: url('/assets/FNAC1ICON.png');" title="Five Nights at Candy's"><span class="game-button-text">FNAC 1</span></a>
           <a data-href="/games/clfridaynightfunkin.html" class="game-button" style="background-image: url('/assets/fnf.jpeg');" title="Friday Night Funkin"><span class="game-button-text">FNF</span></a>
           <a data-href="/games/clfruitninja.html" class="game-button" style="background-image: url('/assets/FruitNinja.jpg');" title="Fruit Ninja"><span class="game-button-text">Fruit Ninja</span></a>
@@ -395,7 +365,7 @@
           <a data-href="/games/cltetris.html" class="game-button" style="background-image: url('/assets/IMG_6335.png');" title="Tetris"><span class="game-button-text">Tetris</span></a>
         </nav>
 
-        <nav class="game-buttons" aria-label="Page 7">
+        <nav class="game-buttons">
           <a data-href="/games/clpeggle.html" class="game-button" style="background-image: url('/assets/IMG_6381.jpeg');" title="Peggle"><span class="game-button-text">Peggle</span></a>
           <a data-href="/games/clgranddad.html" class="game-button" style="background-image: url('/assets/IMG_6382.webp');" title="7 Grand Dad"><span class="game-button-text">Grand Dad</span></a>
           <a data-href="/games/clpicosschool.html" class="game-button" style="background-image: url('/assets/IMG_6383.png');" title="Pico's School"><span class="game-button-text">Pico's School</span></a>
@@ -410,7 +380,7 @@
           <a data-href="/games/cljetpackjoyride(1).html" class="game-button" style="background-image: url('/assets/jetpack.jpeg');" title="Jetpack Joyride"><span class="game-button-text">Jetpack Joyride</span></a>
         </nav>
 
-        <nav class="game-buttons" aria-label="Page 8">
+        <nav class="game-buttons">
           <a data-href="/games/clretrobowl.html" class="game-button" style="background-image: url('/assets/bowl.png');" title="Retro Bowl"><span class="game-button-text">Retro Bowl</span></a>
           <a data-href="/games/OMORI.html" class="game-button" style="background-image: url('/assets/IMG_6503.jpeg');" title="OMORI"><span class="game-button-text">OMORI</span></a>
           <a data-href="https://burritobison.vercel.app/" class="game-button" style="background-image: url('/assets/IMG_6510.png');" title="Burrito Bison"><span class="game-button-text">Burrito bison</span></a>
@@ -425,7 +395,7 @@
           <a data-href="/games/clsuperfallingfred.html" class="game-button" style="background-image: url('/assets/IMG_6601.png');" title="Super falling fred"><span class="game-button-text">Super falling fred</span></a>
         </nav>
 
-        <nav class="game-buttons" aria-label="Page 9">
+        <nav class="game-buttons">
           <a data-href="/games/clsolatrobo.html" class="game-button" style="background-image: url('/assets/IMG_6678.jpeg');" title="Solatorobo: Red the hunter"><span class="game-button-text">Solatorobo</span></a>
           <a data-href="/games/Please Dont Touch Anything.html" class="game-button" style="background-image: url('/assets/IMG_6691.png');" title="Please don't touch anything"><span class="game-button-text">don't touch anything</span></a>
           <a data-href="/games/1 Date Danger.html" class="game-button" style="background-image: url('/assets/IMG_6692.jpeg');" title="1 Date Danger"><span class="game-button-text">1 Date Danger</span></a>
@@ -440,7 +410,7 @@
           <a data-href="/games/Happy Wheels.html" class="game-button" style="background-image: url('/assets/IMG_6847.png');" title="Happy Wheels"><span class="game-button-text">Happy Wheels</span></a>
         </nav>
         
-        <nav class="game-buttons" aria-label="Page 10">
+        <nav class="game-buttons">
           <a data-href="/games/Papa's Wingeria.html" class="game-button" style="background-image: url('/assets/IMG_6842.jpeg');" title="Papa's Wingeria"><span class="game-button-text">Papa's Wingeria</span></a>
           <a data-href="/games/Papa's Sushiria.html" class="game-button" style="background-image: url('/assets/IMG_6843.jpeg');" title="Papa's Sushiria"><span class="game-button-text">Papa's Sushiria</span></a>
           <a data-href="/games/Papa's Cheeseria.html" class="game-button" style="background-image: url('/assets/IMG_6844.png');" title="Papa's Cheeseria"><span class="game-button-text">Papa's Cheeseria</span></a>
@@ -454,7 +424,6 @@
           <div class="game-button placeholder">COMING SOON</div>
           <div class="game-button placeholder">COMING SOON</div>
         </nav>
-
       </div>
     </div>
 
@@ -468,123 +437,59 @@
     <div class="wii-bottom-bar">
       <div class="wii-bottom-bar-content">
         <div class="wii-button" id="prev-page-button" title="Previous Page">
-            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
         </div>
         
-        <a href="#" class="wii-button" id="wii-menu-button" title="Qbbic Menu">
-            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm5 15h-2v-6H9v6H7v-7.81l5-4.5 5 4.5V18z"/>
-            </svg>
-        </a>
+        <div class="wii-button" id="wii-menu-button" title="Qbbic Menu">
+            <svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm5 15h-2v-6H9v6H7v-7.81l5-4.5 5 4.5V18z"/></svg>
+        </div>
         
         <div class="wii-button" id="search-button" title="Search Games">
-            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-            </svg>
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
         </div>
         
         <div class="wii-date-time" id="wii-date-time-display">
-          <div class="time" id="current-time">12:00 AM</div>
+          <div class="time" id="current-time">12:00</div>
           <div class="date" id="current-date">Fri 1/1</div>
         </div>
         
         <div class="wii-button" id="music-menu-toggle" title="Select Music">
-            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-            </svg>
+            <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
         </div>
         
         <div class="wii-button" id="theme-menu-toggle" title="Theme Maker">
-            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/>
-            </svg>
+            <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
         </div>
         
         <div class="wii-button" id="next-page-button" title="Next Page">
-            <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
         </div>
       </div>
     </div>
 
     <div id="theme-menu">
-        <div class="theme-heading">Theme Maker</div>
-        
+        <div class="theme-heading">Layout Style</div>
         <div class="theme-maker-row">
-            <span class="theme-maker-label">Load Preset</span>
+            <span class="theme-maker-label">Console</span>
             <select id="input-preset">
-                <option value="custom">Custom</option>
-                <option value="wii" selected>Wii Menu</option>
+                <option value="wii">Wii Menu</option>
                 <option value="dsi">Nintendo DSi</option>
                 <option value="ps2">PS2 Browser</option>
             </select>
         </div>
         
+        <div class="theme-heading">Customize Colors</div>
         <div class="theme-maker-row">
             <span class="theme-maker-label">Background</span>
             <input type="color" id="input-bg" value="#e6e8e7">
         </div>
         <div class="theme-maker-row">
-            <span class="theme-maker-label">Wii Bar</span>
+            <span class="theme-maker-label">UI Bar</span>
             <input type="color" id="input-bar" value="#c9c5c2">
         </div>
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Static / Text</span>
-            <input type="color" id="input-static" value="#555555">
-        </div>
-
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Shape</span>
-            <select id="input-shape">
-                <option value="squircle">Squircle</option>
-                <option value="round">Round</option>
-                <option value="rounded-square">Rounded</option>
-                <option value="square">Square</option>
-            </select>
-        </div>
         
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Font</span>
-            <select id="input-font">
-                <option value="PopHappiness">Wii Pop</option>
-                <option value="sans-serif">Clean Sans</option>
-                <option value="monospace">Retro Mono</option>
-            </select>
-        </div>
-
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Opacity</span>
-            <input type="range" id="input-opacity" min="0.2" max="1" step="0.1" value="1" style="width:100px;">
-        </div>
-        
-        <div class="theme-heading">Menu Layout</div>
-        
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Show Home</span>
-            <input type="checkbox" id="check-show-home" checked>
-        </div>
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Show Search</span>
-            <input type="checkbox" id="check-show-search" checked>
-        </div>
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Show Clock</span>
-            <input type="checkbox" id="check-show-clock" checked>
-        </div>
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Show Music</span>
-            <input type="checkbox" id="check-show-music" checked>
-        </div>
-        <div class="theme-maker-row">
-             <span class="theme-maker-label">Btn Hover Color</span>
-             <input type="color" id="input-btn-hover" value="#40c4ff">
-        </div>
-
-        <div class="theme-heading">Background Image</div>
-        <input type="text" id="input-bg-image" placeholder="Image URL...">
-        <input type="file" id="input-bg-upload" accept="image/*" style="margin-top:5px;">
-
         <div class="theme-btn-group">
-             <button id="reset-theme-btn" class="theme-action-btn danger" style="color:#d32f2f; border-color:#ffcdd2;">Reset</button>
+             <button id="reset-theme-btn" class="theme-action-btn danger">Reset</button>
              <button id="save-theme-btn" class="theme-action-btn primary">Save</button>
              <button id="load-theme-btn" class="theme-action-btn">Load</button>
              <input type="file" id="input-load-theme" accept=".json" style="display: none;">
@@ -593,660 +498,153 @@
 
     <div id="music-menu">
         <div class="music-heading">Now Playing</div>
-        <div id="now-playing">No Music Playing</div>
-        <hr class="music-divider">
+        <div id="now-playing">No Music</div>
         <div class="volume-control">
-            <span class="volume-label">Vol:</span>
+            <span class="theme-maker-label">Vol:</span>
             <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.4">
         </div>
-        <hr class="music-divider">
-        <div class="music-heading">Music Options</div>
-        <div class="music-option" id="music-option-random">Random (Auto-play)</div>
-        <div class="music-option" id="music-option-stop">Stop Music</div>
-        <hr class="music-divider">
-        <div class="music-heading">Songs</div>
         <div id="music-list"></div>
     </div>
 
-    <div id="game-modal" role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
+    <div id="game-modal" role="dialog">
         <div id="game-modal-container">
             <div id="game-modal-header">
-                <h2 id="game-modal-title">Game Title</h2>
-                <div id="game-modal-controls">
-                    <button id="reload-game-btn" type="button" class="control-btn" title="Reload Game">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
-                        <span>Reset</span>
-                    </button>
-                    <button id="open-new-tab-btn" type="button" class="control-btn" title="Open in New Tab">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-                        <span>Tab</span>
-                    </button>
-                    <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloak)">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-                        <span>Mask</span>
-                    </button>
-                    <button id="fullscreen-btn" type="button" class="control-btn" title="Fullscreen Game">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-                        <span>Max</span>
-                    </button>
-                    <button id="close-game-modal-btn" type="button" class="control-btn close-btn" title="Close Player">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
-                        <span>Close</span>
-                    </button>
-                </div>
+                <h2 id="game-modal-title">Game</h2>
+                <button id="close-game-modal-btn" class="theme-action-btn">Close</button>
             </div>
-            <div id="game-iframe-wrapper">
-                <iframe id="game-iframe" src="about:blank" allowfullscreen></iframe>
-            </div>
+            <iframe id="game-iframe" src="about:blank"></iframe>
         </div>
     </div>
-
+    
     <div id="toast-notification">Notification</div>
 
     <audio id="bg-music" loop></audio>
-    <audio id="hover-sound" src="/assets/Sample_0003.wav" preload="auto"></audio>
-    <audio id="click-sound" src="/assets/Sample_0000.wav" preload="auto"></audio>
-    <audio id="prev-page-sound" src="/assets/WSD-SELECT.wav" preload="auto"></audio>
-    <audio id="next-page-sound" src="/assets/WSD-SELECT.wav" preload="auto"></audio>
-    <audio id="theme-click-sound" src="/assets/Sample_0016.wav" preload="auto"></audio>
-    <audio id="search-click-sound" src="/assets/Sample_0016.wav" preload="auto"></audio>
-    
-    <audio id="menu-hover-sound" src="/assets/Sample_0003.wav" preload="auto"></audio>
-    <audio id="game-open-sound" src="/assets/Sample_0000.wav" preload="auto"></audio>
-    <audio id="game-close-sound" src="/assets/Sample_0001.wav" preload="auto"></audio>
+    <audio id="hover-sound" src="/assets/Sample_0003.wav"></audio>
+    <audio id="click-sound" src="/assets/Sample_0000.wav"></audio>
 
     <script>
-      // --- CORE VARIABLES ---
-      const bgMusic = document.getElementById('bg-music');
-      const hoverSound = document.getElementById('hover-sound');
-      const clickSound = document.getElementById('click-sound');
-      const prevPageSound = document.getElementById('prev-page-sound');
-      const nextPageSound = document.getElementById('next-page-sound');
-      const themeClickSound = document.getElementById('theme-click-sound');
-      const searchClickSound = document.getElementById('search-click-sound');
-      
-      const menuHoverSound = document.getElementById('menu-hover-sound');
-      const gameOpenSound = document.getElementById('game-open-sound');
-      const gameCloseSound = document.getElementById('game-close-sound');
-      
-      const gamePagesWrapper = document.getElementById('game-pages-wrapper');
-      const pageIndicatorDots = document.getElementById('page-indicator-dots');
-      const prevPageButton = document.getElementById('prev-page-button');
-      const nextPageButton = document.getElementById('next-page-button');
+      /* --- STATE & DOM --- */
+      const body = document.body;
+      const themeSelector = document.getElementById('input-preset');
       let currentPage = 0;
-
-      // --- IFRAME MODAL LOGIC ---
-      const gameModal = document.getElementById('game-modal');
-      const gameModalTitle = document.getElementById('game-modal-title');
-      const gameIframe = document.getElementById('game-iframe');
-      const closeGameModalBtn = document.getElementById('close-game-modal-btn');
-      let wasMusicPlayingBeforeGame = false;
-      let currentGameUrl = '';
-
-      // Toast Logic
-      const toast = document.getElementById('toast-notification');
-      let toastTimeout;
-      function showToast(message) {
-        toast.textContent = message;
-        toast.classList.add('show');
-        clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2500);
-      }
-
-      // --- MUSIC DATA ---
-      const songs = [
-        { name: 'Wii U Mii Maker', url: '/assets/Wii U OST - Mii Maker (Mii Editor).flac' },
-        { name: 'Droopy likes your face', url: '/assets/Droopy likes your face.flac' },
-        { name: 'Sleepville', url: '/assets/Sleepville - Little Man Legends.mp3' },
-        { name: 'Beneath the Mask', url: '/assets/Beneath the Mask -instrumental version- - Lyn.mp3' },
-        { name: 'Training day', url: '/assets/MTraining Day.mp3' },
-        { name: 'Super Mario Galaxy - File Select', url: '/assets/Super Mario Galaxy - File Select.mp3' },
-        { name: 'Pokemon Black & White 2 OST - Aspertia City', url: '/assets/Pokemon Black & White 2 OST - Aspertia City.mp3' },
-        { name: '3_31 (Persona 3)', url: '/assets/3_31.mp3' },
-        { name: 'Harry Mack - Reporting In', url: '/assets/Harry Mack - Reporting In.mp3' },
-        { name: 'Nintendo DSi - Main Menu Theme', url: '/assets/Nintendo DSi - Main Menu Theme.mp3' },
-      ];
-
-      // --- INITIALIZATION ---
-      window.addEventListener('load', () => {
-        updatePage();
-        populateMusicMenu();
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-        
-        // Init Themes
-        const savedTheme = localStorage.getItem('customTheme');
-        if (savedTheme) {
-            try {
-                const theme = JSON.parse(savedTheme);
-                applyTheme(theme);
-                
-                // Update Inputs
-                document.getElementById('input-bg').value = theme.bg || '#e6e8e7';
-                document.getElementById('input-bar').value = theme.bar || '#c9c5c2';
-                document.getElementById('input-static').value = theme.static || '#555555';
-                document.getElementById('input-shape').value = theme.shape || 'squircle';
-                document.getElementById('input-font').value = theme.font || 'PopHappiness';
-                document.getElementById('input-opacity').value = theme.opacity || 1;
-                
-                // Update New Inputs
-                if(theme.layout) {
-                    document.getElementById('check-show-home').checked = theme.layout.home !== false;
-                    document.getElementById('check-show-search').checked = theme.layout.search !== false;
-                    document.getElementById('check-show-clock').checked = theme.layout.clock !== false;
-                    document.getElementById('check-show-music').checked = theme.layout.music !== false;
-                }
-                document.getElementById('input-btn-hover').value = theme.btnHover || '#40c4ff';
-
-            } catch(e) { console.error("Theme load error", e); }
-        }
-
-        const savedBGM = localStorage.getItem('qbbic-bgm');
-        if (savedBGM && savedBGM !== 'none') {
-             const song = songs.find(s => s.url === savedBGM);
-             playBGM(savedBGM, song ? song.name : "Unknown");
-        }
-      });
       
-
-      // --- PAGE NAVIGATION ---
-      function updatePage() {
-          const offset = -currentPage * 100;
-          gamePagesWrapper.style.transform = `translateX(${offset}%)`;
-          
-          const allGamePages = document.querySelectorAll('.game-buttons');
-          allGamePages.forEach((page, index) => {
-              if (index === currentPage) {
-                  page.style.pointerEvents = 'auto'; 
-              } else {
-                  page.style.pointerEvents = 'none';
-              }
-          });
-
-          pageIndicatorDots.innerHTML = '';
-          for (let i = 0; i < allGamePages.length; i++) {
-              const dot = document.createElement('div');
-              dot.classList.add('page-dot');
-              if (i === currentPage) dot.classList.add('active');
-              dot.addEventListener('click', () => {
-                  currentPage = i;
-                  updatePage();
-                  clickSound.currentTime = 0; clickSound.play().catch(()=>{});
-              });
-              pageIndicatorDots.appendChild(dot);
-          }
-          prevPageButton.classList.toggle('disabled', currentPage === 0);
-          nextPageButton.classList.toggle('disabled', currentPage === allGamePages.length - 1);
-      }
-
-      prevPageButton.addEventListener('click', () => {
-          if (currentPage > 0) {
-              currentPage--;
-              updatePage();
-              prevPageSound.currentTime = 0; prevPageSound.play().catch(()=>{});
-          }
-      });
-
-      nextPageButton.addEventListener('click', () => {
-          const allGamePages = document.querySelectorAll('.game-buttons');
-          if (currentPage < allGamePages.length - 1) {
-              currentPage++;
-              updatePage();
-              nextPageSound.currentTime = 0; nextPageSound.play().catch(()=>{});
-          }
-      });
-
-      // --- GAME CLICK LOGIC ---
-      document.querySelectorAll('.game-button').forEach(btn => {
-          if(btn.classList.contains('placeholder')) return;
-          btn.addEventListener('mouseenter', () => { hoverSound.currentTime = 0; hoverSound.play().catch(()=>{}); });
-          btn.addEventListener('click', (e) => {
-              e.preventDefault();
-              const url = btn.dataset.href;
-              const title = btn.title || "Game";
-              if(url && url !== '#') { openGameModal(url, title); }
-          });
-      });
-
-      function openGameModal(url, title) {
-          gameOpenSound.currentTime = 0; gameOpenSound.play().catch(()=>{});
-          wasMusicPlayingBeforeGame = !bgMusic.paused;
-          bgMusic.pause();
-          currentGameUrl = url;
-          gameModalTitle.textContent = title;
-          gameIframe.src = url;
-          gameIframe.onload = function() { this.contentWindow.focus(); };
-          gameModal.style.display = 'flex';
-          setTimeout(() => gameModal.classList.add('active'), 10);
-          document.body.style.overflow = 'hidden';
-          showToast(`Launched ${title}`);
-      }
-
-      function closeGameModal() {
-          gameCloseSound.currentTime = 0; gameCloseSound.play().catch(()=>{});
-          gameModal.classList.remove('active');
-          setTimeout(() => {
-              gameModal.style.display = 'none';
-              gameIframe.src = 'about:blank';
-              currentGameUrl = '';
-              document.body.style.overflow = '';
-              if (wasMusicPlayingBeforeGame) bgMusic.play().catch(()=>{});
-          }, 300);
-      }
-      closeGameModalBtn.addEventListener('click', closeGameModal);
-
-      // --- MENU BAR SOUNDS ---
-      document.querySelectorAll('.wii-bottom-bar .wii-button').forEach(btn => {
-          btn.addEventListener('mouseenter', () => {
-              menuHoverSound.currentTime = 0;
-              menuHoverSound.play().catch(()=>{});
-          });
-      });
-
-      // --- ADVANCED MODAL BUTTONS ---
-      document.getElementById('reload-game-btn').addEventListener('click', () => {
-          if (gameIframe.src && gameIframe.src !== 'about:blank') {
-              gameIframe.src = gameIframe.src;
-              showToast("Reloading game...");
-              setTimeout(() => { gameIframe.contentWindow.focus(); }, 500);
-          }
-      });
-      document.getElementById('open-new-tab-btn').addEventListener('click', () => {
-          if(currentGameUrl) window.open(currentGameUrl, '_blank');
-      });
-      document.getElementById('open-blank-btn').addEventListener('click', () => {
-          const newWindow = window.open('about:blank', '_blank');
-          if (newWindow) {
-              newWindow.document.write(`<!DOCTYPE html><html lang="en"><head><title>${gameModalTitle.textContent}</title><style>body, html { margin: 0; padding: 0; overflow: hidden; background: #000; }</style></head><body><iframe src="${currentGameUrl}" style="width: 100vw; height: 100vh; border: none;" allowfullscreen></iframe></body></html>`);
-              newWindow.document.close();
-          }
-      });
-      document.getElementById('fullscreen-btn').addEventListener('click', () => {
-          const requestFS = gameIframe.requestFullscreen || gameIframe.mozRequestFullScreen || gameIframe.webkitRequestFullscreen || gameIframe.msRequestFullscreen;
-          if (requestFS) requestFS.call(gameIframe);
-      });
-
-      // --- THEME MAKER LOGIC ---
-      const inputBg = document.getElementById('input-bg');
-      const inputBar = document.getElementById('input-bar');
-      const inputStatic = document.getElementById('input-static');
-      const inputShape = document.getElementById('input-shape');
-      const inputFont = document.getElementById('input-font');
-      const inputOpacity = document.getElementById('input-opacity');
-      const inputBgImage = document.getElementById('input-bg-image');
-      const inputBgUpload = document.getElementById('input-bg-upload');
-      
-      const checkHome = document.getElementById('check-show-home');
-      const checkSearch = document.getElementById('check-show-search');
-      const checkClock = document.getElementById('check-show-clock');
-      const checkMusic = document.getElementById('check-show-music');
-      const inputBtnHover = document.getElementById('input-btn-hover');
-      
-      const btnReset = document.getElementById('reset-theme-btn');
-      const inputPreset = document.getElementById('input-preset');
-
-      // PRESET DATA CONFIGURATION
-      const themePresets = {
-          wii: {
-              bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555',
-              shape: 'squircle', font: 'PopHappiness', opacity: 1, 
-              bgImage: '', btnHover: '#40c4ff',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          dsi: {
-              bg: '#ffffff', bar: '#f2f2f2', static: '#333333',
-              shape: 'square', font: 'sans-serif', opacity: 1, 
-              bgImage: '', btnHover: '#5DD1E8', // DSi Cyan Highlight
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          ps2: {
-              bg: '#080810', bar: '#101020', static: '#6070aa',
-              shape: 'rounded-square', font: 'sans-serif', opacity: 0.9, 
-              bgImage: '', btnHover: '#ff0055', // PS2 Red Highlight
-              layout: { home: true, search: true, clock: true, music: true }
-          }
+      /* --- THEME LOGIC --- */
+      const themes = {
+         wii: { bg: '#e6e8e7', bar: '#c9c5c2' },
+         dsi: { bg: '#ffffff', bar: '#e8e8e8' },
+         ps2: { bg: '#000000', bar: 'transparent' }
       };
 
-      function saveThemeToStorage(themeObj) {
-          try { localStorage.setItem('customTheme', JSON.stringify(themeObj)); } catch(e) {}
+      function applyTheme(themeName) {
+          body.setAttribute('data-theme', themeName);
+          const colors = themes[themeName];
+          if(colors) {
+             document.documentElement.style.setProperty('--bg-color', colors.bg);
+             document.documentElement.style.setProperty('--bar-color', colors.bar);
+          }
+          localStorage.setItem('consoleTheme', themeName);
       }
 
-      function applyTheme(themeObj) {
-        const { bg, bar, static, shape, font, opacity, bgImage, layout, btnHover } = themeObj;
-        
-        document.documentElement.style.setProperty('--bg-color', bg);
-        document.documentElement.style.setProperty('--bar-color', bar);
-        document.documentElement.style.setProperty('--static-color', static);
-        document.documentElement.style.setProperty('--card-opacity', opacity || 1);
-        document.documentElement.style.setProperty('--btn-hover-color', btnHover || '#40c4ff');
-        
-        const fontVal = font === 'monospace' ? "'Courier New', monospace" : (font === 'sans-serif' ? "Arial, sans-serif" : "'PopHappiness', sans-serif");
-        document.documentElement.style.setProperty('--main-font', fontVal);
-        
-        let btnRad = '12px'; let cardRad = '25px'; 
-        if(shape === 'square') { btnRad = '0px'; cardRad = '0px'; }
-        else if(shape === 'rounded-square') { btnRad = '8px'; cardRad = '8px'; }
-        else if(shape === 'squircle') { btnRad = '18px'; cardRad = '35px'; } 
-        else if(shape === 'round') { btnRad = '50%'; cardRad = '25px'; }
-        
-        document.documentElement.style.setProperty('--btn-radius', btnRad);
-        document.documentElement.style.setProperty('--card-radius', cardRad);
+      themeSelector.addEventListener('change', (e) => applyTheme(e.target.value));
 
-        // HANDLE BACKGROUND CLASSES FOR AUTHENTICITY
-        document.body.className = ''; // clear previous classes
-        const currentPreset = inputPreset.value;
+      /* --- INITIALIZATION --- */
+      window.onload = () => {
+          const saved = localStorage.getItem('consoleTheme') || 'wii';
+          themeSelector.value = saved;
+          applyTheme(saved);
+          updatePage();
+          initMusic();
+      };
 
-        if(bgImage && bgImage.trim() !== "") {
-            document.body.style.backgroundImage = `url('${bgImage}')`;
-            document.body.classList.add('bg-is-image');
-        } else {
-            document.body.classList.remove('bg-is-image');
-            
-            // Apply CSS Pattern based on preset selection
-            if(currentPreset === 'dsi') {
-                 document.body.classList.add('bg-dsi');
-            } else if (currentPreset === 'ps2') {
-                 document.body.classList.add('bg-ps2');
-            } else if (currentPreset === 'wii') {
-                 document.body.classList.add('bg-wii');
-            } else {
-                 // Fallback for Custom user colors
-                 const encodedColor = encodeURIComponent(static);
-                 const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
-                 document.body.style.backgroundImage = svg;
-                 document.body.style.backgroundSize = '10px 10px';
-            }
-        }
-        
-        if(layout) {
-            document.getElementById('wii-menu-button').style.display = layout.home === false ? 'none' : 'flex';
-            document.getElementById('search-button').style.display = layout.search === false ? 'none' : 'flex';
-            document.getElementById('wii-date-time-display').style.display = layout.clock === false ? 'none' : 'block';
-            document.getElementById('music-menu-toggle').style.display = layout.music === false ? 'none' : 'flex';
-        }
-        saveThemeToStorage(themeObj);
-      }
-
-      function getCurrentThemeObj() {
-          let currentBgImage = inputBgImage.value;
-          const currentBodyBg = document.body.style.backgroundImage;
-          if(currentBodyBg.includes('data:image') && !currentBodyBg.includes('svg')) {
-              currentBgImage = currentBodyBg.slice(5, -2);
-          }
-          return {
-              bg: inputBg.value,
-              bar: inputBar.value,
-              static: inputStatic.value,
-              shape: inputShape.value,
-              font: inputFont.value,
-              opacity: inputOpacity.value,
-              bgImage: currentBgImage,
-              btnHover: inputBtnHover.value,
-              layout: {
-                  home: checkHome.checked,
-                  search: checkSearch.checked,
-                  clock: checkClock.checked,
-                  music: checkMusic.checked
-              }
-          };
-      }
-
-      function updateInputsFromTheme(theme) {
-          inputBg.value = theme.bg;
-          inputBar.value = theme.bar;
-          inputStatic.value = theme.static;
-          inputShape.value = theme.shape;
-          inputFont.value = theme.font;
-          inputOpacity.value = theme.opacity;
-          inputBtnHover.value = theme.btnHover;
-          inputBgImage.value = theme.bgImage || '';
-          if (theme.layout) {
-              checkHome.checked = theme.layout.home !== false;
-              checkSearch.checked = theme.layout.search !== false;
-              checkClock.checked = theme.layout.clock !== false;
-              checkMusic.checked = theme.layout.music !== false;
-          }
-      }
-
-      // PRESET LISTENER
-      inputPreset.addEventListener('change', (e) => {
-          const val = e.target.value;
-          if (val === 'custom') return;
-          const selectedTheme = themePresets[val];
-          if (selectedTheme) {
-              updateInputsFromTheme(selectedTheme); // Sync UI sliders to preset
-              applyTheme(selectedTheme);
-              clickSound.currentTime = 0; clickSound.play().catch(()=>{});
-              showToast(`Loaded ${val.toUpperCase()} Theme`);
-          }
-      });
-
-      // SWITCH TO CUSTOM ON EDIT
-      [inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity, checkHome, checkSearch, checkClock, checkMusic, inputBtnHover].forEach(input => {
-        input.addEventListener('change', () => { 
-            inputPreset.value = 'custom'; // Force dropdown to 'Custom'
-            applyTheme(getCurrentThemeObj()); 
-        });
-        if(input.type === 'color' || input.type === 'range') input.addEventListener('input', () => {
-             inputPreset.value = 'custom';
-             applyTheme(getCurrentThemeObj());
-        });
-      });
+      /* --- PAGING LOGIC --- */
+      const wrapper = document.getElementById('game-pages-wrapper');
+      const dotsContainer = document.getElementById('page-indicator-dots');
       
-      inputBgImage.addEventListener('change', () => { 
-          inputBgUpload.value = ''; 
-          inputPreset.value = 'custom';
-          applyTheme(getCurrentThemeObj()); 
-      });
-      inputBgUpload.addEventListener('change', (e) => {
-          const file = e.target.files[0];
-          if (file) {
-              const reader = new FileReader();
-              reader.onload = (event) => {
-                  const dataUrl = event.target.result;
-                  const currentTheme = getCurrentThemeObj();
-                  currentTheme.bgImage = dataUrl;
-                  inputBgImage.value = '';
-                  inputPreset.value = 'custom';
-                  applyTheme(currentTheme);
-              };
-              reader.readAsDataURL(file);
-          }
-      });
-
-      // Reset
-      btnReset.addEventListener('click', () => {
-          const defaults = themePresets.wii;
-          updateInputsFromTheme(defaults);
-          inputPreset.value = 'wii';
-          applyTheme(defaults);
-          clickSound.currentTime = 0; clickSound.play().catch(()=>{});
-          showToast("Theme Reset");
-      });
-      
-      // Save/Load
-      document.getElementById('save-theme-btn').addEventListener('click', () => {
-          const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getCurrentThemeObj()));
-          const anchor = document.createElement('a');
-          anchor.href = dataStr; anchor.download = "qbbic_theme.json";
-          anchor.click();
-      });
-      document.getElementById('load-theme-btn').addEventListener('click', () => document.getElementById('input-load-theme').click());
-      document.getElementById('input-load-theme').addEventListener('change', (e) => {
-          const file = e.target.files[0];
-          if(!file) return;
-          const reader = new FileReader();
-          reader.onload = (event) => {
-              try {
-                  const theme = JSON.parse(event.target.result);
-                  applyTheme(theme);
-                  inputBg.value = theme.bg; inputBar.value = theme.bar;
-                  inputStatic.value = theme.static; inputShape.value = theme.shape;
-                  inputPreset.value = 'custom';
-                  showToast("Theme Loaded!");
-              } catch(e) { showToast("Error Loading File"); }
-          };
-          reader.readAsText(file);
-      });
-
-      // Toggle Menus
-      document.getElementById('theme-menu-toggle').addEventListener('click', () => {
-          const menu = document.getElementById('theme-menu');
-          menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-          themeClickSound.currentTime = 0; themeClickSound.play().catch(()=>{});
-      });
-      
-      // Search Logic
-      document.getElementById('search-button').addEventListener('click', () => {
-          const container = document.getElementById('search-container');
-          container.style.display = container.style.display === 'flex' ? 'none' : 'flex';
-          const input = document.getElementById('search-input');
-          input.focus();
-          searchClickSound.currentTime = 0; searchClickSound.play().catch(()=>{});
-      });
-      document.getElementById('search-submit-button').addEventListener('click', performSearch);
-      
-      document.getElementById('search-input').addEventListener('input', (e) => {
-          const query = e.target.value.toLowerCase();
-          const buttons = document.querySelectorAll('.game-button');
-          buttons.forEach(btn => {
-              if(btn.classList.contains('placeholder')) return;
-              const title = (btn.title || "").toLowerCase();
-              if(title.includes(query)) {
-                  btn.style.opacity = '1'; btn.style.filter = 'grayscale(0%)';
-              } else {
-                  btn.style.opacity = '0.1'; btn.style.filter = 'grayscale(100%)';
-              }
+      function updatePage() {
+          wrapper.style.transform = `translateX(${-currentPage * 100}%)`;
+          const pages = document.querySelectorAll('.game-buttons');
+          
+          dotsContainer.innerHTML = '';
+          pages.forEach((_, i) => {
+              const dot = document.createElement('div');
+              dot.className = `page-dot ${i === currentPage ? 'active' : ''}`;
+              dot.onclick = () => { currentPage = i; updatePage(); playSound('click'); };
+              dotsContainer.appendChild(dot);
           });
-      });
+      }
 
-      let lastFoundIndex = -1;
+      document.getElementById('prev-page-button').onclick = () => { if(currentPage > 0) { currentPage--; updatePage(); playSound('click'); }};
+      document.getElementById('next-page-button').onclick = () => { 
+          if(currentPage < document.querySelectorAll('.game-buttons').length - 1) { currentPage++; updatePage(); playSound('click'); }
+      };
+
+      /* --- GAME LAUNCHER --- */
+      const modal = document.getElementById('game-modal');
+      const iframe = document.getElementById('game-iframe');
       
-      function performSearch() {
-          const query = document.getElementById('search-input').value.toLowerCase();
-          if(!query) return;
-
-          const buttons = Array.from(document.querySelectorAll('.game-button')).filter(b => !b.classList.contains('placeholder'));
-          let foundButton = null;
-
-          // Find next match
-          for(let i = lastFoundIndex + 1; i < buttons.length; i++) {
-              if(buttons[i].title && buttons[i].title.toLowerCase().includes(query)) {
-                  foundButton = buttons[i]; lastFoundIndex = i; break;
+      document.querySelectorAll('.game-button').forEach(btn => {
+          if(btn.classList.contains('placeholder')) return;
+          btn.onmouseenter = () => playSound('hover');
+          btn.onclick = (e) => {
+              e.preventDefault();
+              const url = btn.dataset.href;
+              if(url) {
+                  iframe.src = url;
+                  document.getElementById('game-modal-title').innerText = btn.title;
+                  modal.classList.add('active');
+                  document.getElementById('bg-music').pause();
               }
-          }
-          if(!foundButton) {
-              for(let i = 0; i <= lastFoundIndex; i++) {
-                 if(buttons[i].title && buttons[i].title.toLowerCase().includes(query)) {
-                      foundButton = buttons[i]; lastFoundIndex = i; break;
-                  }
-              }
-          }
-
-          if(foundButton) {
-              const page = foundButton.closest('.game-buttons');
-              const pages = document.querySelectorAll('.game-buttons');
-              currentPage = Array.from(pages).indexOf(page);
-              updatePage();
-              foundButton.style.transition = "transform 0.5s";
-              foundButton.style.transform = "scale(1.4)";
-              foundButton.style.zIndex = "100";
-              foundButton.style.boxShadow = "0 0 30px #40c4ff";
-              setTimeout(() => {
-                  foundButton.style.transform = ""; foundButton.style.zIndex = ""; foundButton.style.boxShadow = "";
-              }, 1500);
-          } else { showToast("No matches found!"); }
-      }
-
-      document.addEventListener('click', (e) => {
-          if (!e.target.closest('#search-container') && !e.target.closest('#search-button')) {
-             if(document.getElementById('search-container').style.display === 'flex') {
-                const buttons = document.querySelectorAll('.game-button');
-                buttons.forEach(btn => {
-                    if(!btn.classList.contains('placeholder')) {
-                        btn.style.opacity = ''; btn.style.filter = '';
-                    }
-                });
-             }
-          }
+          };
       });
+      
+      document.getElementById('close-game-modal-btn').onclick = () => {
+          modal.classList.remove('active');
+          iframe.src = 'about:blank';
+          document.getElementById('bg-music').play().catch(()=>{});
+      };
 
-      // --- MUSIC LOGIC ---
-      const volumeSlider = document.getElementById('volume-slider');
-      const nowPlayingText = document.getElementById('now-playing');
-
-      volumeSlider.addEventListener('input', (e) => {
-          bgMusic.volume = e.target.value;
-      });
-
-      function playBGM(url, name) {
-          bgMusic.src = url; 
-          bgMusic.volume = volumeSlider.value;
-          bgMusic.play().catch(e => console.log("Autoplay blocked until interaction"));
-          localStorage.setItem('qbbic-bgm', url);
-          nowPlayingText.textContent = name || "Unknown Track";
+      /* --- UTILS --- */
+      function playSound(type) {
+          const id = type === 'hover' ? 'hover-sound' : 'click-sound';
+          const audio = document.getElementById(id);
+          if(audio) { audio.currentTime = 0; audio.play().catch(()=>{}); }
       }
-
-      function populateMusicMenu() {
+      
+      function initMusic() {
+          const songs = [
+            { name: 'Wii Mii Channel', url: '/assets/Wii U OST - Mii Maker (Mii Editor).flac' },
+            { name: 'DSi Shop', url: '/assets/Nintendo DSi - Main Menu Theme.mp3' }
+          ];
           const list = document.getElementById('music-list');
-          songs.forEach((song, idx) => {
+          songs.forEach(s => {
               const div = document.createElement('div');
+              div.innerText = s.name;
               div.className = 'music-option';
-              div.textContent = song.name;
+              div.style.padding = '5px'; div.style.cursor = 'pointer';
               div.onclick = () => {
-                  playBGM(song.url, song.name);
-                  showToast("Playing: " + song.name);
+                  const audio = document.getElementById('bg-music');
+                  audio.src = s.url; audio.play();
+                  document.getElementById('now-playing').innerText = s.name;
               };
               list.appendChild(div);
           });
       }
-      document.getElementById('music-menu-toggle').addEventListener('click', () => {
-          const menu = document.getElementById('music-menu');
-          menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-          themeClickSound.currentTime = 0; themeClickSound.play().catch(()=>{});
-      });
-      document.getElementById('music-option-stop').addEventListener('click', () => {
-          bgMusic.pause(); localStorage.setItem('qbbic-bgm', 'none');
-          nowPlayingText.textContent = "Stopped";
-          document.getElementById('music-menu').style.display = 'none'; showToast("Music Stopped");
-      });
-      document.getElementById('music-option-random').addEventListener('click', () => {
-          const randomSong = songs[Math.floor(Math.random() * songs.length)];
-          playBGM(randomSong.url, randomSong.name); 
-          document.getElementById('music-menu').style.display = 'none';
-          showToast("Playing Random: " + randomSong.name);
-      });
 
-      // --- TIME LOGIC ---
-      function updateDateTime() {
-        const now = new Date();
-        document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
-        document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', {weekday:'short', month:'numeric', day:'numeric'});
-      }
+      // Toggle Menus
+      document.getElementById('theme-menu-toggle').onclick = () => toggleMenu('theme-menu');
+      document.getElementById('music-menu-toggle').onclick = () => toggleMenu('music-menu');
       
-      document.addEventListener('click', (e) => {
-          if (!e.target.closest('#theme-menu') && !e.target.closest('#theme-menu-toggle') && !e.target.closest('input') && !e.target.closest('select')) {
-              document.getElementById('theme-menu').style.display = 'none';
-          }
-          if (!e.target.closest('#music-menu') && !e.target.closest('#music-menu-toggle')) {
-              document.getElementById('music-menu').style.display = 'none';
-          }
-          if (!e.target.closest('#search-container') && !e.target.closest('#search-button')) {
-              document.getElementById('search-container').style.display = 'none';
-          }
-      });
+      function toggleMenu(id) {
+          const el = document.getElementById(id);
+          el.style.display = el.style.display === 'block' ? 'none' : 'block';
+      }
 
-      // --- SECRET HOME BUTTON LOGIC ---
-      document.getElementById('wii-menu-button').addEventListener('click', (e) => {
-          e.preventDefault();
-          const clickSnd = document.getElementById('click-sound');
-          if(clickSnd) { clickSnd.currentTime = 0; clickSnd.play().catch(()=>{}); }
-          if (Math.random() < 0.1) {
-              window.location.href = 'path.html';
-          } else {
-              window.location.href = 'index.html';
-          }
-      });
+      // Clock
+      setInterval(() => {
+          const now = new Date();
+          document.getElementById('current-time').innerText = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+          document.getElementById('current-date').innerText = now.toLocaleDateString([], {weekday:'short', month:'numeric', day:'numeric'});
+      }, 1000);
     </script>
   </body>
 </html>
