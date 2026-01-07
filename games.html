@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Qbbic Ultimate - Multi-Console Layout</title>
+    <title>Qbbic Ultimate - Custom UI</title>
     <link rel="icon" href="/assets/fanny.gif" type="image/gif" />
     <link rel="stylesheet" href="https://qottlebup.nekoweb.org/banner.css" />
     <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
@@ -23,6 +23,8 @@
         --btn-radius: 12px; 
         --card-radius: 25px; 
         --card-opacity: 1;
+        --card-clip: none; /* For advanced shapes */
+        
         --box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
         --transform-hover: scale(1.05);
         
@@ -47,6 +49,11 @@
         100% { transform: translate(5%, 0); }
       }
 
+      @keyframes scanline-anim {
+        0% { background-position: 0 0; }
+        100% { background-position: 0 100%; }
+      }
+
       /* Base Body */
       body {
         margin: 0;
@@ -65,32 +72,29 @@
         transition: background-color 0.3s ease, color 0.3s ease, background-image 0.3s ease;
       }
 
-      /* --- CONSOLE SPECIFIC BACKGROUNDS --- */
-      
-      /* Default Wii: 10x10 Grid */
+      /* --- CONSOLE BACKGROUND PATTERNS --- */
       body.bg-wii {
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
         background-size: 10px 10px;
         background-repeat: repeat;
       }
-
-      /* DSi: Dotted/Checkered Pattern */
       body.bg-dsi {
         background-color: #ffffff;
         background-image: radial-gradient(#d0d0d0 1px, transparent 1px), radial-gradient(#d0d0d0 1px, transparent 1px);
         background-size: 20px 20px;
         background-position: 0 0, 10px 10px;
       }
-
-      /* PS2: Deep Abyss Gradient with "Fog" */
       body.bg-ps2 {
         background-color: #000;
         background: linear-gradient(180deg, #000000 0%, #050510 40%, #001133 100%);
         background-size: cover;
         background-attachment: fixed;
       }
-      
-      /* Image Override */
+      body.bg-blueprint {
+        background-color: #0a2d5c;
+        background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
       body.bg-is-image {
           background-size: cover !important;
           background-position: center !important;
@@ -117,7 +121,7 @@
       }
       .wii-bottom-bar-content { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 900px; }
 
-      /* --- 3DS STYLE BUTTONS --- */
+      /* --- BUTTONS --- */
       .wii-button {
         background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
         border: 2px solid #aaaaaa; 
@@ -128,16 +132,12 @@
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         position: relative; overflow: hidden;
       }
-      
       .wii-button:hover { 
-          transform: translateY(-2px); 
-          border-color: var(--btn-hover-color);
+          transform: translateY(-2px); border-color: var(--btn-hover-color);
           box-shadow: 0 0 8px var(--btn-hover-color), inset 0 0 5px #fff; 
           cursor: url('/assets/Link-Select.png'), pointer; 
       }
-      
       .wii-button:active { transform: scale(0.95); background: #cccccc; }
-      
       .wii-button-svg { width: 60%; height: 60%; transition: filter 0.3s ease, fill 0.3s ease; fill: #333; }
       .wii-button:hover .wii-button-svg { fill: #000; }
       
@@ -152,11 +152,40 @@
       }
       #game-pages-wrapper { display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); width: 100%; }
       
-      /* --- WII GRID LAYOUT (4x3) --- */
+      /* --- LAYOUT MODES --- */
+      
+      /* Standard Grid (4x3) */
       .game-buttons {
         display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); 
         gap: 15px; width: 100%; height: 500px; justify-items: center; align-items: center;
         padding: 0 40px; box-sizing: border-box; flex-shrink: 0;
+      }
+
+      /* List View (2 cols, 6 rows - horizontal bars) */
+      .game-buttons.layout-list {
+          grid-template-columns: repeat(2, 1fr);
+          grid-template-rows: repeat(6, 1fr);
+          gap: 10px;
+      }
+      .game-buttons.layout-list .game-button {
+          width: 100%; height: 65px;
+          flex-direction: row; justify-content: flex-start;
+          padding-left: 80px; box-sizing: border-box;
+          background-position: left center; background-size: 80px auto;
+      }
+      .game-buttons.layout-list .game-button-text {
+          display: block; position: static; background: none;
+          width: auto; padding: 0 10px; text-align: left;
+          font-size: 1.1rem; border-radius: 0; color: inherit;
+          text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+      }
+      .game-buttons.layout-list .game-button:hover .game-button-text {
+          color: var(--btn-hover-color);
+      }
+
+      /* Dense Grid (Smaller icons) */
+      .game-buttons.layout-dense .game-button {
+          width: 180px; height: 110px;
       }
 
       /* --- GAME CHANNEL CARD --- */
@@ -164,6 +193,7 @@
         width: 220px; height: 130px;
         background-color: #ffffff;
         border-radius: var(--card-radius); 
+        clip-path: var(--card-clip); /* For Hexagons etc */
         opacity: var(--card-opacity);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         text-decoration: none; color: black; font-weight: bold; text-align: center;
@@ -181,18 +211,42 @@
         border-radius: calc(var(--card-radius) - 4px); pointer-events: none; z-index: 2;
       }
 
-      /* UPDATED Static Effect - Works on Dark & Light */
+      /* --- STATIC NOISE VARIANTS --- */
       .game-button::before {
-        content: ""; position: absolute; top: -50%; left: -50%; right: -50%; bottom: -50%;
-        width: 200%; height: 200%;
-        background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="1"/></svg>');
-        background-repeat: repeat; 
-        opacity: 0.15; 
-        pointer-events: none;
-        animation: noise-anim 0.5s steps(5) infinite; 
-        z-index: 1; 
-        mix-blend-mode: overlay; /* Changed from multiply to overlay for dark mode support */
+        content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        pointer-events: none; z-index: 1; mix-blend-mode: overlay; opacity: 0.15;
       }
+
+      /* Default Noise */
+      .noise-default .game-button::before {
+        top: -50%; left: -50%; width: 200%; height: 200%;
+        background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="1"/></svg>');
+        animation: noise-anim 0.5s steps(5) infinite;
+      }
+
+      /* Scanlines (CRT) */
+      .noise-scanlines .game-button::before {
+        background: repeating-linear-gradient(
+          to bottom,
+          transparent,
+          transparent 2px,
+          rgba(0, 0, 0, 0.5) 2px,
+          rgba(0, 0, 0, 0.5) 4px
+        );
+        background-size: 100% 100%;
+        animation: none; opacity: 0.3;
+      }
+
+      /* Dots (Gameboy) */
+      .noise-dots .game-button::before {
+        background-image: radial-gradient(rgba(0,0,0,0.4) 1px, transparent 1px);
+        background-size: 4px 4px;
+        opacity: 0.4; animation: none;
+      }
+
+      /* None */
+      .noise-none .game-button::before { display: none; }
+
 
       .game-button:hover { 
           transform: scale(1.02);
@@ -302,7 +356,7 @@
       #toast-notification.show { transform: translateX(-50%) translateY(0); }
     </style>
   </head>
-  <body class="bg-wii">
+  <body class="bg-wii noise-default">
 
     <div class="wii-top-bar"></div>
 
@@ -522,6 +576,12 @@
                     <option value="dsi">Nintendo DSi</option>
                     <option value="ps2">PS2 Browser</option>
                 </optgroup>
+                <optgroup label="New Themes">
+                    <option value="new-blueprint">Blueprint</option>
+                    <option value="new-gameboy">Dot Matrix</option>
+                    <option value="new-crt">CRT Monitor</option>
+                    <option value="new-cyber">Cyberpunk</option>
+                </optgroup>
                 <optgroup label="Pride Collection">
                     <option value="pride-rainbow">Pride (Rainbow)</option>
                     <option value="pride-trans">Trans Flag</option>
@@ -548,6 +608,29 @@
             </select>
         </div>
         
+        <div class="theme-heading">Display Options</div>
+        
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">Layout Mode</span>
+            <select id="input-layout">
+                <option value="grid">Grid (Standard)</option>
+                <option value="list">List View</option>
+                <option value="dense">Dense Grid</option>
+            </select>
+        </div>
+
+        <div class="theme-maker-row">
+            <span class="theme-maker-label">Static / Noise</span>
+            <select id="input-noise-type">
+                <option value="default">Default Noise</option>
+                <option value="scanlines">Scanlines (CRT)</option>
+                <option value="dots">Dots (Retro)</option>
+                <option value="none">None / Clean</option>
+            </select>
+        </div>
+
+        <div class="theme-heading">Colors & Shapes</div>
+        
         <div class="theme-maker-row">
             <span class="theme-maker-label">Background</span>
             <input type="color" id="input-bg" value="#e6e8e7">
@@ -557,17 +640,19 @@
             <input type="color" id="input-bar" value="#c9c5c2">
         </div>
         <div class="theme-maker-row">
-            <span class="theme-maker-label">Static / Text</span>
+            <span class="theme-maker-label">Text Color</span>
             <input type="color" id="input-static" value="#555555">
         </div>
 
         <div class="theme-maker-row">
-            <span class="theme-maker-label">Shape</span>
+            <span class="theme-maker-label">Corner Shape</span>
             <select id="input-shape">
                 <option value="squircle">Squircle</option>
                 <option value="round">Round</option>
                 <option value="rounded-square">Rounded</option>
                 <option value="square">Square</option>
+                <option value="hexagon">Hexagon</option>
+                <option value="leaf">Leaf</option>
             </select>
         </div>
         
@@ -585,7 +670,7 @@
             <input type="range" id="input-opacity" min="0.2" max="1" step="0.1" value="1" style="width:100px;">
         </div>
         
-        <div class="theme-heading">Menu Layout</div>
+        <div class="theme-heading">Menu Elements</div>
         
         <div class="theme-maker-row">
             <span class="theme-maker-label">Show Home</span>
@@ -651,7 +736,7 @@
                         <span>Tab</span>
                     </button>
                     <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloak)">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
                         <span>Mask</span>
                     </button>
                     <button id="fullscreen-btn" type="button" class="control-btn" title="Fullscreen Game">
@@ -757,6 +842,8 @@
                 document.getElementById('input-shape').value = theme.shape || 'squircle';
                 document.getElementById('input-font').value = theme.font || 'PopHappiness';
                 document.getElementById('input-opacity').value = theme.opacity || 1;
+                document.getElementById('input-layout').value = theme.displayMode || 'grid';
+                document.getElementById('input-noise-type').value = theme.noiseType || 'default';
                 
                 // Update New Inputs
                 if(theme.layout) {
@@ -911,6 +998,9 @@
       const checkMusic = document.getElementById('check-show-music');
       const inputBtnHover = document.getElementById('input-btn-hover');
       
+      const inputLayout = document.getElementById('input-layout');
+      const inputNoise = document.getElementById('input-noise-type');
+      
       const btnReset = document.getElementById('reset-theme-btn');
       const inputPreset = document.getElementById('input-preset');
 
@@ -920,19 +1010,45 @@
           wii: {
               bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555',
               shape: 'squircle', font: 'PopHappiness', opacity: 1, 
-              bgImage: '', btnHover: '#40c4ff',
+              bgImage: '', btnHover: '#40c4ff', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
           dsi: {
               bg: '#ffffff', bar: '#f2f2f2', static: '#333333',
               shape: 'square', font: 'sans-serif', opacity: 1, 
-              bgImage: '', btnHover: '#5DD1E8', 
+              bgImage: '', btnHover: '#5DD1E8', displayMode: 'grid', noiseType: 'dots',
               layout: { home: true, search: true, clock: true, music: true }
           },
           ps2: {
               bg: '#080810', bar: '#101020', static: '#6070aa',
               shape: 'rounded-square', font: 'sans-serif', opacity: 0.9, 
-              bgImage: '', btnHover: '#ff0055',
+              bgImage: '', btnHover: '#ff0055', displayMode: 'grid', noiseType: 'default',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          
+          // --- NEW THEMES ---
+          'new-blueprint': {
+              bg: '#0a2d5c', bar: '#0d3b7a', static: '#ffffff',
+              shape: 'square', font: 'monospace', opacity: 1,
+              bgImage: '', btnHover: '#3399ff', displayMode: 'grid', noiseType: 'scanlines',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          'new-gameboy': {
+              bg: '#8b9c0f', bar: '#306230', static: '#0f380f',
+              shape: 'square', font: 'monospace', opacity: 1,
+              bgImage: '', btnHover: '#0f380f', displayMode: 'dense', noiseType: 'dots',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          'new-crt': {
+              bg: '#111', bar: '#222', static: '#0f0',
+              shape: 'rounded-square', font: 'monospace', opacity: 1,
+              bgImage: '', btnHover: '#0f0', displayMode: 'list', noiseType: 'scanlines',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          'new-cyber': {
+              bg: '#0b001a', bar: '#290038', static: '#00fff2',
+              shape: 'hexagon', font: 'sans-serif', opacity: 0.8,
+              bgImage: '', btnHover: '#ff00aa', displayMode: 'dense', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
           
@@ -940,61 +1056,61 @@
           'pride-rainbow': {
               bg: '#f0f0f0', bar: '#ffadad', static: '#ff6b6b', // Soft Red Bar / Vibrant Static
               shape: 'round', font: 'PopHappiness', opacity: 1,
-              bgImage: '', btnHover: '#ffd6a5', // Orange/Yellow Hover
+              bgImage: '', btnHover: '#ffd6a5', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'pride-trans': {
               bg: '#f5fbff', bar: '#F5A9B8', static: '#5BCEFA', // Blue Text
               shape: 'squircle', font: 'sans-serif', opacity: 1,
-              bgImage: '', btnHover: '#ffffff', 
+              bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'pride-bi': {
               bg: '#f3e6fa', bar: '#D00070', static: '#0038A8', // Magenta Bar / Blue Text
               shape: 'rounded-square', font: 'sans-serif', opacity: 1,
-              bgImage: '', btnHover: '#9B4F96',
+              bgImage: '', btnHover: '#9B4F96', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'pride-pan': {
               bg: '#fffacd', bar: '#ff218c', static: '#00b8ff', // Yellow BG / Pink Bar / Blue Text
               shape: 'round', font: 'PopHappiness', opacity: 1,
-              bgImage: '', btnHover: '#ffd700',
+              bgImage: '', btnHover: '#ffd700', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'pride-ace': {
               bg: '#1a1a1a', bar: '#800080', static: '#a3a3a3', // Dark Mode: Purple Bar / Grey Text
               shape: 'square', font: 'monospace', opacity: 0.8,
-              bgImage: '', btnHover: '#ffffff',
+              bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'pride-enby': {
               bg: '#fffbea', bar: '#9c59d1', static: '#2c2c2c', // Yellow-ish BG / Purple Bar
               shape: 'squircle', font: 'sans-serif', opacity: 1,
-              bgImage: '', btnHover: '#fc4b4b', // Black/Red accents
+              bgImage: '', btnHover: '#fc4b4b', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'pride-lesbian': {
               bg: '#fff0f0', bar: '#d53d5e', static: '#a30262', // Pink/Orange hues
               shape: 'rounded-square', font: 'PopHappiness', opacity: 1,
-              bgImage: '', btnHover: '#ff9a56',
+              bgImage: '', btnHover: '#ff9a56', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'pride-genderqueer': {
               bg: '#f9f9f9', bar: '#b57edc', static: '#4a8123', // Light BG / Lavender Bar / Green Text
               shape: 'round', font: 'sans-serif', opacity: 1,
-              bgImage: '', btnHover: '#ffffff',
+              bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'pride-intersex': {
               bg: '#ffdb00', bar: '#7902aa', static: '#4a006a', // Yellow BG / Purple Circle/Bar
               shape: 'round', font: 'PopHappiness', opacity: 1,
-              bgImage: '', btnHover: '#ffffff',
+              bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'pride-aro': {
               bg: '#f0fff0', bar: '#3da542', static: '#000000', // Light Green BG / Dark Green Bar
               shape: 'square', font: 'monospace', opacity: 1,
-              bgImage: '', btnHover: '#a9a9a9',
+              bgImage: '', btnHover: '#a9a9a9', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
 
@@ -1002,19 +1118,19 @@
           'retro-cube': {
               bg: '#2e2c7b', bar: '#666666', static: '#ff8c00', // Indigo BG / Grey Bar / Orange Text
               shape: 'rounded-square', font: 'sans-serif', opacity: 0.9,
-              bgImage: '', btnHover: '#ff4040', // Red selection
+              bgImage: '', btnHover: '#ff4040', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'retro-xbox': {
               bg: '#f2f2f2', bar: '#9bc84b', static: '#333333', // White BG / Green Bar
               shape: 'round', font: 'sans-serif', opacity: 1,
-              bgImage: '', btnHover: '#107c10', // Darker Green
+              bgImage: '', btnHover: '#107c10', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'retro-switch': {
               bg: '#2d2d2d', bar: '#e60012', static: '#00c3e3', // Dark BG / Red Bar / Cyan Text
               shape: 'square', font: 'sans-serif', opacity: 1,
-              bgImage: '', btnHover: '#ffffff',
+              bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
 
@@ -1022,25 +1138,25 @@
           'aes-vapor': {
               bg: '#ff71ce', bar: '#01cdfe', static: '#05ffa1', // Pink BG / Cyan Bar / Green Text
               shape: 'square', font: 'monospace', opacity: 0.9,
-              bgImage: '', btnHover: '#b967ff', 
+              bgImage: '', btnHover: '#b967ff', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'aes-terminal': {
               bg: '#000000', bar: '#003300', static: '#00ff00', // Matrix Green
               shape: 'square', font: 'monospace', opacity: 0.8,
-              bgImage: '', btnHover: '#008800',
+              bgImage: '', btnHover: '#008800', displayMode: 'list', noiseType: 'scanlines',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'aes-cherry': {
               bg: '#ffeff5', bar: '#ffb7b2', static: '#ff6961', // Soft Pinks
               shape: 'round', font: 'PopHappiness', opacity: 1,
-              bgImage: '', btnHover: '#ffdac1',
+              bgImage: '', btnHover: '#ffdac1', displayMode: 'grid', noiseType: 'dots',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'aes-midnight': {
               bg: '#0f0f23', bar: '#1a1a3a', static: '#a6a6ff', // Deep Blue
               shape: 'rounded-square', font: 'sans-serif', opacity: 0.8,
-              bgImage: '', btnHover: '#5353ac',
+              bgImage: '', btnHover: '#5353ac', displayMode: 'dense', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           }
       };
@@ -1050,7 +1166,7 @@
       }
 
       function applyTheme(themeObj) {
-        const { bg, bar, static, shape, font, opacity, bgImage, layout, btnHover } = themeObj;
+        const { bg, bar, static, shape, font, opacity, bgImage, layout, btnHover, displayMode, noiseType } = themeObj;
         
         document.documentElement.style.setProperty('--bg-color', bg);
         document.documentElement.style.setProperty('--bar-color', bar);
@@ -1061,17 +1177,39 @@
         const fontVal = font === 'monospace' ? "'Courier New', monospace" : (font === 'sans-serif' ? "Arial, sans-serif" : "'PopHappiness', sans-serif");
         document.documentElement.style.setProperty('--main-font', fontVal);
         
-        let btnRad = '12px'; let cardRad = '25px'; 
+        let btnRad = '12px'; let cardRad = '25px'; let cardClip = 'none';
+        
         if(shape === 'square') { btnRad = '0px'; cardRad = '0px'; }
         else if(shape === 'rounded-square') { btnRad = '8px'; cardRad = '8px'; }
         else if(shape === 'squircle') { btnRad = '18px'; cardRad = '35px'; } 
         else if(shape === 'round') { btnRad = '50%'; cardRad = '25px'; }
+        else if(shape === 'hexagon') { 
+            btnRad = '0px'; cardRad = '0px'; 
+            cardClip = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'; 
+        }
+        else if(shape === 'leaf') { 
+             btnRad = '12px 0'; cardRad = '25px 0 25px 0'; 
+        }
         
         document.documentElement.style.setProperty('--btn-radius', btnRad);
         document.documentElement.style.setProperty('--card-radius', cardRad);
+        document.documentElement.style.setProperty('--card-clip', cardClip);
+
+        // HANDLE DISPLAY MODES
+        document.querySelectorAll('.game-buttons').forEach(el => {
+            el.classList.remove('layout-list', 'layout-dense');
+            if(displayMode === 'list') el.classList.add('layout-list');
+            if(displayMode === 'dense') el.classList.add('layout-dense');
+        });
+
+        // HANDLE NOISE CLASSES
+        document.body.classList.remove('noise-default', 'noise-scanlines', 'noise-dots', 'noise-none');
+        document.body.classList.add('noise-' + (noiseType || 'default'));
 
         // HANDLE BACKGROUND CLASSES FOR AUTHENTICITY
-        document.body.className = ''; // clear previous classes
+        document.body.className = document.body.className.replace(/bg-\w+/g, ''); // Clear old bg classes
+        document.body.classList.add('noise-' + (noiseType || 'default')); // Re-add noise
+        
         const currentPreset = inputPreset.value;
 
         if(bgImage && bgImage.trim() !== "") {
@@ -1081,13 +1219,11 @@
             document.body.classList.remove('bg-is-image');
             
             // Apply CSS Pattern based on preset selection
-            if(currentPreset === 'dsi') {
-                 document.body.classList.add('bg-dsi');
-            } else if (currentPreset === 'ps2') {
-                 document.body.classList.add('bg-ps2');
-            } else if (currentPreset === 'wii') {
-                 document.body.classList.add('bg-wii');
-            } else {
+            if(currentPreset === 'dsi') document.body.classList.add('bg-dsi');
+            else if (currentPreset === 'ps2') document.body.classList.add('bg-ps2');
+            else if (currentPreset === 'wii') document.body.classList.add('bg-wii');
+            else if (currentPreset === 'new-blueprint') document.body.classList.add('bg-blueprint');
+            else {
                  // Fallback for Custom user colors
                  const encodedColor = encodeURIComponent(static);
                  const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
@@ -1103,7 +1239,7 @@
             document.getElementById('music-menu-toggle').style.display = layout.music === false ? 'none' : 'flex';
         }
         saveThemeToStorage(themeObj);
-      }
+    }
 
       function getCurrentThemeObj() {
           let currentBgImage = inputBgImage.value;
@@ -1120,6 +1256,8 @@
               opacity: inputOpacity.value,
               bgImage: currentBgImage,
               btnHover: inputBtnHover.value,
+              displayMode: inputLayout.value,
+              noiseType: inputNoise.value,
               layout: {
                   home: checkHome.checked,
                   search: checkSearch.checked,
@@ -1137,6 +1275,8 @@
           inputFont.value = theme.font;
           inputOpacity.value = theme.opacity;
           inputBtnHover.value = theme.btnHover;
+          inputLayout.value = theme.displayMode || 'grid';
+          inputNoise.value = theme.noiseType || 'default';
           inputBgImage.value = theme.bgImage || '';
           if (theme.layout) {
               checkHome.checked = theme.layout.home !== false;
@@ -1160,7 +1300,7 @@
       });
 
       // SWITCH TO CUSTOM ON EDIT
-      [inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity, checkHome, checkSearch, checkClock, checkMusic, inputBtnHover].forEach(input => {
+      [inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity, checkHome, checkSearch, checkClock, checkMusic, inputBtnHover, inputLayout, inputNoise].forEach(input => {
         input.addEventListener('change', () => { 
             inputPreset.value = 'custom'; // Force dropdown to 'Custom'
             applyTheme(getCurrentThemeObj()); 
