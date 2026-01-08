@@ -73,27 +73,6 @@
         background-size: 10px 10px;
         background-repeat: repeat;
       }
-      body.bg-dsi {
-        background-color: #ffffff;
-        background-image: radial-gradient(#d0d0d0 1px, transparent 1px), radial-gradient(#d0d0d0 1px, transparent 1px);
-        background-size: 20px 20px;
-        background-position: 0 0, 10px 10px;
-      }
-      body.bg-ps2 {
-        background-color: #000;
-        background: linear-gradient(180deg, #000000 0%, #050510 40%, #001133 100%);
-        background-size: cover;
-        background-attachment: fixed;
-      }
-      body.bg-blueprint {
-        background-color: #0a2d5c;
-        background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
-        background-size: 20px 20px;
-      }
-      body.bg-win95 {
-        background-color: #008080;
-        background-image: none;
-      }
       body.bg-is-image {
           background-size: cover !important;
           background-position: center !important;
@@ -215,7 +194,7 @@
           font-size: 1rem; padding: 0; backdrop-filter: none;
       }
 
-      /* BIG GRID (New) */
+      /* BIG GRID */
       .game-buttons.layout-big {
           grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 30px;
       }
@@ -223,7 +202,7 @@
           width: 400px; height: 220px;
       }
 
-      /* TINY GRID (New) */
+      /* TINY GRID */
       .game-buttons.layout-tiny {
           grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(4, 1fr); gap: 8px;
           padding: 0 10px;
@@ -232,7 +211,7 @@
           width: 160px; height: 90px;
       }
 
-      /* WIDE LIST (New) */
+      /* WIDE LIST */
       .game-buttons.layout-wide {
           grid-template-columns: 1fr; grid-template-rows: repeat(6, 1fr); gap: 8px;
       }
@@ -644,32 +623,7 @@
             <span class="theme-maker-label">Load Preset</span>
             <select id="input-preset">
                 <option value="custom">Custom</option>
-                <optgroup label="Original Consoles">
-                    <option value="wii" selected>Wii Menu</option>
-                    <option value="dsi">Nintendo DSi</option>
-                    <option value="ps2">PS2 Browser</option>
-                    <option value="retro-dream">Dreamcast</option>
-                </optgroup>
-                <optgroup label="New Themes">
-                    <option value="new-win95">Windows 95</option>
-                    <option value="new-frutiger">Frutiger Aero</option>
-                    <option value="new-darkmodern">Modern Dark</option>
-                    <option value="new-psp">PSP Waves</option>
-                    <option value="new-highcontrast">High Contrast</option>
-                    <option value="new-blueprint">Blueprint</option>
-                    <option value="new-gameboy">Dot Matrix</option>
-                    <option value="new-crt">CRT Monitor</option>
-                    <option value="new-cyber">Cyberpunk</option>
-                    <option value="new-glitch">Glitch Art</option>
-                    <option value="new-paper">Paper Mario</option>
-                    <option value="new-termgreen">Terminal Green</option>
-                </optgroup>
-                <optgroup label="Bonus Themes">
-                    <option value="theme-xbox-og">Xbox Classic</option>
-                    <option value="theme-synthwave">Synthwave</option>
-                    <option value="theme-monochrome">Monochrome</option>
-                    <option value="theme-midnight">Midnight Purple</option>
-                </optgroup>
+                <option value="wii" selected>Default (Wii)</option>
                 <optgroup label="Pride Collection">
                     <option value="pride-rainbow">Pride (Rainbow)</option>
                     <option value="pride-trans">Trans Flag</option>
@@ -681,17 +635,6 @@
                     <option value="pride-genderqueer">Genderqueer</option>
                     <option value="pride-intersex">Intersex</option>
                     <option value="pride-aro">Aromantic</option>
-                </optgroup>
-                <optgroup label="Retro Consoles">
-                    <option value="retro-cube">GameCube</option>
-                    <option value="retro-xbox">Xbox 360</option>
-                    <option value="retro-switch">Switch Dark</option>
-                </optgroup>
-                <optgroup label="Aesthetics">
-                    <option value="aes-vapor">Vaporwave</option>
-                    <option value="aes-terminal">Hacker Terminal</option>
-                    <option value="aes-cherry">Cherry Blossom</option>
-                    <option value="aes-midnight">Midnight Blue</option>
                 </optgroup>
             </select>
         </div>
@@ -1132,125 +1075,6 @@
               bgImage: '', btnHover: '#40c4ff', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
-          dsi: {
-              bg: '#ffffff', bar: '#f2f2f2', static: '#333333',
-              shape: 'square', font: 'sans-serif', opacity: 1, 
-              bgImage: '', btnHover: '#5DD1E8', displayMode: 'grid', noiseType: 'dots',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          ps2: {
-              bg: '#080810', bar: '#101020', static: '#6070aa',
-              shape: 'rounded-square', font: 'sans-serif', opacity: 0.9, 
-              bgImage: '', btnHover: '#ff0055', displayMode: 'grid', noiseType: 'default',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'retro-dream': {
-              bg: '#ffffff', bar: '#ff6600', static: '#333333', // Dreamcast Orange
-              shape: 'squircle', font: 'sans-serif', opacity: 1,
-              bgImage: '', btnHover: '#ff6600', displayMode: 'grid', noiseType: 'default',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          
-          // --- NEW THEMES ---
-          'new-win95': {
-              bg: '#008080', bar: '#c0c0c0', static: '#000000',
-              shape: 'square', font: 'sans-serif', opacity: 1,
-              bgImage: '', btnHover: '#000080', displayMode: 'list', noiseType: 'none',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'new-frutiger': {
-              bg: '#cceeff', bar: '#88dd88', static: '#005500',
-              shape: 'round', font: 'sans-serif', opacity: 1,
-              bgImage: '', btnHover: '#aaffaa', displayMode: 'grid', noiseType: 'none',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'new-darkmodern': {
-              bg: '#121212', bar: '#1e1e1e', static: '#e0e0e0',
-              shape: 'rounded-square', font: 'sans-serif', opacity: 1,
-              bgImage: '', btnHover: '#bb86fc', displayMode: 'grid', noiseType: 'none',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'new-psp': {
-              bg: '#000000', bar: 'rgba(255,255,255,0.1)', static: '#ffffff',
-              shape: 'round', font: 'sans-serif', opacity: 0.8,
-              bgImage: '', btnHover: '#ffffff', displayMode: 'list', noiseType: 'default',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'new-highcontrast': {
-              bg: '#000000', bar: '#ffff00', static: '#ffff00',
-              shape: 'square', font: 'sans-serif', opacity: 1,
-              bgImage: '', btnHover: '#ffffff', displayMode: 'dense', noiseType: 'none',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-
-          'new-blueprint': {
-              bg: '#0a2d5c', bar: '#0d3b7a', static: '#ffffff',
-              shape: 'square', font: 'monospace', opacity: 1,
-              bgImage: '', btnHover: '#3399ff', displayMode: 'grid', noiseType: 'scanlines',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'new-gameboy': {
-              bg: '#8b9c0f', bar: '#306230', static: '#0f380f',
-              shape: 'square', font: 'monospace', opacity: 1,
-              bgImage: '', btnHover: '#0f380f', displayMode: 'dense', noiseType: 'dots',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'new-crt': {
-              bg: '#111', bar: '#222', static: '#0f0',
-              shape: 'rounded-square', font: 'monospace', opacity: 1,
-              bgImage: '', btnHover: '#0f0', displayMode: 'list', noiseType: 'scanlines',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'new-cyber': {
-              bg: '#0b001a', bar: '#290038', static: '#00fff2',
-              shape: 'rounded-square', font: 'sans-serif', opacity: 0.8,
-              bgImage: '', btnHover: '#ff00aa', displayMode: 'dense', noiseType: 'default',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'new-glitch': {
-              bg: '#1a1a1a', bar: '#ff00ff', static: '#00ffff',
-              shape: 'square', font: 'monospace', opacity: 0.9,
-              bgImage: '', btnHover: '#ffff00', displayMode: 'list', noiseType: 'scanlines',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'new-paper': {
-              bg: '#fdfbf7', bar: '#e4dccb', static: '#4a4a4a',
-              shape: 'round', font: 'PopHappiness', opacity: 1,
-              bgImage: '', btnHover: '#ff6b6b', displayMode: 'grid', noiseType: 'dots',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'new-termgreen': {
-              bg: '#000000', bar: '#001100', static: '#00ff00',
-              shape: 'square', font: 'monospace', opacity: 1,
-              bgImage: '', btnHover: '#008800', displayMode: 'list', noiseType: 'none',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-
-          // --- BONUS THEMES ---
-          'theme-xbox-og': {
-              bg: '#000000', bar: '#107c10', static: '#23a023',
-              shape: 'round', font: 'sans-serif', opacity: 1,
-              bgImage: '', btnHover: '#39ff14', displayMode: 'big', noiseType: 'default',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'theme-synthwave': {
-              bg: '#2b213a', bar: '#ff0055', static: '#00f9ff',
-              shape: 'rounded-square', font: 'monospace', opacity: 0.9,
-              bgImage: '', btnHover: '#ffe700', displayMode: 'grid', noiseType: 'scanlines',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'theme-monochrome': {
-              bg: '#ffffff', bar: '#000000', static: '#000000',
-              shape: 'square', font: 'sans-serif', opacity: 1,
-              bgImage: '', btnHover: '#555555', displayMode: 'simple', noiseType: 'none',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'theme-midnight': {
-              bg: '#020024', bar: '#090979', static: '#00d4ff',
-              shape: 'squircle', font: 'PopHappiness', opacity: 1,
-              bgImage: '', btnHover: '#8a2be2', displayMode: 'cozy', noiseType: 'dots',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
           
           // --- PRIDE COLLECTION ---
           'pride-rainbow': {
@@ -1312,52 +1136,6 @@
               shape: 'square', font: 'monospace', opacity: 1,
               bgImage: '', btnHover: '#a9a9a9', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
-          },
-
-          // --- RETRO CONSOLES ---
-          'retro-cube': {
-              bg: '#2e2c7b', bar: '#666666', static: '#ff8c00', // Indigo BG / Grey Bar / Orange Text
-              shape: 'rounded-square', font: 'sans-serif', opacity: 0.9,
-              bgImage: '', btnHover: '#ff4040', displayMode: 'grid', noiseType: 'default',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'retro-xbox': {
-              bg: '#f2f2f2', bar: '#9bc84b', static: '#333333', // White BG / Green Bar
-              shape: 'round', font: 'sans-serif', opacity: 1,
-              bgImage: '', btnHover: '#107c10', displayMode: 'grid', noiseType: 'default',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'retro-switch': {
-              bg: '#2d2d2d', bar: '#e60012', static: '#00c3e3', // Dark BG / Red Bar / Cyan Text
-              shape: 'square', font: 'sans-serif', opacity: 1,
-              bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-
-          // --- AESTHETICS ---
-          'aes-vapor': {
-              bg: '#ff71ce', bar: '#01cdfe', static: '#05ffa1', // Pink BG / Cyan Bar / Green Text
-              shape: 'square', font: 'monospace', opacity: 0.9,
-              bgImage: '', btnHover: '#b967ff', displayMode: 'grid', noiseType: 'default',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'aes-terminal': {
-              bg: '#000000', bar: '#003300', static: '#00ff00', // Matrix Green
-              shape: 'square', font: 'monospace', opacity: 0.8,
-              bgImage: '', btnHover: '#008800', displayMode: 'list', noiseType: 'scanlines',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'aes-cherry': {
-              bg: '#ffeff5', bar: '#ffb7b2', static: '#ff6961', // Soft Pinks
-              shape: 'round', font: 'PopHappiness', opacity: 1,
-              bgImage: '', btnHover: '#ffdac1', displayMode: 'grid', noiseType: 'dots',
-              layout: { home: true, search: true, clock: true, music: true }
-          },
-          'aes-midnight': {
-              bg: '#0f0f23', bar: '#1a1a3a', static: '#a6a6ff', // Deep Blue
-              shape: 'rounded-square', font: 'sans-serif', opacity: 0.8,
-              bgImage: '', btnHover: '#5353ac', displayMode: 'dense', noiseType: 'default',
-              layout: { home: true, search: true, clock: true, music: true }
           }
       };
 
@@ -1413,11 +1191,7 @@
             document.body.classList.remove('bg-is-image');
             
             // Apply CSS Pattern based on preset selection
-            if(currentPreset === 'dsi') document.body.classList.add('bg-dsi');
-            else if (currentPreset === 'ps2') document.body.classList.add('bg-ps2');
-            else if (currentPreset === 'wii') document.body.classList.add('bg-wii');
-            else if (currentPreset === 'new-blueprint') document.body.classList.add('bg-blueprint');
-            else if (currentPreset === 'new-win95') document.body.classList.add('bg-win95');
+            if(currentPreset === 'wii') document.body.classList.add('bg-wii');
             else {
                  // Fallback for Custom user colors
                  const encodedColor = encodeURIComponent(static);
