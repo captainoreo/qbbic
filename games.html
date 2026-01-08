@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Qbbic Ultimate - Animated Boot</title>
+    <title>Qbbic Ultimate - Stable Release</title>
     <link rel="icon" href="/assets/fanny.gif" type="image/gif" />
     <link rel="stylesheet" href="https://qottlebup.nekoweb.org/banner.css" />
     <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
@@ -127,17 +127,23 @@
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         position: relative; overflow: hidden;
       }
-      .wii-button:hover { 
+      .wii-button:hover, .wii-button.active { 
           transform: translateY(-2px); border-color: var(--btn-hover-color);
           box-shadow: 0 0 8px var(--btn-hover-color), inset 0 0 5px #fff; 
           cursor: url('/assets/Link-Select.png'), pointer; 
       }
       .wii-button:active { transform: scale(0.95); background: #cccccc; }
       .wii-button-svg { width: 60%; height: 60%; transition: filter 0.3s ease, fill 0.3s ease; fill: #333; }
-      .wii-button:hover .wii-button-svg { fill: #000; }
+      .wii-button:hover .wii-button-svg, .wii-button.active .wii-button-svg { fill: #000; }
       
-      .wii-date-time { font-size: 1rem; text-align: center; color: var(--static-color); user-select: none; transition: color 0.3s ease;}
-      .wii-date-time .time { font-size: 1.5rem; }
+      /* CLOCK FIX: Fixed width to prevent jitter, centered text */
+      .wii-date-time { 
+          font-size: 1rem; text-align: center; color: var(--static-color); 
+          user-select: none; transition: color 0.3s ease;
+          min-width: 120px; display: flex; flex-direction: column; align-items: center;
+      }
+      .wii-date-time .time { font-size: 1.6rem; line-height: 1.1; font-weight: bold; letter-spacing: 1px; }
+      .wii-date-time .date { font-size: 0.9rem; opacity: 0.8; }
 
       /* Main Grid Container */
       #game-pages-container {
@@ -237,7 +243,9 @@
       #search-container, #theme-menu, #music-menu {
         position: fixed; background: rgba(255, 255, 255, 0.95); 
         border: 2px solid var(--static-color); border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 200; display: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+        z-index: 2000; /* HIGH Z-INDEX TO ENSURE VISIBILITY */
+        display: none;
         color: #333; backdrop-filter: blur(5px);
       }
       
@@ -263,15 +271,23 @@
       .theme-action-btn:hover { background: #ddd; }
       .theme-action-btn.primary { background: #40c4ff; color: white; border-color: #0091ea; }
 
-      #music-menu { bottom: 80px; left: 20px; width: 280px; padding: 10px; max-height: 400px; overflow-y: auto; }
-      .music-option { padding: 6px 8px; cursor: pointer; border-radius: 4px; font-size: 0.9rem; margin-bottom: 2px; }
-      .music-option:hover { background-color: #e0e0e0; }
+      /* MUSIC MENU STYLES */
+      #music-menu { bottom: 80px; left: 20px; width: 280px; padding: 15px; max-height: 400px; overflow-y: auto; }
+      .music-option { 
+          padding: 8px 10px; cursor: pointer; border-radius: 4px; font-size: 0.9rem; margin-bottom: 4px; 
+          transition: background 0.2s; 
+      }
+      .music-option:hover { background-color: #e0e0e0; color: #40c4ff; }
       .music-heading { font-weight: bold; color: #888; margin: 5px 0; font-size: 0.8rem; text-transform: uppercase; }
-      .music-divider { border: 0; height: 1px; background: #ccc; margin: 5px 0; }
-      #now-playing { font-size: 0.85rem; color: #40c4ff; font-weight: bold; margin-bottom: 10px; text-align: center; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .music-divider { border: 0; height: 1px; background: #ccc; margin: 10px 0; }
+      #now-playing { 
+          font-size: 0.95rem; color: #40c4ff; font-weight: bold; margin-bottom: 10px; 
+          text-align: center; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+          background: #f0f8ff; padding: 5px; border-radius: 4px; border: 1px solid #b3e5fc;
+      }
       .volume-control { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding: 0 5px; }
 
-      /* --- ANIMATED MODAL WITH DISC & CRT --- */
+      /* --- MODAL WITH CRT ANIMATION --- */
       #game-modal {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background-color: rgba(0, 0, 0, 0.9); display: none; justify-content: center; align-items: center; z-index: 1000;
@@ -284,31 +300,6 @@
         background-color: #f7f7f7; border-radius: 24px; overflow: hidden; 
         box-shadow: 0 0 50px rgba(64, 196, 255, 0.3), 0 20px 40px rgba(0,0,0,0.4); border: 5px solid #d4d4d4;
         position: relative;
-      }
-
-      /* Disc Animation */
-      @keyframes spin-disc { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-      @keyframes disc-enter {
-        0% { top: -300px; opacity: 0; scale: 0.5; }
-        20% { top: 30%; opacity: 1; scale: 1; }
-        60% { top: 30%; opacity: 1; scale: 1; }
-        100% { top: 30%; opacity: 0; scale: 0.2; }
-      }
-
-      #loading-disc {
-        position: absolute; top: -300px; left: 50%; width: 200px; height: 200px; margin-left: -100px;
-        background: radial-gradient(circle, transparent 20%, #ccc 21%, #ccc 22%, #eee 23%, #fff 25%, #ccc 60%, transparent 62%),
-                    conic-gradient(from 0deg, rgba(255,255,255,0.8), rgba(200,200,200,0.8), rgba(255,255,255,0.8));
-        border-radius: 50%; box-shadow: 0 10px 20px rgba(0,0,0,0.5); z-index: 2000;
-        display: none; pointer-events: none;
-      }
-      #loading-disc::after {
-        content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 50%;
-        background: repeating-radial-gradient(#000 0, #000 1px, transparent 2px, transparent 4px); opacity: 0.1;
-      }
-      #loading-disc.animate {
-        display: block;
-        animation: disc-enter 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spin-disc 0.4s linear infinite;
       }
 
       #game-modal-header {
@@ -721,9 +712,25 @@
         </div>
     </div>
 
+    <div id="music-menu">
+        <div class="music-heading">Now Playing</div>
+        <div id="now-playing">No Music Playing</div>
+        <hr class="music-divider">
+        <div class="volume-control">
+            <span class="volume-label">Vol:</span>
+            <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.4">
+        </div>
+        <hr class="music-divider">
+        <div class="music-heading">Music Options</div>
+        <div class="music-option" id="music-option-random">Random (Auto-play)</div>
+        <div class="music-option" id="music-option-stop">Stop Music</div>
+        <hr class="music-divider">
+        <div class="music-heading">Songs</div>
+        <div id="music-list"></div>
+    </div>
+
     <div id="game-modal" role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
         <div id="game-modal-container">
-            <div id="loading-disc"></div>
             <div id="game-modal-header">
                 <h2 id="game-modal-title">Game Title</h2>
                 <div id="game-modal-controls">
@@ -795,7 +802,6 @@
       const gameModalTitle = document.getElementById('game-modal-title');
       const gameIframe = document.getElementById('game-iframe');
       const closeGameModalBtn = document.getElementById('close-game-modal-btn');
-      const loadingDisc = document.getElementById('loading-disc');
       
       let wasMusicPlayingBeforeGame = false;
       let currentGameUrl = '';
@@ -828,7 +834,7 @@
       window.addEventListener('load', () => {
         updatePage();
         populateMusicMenu();
-        updateDateTime();
+        updateDateTime(); // Call immediately on load!
         setInterval(updateDateTime, 1000);
         
         // Init Themes
@@ -947,18 +953,11 @@
           // Reset State
           gameIframe.src = 'about:blank';
           gameModalContainer.classList.remove('crt-animate-open', 'crt-animate-close');
-          loadingDisc.classList.remove('animate');
           
-          // 1. Play Disc Animation
-          void loadingDisc.offsetWidth; // trigger reflow
-          loadingDisc.classList.add('animate');
-          
-          // 2. Load game & Trigger CRT On Animation
-          setTimeout(() => {
-              gameIframe.src = url;
-              gameIframe.onload = function() { this.contentWindow.focus(); };
-              gameModalContainer.classList.add('crt-animate-open');
-          }, 1400); // Sync with disc drop
+          // Load game immediately
+          gameIframe.src = url;
+          gameIframe.onload = function() { this.contentWindow.focus(); };
+          gameModalContainer.classList.add('crt-animate-open'); // Trigger CRT Turn On
           
           showToast(`Launching ${title}...`);
       }
@@ -1555,20 +1554,33 @@
               list.appendChild(div);
           });
       }
-      document.getElementById('music-menu-toggle').addEventListener('click', () => {
+      
+      const musicToggleBtn = document.getElementById('music-menu-toggle');
+      musicToggleBtn.addEventListener('click', () => {
           const menu = document.getElementById('music-menu');
-          menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+          const isVisible = menu.style.display === 'block';
+          menu.style.display = isVisible ? 'none' : 'block';
+          musicToggleBtn.classList.toggle('active', !isVisible);
           themeClickSound.currentTime = 0; themeClickSound.play().catch(()=>{});
+          
+          // Browser audio policy fix: wake up context on user interaction
+          if (bgMusic.paused && localStorage.getItem('qbbic-bgm') !== 'none') {
+              bgMusic.play().catch(() => {});
+          }
       });
+      
       document.getElementById('music-option-stop').addEventListener('click', () => {
           bgMusic.pause(); localStorage.setItem('qbbic-bgm', 'none');
           nowPlayingText.textContent = "Stopped";
-          document.getElementById('music-menu').style.display = 'none'; showToast("Music Stopped");
+          document.getElementById('music-menu').style.display = 'none'; 
+          musicToggleBtn.classList.remove('active');
+          showToast("Music Stopped");
       });
       document.getElementById('music-option-random').addEventListener('click', () => {
           const randomSong = songs[Math.floor(Math.random() * songs.length)];
           playBGM(randomSong.url, randomSong.name); 
           document.getElementById('music-menu').style.display = 'none';
+          musicToggleBtn.classList.remove('active');
           showToast("Playing Random: " + randomSong.name);
       });
 
@@ -1585,6 +1597,7 @@
           }
           if (!e.target.closest('#music-menu') && !e.target.closest('#music-menu-toggle')) {
               document.getElementById('music-menu').style.display = 'none';
+              musicToggleBtn.classList.remove('active');
           }
           if (!e.target.closest('#search-container') && !e.target.closest('#search-button')) {
               document.getElementById('search-container').style.display = 'none';
