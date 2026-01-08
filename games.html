@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Qbbic Ultimate - Disc Loader Edition</title>
+    <title>Qbbic Ultimate - Animated Boot</title>
     <link rel="icon" href="/assets/fanny.gif" type="image/gif" />
     <link rel="stylesheet" href="https://qottlebup.nekoweb.org/banner.css" />
     <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
@@ -23,7 +23,7 @@
         --btn-radius: 12px; 
         --card-radius: 25px; 
         --card-opacity: 1;
-        --card-clip: none; /* For advanced shapes */
+        --card-clip: none; 
         
         --box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
         --transform-hover: scale(1.05);
@@ -47,18 +47,6 @@
         80% { transform: translate(-15%, 0); }
         90% { transform: translate(10%, 5%); }
         100% { transform: translate(5%, 0); }
-      }
-
-      @keyframes spin-disc {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-      
-      @keyframes disc-enter {
-        0% { top: -300px; opacity: 0; }
-        20% { top: 20%; opacity: 1; }
-        80% { top: 20%; opacity: 1; transform: scale(1); }
-        100% { top: 120%; opacity: 0; transform: scale(0.5); }
       }
 
       /* Base Body */
@@ -160,40 +148,23 @@
       #game-pages-wrapper { display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); width: 100%; }
       
       /* --- LAYOUT MODES --- */
-      
-      /* Standard Grid (4x3) */
       .game-buttons {
         display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); 
         gap: 15px; width: 100%; height: 500px; justify-items: center; align-items: center;
         padding: 0 40px; box-sizing: border-box; flex-shrink: 0;
       }
-
-      /* List View (2 cols, 6 rows - horizontal bars) */
       .game-buttons.layout-list {
-          grid-template-columns: repeat(2, 1fr);
-          grid-template-rows: repeat(6, 1fr);
-          gap: 10px;
+          grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(6, 1fr); gap: 10px;
       }
       .game-buttons.layout-list .game-button {
-          width: 100%; height: 65px;
-          flex-direction: row; justify-content: flex-start;
-          padding-left: 80px; box-sizing: border-box;
-          background-position: left center; background-size: 80px auto;
+          width: 100%; height: 65px; flex-direction: row; justify-content: flex-start;
+          padding-left: 80px; box-sizing: border-box; background-position: left center; background-size: 80px auto;
       }
       .game-buttons.layout-list .game-button-text {
-          display: block; position: static; background: none;
-          width: auto; padding: 0 10px; text-align: left;
-          font-size: 1.1rem; border-radius: 0; color: inherit;
-          text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+          display: block; position: static; background: none; width: auto; padding: 0 10px; 
+          text-align: left; font-size: 1.1rem; border-radius: 0; color: inherit; text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
       }
-      .game-buttons.layout-list .game-button:hover .game-button-text {
-          color: var(--btn-hover-color);
-      }
-
-      /* Dense Grid (Smaller icons) */
-      .game-buttons.layout-dense .game-button {
-          width: 180px; height: 110px;
-      }
+      .game-buttons.layout-dense .game-button { width: 180px; height: 110px; }
 
       /* --- GAME CHANNEL CARD --- */
       .game-button {
@@ -210,50 +181,29 @@
         border: 4px solid #eaeaea; overflow: hidden;
         box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4), 2px 4px 10px rgba(0,0,0,0.15);
       }
-
-      /* Gloss Overlay */
       .game-button::after {
         content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.1) 40%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0) 100%);
         border-radius: calc(var(--card-radius) - 4px); pointer-events: none; z-index: 2;
       }
-
-      /* --- STATIC NOISE VARIANTS --- */
       .game-button::before {
         content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         pointer-events: none; z-index: 1; mix-blend-mode: overlay; opacity: 0.15;
       }
-
-      /* Default Noise */
       .noise-default .game-button::before {
         top: -50%; left: -50%; width: 200%; height: 200%;
         background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="1"/></svg>');
         animation: noise-anim 0.5s steps(5) infinite;
       }
-
-      /* Scanlines (CRT) */
       .noise-scanlines .game-button::before {
-        background: repeating-linear-gradient(
-          to bottom,
-          transparent,
-          transparent 2px,
-          rgba(0, 0, 0, 0.5) 2px,
-          rgba(0, 0, 0, 0.5) 4px
-        );
-        background-size: 100% 100%;
-        animation: none; opacity: 0.3;
+        background: repeating-linear-gradient(to bottom, transparent, transparent 2px, rgba(0, 0, 0, 0.5) 2px, rgba(0, 0, 0, 0.5) 4px);
+        background-size: 100% 100%; animation: none; opacity: 0.3;
       }
-
-      /* Dots (Gameboy) */
       .noise-dots .game-button::before {
         background-image: radial-gradient(rgba(0,0,0,0.4) 1px, transparent 1px);
-        background-size: 4px 4px;
-        opacity: 0.4; animation: none;
+        background-size: 4px 4px; opacity: 0.4; animation: none;
       }
-
-      /* None */
       .noise-none .game-button::before { display: none; }
-
 
       .game-button:hover { 
           transform: scale(1.02);
@@ -261,7 +211,6 @@
           border-color: #7bc6eb; z-index: 20; 
           cursor: url('/assets/Link-Select.png'), pointer; opacity: 1 !important; filter: grayscale(0%) !important;
       }
-
       .game-button-text {
         position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.85);
         border-bottom-left-radius: var(--card-radius); border-bottom-right-radius: var(--card-radius);
@@ -314,7 +263,6 @@
       .theme-action-btn:hover { background: #ddd; }
       .theme-action-btn.primary { background: #40c4ff; color: white; border-color: #0091ea; }
 
-      /* Music Menu */
       #music-menu { bottom: 80px; left: 20px; width: 280px; padding: 10px; max-height: 400px; overflow-y: auto; }
       .music-option { padding: 6px 8px; cursor: pointer; border-radius: 4px; font-size: 0.9rem; margin-bottom: 2px; }
       .music-option:hover { background-color: #e0e0e0; }
@@ -323,7 +271,7 @@
       #now-playing { font-size: 0.85rem; color: #40c4ff; font-weight: bold; margin-bottom: 10px; text-align: center; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .volume-control { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding: 0 5px; }
 
-      /* --- UPDATED MODAL WITH DISC ANIMATION --- */
+      /* --- ANIMATED MODAL WITH DISC & CRT --- */
       #game-modal {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background-color: rgba(0, 0, 0, 0.9); display: none; justify-content: center; align-items: center; z-index: 1000;
@@ -338,7 +286,15 @@
         position: relative;
       }
 
-      /* THE ANIMATED DISC */
+      /* Disc Animation */
+      @keyframes spin-disc { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      @keyframes disc-enter {
+        0% { top: -300px; opacity: 0; scale: 0.5; }
+        20% { top: 30%; opacity: 1; scale: 1; }
+        60% { top: 30%; opacity: 1; scale: 1; }
+        100% { top: 30%; opacity: 0; scale: 0.2; }
+      }
+
       #loading-disc {
         position: absolute; top: -300px; left: 50%; width: 200px; height: 200px; margin-left: -100px;
         background: radial-gradient(circle, transparent 20%, #ccc 21%, #ccc 22%, #eee 23%, #fff 25%, #ccc 60%, transparent 62%),
@@ -352,7 +308,7 @@
       }
       #loading-disc.animate {
         display: block;
-        animation: disc-enter 2.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards, spin-disc 0.5s linear infinite;
+        animation: disc-enter 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spin-disc 0.4s linear infinite;
       }
 
       #game-modal-header {
@@ -372,9 +328,31 @@
       .control-btn.close-btn { color: #d32f2f; border-color: #ef9a9a; }
       .control-btn.close-btn:hover { box-shadow: 0 0 8px #ff5252; border-color: #ff1744; color: #b71c1c; }
       
-      #game-iframe-wrapper { flex-grow: 1; position: relative; background-color: #000; border-top: 1px solid #999; overflow: hidden; }
-      #game-iframe { width: 100%; height: 100%; border: none; display: block; opacity: 0; transition: opacity 0.5s ease; }
-      #game-iframe.loaded { opacity: 1; }
+      /* IFRAME WRAPPER - The screen itself */
+      #game-iframe-wrapper { 
+          flex-grow: 1; position: relative; background-color: #000; border-top: 1px solid #999; overflow: hidden; 
+          transform-origin: center center;
+      }
+      #game-iframe { width: 100%; height: 100%; border: none; display: block; opacity: 0; }
+      
+      /* CRT POWER ON ANIMATION */
+      @keyframes crt-on {
+          0% { transform: scale(1, 0.005); filter: brightness(10); opacity: 0; }
+          40% { transform: scale(1, 0.005); filter: brightness(10); opacity: 1; }
+          70% { transform: scale(1, 1); filter: brightness(2); opacity: 1; }
+          100% { transform: scale(1, 1); filter: brightness(1); opacity: 1; }
+      }
+      /* CRT POWER OFF ANIMATION */
+      @keyframes crt-off {
+          0% { transform: scale(1, 1); filter: brightness(1); opacity: 1; }
+          40% { transform: scale(1, 0.005); filter: brightness(5); opacity: 1; }
+          100% { transform: scale(0, 0); filter: brightness(0); opacity: 0; }
+      }
+
+      .crt-animate-open #game-iframe-wrapper { animation: crt-on 0.4s ease-out forwards; }
+      .crt-animate-open #game-iframe { opacity: 1; transition: opacity 0.1s 0.3s; }
+      
+      .crt-animate-close #game-iframe-wrapper { animation: crt-off 0.4s ease-in forwards; }
       
       /* Toast */
       #toast-notification {
@@ -743,23 +721,6 @@
         </div>
     </div>
 
-    <div id="music-menu">
-        <div class="music-heading">Now Playing</div>
-        <div id="now-playing">No Music Playing</div>
-        <hr class="music-divider">
-        <div class="volume-control">
-            <span class="volume-label">Vol:</span>
-            <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.4">
-        </div>
-        <hr class="music-divider">
-        <div class="music-heading">Music Options</div>
-        <div class="music-option" id="music-option-random">Random (Auto-play)</div>
-        <div class="music-option" id="music-option-stop">Stop Music</div>
-        <hr class="music-divider">
-        <div class="music-heading">Songs</div>
-        <div id="music-list"></div>
-    </div>
-
     <div id="game-modal" role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
         <div id="game-modal-container">
             <div id="loading-disc"></div>
@@ -830,6 +791,7 @@
 
       // --- IFRAME MODAL LOGIC ---
       const gameModal = document.getElementById('game-modal');
+      const gameModalContainer = document.getElementById('game-modal-container');
       const gameModalTitle = document.getElementById('game-modal-title');
       const gameIframe = document.getElementById('game-iframe');
       const closeGameModalBtn = document.getElementById('close-game-modal-btn');
@@ -982,39 +944,45 @@
           setTimeout(() => gameModal.classList.add('active'), 10);
           document.body.style.overflow = 'hidden';
           
-          // Reset Iframe
+          // Reset State
           gameIframe.src = 'about:blank';
-          gameIframe.classList.remove('loaded');
-          
-          // Trigger Animation
+          gameModalContainer.classList.remove('crt-animate-open', 'crt-animate-close');
           loadingDisc.classList.remove('animate');
+          
+          // 1. Play Disc Animation
           void loadingDisc.offsetWidth; // trigger reflow
           loadingDisc.classList.add('animate');
           
-          // Load game after small delay for animation sync
+          // 2. Load game & Trigger CRT On Animation
           setTimeout(() => {
               gameIframe.src = url;
-              gameIframe.onload = function() { 
-                  this.contentWindow.focus(); 
-                  this.classList.add('loaded'); // Fade in game
-              };
-          }, 1500);
+              gameIframe.onload = function() { this.contentWindow.focus(); };
+              gameModalContainer.classList.add('crt-animate-open');
+          }, 1400); // Sync with disc drop
           
           showToast(`Launching ${title}...`);
       }
 
       function closeGameModal() {
+          // 1. Play Close Sound
           gameCloseSound.currentTime = 0; gameCloseSound.play().catch(()=>{});
-          gameModal.classList.remove('active');
+          
+          // 2. Trigger CRT Off Animation
+          gameModalContainer.classList.remove('crt-animate-open');
+          gameModalContainer.classList.add('crt-animate-close');
+          
+          // 3. Wait for animation to finish before hiding
           setTimeout(() => {
-              gameModal.style.display = 'none';
-              gameIframe.src = 'about:blank';
-              gameIframe.classList.remove('loaded');
-              loadingDisc.classList.remove('animate');
-              currentGameUrl = '';
-              document.body.style.overflow = '';
-              if (wasMusicPlayingBeforeGame) bgMusic.play().catch(()=>{});
-          }, 300);
+              gameModal.classList.remove('active');
+              setTimeout(() => {
+                  gameModal.style.display = 'none';
+                  gameIframe.src = 'about:blank';
+                  gameModalContainer.classList.remove('crt-animate-close');
+                  currentGameUrl = '';
+                  document.body.style.overflow = '';
+                  if (wasMusicPlayingBeforeGame) bgMusic.play().catch(()=>{});
+              }, 300); // Fade out time
+          }, 400); // CRT Animation time
       }
       closeGameModalBtn.addEventListener('click', closeGameModal);
 
