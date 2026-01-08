@@ -90,6 +90,10 @@
         background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
         background-size: 20px 20px;
       }
+      body.bg-win95 {
+        background-color: #008080;
+        background-image: none;
+      }
       body.bg-is-image {
           background-size: cover !important;
           background-position: center !important;
@@ -159,6 +163,8 @@
         gap: 15px; width: 100%; height: 500px; justify-items: center; align-items: center;
         padding: 0 40px; box-sizing: border-box; flex-shrink: 0;
       }
+      
+      /* LIST MODE */
       .game-buttons.layout-list {
           grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(6, 1fr); gap: 10px;
       }
@@ -170,7 +176,75 @@
           display: block; position: static; background: none; width: auto; padding: 0 10px; 
           text-align: left; font-size: 1.1rem; border-radius: 0; color: inherit; text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
       }
+      
+      /* DENSE MODE */
       .game-buttons.layout-dense .game-button { width: 180px; height: 110px; }
+      
+      /* CINEMA MODE */
+      .game-buttons.layout-cinema {
+          grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(6, 1fr); gap: 10px;
+      }
+      .game-buttons.layout-cinema .game-button {
+          width: 100%; height: 70px;
+          background-size: cover; background-position: center;
+      }
+
+      /* COZY MODE */
+      .game-buttons.layout-cozy {
+          grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); gap: 20px;
+      }
+      .game-buttons.layout-cozy .game-button {
+          width: 260px; height: 110px;
+      }
+      
+      /* SIMPLE MODE */
+      .game-buttons.layout-simple {
+          gap: 10px;
+      }
+      .game-buttons.layout-simple .game-button {
+          background-image: none !important;
+          background-color: rgba(255,255,255,0.7);
+          border: 2px solid var(--static-color);
+          box-shadow: none;
+      }
+      .game-buttons.layout-simple .game-button::after { display: none; }
+      .game-buttons.layout-simple .game-button-text {
+          display: flex; position: relative; width: auto; height: 100%;
+          align-items: center; justify-content: center;
+          background: none; color: var(--static-color);
+          font-size: 1rem; padding: 0; backdrop-filter: none;
+      }
+
+      /* BIG GRID (New) */
+      .game-buttons.layout-big {
+          grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 30px;
+      }
+      .game-buttons.layout-big .game-button {
+          width: 400px; height: 220px;
+      }
+
+      /* TINY GRID (New) */
+      .game-buttons.layout-tiny {
+          grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(4, 1fr); gap: 8px;
+          padding: 0 10px;
+      }
+      .game-buttons.layout-tiny .game-button {
+          width: 160px; height: 90px;
+      }
+
+      /* WIDE LIST (New) */
+      .game-buttons.layout-wide {
+          grid-template-columns: 1fr; grid-template-rows: repeat(6, 1fr); gap: 8px;
+      }
+      .game-buttons.layout-wide .game-button {
+          width: 90%; height: 60px; flex-direction: row; justify-content: flex-start;
+          padding-left: 80px; box-sizing: border-box; background-position: left center; background-size: 80px auto;
+      }
+      .game-buttons.layout-wide .game-button-text {
+          display: block; position: static; background: none; width: auto; padding: 0 10px; 
+          text-align: left; font-size: 1.2rem; border-radius: 0; color: inherit; text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+      }
+
 
       /* --- GAME CHANNEL CARD --- */
       .game-button {
@@ -577,6 +651,11 @@
                     <option value="retro-dream">Dreamcast</option>
                 </optgroup>
                 <optgroup label="New Themes">
+                    <option value="new-win95">Windows 95</option>
+                    <option value="new-frutiger">Frutiger Aero</option>
+                    <option value="new-darkmodern">Modern Dark</option>
+                    <option value="new-psp">PSP Waves</option>
+                    <option value="new-highcontrast">High Contrast</option>
                     <option value="new-blueprint">Blueprint</option>
                     <option value="new-gameboy">Dot Matrix</option>
                     <option value="new-crt">CRT Monitor</option>
@@ -584,6 +663,12 @@
                     <option value="new-glitch">Glitch Art</option>
                     <option value="new-paper">Paper Mario</option>
                     <option value="new-termgreen">Terminal Green</option>
+                </optgroup>
+                <optgroup label="Bonus Themes">
+                    <option value="theme-xbox-og">Xbox Classic</option>
+                    <option value="theme-synthwave">Synthwave</option>
+                    <option value="theme-monochrome">Monochrome</option>
+                    <option value="theme-midnight">Midnight Purple</option>
                 </optgroup>
                 <optgroup label="Pride Collection">
                     <option value="pride-rainbow">Pride (Rainbow)</option>
@@ -619,6 +704,12 @@
                 <option value="grid">Grid (Standard)</option>
                 <option value="list">List View</option>
                 <option value="dense">Dense Grid</option>
+                <option value="cinema">Cinema Wide</option>
+                <option value="cozy">Cozy Big</option>
+                <option value="simple">Simple Text</option>
+                <option value="big">Big Grid</option>
+                <option value="tiny">Tiny Grid</option>
+                <option value="wide">Wide List</option>
             </select>
         </div>
 
@@ -654,12 +745,6 @@
                 <option value="round">Round</option>
                 <option value="rounded-square">Rounded</option>
                 <option value="square">Square</option>
-                <option value="hexagon">Hexagon</option>
-                <option value="leaf">Leaf</option>
-                <option value="diamond">Diamond</option>
-                <option value="tag">Price Tag</option>
-                <option value="message">Message Bubble</option>
-                <option value="chevron">Chevron</option>
             </select>
         </div>
         
@@ -1067,6 +1152,37 @@
           },
           
           // --- NEW THEMES ---
+          'new-win95': {
+              bg: '#008080', bar: '#c0c0c0', static: '#000000',
+              shape: 'square', font: 'sans-serif', opacity: 1,
+              bgImage: '', btnHover: '#000080', displayMode: 'list', noiseType: 'none',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          'new-frutiger': {
+              bg: '#cceeff', bar: '#88dd88', static: '#005500',
+              shape: 'round', font: 'sans-serif', opacity: 1,
+              bgImage: '', btnHover: '#aaffaa', displayMode: 'grid', noiseType: 'none',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          'new-darkmodern': {
+              bg: '#121212', bar: '#1e1e1e', static: '#e0e0e0',
+              shape: 'rounded-square', font: 'sans-serif', opacity: 1,
+              bgImage: '', btnHover: '#bb86fc', displayMode: 'grid', noiseType: 'none',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          'new-psp': {
+              bg: '#000000', bar: 'rgba(255,255,255,0.1)', static: '#ffffff',
+              shape: 'round', font: 'sans-serif', opacity: 0.8,
+              bgImage: '', btnHover: '#ffffff', displayMode: 'list', noiseType: 'default',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          'new-highcontrast': {
+              bg: '#000000', bar: '#ffff00', static: '#ffff00',
+              shape: 'square', font: 'sans-serif', opacity: 1,
+              bgImage: '', btnHover: '#ffffff', displayMode: 'dense', noiseType: 'none',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+
           'new-blueprint': {
               bg: '#0a2d5c', bar: '#0d3b7a', static: '#ffffff',
               shape: 'square', font: 'monospace', opacity: 1,
@@ -1087,19 +1203,19 @@
           },
           'new-cyber': {
               bg: '#0b001a', bar: '#290038', static: '#00fff2',
-              shape: 'hexagon', font: 'sans-serif', opacity: 0.8,
+              shape: 'rounded-square', font: 'sans-serif', opacity: 0.8,
               bgImage: '', btnHover: '#ff00aa', displayMode: 'dense', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'new-glitch': {
               bg: '#1a1a1a', bar: '#ff00ff', static: '#00ffff',
-              shape: 'chevron', font: 'monospace', opacity: 0.9,
+              shape: 'square', font: 'monospace', opacity: 0.9,
               bgImage: '', btnHover: '#ffff00', displayMode: 'list', noiseType: 'scanlines',
               layout: { home: true, search: true, clock: true, music: true }
           },
           'new-paper': {
               bg: '#fdfbf7', bar: '#e4dccb', static: '#4a4a4a',
-              shape: 'tag', font: 'PopHappiness', opacity: 1,
+              shape: 'round', font: 'PopHappiness', opacity: 1,
               bgImage: '', btnHover: '#ff6b6b', displayMode: 'grid', noiseType: 'dots',
               layout: { home: true, search: true, clock: true, music: true }
           },
@@ -1107,6 +1223,32 @@
               bg: '#000000', bar: '#001100', static: '#00ff00',
               shape: 'square', font: 'monospace', opacity: 1,
               bgImage: '', btnHover: '#008800', displayMode: 'list', noiseType: 'none',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+
+          // --- BONUS THEMES ---
+          'theme-xbox-og': {
+              bg: '#000000', bar: '#107c10', static: '#23a023',
+              shape: 'round', font: 'sans-serif', opacity: 1,
+              bgImage: '', btnHover: '#39ff14', displayMode: 'big', noiseType: 'default',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          'theme-synthwave': {
+              bg: '#2b213a', bar: '#ff0055', static: '#00f9ff',
+              shape: 'rounded-square', font: 'monospace', opacity: 0.9,
+              bgImage: '', btnHover: '#ffe700', displayMode: 'grid', noiseType: 'scanlines',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          'theme-monochrome': {
+              bg: '#ffffff', bar: '#000000', static: '#000000',
+              shape: 'square', font: 'sans-serif', opacity: 1,
+              bgImage: '', btnHover: '#555555', displayMode: 'simple', noiseType: 'none',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          'theme-midnight': {
+              bg: '#020024', bar: '#090979', static: '#00d4ff',
+              shape: 'squircle', font: 'PopHappiness', opacity: 1,
+              bgImage: '', btnHover: '#8a2be2', displayMode: 'cozy', noiseType: 'dots',
               layout: { home: true, search: true, clock: true, music: true }
           },
           
@@ -1243,29 +1385,6 @@
         else if(shape === 'rounded-square') { btnRad = '8px'; cardRad = '8px'; }
         else if(shape === 'squircle') { btnRad = '18px'; cardRad = '35px'; } 
         else if(shape === 'round') { btnRad = '50%'; cardRad = '25px'; }
-        else if(shape === 'hexagon') { 
-            btnRad = '0px'; cardRad = '0px'; 
-            cardClip = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'; 
-        }
-        else if(shape === 'leaf') { 
-             btnRad = '12px 0'; cardRad = '25px 0 25px 0'; 
-        }
-        else if(shape === 'diamond') { 
-             btnRad = '0px'; cardRad = '0px';
-             cardClip = 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)';
-        }
-        else if(shape === 'tag') {
-             btnRad = '4px'; cardRad = '0px';
-             cardClip = 'polygon(20% 0%, 100% 0%, 100% 100%, 20% 100%, 0% 50%)';
-        }
-        else if(shape === 'message') {
-             btnRad = '8px'; cardRad = '15px';
-             cardClip = 'polygon(0% 0%, 100% 0%, 100% 85%, 30% 85%, 15% 100%, 15% 85%, 0% 85%)';
-        }
-        else if(shape === 'chevron') {
-             btnRad = '0px'; cardRad = '0px';
-             cardClip = 'polygon(100% 0%, 75% 50%, 100% 100%, 0% 100%, 0% 0%)';
-        }
         
         document.documentElement.style.setProperty('--btn-radius', btnRad);
         document.documentElement.style.setProperty('--card-radius', cardRad);
@@ -1273,9 +1392,8 @@
 
         // HANDLE DISPLAY MODES
         document.querySelectorAll('.game-buttons').forEach(el => {
-            el.classList.remove('layout-list', 'layout-dense');
-            if(displayMode === 'list') el.classList.add('layout-list');
-            if(displayMode === 'dense') el.classList.add('layout-dense');
+            el.classList.remove('layout-list', 'layout-dense', 'layout-cinema', 'layout-cozy', 'layout-simple', 'layout-big', 'layout-tiny', 'layout-wide');
+            if(displayMode && displayMode !== 'grid') el.classList.add('layout-' + displayMode);
         });
 
         // HANDLE NOISE CLASSES
@@ -1299,6 +1417,7 @@
             else if (currentPreset === 'ps2') document.body.classList.add('bg-ps2');
             else if (currentPreset === 'wii') document.body.classList.add('bg-wii');
             else if (currentPreset === 'new-blueprint') document.body.classList.add('bg-blueprint');
+            else if (currentPreset === 'new-win95') document.body.classList.add('bg-win95');
             else {
                  // Fallback for Custom user colors
                  const encodedColor = encodeURIComponent(static);
