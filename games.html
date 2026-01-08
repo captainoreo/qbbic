@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Qbbic Ultimate - Custom UI</title>
+    <title>Qbbic Ultimate - Disc Loader Edition</title>
     <link rel="icon" href="/assets/fanny.gif" type="image/gif" />
     <link rel="stylesheet" href="https://qottlebup.nekoweb.org/banner.css" />
     <script src="https://qottlebup.nekoweb.org/bannerInfo.js"></script>
@@ -49,9 +49,16 @@
         100% { transform: translate(5%, 0); }
       }
 
-      @keyframes scanline-anim {
-        0% { background-position: 0 0; }
-        100% { background-position: 0 100%; }
+      @keyframes spin-disc {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      @keyframes disc-enter {
+        0% { top: -300px; opacity: 0; }
+        20% { top: 20%; opacity: 1; }
+        80% { top: 20%; opacity: 1; transform: scale(1); }
+        100% { top: 120%; opacity: 0; transform: scale(0.5); }
       }
 
       /* Base Body */
@@ -193,7 +200,7 @@
         width: 220px; height: 130px;
         background-color: #ffffff;
         border-radius: var(--card-radius); 
-        clip-path: var(--card-clip); /* For Hexagons etc */
+        clip-path: var(--card-clip); 
         opacity: var(--card-opacity);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         text-decoration: none; color: black; font-weight: bold; text-align: center;
@@ -316,21 +323,42 @@
       #now-playing { font-size: 0.85rem; color: #40c4ff; font-weight: bold; margin-bottom: 10px; text-align: center; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .volume-control { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding: 0 5px; }
 
-      /* Modal and Iframe */
+      /* --- UPDATED MODAL WITH DISC ANIMATION --- */
       #game-modal {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background-color: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 1000;
-        opacity: 0; transition: opacity 0.3s ease; pointer-events: none; backdrop-filter: blur(5px);
+        background-color: rgba(0, 0, 0, 0.9); display: none; justify-content: center; align-items: center; z-index: 1000;
+        opacity: 0; transition: opacity 0.3s ease; pointer-events: none; backdrop-filter: blur(10px);
       }
       #game-modal.active { opacity: 1; pointer-events: auto; }
+      
       #game-modal-container {
         width: 100%; height: 100%; max-width: 1280px; max-height: 90vh; display: flex; flex-direction: column;
         background-color: #f7f7f7; border-radius: 24px; overflow: hidden; 
         box-shadow: 0 0 50px rgba(64, 196, 255, 0.3), 0 20px 40px rgba(0,0,0,0.4); border: 5px solid #d4d4d4;
+        position: relative;
       }
+
+      /* THE ANIMATED DISC */
+      #loading-disc {
+        position: absolute; top: -300px; left: 50%; width: 200px; height: 200px; margin-left: -100px;
+        background: radial-gradient(circle, transparent 20%, #ccc 21%, #ccc 22%, #eee 23%, #fff 25%, #ccc 60%, transparent 62%),
+                    conic-gradient(from 0deg, rgba(255,255,255,0.8), rgba(200,200,200,0.8), rgba(255,255,255,0.8));
+        border-radius: 50%; box-shadow: 0 10px 20px rgba(0,0,0,0.5); z-index: 2000;
+        display: none; pointer-events: none;
+      }
+      #loading-disc::after {
+        content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 50%;
+        background: repeating-radial-gradient(#000 0, #000 1px, transparent 2px, transparent 4px); opacity: 0.1;
+      }
+      #loading-disc.animate {
+        display: block;
+        animation: disc-enter 2.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards, spin-disc 0.5s linear infinite;
+      }
+
       #game-modal-header {
         flex-shrink: 0; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
         background: linear-gradient(to bottom, #ffffff 0%, #eeeeee 100%); border-bottom: 2px solid #ccc; height: 60px;
+        z-index: 5; position: relative;
       }
       #game-modal-title { font-size: 1.5rem; font-weight: bold; color: #555; font-family: var(--main-font); text-shadow: 1px 1px 0px #fff; }
       #game-modal-controls { display: flex; gap: 12px; align-items: center; }
@@ -343,8 +371,10 @@
       .control-btn svg { width: 20px; height: 20px; fill: currentColor; }
       .control-btn.close-btn { color: #d32f2f; border-color: #ef9a9a; }
       .control-btn.close-btn:hover { box-shadow: 0 0 8px #ff5252; border-color: #ff1744; color: #b71c1c; }
-      #game-iframe-wrapper { flex-grow: 1; position: relative; background-color: #000; border-top: 1px solid #999; }
-      #game-iframe { width: 100%; height: 100%; border: none; display: block; }
+      
+      #game-iframe-wrapper { flex-grow: 1; position: relative; background-color: #000; border-top: 1px solid #999; overflow: hidden; }
+      #game-iframe { width: 100%; height: 100%; border: none; display: block; opacity: 0; transition: opacity 0.5s ease; }
+      #game-iframe.loaded { opacity: 1; }
       
       /* Toast */
       #toast-notification {
@@ -575,12 +605,16 @@
                     <option value="wii" selected>Wii Menu</option>
                     <option value="dsi">Nintendo DSi</option>
                     <option value="ps2">PS2 Browser</option>
+                    <option value="retro-dream">Dreamcast</option>
                 </optgroup>
                 <optgroup label="New Themes">
                     <option value="new-blueprint">Blueprint</option>
                     <option value="new-gameboy">Dot Matrix</option>
                     <option value="new-crt">CRT Monitor</option>
                     <option value="new-cyber">Cyberpunk</option>
+                    <option value="new-glitch">Glitch Art</option>
+                    <option value="new-paper">Paper Mario</option>
+                    <option value="new-termgreen">Terminal Green</option>
                 </optgroup>
                 <optgroup label="Pride Collection">
                     <option value="pride-rainbow">Pride (Rainbow)</option>
@@ -653,6 +687,10 @@
                 <option value="square">Square</option>
                 <option value="hexagon">Hexagon</option>
                 <option value="leaf">Leaf</option>
+                <option value="diamond">Diamond</option>
+                <option value="tag">Price Tag</option>
+                <option value="message">Message Bubble</option>
+                <option value="chevron">Chevron</option>
             </select>
         </div>
         
@@ -724,6 +762,7 @@
 
     <div id="game-modal" role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
         <div id="game-modal-container">
+            <div id="loading-disc"></div>
             <div id="game-modal-header">
                 <h2 id="game-modal-title">Game Title</h2>
                 <div id="game-modal-controls">
@@ -736,7 +775,7 @@
                         <span>Tab</span>
                     </button>
                     <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloak)">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
                         <span>Mask</span>
                     </button>
                     <button id="fullscreen-btn" type="button" class="control-btn" title="Fullscreen Game">
@@ -794,6 +833,8 @@
       const gameModalTitle = document.getElementById('game-modal-title');
       const gameIframe = document.getElementById('game-iframe');
       const closeGameModalBtn = document.getElementById('close-game-modal-btn');
+      const loadingDisc = document.getElementById('loading-disc');
+      
       let wasMusicPlayingBeforeGame = false;
       let currentGameUrl = '';
 
@@ -835,6 +876,11 @@
                 const theme = JSON.parse(savedTheme);
                 applyTheme(theme);
                 
+                // RESTORE PRESET SELECTION
+                if(theme.preset) {
+                    document.getElementById('input-preset').value = theme.preset;
+                }
+
                 // Update Inputs
                 document.getElementById('input-bg').value = theme.bg || '#e6e8e7';
                 document.getElementById('input-bar').value = theme.bar || '#c9c5c2';
@@ -930,12 +976,31 @@
           bgMusic.pause();
           currentGameUrl = url;
           gameModalTitle.textContent = title;
-          gameIframe.src = url;
-          gameIframe.onload = function() { this.contentWindow.focus(); };
+          
+          // Show Modal
           gameModal.style.display = 'flex';
           setTimeout(() => gameModal.classList.add('active'), 10);
           document.body.style.overflow = 'hidden';
-          showToast(`Launched ${title}`);
+          
+          // Reset Iframe
+          gameIframe.src = 'about:blank';
+          gameIframe.classList.remove('loaded');
+          
+          // Trigger Animation
+          loadingDisc.classList.remove('animate');
+          void loadingDisc.offsetWidth; // trigger reflow
+          loadingDisc.classList.add('animate');
+          
+          // Load game after small delay for animation sync
+          setTimeout(() => {
+              gameIframe.src = url;
+              gameIframe.onload = function() { 
+                  this.contentWindow.focus(); 
+                  this.classList.add('loaded'); // Fade in game
+              };
+          }, 1500);
+          
+          showToast(`Launching ${title}...`);
       }
 
       function closeGameModal() {
@@ -944,6 +1009,8 @@
           setTimeout(() => {
               gameModal.style.display = 'none';
               gameIframe.src = 'about:blank';
+              gameIframe.classList.remove('loaded');
+              loadingDisc.classList.remove('animate');
               currentGameUrl = '';
               document.body.style.overflow = '';
               if (wasMusicPlayingBeforeGame) bgMusic.play().catch(()=>{});
@@ -1025,6 +1092,12 @@
               bgImage: '', btnHover: '#ff0055', displayMode: 'grid', noiseType: 'default',
               layout: { home: true, search: true, clock: true, music: true }
           },
+          'retro-dream': {
+              bg: '#ffffff', bar: '#ff6600', static: '#333333', // Dreamcast Orange
+              shape: 'squircle', font: 'sans-serif', opacity: 1,
+              bgImage: '', btnHover: '#ff6600', displayMode: 'grid', noiseType: 'default',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
           
           // --- NEW THEMES ---
           'new-blueprint': {
@@ -1049,6 +1122,24 @@
               bg: '#0b001a', bar: '#290038', static: '#00fff2',
               shape: 'hexagon', font: 'sans-serif', opacity: 0.8,
               bgImage: '', btnHover: '#ff00aa', displayMode: 'dense', noiseType: 'default',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          'new-glitch': {
+              bg: '#1a1a1a', bar: '#ff00ff', static: '#00ffff',
+              shape: 'chevron', font: 'monospace', opacity: 0.9,
+              bgImage: '', btnHover: '#ffff00', displayMode: 'list', noiseType: 'scanlines',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          'new-paper': {
+              bg: '#fdfbf7', bar: '#e4dccb', static: '#4a4a4a',
+              shape: 'tag', font: 'PopHappiness', opacity: 1,
+              bgImage: '', btnHover: '#ff6b6b', displayMode: 'grid', noiseType: 'dots',
+              layout: { home: true, search: true, clock: true, music: true }
+          },
+          'new-termgreen': {
+              bg: '#000000', bar: '#001100', static: '#00ff00',
+              shape: 'square', font: 'monospace', opacity: 1,
+              bgImage: '', btnHover: '#008800', displayMode: 'list', noiseType: 'none',
               layout: { home: true, search: true, clock: true, music: true }
           },
           
@@ -1162,6 +1253,8 @@
       };
 
       function saveThemeToStorage(themeObj) {
+          // SAVE THE DROPDOWN VALUE TOO
+          themeObj.preset = document.getElementById('input-preset').value;
           try { localStorage.setItem('customTheme', JSON.stringify(themeObj)); } catch(e) {}
       }
 
@@ -1189,6 +1282,22 @@
         }
         else if(shape === 'leaf') { 
              btnRad = '12px 0'; cardRad = '25px 0 25px 0'; 
+        }
+        else if(shape === 'diamond') { 
+             btnRad = '0px'; cardRad = '0px';
+             cardClip = 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)';
+        }
+        else if(shape === 'tag') {
+             btnRad = '4px'; cardRad = '0px';
+             cardClip = 'polygon(20% 0%, 100% 0%, 100% 100%, 20% 100%, 0% 50%)';
+        }
+        else if(shape === 'message') {
+             btnRad = '8px'; cardRad = '15px';
+             cardClip = 'polygon(0% 0%, 100% 0%, 100% 85%, 30% 85%, 15% 100%, 15% 85%, 0% 85%)';
+        }
+        else if(shape === 'chevron') {
+             btnRad = '0px'; cardRad = '0px';
+             cardClip = 'polygon(100% 0%, 75% 50%, 100% 100%, 0% 100%, 0% 0%)';
         }
         
         document.documentElement.style.setProperty('--btn-radius', btnRad);
