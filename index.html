@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qbbic - Loading</title>
+    <title>Qbbic</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="/assets/fanny.gif" type="image/gif" />
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Architects+Daughter&family=Press+Start+2P&family=Anton&display=swap" rel="stylesheet">
@@ -133,9 +133,9 @@
         /* Container for the Grid */
         .wii-grid-container {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* 4 Channels wide */
-            grid-template-rows: repeat(3, 1fr);    /* 3 Channels tall */
-            gap: 15px; /* Space between channels */
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 15px;
             width: 90%;
             max-width: 900px;
             aspect-ratio: 16 / 9;
@@ -146,8 +146,7 @@
         .channel-slot {
             background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
             border: 2px solid #333;
-            /* This creates the iconic "TV" shape curve */
-            border-radius: 30px / 50%; 
+            border-radius: 30px / 50%; /* Iconic TV shape */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -156,18 +155,18 @@
             box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
         }
 
-        /* The Text inside the empty channel */
+        /* The Text inside the channel - UPDATED to Qbbic */
         .channel-slot::after {
-            content: 'Wii'; 
-            /* You can change this to 'Qbbic' if you want */
+            content: 'Qbbic'; 
             font-family: sans-serif;
             font-weight: bold;
-            font-size: 24px;
+            font-size: 22px; /* Slightly adjusted size */
             color: #444;
-            opacity: 0.5;
+            opacity: 0.6;
+            letter-spacing: 1px;
         }
 
-        /* Animation: Staggered Fade Wave to show it's loading */
+        /* Animation: Staggered Fade Wave */
         .channel-slot {
             animation: fade-wave 1.5s infinite ease-in-out;
         }
@@ -197,7 +196,7 @@
             }
         }
 
-        /* Bottom Bar (Optional, adds to the look) */
+        /* Bottom Bar */
         .wii-bottom-bar {
             margin-top: 30px;
             color: #555;
@@ -263,10 +262,10 @@
                     selectSound.play().catch(e => console.log('Audio autoplay blocked'));
                 }
                 
-                // 2. Fade out Safety Screen (Revealing Loading Screen behind it)
+                // 2. Fade out Safety Screen
                 safetyScreen.classList.add('fade-out');
 
-                // 3. Wait 3 seconds (simulating load), then redirect
+                // 3. Wait 3 seconds, then redirect
                 setTimeout(() => {
                     window.location.href = 'games.html';
                 }, 3000);
@@ -275,7 +274,7 @@
             // Listen for clicks on the safety screen
             safetyScreen.addEventListener('click', enterSite);
             
-            // Listen for keydown (specifically 'a' or 'A')
+            // Listen for keydown
             document.addEventListener('keydown', (e) => {
                 if (document.body.contains(safetyScreen) && e.key.toLowerCase() === 'a') {
                     enterSite();
