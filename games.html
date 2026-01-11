@@ -293,7 +293,7 @@
       .page-dot.active { background-color: var(--static-color); pointer-events: none; }
 
       /* Menus */
-      #search-container, #theme-menu, #music-menu {
+      #search-container, #theme-menu, #music-menu, #home-menu {
         position: fixed; background: rgba(255, 255, 255, 0.95); 
         border: 2px solid var(--static-color); border-radius: 10px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
@@ -339,6 +339,12 @@
           background: #f0f8ff; padding: 5px; border-radius: 4px; border: 1px solid #b3e5fc;
       }
       .volume-control { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding: 0 5px; }
+
+      /* --- HOME MENU STYLES (NEW) --- */
+      #home-menu {
+        bottom: 95px; left: 100px; width: 200px; padding: 10px;
+      }
+      #home-menu .music-option { text-align: center; font-weight: bold; }
 
       /* --- MODAL WITH CRT ANIMATION --- */
       #game-modal {
@@ -757,6 +763,23 @@
         <div id="music-list"></div>
     </div>
 
+    <div id="home-menu">
+        <div class="music-heading" style="text-align:center;">Navigation</div>
+        
+        <div class="music-option" id="nav-index">
+            Return to Index
+        </div>
+        
+        <div class="music-option" id="nav-path">
+            Go to Path.html
+        </div>
+        
+        <hr class="music-divider">
+        
+        <div class="music-option" id="nav-discord" style="color: #5865F2;">
+            Join Discord
+        </div>
+    </div>
     <div id="game-modal" role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
         <div id="game-modal-container">
             <div id="game-modal-header">
@@ -1497,15 +1520,56 @@
           }
       });
 
-      // --- SECRET HOME BUTTON LOGIC ---
-      document.getElementById('wii-menu-button').addEventListener('click', (e) => {
+      // --- HOME MENU LOGIC ---
+      const homeMenu = document.getElementById('home-menu');
+      const homeBtn = document.getElementById('wii-menu-button');
+
+      // 1. Toggle Menu on Button Click
+      homeBtn.addEventListener('click', (e) => {
           e.preventDefault();
-          const clickSnd = document.getElementById('click-sound');
+          
+          // Toggle display
+          const isVisible = homeMenu.style.display === 'block';
+          homeMenu.style.display = isVisible ? 'none' : 'block';
+          
+          // Play sound
+          const clickSnd = document.getElementById('theme-click-sound');
           if(clickSnd) { clickSnd.currentTime = 0; clickSnd.play().catch(()=>{}); }
-          if (Math.random() < 0.1) {
-              window.location.href = 'path.html';
-          } else {
-              window.location.href = 'index.html';
+      });
+
+      // 2. Navigation Actions
+      document.getElementById('nav-index').addEventListener('click', () => {
+          window.location.href = 'index.html';
+      });
+
+      document.getElementById('nav-path').addEventListener('click', () => {
+          window.location.href = 'path.html';
+      });
+
+      document.getElementById('nav-discord').addEventListener('click', () => {
+          // Open Discord in a new tab
+          // REPLACE '#' WITH YOUR ACTUAL DISCORD INVITE LINK BELOW
+          window.open('https://discord.gg/TRguRu7mwc', '_blank');
+      });
+
+      // 3. Update Global Click Listener (Clicking outside closes menus)
+      document.addEventListener('click', (e) => {
+          // Theme Menu
+          if (!e.target.closest('#theme-menu') && !e.target.closest('#theme-menu-toggle') && !e.target.closest('input') && !e.target.closest('select')) {
+              document.getElementById('theme-menu').style.display = 'none';
+          }
+          // Music Menu
+          if (!e.target.closest('#music-menu') && !e.target.closest('#music-menu-toggle')) {
+              document.getElementById('music-menu').style.display = 'none';
+              musicToggleBtn.classList.remove('active');
+          }
+          // Search Menu
+          if (!e.target.closest('#search-container') && !e.target.closest('#search-button')) {
+              document.getElementById('search-container').style.display = 'none';
+          }
+          // NEW: Home Menu
+          if (!e.target.closest('#home-menu') && !e.target.closest('#wii-menu-button')) {
+              document.getElementById('home-menu').style.display = 'none';
           }
       });
     </script>
