@@ -64,8 +64,61 @@
         box-sizing: border-box;
         cursor: url('/assets/cursor.png'), auto;
         overflow: hidden;
-        transition: background-color 0.3s ease, color 0.3s ease, background-image 0.3s ease;
+        transition: background-color 0.5s ease, color 0.5s ease, background-image 0.5s ease, filter 0.5s ease;
       }
+
+      /* --- TIME TRAVEL MODES --- */
+      
+      /* FUTURE MODE: Dark, Neon, Cyberpunk */
+      body.time-travel-future {
+          --bg-color: #050a14 !important;
+          --bar-color: #001122 !important;
+          --static-color: #00ffcc !important; /* Neon Cyan Text */
+          --btn-hover-color: #ff00ff !important; /* Neon Pink Hover */
+          --main-font: 'Courier New', monospace !important;
+          --card-opacity: 0.8 !important;
+          background-image: linear-gradient(0deg, transparent 24%, rgba(0, 255, 204, .3) 25%, rgba(0, 255, 204, .3) 26%, transparent 27%, transparent 74%, rgba(0, 255, 204, .3) 75%, rgba(0, 255, 204, .3) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 255, 204, .3) 25%, rgba(0, 255, 204, .3) 26%, transparent 27%, transparent 74%, rgba(0, 255, 204, .3) 75%, rgba(0, 255, 204, .3) 76%, transparent 77%, transparent) !important;
+          background-size: 50px 50px !important;
+          filter: contrast(1.2) saturate(1.2) drop-shadow(0 0 5px rgba(0,255,204,0.5));
+      }
+      
+      body.time-travel-future .wii-button,
+      body.time-travel-future .game-button {
+          border-color: #00ffcc !important;
+          box-shadow: 0 0 10px #00ffcc, inset 0 0 10px rgba(0,0,0,0.5) !important;
+          background-color: rgba(0, 20, 40, 0.9) !important;
+          color: #00ffcc !important;
+          border-radius: 4px !important; /* Angular future shape */
+      }
+      body.time-travel-future .wii-bottom-bar {
+          border-top: 2px solid #00ffcc !important;
+          box-shadow: 0 -5px 20px rgba(0, 255, 204, 0.3) !important;
+      }
+
+      /* PAST MODE: Sepia, Old Paper, Retro */
+      body.time-travel-past {
+          --bg-color: #eaddcf !important;
+          --bar-color: #8c7b6c !important;
+          --static-color: #5a4a3a !important; /* Dark Brown */
+          --btn-hover-color: #8b0000 !important; /* Dark Red */
+          --main-font: 'Times New Roman', serif !important;
+          --card-opacity: 1 !important;
+          background-image: url('data:image/svg+xml;utf8,<svg width="4" height="4" viewBox="0 0 4 4" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h4v4H0z" fill="%23eaddcf"/><path d="M0 0h4v4H0z" fill="%23d8c8b8" fill-opacity="0.4" style="filter:url(%23noise)"/></svg>') !important;
+          filter: sepia(0.6) contrast(0.9);
+      }
+      
+      body.time-travel-past .wii-button,
+      body.time-travel-past .game-button {
+          border-color: #5a4a3a !important;
+          background: #fdf5e6 !important; /* Old lace */
+          border-radius: 50% !important; /* Rounder vintage shape */
+          box-shadow: 3px 3px 0px rgba(90, 74, 58, 0.5) !important;
+      }
+      body.time-travel-past .wii-button {
+          border-radius: 12px !important;
+      }
+      
+      /* --------------------------- */
 
       /* --- CONSOLE BACKGROUND PATTERNS --- */
       body.bg-wii {
@@ -124,7 +177,9 @@
           font-size: 1rem; text-align: center; color: var(--static-color); 
           user-select: none; transition: color 0.3s ease;
           min-width: 120px; display: flex; flex-direction: column; align-items: center;
+          cursor: help; /* Hint that something is clickable here */
       }
+      .wii-date-time:hover { transform: scale(1.1); }
       .wii-date-time .time { font-size: 1.6rem; line-height: 1.1; font-weight: bold; letter-spacing: 1px; }
       .wii-date-time .date { font-size: 0.9rem; opacity: 0.8; }
 
@@ -205,7 +260,6 @@
       /* TINY GRID */
       .game-buttons.layout-tiny {
           grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(4, 1fr); gap: 8px;
-          padding: 0 10px;
       }
       .game-buttons.layout-tiny .game-button {
           width: 160px; height: 90px;
@@ -426,7 +480,6 @@
 
     <div id="game-pages-container">
       <div id="game-pages-wrapper">
-        
         <nav class="game-buttons" aria-label="Page 1">
           <a data-href="/games/clyumenikki.html" class="game-button" style="background-image: url('/assets/nikki.jpg');" title="Yume Nikki"><span class="game-button-text">Yume Nikki</span></a>
           <a data-href="/games/Cookie Clicker.html" class="game-button" style="background-image: url('/assets/cookie.png');" title="Cookie Clicker"><span class="game-button-text">Cookie Clicker</span></a>
@@ -592,65 +645,10 @@
           <div class="game-button placeholder"><span>Empty Slot</span></div>
         </nav>
 
-        <nav class="game-buttons" aria-label="Page 12">
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-        </nav>
-
-        <nav class="game-buttons" aria-label="Page 13">
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-        </nav>
-
-        <nav class="game-buttons" aria-label="Page 14">
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-        </nav>
-
-        <nav class="game-buttons" aria-label="Page 15">
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-          <div class="game-button placeholder"><span>Coming Soon</span></div>
-        </nav>
+        <nav class="game-buttons" aria-label="Page 12"><div class="game-button placeholder"><span>Coming Soon</span></div></nav>
+        <nav class="game-buttons" aria-label="Page 13"><div class="game-button placeholder"><span>Coming Soon</span></div></nav>
+        <nav class="game-buttons" aria-label="Page 14"><div class="game-button placeholder"><span>Coming Soon</span></div></nav>
+        <nav class="game-buttons" aria-label="Page 15"><div class="game-button placeholder"><span>Coming Soon</span></div></nav>
 
       </div>
     </div>
@@ -680,7 +678,7 @@
             </svg>
         </div>
         
-        <div class="wii-date-time" id="wii-date-time-display">
+        <div class="wii-date-time" id="wii-date-time-display" title="Click to Time Travel">
           <div class="time" id="current-time">12:00 AM</div>
           <div class="date" id="current-date">Fri 1/1</div>
         </div>
@@ -910,6 +908,9 @@
     <audio id="menu-hover-sound" src="/assets/Sample_0003.wav" preload="auto"></audio>
     <audio id="game-open-sound" src="/assets/Sample_0000.wav" preload="auto"></audio>
     <audio id="game-close-sound" src="/assets/Sample_0001.wav" preload="auto"></audio>
+
+    <audio id="sound-time-travel-future" src="/assets/time_warp_future.mp3" preload="auto"></audio>
+    <audio id="sound-time-travel-past" src="/assets/time_warp_past.mp3" preload="auto"></audio>
 
     <script>
       // --- CORE VARIABLES ---
@@ -1718,6 +1719,43 @@
           // We trigger a theme update to save the state
           const currentTheme = getCurrentThemeObj();
           saveThemeToStorage(currentTheme);
+      });
+      
+      // --- SECRET TIME TRAVEL FEATURE ---
+      const clockDisplay = document.getElementById('wii-date-time-display');
+      let timeState = 0; // 0: Present, 1: Future, 2: Past
+      
+      const futureAudio = document.getElementById('sound-time-travel-future');
+      const pastAudio = document.getElementById('sound-time-travel-past');
+      
+      clockDisplay.addEventListener('click', () => {
+          // Cycle state
+          timeState = (timeState + 1) % 3;
+          
+          document.body.classList.remove('time-travel-future', 'time-travel-past');
+          
+          // Reset Audio
+          futureAudio.pause(); futureAudio.currentTime = 0;
+          pastAudio.pause(); pastAudio.currentTime = 0;
+          
+          if (timeState === 1) {
+              // FUTURE MODE
+              document.body.classList.add('time-travel-future');
+              showToast("WARPING TO THE FUTURE >> 3025");
+              futureAudio.play().catch(e => console.log("Add audio file for full effect"));
+          } 
+          else if (timeState === 2) {
+              // PAST MODE
+              document.body.classList.add('time-travel-past');
+              showToast("WARPING TO THE PAST << 1950");
+              pastAudio.play().catch(e => console.log("Add audio file for full effect"));
+          } 
+          else {
+              // PRESENT MODE
+              showToast("RETURNING TO PRESENT");
+              // Play standard click as confirmation
+              clickSound.currentTime = 0; clickSound.play().catch(()=>{});
+          }
       });
     </script>
   </body>
