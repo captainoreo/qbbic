@@ -5,21 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homebrew Tube</title>
     <style>
-        /* --- 1. THE HOMEBREW CHANNEL (HBC) BACKGROUND --- */
+        /* --- 1. GLOBAL & BACKGROUND (Wii Style) --- */
         body {
             margin: 0;
             padding: 0;
             background: linear-gradient(to bottom, #2da2d6 0%, #005c97 20%, #001f4d 100%);
             height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             font-family: "Roboto", sans-serif;
-            overflow: hidden;
-            position: relative;
+            overflow: hidden; /* Prevent body scroll, let layout scroll */
+            color: white;
         }
 
-        /* The Water Surface Wave (Top of Image 1) */
+        /* Water Wave */
         .water-surface {
             position: absolute;
             top: 0;
@@ -27,10 +24,9 @@
             width: 100%;
             height: 80px;
             z-index: 1;
-            fill: rgba(255, 255, 255, 0.1);
         }
 
-        /* Bubbles Container */
+        /* Bubbles */
         .bubbles-container {
             position: absolute;
             width: 100%;
@@ -39,10 +35,8 @@
             left: 0;
             pointer-events: none;
             z-index: 0;
-            overflow: hidden;
         }
 
-        /* Individual Bubble Styling (Glassy look from Image 1) */
         .bubble {
             position: absolute;
             border-radius: 50%;
@@ -52,17 +46,47 @@
             animation: floatUp linear infinite;
         }
 
-        /* --- 2. THE YOUTUBE PLAYER CONTAINER --- */
-        .player-container {
+        /* --- 2. MAIN LAYOUT GRID --- */
+        .app-layout {
             position: relative;
-            width: 900px;
-            max-width: 90%;
-            aspect-ratio: 16/9;
-            background: black;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); /* Lift it off the water */
             z-index: 10;
             display: flex;
+            width: 100%;
+            height: 100vh;
+            padding-top: 60px; /* Space for water */
+            box-sizing: border-box;
+            gap: 24px;
+            justify-content: center;
+            overflow-y: auto; /* Allow scrolling if window is small */
+        }
+
+        /* Left Column (Video Player) */
+        .primary-column {
+            flex: 0 0 65%; /* Takes 65% width */
+            max-width: 900px;
+            display: flex;
             flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Right Column (Sidebar) */
+        .secondary-column {
+            flex: 0 0 300px; /* Fixed width sidebar */
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 20px;
+        }
+
+        /* --- 3. VIDEO PLAYER --- */
+        .player-wrapper {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: black;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            position: relative;
+            overflow: hidden;
             group: hover .controls-overlay { opacity: 1; }
         }
 
@@ -72,51 +96,151 @@
             object-fit: cover;
         }
 
-        /* --- 3. YOUTUBE UI OVERLAY (Image 2) --- */
+        /* Video Metadata (Title below video) */
+        .video-info {
+            padding: 0 10px;
+        }
+        .video-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .channel-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .channel-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #555;
+        }
+        .channel-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* --- 4. SIDEBAR ITEMS --- */
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .shuffle-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .shuffle-btn:hover { background: rgba(255,255,255,0.2); }
+
+        .video-item {
+            display: flex;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            padding: 5px;
+            border-radius: 8px;
+        }
+        .video-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .thumbnail {
+            width: 168px;
+            height: 94px;
+            border-radius: 8px;
+            background: #333;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* CSS Generated Thumbnails for demo purposes */
+        .thumb-gradient {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: rgba(255,255,255,0.2);
+        }
+
+        .duration-badge {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            font-size: 12px;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-top: 4px;
+        }
+
+        .meta-title {
+            font-size: 14px;
+            font-weight: 500;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .meta-channel {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        /* --- 5. PLAYER CONTROLS (YouTube Style) --- */
         .controls-overlay {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            /* The classic YouTube bottom shadow gradient */
-            background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.4) 50%, transparent);
-            padding: 0 12px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 0 12px 10px 12px;
             box-sizing: border-box;
-            opacity: 0; /* Hides when not hovering */
+            opacity: 0;
             transition: opacity 0.2s;
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
-            height: 80px; /* Interaction area */
         }
+        .player-wrapper:hover .controls-overlay { opacity: 1; }
 
-        .player-container:hover .controls-overlay {
-            opacity: 1;
-        }
-
-        /* The Progress Bar Area */
         .progress-area {
             width: 100%;
             height: 5px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.3);
             cursor: pointer;
             position: relative;
             margin-bottom: 10px;
             transition: height 0.1s;
         }
-
-        .progress-area:hover {
-            height: 8px;
-        }
+        .progress-area:hover { height: 8px; }
 
         .progress-filled {
             height: 100%;
             width: 0%;
-            background-color: #ff0000; /* YouTube Red */
+            background-color: #ff0000;
             position: relative;
         }
-
-        /* The Red Scrubber Dot */
         .progress-filled::after {
             content: '';
             position: absolute;
@@ -129,84 +253,29 @@
             border-radius: 50%;
             transition: transform 0.1s;
         }
+        .progress-area:hover .progress-filled::after { transform: translateY(-50%) scale(1); }
 
-        .progress-area:hover .progress-filled::after {
-            transform: translateY(-50%) scale(1);
-        }
-
-        /* The Control Buttons Row */
         .controls-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 40px;
-            padding-bottom: 5px;
         }
+        
+        .left-controls, .right-controls { display: flex; align-items: center; gap: 10px; }
 
-        .left-controls, .right-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Generic Button Styles */
-        button {
+        button.icon-btn {
             background: none;
             border: none;
             cursor: pointer;
-            padding: 0;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0.9;
-            transition: opacity 0.1s;
-        }
-
-        button:hover {
-            opacity: 1;
-        }
-
-        svg {
-            fill: white;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Time Display */
-        .time-display {
-            color: #ddd;
-            font-size: 13px;
-            margin-left: 5px;
-            font-weight: 400;
-        }
-
-        /* Autoplay Toggle Switch (Visual Only) */
-        .autoplay-toggle {
-            display: flex;
-            align-items: center;
-            margin-right: 10px;
-        }
-        .toggle-track {
             width: 30px;
-            height: 12px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 10px;
-            position: relative;
+            height: 30px;
+            padding: 4px;
+            color: white;
+            opacity: 0.9;
         }
-        .toggle-thumb {
-            width: 18px;
-            height: 18px;
-            background: white;
-            border-radius: 50%;
-            position: absolute;
-            top: -3px;
-            left: -2px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-        }
+        button.icon-btn:hover { opacity: 1; transform: scale(1.1); transition: 0.2s; }
+        svg { fill: white; width: 100%; height: 100%; }
 
-        /* Keyframes */
         @keyframes floatUp {
             0% { transform: translateY(0) scale(1); opacity: 0; }
             20% { opacity: 0.5; }
@@ -214,6 +283,10 @@
             100% { transform: translateY(-120vh) scale(1.1); opacity: 0; }
         }
 
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -222,159 +295,244 @@
         <path d="M0,30 C200,50 400,10 600,30 C800,50 1000,10 1200,30 C1300,40 1440,20 1440,20 V0 H0 Z" fill="#4fbbe3" opacity="0.3"></path>
         <path d="M0,20 C300,0 500,40 800,20 C1100,0 1300,30 1440,10 V0 H0 Z" fill="#6bcbf0" opacity="0.3"></path>
     </svg>
-
     <div class="bubbles-container" id="bubbles"></div>
 
-    <div class="player-container" id="playerContainer">
-        <video id="video" src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"></video>
+    <div class="app-layout">
+        
+        <div class="primary-column">
+            <div class="player-wrapper" id="playerWrapper">
+                <video id="video" src=""></video>
 
-        <div class="controls-overlay">
-            <div class="progress-area" id="progressContainer">
-                <div class="progress-filled" id="progressBar"></div>
-            </div>
-
-            <div class="controls-row">
-                <div class="left-controls">
-                    <button id="playBtn" style="width: 28px; height: 28px;">
-                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                    </button>
-
-                    <button style="width: 28px; height: 28px;">
-                        <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
-                    </button>
-                    
-                    <button id="muteBtn" style="width: 28px; height: 28px; margin-left:5px;">
-                        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                    </button>
-
-                    <div class="time-display">
-                        <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+                <div class="controls-overlay">
+                    <div class="progress-area" id="progressContainer">
+                        <div class="progress-filled" id="progressBar"></div>
                     </div>
-                </div>
 
-                <div class="right-controls">
-                    <div class="autoplay-toggle">
-                        <div class="toggle-track">
-                            <div class="toggle-thumb">
-                                <svg viewBox="0 0 24 24" style="fill:black; width:12px; height:12px; margin:3px;"><path d="M8 5v14l11-7z"/></svg>
-                            </div>
+                    <div class="controls-row">
+                        <div class="left-controls">
+                            <button class="icon-btn" id="playBtn">
+                                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            </button>
+                            <button class="icon-btn" id="nextBtn" title="Play Random Video">
+                                <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                            </button>
+                            <button class="icon-btn" id="muteBtn">
+                                <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                            </button>
+                            <span style="font-size: 13px; margin-left: 5px;" id="timeDisplay">0:00 / 0:00</span>
+                        </div>
+                        <div class="right-controls">
+                            <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.04.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.57 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button>
+                            <button class="icon-btn" id="fsBtn"><svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
                         </div>
                     </div>
-
-                    <button>
-                        <svg viewBox="0 0 24 24"><path d="M19 4H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zm-8 7H9.5v-.5h-2v3h2V13H11v1.5H7v-5h4V11zm7 0h-1.5v-.5h-2v3h2V13H18v1.5h-4v-5h4V11z"/></svg>
-                    </button>
-
-                    <button>
-                        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.04.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.57 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                    </button>
-
-                    <button>
-                        <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zm-10-7h9v6h-9z"/></svg>
-                    </button>
-
-                    <button>
-                         <svg viewBox="0 0 24 24"><path d="M19 6H5c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H5V8h14v8z"/></svg>
-                    </button>
-
-                    <button id="fsBtn">
-                        <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-                    </button>
                 </div>
             </div>
+
+            <div class="video-info">
+                <div class="video-title" id="mainTitle">Loading...</div>
+                <div class="channel-row">
+                    <div class="channel-icon"></div>
+                    <div>
+                        <div class="channel-name" id="mainChannel">Loading...</div>
+                        <div style="font-size: 12px; color:#ccc;">1.2M subscribers</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="secondary-column">
+            <div class="sidebar-header">
+                <span>Up Next</span>
+                <button class="shuffle-btn" id="shuffleBtn">
+                    <svg viewBox="0 0 24 24" style="width:16px; height:16px;"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+                    Shuffle
+                </button>
+            </div>
+            <div id="videoList">
+                </div>
         </div>
     </div>
 
     <script>
-        // --- 1. HOMEBREW BUBBLES LOGIC ---
-        const bubbleContainer = document.getElementById('bubbles');
-        
-        function createBubble() {
-            const bubble = document.createElement('div');
-            bubble.classList.add('bubble');
+        // --- 1. DATA: SAMPLE VIDEOS ---
+        const videos = [
+            {
+                title: "Big Buck Bunny",
+                channel: "Blender Foundation",
+                duration: "9:56",
+                src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                color: "linear-gradient(45deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)"
+            },
+            {
+                title: "Elephant Dream",
+                channel: "Orange Open Movie",
+                duration: "10:53",
+                src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+                color: "linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%)"
+            },
+            {
+                title: "For Bigger Blazes",
+                channel: "Google Tech",
+                duration: "0:15",
+                src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                color: "linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%)"
+            },
+            {
+                title: "For Bigger Escapes",
+                channel: "Travel Channel",
+                duration: "0:15",
+                src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+                color: "linear-gradient(to right, #4facfe 0%, #00f2fe 100%)"
+            },
+            {
+                title: "Tears of Steel",
+                channel: "Mango Project",
+                duration: "12:14",
+                src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+                color: "linear-gradient(to right, #43e97b 0%, #38f9d7 100%)"
+            },
+            {
+                title: "Subaru Outback On Street And Dirt",
+                channel: "Car Reviews",
+                duration: "9:54",
+                src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
+                color: "linear-gradient(to top, #30cfd0 0%, #330867 100%)"
+            },
+            {
+                title: "Sintel",
+                channel: "Durian Open Movie",
+                duration: "14:48",
+                src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+                color: "linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%)"
+            }
+        ];
+
+        // --- 2. LOGIC: RENDER & PLAY ---
+        const videoElement = document.getElementById('video');
+        const mainTitle = document.getElementById('mainTitle');
+        const mainChannel = document.getElementById('mainChannel');
+        const videoListContainer = document.getElementById('videoList');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        let currentIndex = 0;
+
+        function loadVideo(index) {
+            currentIndex = index;
+            const vid = videos[index];
             
-            // Randomize size (HBC bubbles are widely varied)
-            const size = Math.random() * 60 + 15; 
-            bubble.style.width = `${size}px`;
-            bubble.style.height = `${size}px`;
+            // Update Player
+            videoElement.src = vid.src;
+            mainTitle.textContent = vid.title;
+            mainChannel.textContent = vid.channel;
+            videoElement.play();
             
-            // Randomize position
-            bubble.style.left = `${Math.random() * 100}%`;
-            
-            // Randomize speed (slow and calm)
-            bubble.style.animationDuration = `${Math.random() * 10 + 10}s`;
-            
-            bubbleContainer.appendChild(bubble);
-            
-            // Cleanup
-            setTimeout(() => {
-                bubble.remove();
-            }, 20000);
+            // Update Play Button Icon
+            document.getElementById('playBtn').innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+
+            // Highlight in sidebar (optional visual cue)
+            renderSidebar(); 
         }
 
-        // Initialize bubbles
-        for(let i=0; i<10; i++) setTimeout(createBubble, i * 800);
-        setInterval(createBubble, 2000);
+        function playRandom() {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * videos.length);
+            } while (newIndex === currentIndex && videos.length > 1);
+            
+            loadVideo(newIndex);
+        }
 
-        // --- 2. YOUTUBE PLAYER LOGIC ---
-        const video = document.getElementById('video');
+        function renderSidebar() {
+            videoListContainer.innerHTML = '';
+            videos.forEach((vid, index) => {
+                const item = document.createElement('div');
+                item.className = 'video-item';
+                // Highlight current video
+                if(index === currentIndex) item.style.background = 'rgba(255,255,255,0.2)';
+
+                item.innerHTML = `
+                    <div class="thumbnail">
+                        <div class="thumb-gradient" style="background: ${vid.color};">▶</div>
+                        <div class="duration-badge">${vid.duration}</div>
+                    </div>
+                    <div class="meta">
+                        <div class="meta-title">${vid.title}</div>
+                        <div class="meta-channel">${vid.channel}</div>
+                        <div class="meta-channel">${Math.floor(Math.random()*900)}K views • ${Math.floor(Math.random()*11)} months ago</div>
+                    </div>
+                `;
+                
+                item.addEventListener('click', () => loadVideo(index));
+                videoListContainer.appendChild(item);
+            });
+        }
+
+        // Initialize
+        loadVideo(0);
+        renderSidebar();
+
+        // --- 3. EVENT LISTENERS ---
+        shuffleBtn.addEventListener('click', playRandom);
+        nextBtn.addEventListener('click', playRandom);
+        
+        // Auto play next random when ended
+        videoElement.addEventListener('ended', playRandom);
+
+        // Standard Player Controls
         const playBtn = document.getElementById('playBtn');
         const progressBar = document.getElementById('progressBar');
         const progressContainer = document.getElementById('progressContainer');
-        const currentTimeEl = document.getElementById('currentTime');
-        const durationEl = document.getElementById('duration');
+        const timeDisplay = document.getElementById('timeDisplay');
         const fsBtn = document.getElementById('fsBtn');
-        const playerContainer = document.getElementById('playerContainer');
 
-        function togglePlay() {
-            if (video.paused) {
-                video.play();
-                // Change to Pause Icon
+        playBtn.addEventListener('click', () => {
+            if(videoElement.paused) {
+                videoElement.play();
                 playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
             } else {
-                video.pause();
-                // Change to Play Icon
+                videoElement.pause();
                 playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
             }
-        }
+        });
 
-        playBtn.addEventListener('click', togglePlay);
-        video.addEventListener('click', togglePlay);
-
-        function formatTime(seconds) {
-            const min = Math.floor(seconds / 60);
-            const sec = Math.floor(seconds % 60);
-            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
-        }
-
-        video.addEventListener('timeupdate', () => {
-            const percent = (video.currentTime / video.duration) * 100;
+        videoElement.addEventListener('timeupdate', () => {
+            const percent = (videoElement.currentTime / videoElement.duration) * 100;
             progressBar.style.width = `${percent}%`;
-            currentTimeEl.textContent = formatTime(video.currentTime);
-            if(!isNaN(video.duration)) {
-                durationEl.textContent = formatTime(video.duration);
-            }
+            
+            const curMins = Math.floor(videoElement.currentTime / 60);
+            const curSecs = Math.floor(videoElement.currentTime % 60);
+            const durMins = Math.floor(videoElement.duration / 60) || 0;
+            const durSecs = Math.floor(videoElement.duration % 60) || 0;
+            
+            timeDisplay.textContent = `${curMins}:${curSecs<10?'0':''}${curSecs} / ${durMins}:${durSecs<10?'0':''}${durSecs}`;
         });
 
         progressContainer.addEventListener('click', (e) => {
             const rect = progressContainer.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const width = rect.width;
-            const duration = video.duration;
-            video.currentTime = (clickX / width) * duration;
+            const pos = (e.clientX - rect.left) / rect.width;
+            videoElement.currentTime = pos * videoElement.duration;
         });
 
         fsBtn.addEventListener('click', () => {
-            if (!document.fullscreenElement) {
-                playerContainer.requestFullscreen();
-            } else {
-                document.exitFullscreen();
-            }
+            if(!document.fullscreenElement) document.getElementById('playerWrapper').requestFullscreen();
+            else document.exitFullscreen();
         });
-        
-        document.addEventListener('keydown', (e) => {
-            if(e.key === ' ' || e.key === 'k') togglePlay();
-        });
+
+        // --- 4. BUBBLES ---
+        function createBubble() {
+            const b = document.createElement('div');
+            b.classList.add('bubble');
+            const size = Math.random() * 60 + 15;
+            b.style.width = `${size}px`;
+            b.style.height = `${size}px`;
+            b.style.left = `${Math.random() * 100}%`;
+            b.style.animationDuration = `${Math.random() * 10 + 10}s`;
+            document.getElementById('bubbles').appendChild(b);
+            setTimeout(() => b.remove(), 20000);
+        }
+        setInterval(createBubble, 1500);
 
     </script>
 </body>
