@@ -452,6 +452,119 @@
 
     <audio id="sound-time-travel-future" src="/assets/Sonic CD - Future Sound Effect - Orange Blur.wav" preload="auto"></audio>
     <audio id="sound-time-travel-past" src="/assets/Sonic CD - Past Sound Effect - Orange Blur.wav" preload="auto"></audio>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const saveBtn = document.getElementById('save-theme-btn');
+        const loadBtn = document.getElementById('load-theme-btn');
+        const loadInput = document.getElementById('input-load-theme');
+        const navSaveLoad = document.getElementById('nav-save-load');
+        const themeMenu = document.getElementById('theme-menu');
+
+        // Helper to get all theme inputs
+        const getThemeInputs = () => ({
+            preset: document.getElementById('input-preset'),
+            layout: document.getElementById('input-layout'),
+            noise: document.getElementById('input-noise-type'),
+            rain: document.getElementById('check-rain-shawarma'),
+            showHome: document.getElementById('check-show-home'),
+            showSearch: document.getElementById('check-show-search'),
+            showClock: document.getElementById('check-show-clock'),
+            showMusic: document.getElementById('check-show-music'),
+            bg: document.getElementById('input-bg'),
+            bar: document.getElementById('input-bar'),
+            staticColor: document.getElementById('input-static'),
+            btnHover: document.getElementById('input-btn-hover'),
+            wiiBtnBg: document.getElementById('input-wii-btn-bg'),
+            modalBg: document.getElementById('input-modal-bg'),
+            modalBorder: document.getElementById('input-modal-border'),
+            shape: document.getElementById('input-shape'),
+            font: document.getElementById('input-font'),
+            opacity: document.getElementById('input-opacity'),
+            bgImage: document.getElementById('input-bg-image')
+        });
+
+        // Save Functionality
+        if(saveBtn) {
+            saveBtn.addEventListener('click', () => {
+                const inputs = getThemeInputs();
+                const data = {};
+                
+                // Collect values from the DOM
+                for (const [key, element] of Object.entries(inputs)) {
+                    if (element) {
+                        data[key] = element.type === 'checkbox' ? element.checked : element.value;
+                    }
+                }
+
+                // Create a downloadable JSON blob
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'qbbic-theme-config.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert('Theme Saved! Check your downloads.');
+            });
+        }
+
+        // Load Button Click (Trigger File Input)
+        if(loadBtn && loadInput) {
+            loadBtn.addEventListener('click', () => {
+                loadInput.click();
+            });
+
+            // Handle File Selection
+            loadInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        const inputs = getThemeInputs();
+
+                        // Apply values back to the DOM
+                        for (const [key, value] of Object.entries(data)) {
+                            if (inputs[key]) {
+                                if (inputs[key].type === 'checkbox') {
+                                    inputs[key].checked = value;
+                                } else {
+                                    inputs[key].value = value;
+                                }
+                                // Dispatch change events so other scripts update the visuals
+                                inputs[key].dispatchEvent(new Event('change', { bubbles: true }));
+                                inputs[key].dispatchEvent(new Event('input', { bubbles: true }));
+                            }
+                        }
+                        alert('Theme Loaded Successfully!');
+                    } catch (err) {
+                        console.error(err);
+                        alert('Error loading theme file.');
+                    }
+                };
+                reader.readAsText(file);
+            });
+        }
+        
+        // Fix for the Nav button opening the menu
+        if (navSaveLoad && themeMenu) {
+             navSaveLoad.addEventListener('click', () => {
+                 // Toggle the menu display
+                 if(themeMenu.style.display === 'block') {
+                     themeMenu.style.display = 'none';
+                 } else {
+                     themeMenu.style.display = 'block';
+                 }
+             });
+        }
+    });
+    </script>
 
   </body>
 </html>
