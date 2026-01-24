@@ -1,717 +1,1118 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- CORE VARIABLES ---
-    const bgMusic = document.getElementById('bg-music');
-    const hoverSound = document.getElementById('hover-sound');
-    const clickSound = document.getElementById('click-sound');
-    const prevPageSound = document.getElementById('prev-page-sound');
-    const nextPageSound = document.getElementById('next-page-sound');
-    const themeClickSound = document.getElementById('theme-click-sound');
-    const searchClickSound = document.getElementById('search-click-sound');
-    const menuHoverSound = document.getElementById('menu-hover-sound');
-    const gameOpenSound = document.getElementById('game-open-sound');
-    const gameCloseSound = document.getElementById('game-close-sound');
+// --- CORE VARIABLES ---
+const bgMusic = document.getElementById('bg-music');
+const hoverSound = document.getElementById('hover-sound');
+const clickSound = document.getElementById('click-sound');
+const prevPageSound = document.getElementById('prev-page-sound');
+const nextPageSound = document.getElementById('next-page-sound');
+const themeClickSound = document.getElementById('theme-click-sound');
+const searchClickSound = document.getElementById('search-click-sound');
 
-    const gamePagesWrapper = document.getElementById('game-pages-wrapper');
-    const pageIndicatorDots = document.getElementById('page-indicator-dots');
-    const prevPageButton = document.getElementById('prev-page-button');
-    const nextPageButton = document.getElementById('next-page-button');
-    let currentPage = 0;
+const menuHoverSound = document.getElementById('menu-hover-sound');
+const gameOpenSound = document.getElementById('game-open-sound');
+const gameCloseSound = document.getElementById('game-close-sound');
 
-    // --- IFRAME MODAL LOGIC ---
-    const gameModal = document.getElementById('game-modal');
-    const gameModalContainer = document.getElementById('game-modal-container');
-    const gameModalTitle = document.getElementById('game-modal-title');
-    const gameIframe = document.getElementById('game-iframe');
-    const closeGameModalBtn = document.getElementById('close-game-modal-btn');
+const gamePagesWrapper = document.getElementById('game-pages-wrapper');
+const pageIndicatorDots = document.getElementById('page-indicator-dots');
+const prevPageButton = document.getElementById('prev-page-button');
+const nextPageButton = document.getElementById('next-page-button');
+let currentPage = 0;
 
-    let wasMusicPlayingBeforeGame = false;
-    let currentGameUrl = '';
+// --- IFRAME MODAL LOGIC ---
+const gameModal = document.getElementById('game-modal');
+const gameModalContainer = document.getElementById('game-modal-container');
+const gameModalTitle = document.getElementById('game-modal-title');
+const gameIframe = document.getElementById('game-iframe');
+const closeGameModalBtn = document.getElementById('close-game-modal-btn');
 
-    // --- MUSIC DATA ---
-    const songs = [
-        { name: 'Wii U Mii Maker', url: '/assets/Wii U OST - Mii Maker (Mii Editor).flac' },
-        { name: 'Droopy likes your face', url: '/assets/Droopy likes your face.flac' },
-        { name: 'Sleepville', url: '/assets/Sleepville - Little Man Legends.mp3' },
-        { name: 'Beneath the Mask', url: '/assets/Beneath the Mask -instrumental version- - Lyn.mp3' },
-        { name: 'Training day', url: '/assets/MTraining Day.mp3' },
-        { name: 'Super Mario Galaxy - File Select', url: '/assets/Super Mario Galaxy - File Select.mp3' },
-        { name: 'Pokemon Black & White 2 OST - Aspertia City', url: '/assets/Pokemon Black & White 2 OST - Aspertia City.mp3' },
-        { name: '3_31 (Persona 3)', url: '/assets/3_31.mp3' },
-        { name: 'Harry Mack - Reporting In', url: '/assets/Harry Mack - Reporting In.mp3' },
-        { name: 'Nintendo DSi - Main Menu Theme', url: '/assets/Nintendo DSi - Main Menu Theme.mp3' },
-        { name: 'Takeshi Abo - Lightgreen', url: '/assets/Takeshi Abo - Lightgreen.mp3' },
-        { name: 'Takeshi Abo - Illusions', url: '/assets/Takeshi Abo - Illusions.mp3' },
-        { name: 'Garoad - Safe Haven', url: '/assets/Garoad - Safe Haven.mp3' },
-    ];
+let wasMusicPlayingBeforeGame = false;
+let currentGameUrl = '';
 
-    // --- INITIALIZATION ---
-    function init() {
-        updatePage();
-        populateMusicMenu();
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-        loadSavedTheme();
-        loadSavedBGM();
-    }
+// Toast Logic
+const toast = document.getElementById('toast-notification');
+let toastTimeout;
 
-    // --- PAGE NAVIGATION ---
-    function updatePage() {
-        const offset = -currentPage * 100;
-        gamePagesWrapper.style.transform = `translateX(${offset}%)`;
+function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2500);
+}
 
-        const allGamePages = document.querySelectorAll('.game-buttons');
-        allGamePages.forEach((page, index) => {
-            if (index === currentPage) {
-                page.style.pointerEvents = 'auto';
+// --- MUSIC DATA ---
+const songs = [{
+    name: 'Wii U Mii Maker',
+    url: '/assets/Wii U OST - Mii Maker (Mii Editor).flac'
+}, {
+    name: 'Droopy likes your face',
+    url: '/assets/Droopy likes your face.flac'
+}, {
+    name: 'Sleepville',
+    url: '/assets/Sleepville - Little Man Legends.mp3'
+}, {
+    name: 'Beneath the Mask',
+    url: '/assets/Beneath the Mask -instrumental version- - Lyn.mp3'
+}, {
+    name: 'Training day',
+    url: '/assets/MTraining Day.mp3'
+}, {
+    name: 'Super Mario Galaxy - File Select',
+    url: '/assets/Super Mario Galaxy - File Select.mp3'
+}, {
+    name: 'Pokemon Black & White 2 OST - Aspertia City',
+    url: '/assets/Pokemon Black & White 2 OST - Aspertia City.mp3'
+}, {
+    name: '3_31 (Persona 3)',
+    url: '/assets/3_31.mp3'
+}, {
+    name: 'Harry Mack - Reporting In',
+    url: '/assets/Harry Mack - Reporting In.mp3'
+}, {
+    name: 'Nintendo DSi - Main Menu Theme',
+    url: '/assets/Nintendo DSi - Main Menu Theme.mp3'
+}, {
+    name: 'Takeshi Abo - Lightgreen',
+    url: '/assets/Takeshi Abo - Lightgreen.mp3'
+}, {
+    name: 'Takeshi Abo - Illusions',
+    url: '/assets/Takeshi Abo - Illusions.mp3'
+}, {
+    name: 'Garoad - Safe Haven',
+    url: '/assets/Garoad - Safe Haven.mp3'
+}, ];
+
+// --- INITIALIZATION ---
+window.addEventListener('load', () => {
+    updatePage();
+    populateMusicMenu();
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+
+    // Init Themes
+    const savedTheme = localStorage.getItem('customTheme');
+
+    if (savedTheme) {
+        try {
+            const theme = JSON.parse(savedTheme);
+            applyTheme(theme);
+
+            if (theme.preset) {
+                document.getElementById('input-preset').value = theme.preset;
             } else {
-                page.style.pointerEvents = 'none';
+                document.getElementById('input-preset').value = 'custom';
             }
-        });
 
-        pageIndicatorDots.innerHTML = '';
-        for (let i = 0; i < allGamePages.length; i++) {
-            const dot = document.createElement('div');
-            dot.classList.add('page-dot');
-            if (i === currentPage) dot.classList.add('active');
-            dot.addEventListener('click', () => {
-                currentPage = i;
-                updatePage();
-                clickSound.currentTime = 0; clickSound.play().catch(() => {});
-            });
-            pageIndicatorDots.appendChild(dot);
+            // Update Inputs
+            document.getElementById('input-bg').value = theme.bg || '#e6e8e7';
+            document.getElementById('input-bar').value = theme.bar || '#c9c5c2';
+            document.getElementById('input-static').value = theme.static || '#555555';
+            document.getElementById('input-shape').value = theme.shape || 'squircle';
+            document.getElementById('input-font').value = theme.font || 'PopHappiness';
+            document.getElementById('input-opacity').value = theme.opacity || 1;
+            document.getElementById('input-layout').value = theme.displayMode || 'grid';
+            document.getElementById('input-noise-type').value = theme.noiseType || 'default';
+
+            // Update New Inputs
+            if (theme.layout) {
+                document.getElementById('check-show-home').checked = theme.layout.home !== false;
+                document.getElementById('check-show-search').checked = theme.layout.search !== false;
+                document.getElementById('check-show-clock').checked = theme.layout.clock !== false;
+                document.getElementById('check-show-music').checked = theme.layout.music !== false;
+            }
+            document.getElementById('input-btn-hover').value = theme.btnHover || '#40c4ff';
+
+            // Restore Rain
+            if (theme.rainEnabled) {
+                document.getElementById('check-rain-shawarma').checked = true;
+                toggleRain(true);
+            }
+
+            // RESTORE NEW INPUTS
+            document.getElementById('input-wii-btn-bg').value = theme.wiiBtnBg || '#ffffff';
+            document.getElementById('input-modal-bg').value = theme.modalBg || '#f7f7f7';
+            document.getElementById('input-modal-border').value = theme.modalBorder || '#d4d4d4';
+
+        } catch (e) {
+            console.error("Theme load error", e);
         }
-        prevPageButton.classList.toggle('disabled', currentPage === 0);
-        nextPageButton.classList.toggle('disabled', currentPage === allGamePages.length - 1);
+    } else {
+        document.getElementById('input-preset').value = 'custom';
     }
 
-    prevPageButton.addEventListener('click', () => {
-        if (currentPage > 0) {
-            currentPage--;
+    const savedBGM = localStorage.getItem('qbbic-bgm');
+    if (savedBGM && savedBGM !== 'none') {
+        const song = songs.find(s => s.url === savedBGM);
+        playBGM(savedBGM, song ? song.name : "Unknown");
+    }
+});
+
+// --- PAGE NAVIGATION ---
+function updatePage() {
+    const offset = -currentPage * 100;
+    gamePagesWrapper.style.transform = `translateX(${offset}%)`;
+
+    const allGamePages = document.querySelectorAll('.game-buttons');
+    allGamePages.forEach((page, index) => {
+        if (index === currentPage) {
+            page.style.pointerEvents = 'auto';
+        } else {
+            page.style.pointerEvents = 'none';
+        }
+    });
+
+    pageIndicatorDots.innerHTML = '';
+    for (let i = 0; i < allGamePages.length; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('page-dot');
+        if (i === currentPage) dot.classList.add('active');
+        dot.addEventListener('click', () => {
+            currentPage = i;
             updatePage();
-            prevPageSound.currentTime = 0; prevPageSound.play().catch(() => {});
-        }
-    });
-
-    nextPageButton.addEventListener('click', () => {
-        const allGamePages = document.querySelectorAll('.game-buttons');
-        if (currentPage < allGamePages.length - 1) {
-            currentPage++;
-            updatePage();
-            nextPageSound.currentTime = 0; nextPageSound.play().catch(() => {});
-        }
-    });
-
-    // --- TOAST NOTIFICATIONS ---
-    const toast = document.getElementById('toast-notification');
-    let toastTimeout;
-    function showToast(message) {
-        toast.textContent = message;
-        toast.classList.add('show');
-        clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2500);
-    }
-
-    // --- GAME CLICK LOGIC ---
-    document.querySelectorAll('.game-button').forEach(btn => {
-        if (btn.classList.contains('placeholder')) return;
-        btn.addEventListener('mouseenter', () => { hoverSound.currentTime = 0; hoverSound.play().catch(() => {}); });
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const url = btn.dataset.href;
-            const title = btn.title || "Game";
-            if (url && url !== '#') { openGameModal(url, title); }
+            clickSound.currentTime = 0;
+            clickSound.play().catch(() => {});
         });
-    });
-
-    function openGameModal(url, title) {
-        gameOpenSound.currentTime = 0; gameOpenSound.play().catch(() => {});
-        wasMusicPlayingBeforeGame = !bgMusic.paused;
-        bgMusic.pause();
-        currentGameUrl = url;
-        gameModalTitle.textContent = title;
-
-        gameModal.style.display = 'flex';
-        setTimeout(() => gameModal.classList.add('active'), 10);
-        document.body.style.overflow = 'hidden';
-
-        gameIframe.src = 'about:blank';
-        gameModalContainer.classList.remove('crt-animate-open', 'crt-animate-close');
-
-        gameIframe.src = url;
-        gameIframe.onload = function () { this.contentWindow.focus(); };
-        gameModalContainer.classList.add('crt-animate-open');
-
-        showToast(`Launching ${title}...`);
+        pageIndicatorDots.appendChild(dot);
     }
+    prevPageButton.classList.toggle('disabled', currentPage === 0);
+    nextPageButton.classList.toggle('disabled', currentPage === allGamePages.length - 1);
+}
 
-    function closeGameModal() {
-        gameCloseSound.currentTime = 0; gameCloseSound.play().catch(() => {});
-
-        gameModalContainer.classList.remove('crt-animate-open');
-        gameModalContainer.classList.add('crt-animate-close');
-
-        setTimeout(() => {
-            gameModal.classList.remove('active');
-            setTimeout(() => {
-                gameModal.style.display = 'none';
-                gameIframe.src = 'about:blank';
-                gameModalContainer.classList.remove('crt-animate-close');
-                currentGameUrl = '';
-                document.body.style.overflow = '';
-                if (wasMusicPlayingBeforeGame) bgMusic.play().catch(() => {});
-            }, 300);
-        }, 400);
+prevPageButton.addEventListener('click', () => {
+    if (currentPage > 0) {
+        currentPage--;
+        updatePage();
+        prevPageSound.currentTime = 0;
+        prevPageSound.play().catch(() => {});
     }
-    closeGameModalBtn.addEventListener('click', closeGameModal);
+});
 
-    // --- MENU BAR SOUNDS ---
-    document.querySelectorAll('.wii-bottom-bar .wii-button').forEach(btn => {
-        btn.addEventListener('mouseenter', () => {
-            menuHoverSound.currentTime = 0;
-            menuHoverSound.play().catch(() => {});
-        });
+nextPageButton.addEventListener('click', () => {
+    const allGamePages = document.querySelectorAll('.game-buttons');
+    if (currentPage < allGamePages.length - 1) {
+        currentPage++;
+        updatePage();
+        nextPageSound.currentTime = 0;
+        nextPageSound.play().catch(() => {});
+    }
+});
+
+// --- GAME CLICK LOGIC ---
+document.querySelectorAll('.game-button').forEach(btn => {
+    if (btn.classList.contains('placeholder')) return;
+    btn.addEventListener('mouseenter', () => {
+        hoverSound.currentTime = 0;
+        hoverSound.play().catch(() => {});
     });
-
-    // --- MODAL CONTROLS ---
-    document.getElementById('reload-game-btn').addEventListener('click', () => {
-        if (gameIframe.src && gameIframe.src !== 'about:blank') {
-            gameIframe.src = gameIframe.src;
-            showToast("Reloading game...");
-            setTimeout(() => { gameIframe.contentWindow.focus(); }, 500);
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = btn.dataset.href;
+        const title = btn.title || "Game";
+        if (url && url !== '#') {
+            openGameModal(url, title);
         }
     });
-    document.getElementById('open-new-tab-btn').addEventListener('click', () => {
-        if (currentGameUrl) window.open(currentGameUrl, '_blank');
-    });
-    document.getElementById('open-blank-btn').addEventListener('click', () => {
-        const newWindow = window.open('about:blank', '_blank');
-        if (newWindow) {
-            newWindow.document.write(`<!DOCTYPE html><html lang="en"><head><title>${gameModalTitle.textContent}</title><style>body, html { margin: 0; padding: 0; overflow: hidden; background: #000; }</style></head><body><iframe src="${currentGameUrl}" style="width: 100vw; height: 100vh; border: none;" allowfullscreen></iframe></body></html>`);
-            newWindow.document.close();
-        }
-    });
-    document.getElementById('fullscreen-btn').addEventListener('click', () => {
-        const requestFS = gameIframe.requestFullscreen || gameIframe.mozRequestFullScreen || gameIframe.webkitRequestFullscreen || gameIframe.msRequestFullscreen;
-        if (requestFS) requestFS.call(gameIframe);
-    });
+});
 
-    // --- THEME MAKER LOGIC ---
-    const inputBg = document.getElementById('input-bg');
-    const inputBar = document.getElementById('input-bar');
-    const inputStatic = document.getElementById('input-static');
-    const inputShape = document.getElementById('input-shape');
-    const inputFont = document.getElementById('input-font');
-    const inputOpacity = document.getElementById('input-opacity');
-    const inputBgImage = document.getElementById('input-bg-image');
-    const inputBgUpload = document.getElementById('input-bg-upload');
-    const checkHome = document.getElementById('check-show-home');
-    const checkSearch = document.getElementById('check-show-search');
-    const checkClock = document.getElementById('check-show-clock');
-    const checkMusic = document.getElementById('check-show-music');
-    const inputBtnHover = document.getElementById('input-btn-hover');
-    const inputLayout = document.getElementById('input-layout');
-    const inputNoise = document.getElementById('input-noise-type');
-    const inputWiiBtnBg = document.getElementById('input-wii-btn-bg');
-    const inputModalBg = document.getElementById('input-modal-bg');
-    const inputModalBorder = document.getElementById('input-modal-border');
-    const btnReset = document.getElementById('reset-theme-btn');
-    const inputPreset = document.getElementById('input-preset');
+function openGameModal(url, title) {
+    gameOpenSound.currentTime = 0;
+    gameOpenSound.play().catch(() => {});
+    wasMusicPlayingBeforeGame = !bgMusic.paused;
+    bgMusic.pause();
+    currentGameUrl = url;
+    gameModalTitle.textContent = title;
 
-    const themePresets = {
-        wii: { bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', wiiBtnBg: '#ffffff', modalBg: '#f7f7f7', modalBorder: '#d4d4d4', shape: 'squircle', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#40c4ff', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-        'pride-rainbow': { bg: '#f0f0f0', bar: '#ffadad', static: '#ff6b6b', wiiBtnBg: '#fff0f0', modalBg: '#fff0f0', modalBorder: '#ffadad', shape: 'round', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ffd6a5', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-        'pride-trans': { bg: '#f5fbff', bar: '#F5A9B8', static: '#5BCEFA', wiiBtnBg: '#ffffff', modalBg: '#ffffff', modalBorder: '#5BCEFA', shape: 'squircle', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-        'pride-bi': { bg: '#f3e6fa', bar: '#D00070', static: '#0038A8', wiiBtnBg: '#f3e6fa', modalBg: '#f3e6fa', modalBorder: '#D00070', shape: 'rounded-square', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#9B4F96', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-        'pride-pan': { bg: '#fffacd', bar: '#ff218c', static: '#00b8ff', wiiBtnBg: '#ffffea', modalBg: '#ffffea', modalBorder: '#ff218c', shape: 'round', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ffd700', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-        'pride-ace': { bg: '#1a1a1a', bar: '#800080', static: '#a3a3a3', wiiBtnBg: '#333333', modalBg: '#333333', modalBorder: '#800080', shape: 'square', font: 'monospace', opacity: 0.8, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-        'pride-enby': { bg: '#fffbea', bar: '#9c59d1', static: '#2c2c2c', wiiBtnBg: '#ffffff', modalBg: '#fffbea', modalBorder: '#9c59d1', shape: 'squircle', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#fc4b4b', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-        'pride-lesbian': { bg: '#fff0f0', bar: '#d53d5e', static: '#a30262', wiiBtnBg: '#ffe6e6', modalBg: '#ffe6e6', modalBorder: '#d53d5e', shape: 'rounded-square', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ff9a56', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-        'pride-genderqueer': { bg: '#f9f9f9', bar: '#b57edc', static: '#4a8123', wiiBtnBg: '#ffffff', modalBg: '#ffffff', modalBorder: '#b57edc', shape: 'round', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-        'pride-intersex': { bg: '#ffdb00', bar: '#7902aa', static: '#4a006a', wiiBtnBg: '#fff5cc', modalBg: '#fff5cc', modalBorder: '#7902aa', shape: 'round', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-        'pride-aro': { bg: '#f0fff0', bar: '#3da542', static: '#000000', wiiBtnBg: '#ffffff', modalBg: '#ffffff', modalBorder: '#3da542', shape: 'square', font: 'monospace', opacity: 1, bgImage: '', btnHover: '#a9a9a9', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } }
+    // Show Modal
+    gameModal.style.display = 'flex';
+    setTimeout(() => gameModal.classList.add('active'), 10);
+    document.body.style.overflow = 'hidden';
+
+    gameIframe.src = 'about:blank';
+    gameModalContainer.classList.remove('crt-animate-open', 'crt-animate-close');
+
+    gameIframe.src = url;
+    gameIframe.onload = function() {
+        this.contentWindow.focus();
     };
+    gameModalContainer.classList.add('crt-animate-open');
 
-    function loadSavedTheme() {
-        const savedTheme = localStorage.getItem('customTheme');
-        if (savedTheme) {
-            try {
-                const theme = JSON.parse(savedTheme);
-                applyTheme(theme);
-                document.getElementById('input-preset').value = theme.preset || 'custom';
-                // Sync Inputs
-                inputBg.value = theme.bg || '#e6e8e7';
-                inputBar.value = theme.bar || '#c9c5c2';
-                inputStatic.value = theme.static || '#555555';
-                inputShape.value = theme.shape || 'squircle';
-                inputFont.value = theme.font || 'PopHappiness';
-                inputOpacity.value = theme.opacity || 1;
-                inputLayout.value = theme.displayMode || 'grid';
-                inputNoise.value = theme.noiseType || 'default';
-                inputBtnHover.value = theme.btnHover || '#40c4ff';
-                inputWiiBtnBg.value = theme.wiiBtnBg || '#ffffff';
-                inputModalBg.value = theme.modalBg || '#f7f7f7';
-                inputModalBorder.value = theme.modalBorder || '#d4d4d4';
+    showToast(`Launching ${title}...`);
+}
 
-                if (theme.layout) {
-                    checkHome.checked = theme.layout.home !== false;
-                    checkSearch.checked = theme.layout.search !== false;
-                    checkClock.checked = theme.layout.clock !== false;
-                    checkMusic.checked = theme.layout.music !== false;
-                }
-                if (theme.rainEnabled) {
-                    document.getElementById('check-rain-shawarma').checked = true;
-                    toggleRain(true);
-                }
-            } catch (e) { console.error("Theme load error", e); }
-        } else {
-            document.getElementById('input-preset').value = 'custom';
+function closeGameModal() {
+    gameCloseSound.currentTime = 0;
+    gameCloseSound.play().catch(() => {});
+
+    gameModalContainer.classList.remove('crt-animate-open');
+    gameModalContainer.classList.add('crt-animate-close');
+
+    setTimeout(() => {
+        gameModal.classList.remove('active');
+        setTimeout(() => {
+            gameModal.style.display = 'none';
+            gameIframe.src = 'about:blank';
+            gameModalContainer.classList.remove('crt-animate-close');
+            currentGameUrl = '';
+            document.body.style.overflow = '';
+            if (wasMusicPlayingBeforeGame) bgMusic.play().catch(() => {});
+        }, 300);
+    }, 400);
+}
+closeGameModalBtn.addEventListener('click', closeGameModal);
+
+// --- MENU BAR SOUNDS ---
+document.querySelectorAll('.wii-bottom-bar .wii-button').forEach(btn => {
+    btn.addEventListener('mouseenter', () => {
+        menuHoverSound.currentTime = 0;
+        menuHoverSound.play().catch(() => {});
+    });
+});
+
+// --- ADVANCED MODAL BUTTONS ---
+document.getElementById('reload-game-btn').addEventListener('click', () => {
+    if (gameIframe.src && gameIframe.src !== 'about:blank') {
+        gameIframe.src = gameIframe.src;
+        showToast("Reloading game...");
+        setTimeout(() => {
+            gameIframe.contentWindow.focus();
+        }, 500);
+    }
+});
+document.getElementById('open-new-tab-btn').addEventListener('click', () => {
+    if (currentGameUrl) window.open(currentGameUrl, '_blank');
+});
+document.getElementById('open-blank-btn').addEventListener('click', () => {
+    const newWindow = window.open('about:blank', '_blank');
+    if (newWindow) {
+        newWindow.document.write(`<!DOCTYPE html><html lang="en"><head><title>${gameModalTitle.textContent}</title><style>body, html { margin: 0; padding: 0; overflow: hidden; background: #000; }</style></head><body><iframe src="${currentGameUrl}" style="width: 100vw; height: 100vh; border: none;" allowfullscreen></iframe></body></html>`);
+        newWindow.document.close();
+    }
+});
+document.getElementById('fullscreen-btn').addEventListener('click', () => {
+    const requestFS = gameIframe.requestFullscreen || gameIframe.mozRequestFullScreen || gameIframe.webkitRequestFullscreen || gameIframe.msRequestFullscreen;
+    if (requestFS) requestFS.call(gameIframe);
+});
+
+// --- THEME MAKER LOGIC ---
+const inputBg = document.getElementById('input-bg');
+const inputBar = document.getElementById('input-bar');
+const inputStatic = document.getElementById('input-static');
+const inputShape = document.getElementById('input-shape');
+const inputFont = document.getElementById('input-font');
+const inputOpacity = document.getElementById('input-opacity');
+const inputBgImage = document.getElementById('input-bg-image');
+const inputBgUpload = document.getElementById('input-bg-upload');
+
+const checkHome = document.getElementById('check-show-home');
+const checkSearch = document.getElementById('check-show-search');
+const checkClock = document.getElementById('check-show-clock');
+const checkMusic = document.getElementById('check-show-music');
+const inputBtnHover = document.getElementById('input-btn-hover');
+
+const inputLayout = document.getElementById('input-layout');
+const inputNoise = document.getElementById('input-noise-type');
+
+/* NEW INPUTS */
+const inputWiiBtnBg = document.getElementById('input-wii-btn-bg');
+const inputModalBg = document.getElementById('input-modal-bg');
+const inputModalBorder = document.getElementById('input-modal-border');
+
+const btnReset = document.getElementById('reset-theme-btn');
+const inputPreset = document.getElementById('input-preset');
+
+// PRESET DATA CONFIGURATION
+const themePresets = {
+    // --- CONSOLES ---
+    wii: {
+        bg: '#e6e8e7',
+        bar: '#c9c5c2',
+        static: '#555555',
+        wiiBtnBg: '#ffffff',
+        modalBg: '#f7f7f7',
+        modalBorder: '#d4d4d4',
+        shape: 'squircle',
+        font: 'PopHappiness',
+        opacity: 1,
+        bgImage: '',
+        btnHover: '#40c4ff',
+        displayMode: 'grid',
+        noiseType: 'default',
+        layout: {
+            home: true,
+            search: true,
+            clock: true,
+            music: true
+        }
+    },
+
+    // --- PRIDE COLLECTION ---
+    'pride-rainbow': {
+        bg: '#f0f0f0',
+        bar: '#ffadad',
+        static: '#ff6b6b',
+        wiiBtnBg: '#fff0f0',
+        modalBg: '#fff0f0',
+        modalBorder: '#ffadad',
+        shape: 'round',
+        font: 'PopHappiness',
+        opacity: 1,
+        bgImage: '',
+        btnHover: '#ffd6a5',
+        displayMode: 'grid',
+        noiseType: 'default',
+        layout: {
+            home: true,
+            search: true,
+            clock: true,
+            music: true
+        }
+    },
+    'pride-trans': {
+        bg: '#f5fbff',
+        bar: '#F5A9B8',
+        static: '#5BCEFA',
+        wiiBtnBg: '#ffffff',
+        modalBg: '#ffffff',
+        modalBorder: '#5BCEFA',
+        shape: 'squircle',
+        font: 'sans-serif',
+        opacity: 1,
+        bgImage: '',
+        btnHover: '#ffffff',
+        displayMode: 'grid',
+        noiseType: 'default',
+        layout: {
+            home: true,
+            search: true,
+            clock: true,
+            music: true
+        }
+    },
+    'pride-bi': {
+        bg: '#f3e6fa',
+        bar: '#D00070',
+        static: '#0038A8',
+        wiiBtnBg: '#f3e6fa',
+        modalBg: '#f3e6fa',
+        modalBorder: '#D00070',
+        shape: 'rounded-square',
+        font: 'sans-serif',
+        opacity: 1,
+        bgImage: '',
+        btnHover: '#9B4F96',
+        displayMode: 'grid',
+        noiseType: 'default',
+        layout: {
+            home: true,
+            search: true,
+            clock: true,
+            music: true
+        }
+    },
+    'pride-pan': {
+        bg: '#fffacd',
+        bar: '#ff218c',
+        static: '#00b8ff',
+        wiiBtnBg: '#ffffea',
+        modalBg: '#ffffea',
+        modalBorder: '#ff218c',
+        shape: 'round',
+        font: 'PopHappiness',
+        opacity: 1,
+        bgImage: '',
+        btnHover: '#ffd700',
+        displayMode: 'grid',
+        noiseType: 'default',
+        layout: {
+            home: true,
+            search: true,
+            clock: true,
+            music: true
+        }
+    },
+    'pride-ace': {
+        bg: '#1a1a1a',
+        bar: '#800080',
+        static: '#a3a3a3',
+        wiiBtnBg: '#333333',
+        modalBg: '#333333',
+        modalBorder: '#800080',
+        shape: 'square',
+        font: 'monospace',
+        opacity: 0.8,
+        bgImage: '',
+        btnHover: '#ffffff',
+        displayMode: 'grid',
+        noiseType: 'default',
+        layout: {
+            home: true,
+            search: true,
+            clock: true,
+            music: true
+        }
+    },
+    'pride-enby': {
+        bg: '#fffbea',
+        bar: '#9c59d1',
+        static: '#2c2c2c',
+        wiiBtnBg: '#ffffff',
+        modalBg: '#fffbea',
+        modalBorder: '#9c59d1',
+        shape: 'squircle',
+        font: 'sans-serif',
+        opacity: 1,
+        bgImage: '',
+        btnHover: '#fc4b4b',
+        displayMode: 'grid',
+        noiseType: 'default',
+        layout: {
+            home: true,
+            search: true,
+            clock: true,
+            music: true
+        }
+    },
+    'pride-lesbian': {
+        bg: '#fff0f0',
+        bar: '#d53d5e',
+        static: '#a30262',
+        wiiBtnBg: '#ffe6e6',
+        modalBg: '#ffe6e6',
+        modalBorder: '#d53d5e',
+        shape: 'rounded-square',
+        font: 'PopHappiness',
+        opacity: 1,
+        bgImage: '',
+        btnHover: '#ff9a56',
+        displayMode: 'grid',
+        noiseType: 'default',
+        layout: {
+            home: true,
+            search: true,
+            clock: true,
+            music: true
+        }
+    },
+    'pride-genderqueer': {
+        bg: '#f9f9f9',
+        bar: '#b57edc',
+        static: '#4a8123',
+        wiiBtnBg: '#ffffff',
+        modalBg: '#ffffff',
+        modalBorder: '#b57edc',
+        shape: 'round',
+        font: 'sans-serif',
+        opacity: 1,
+        bgImage: '',
+        btnHover: '#ffffff',
+        displayMode: 'grid',
+        noiseType: 'default',
+        layout: {
+            home: true,
+            search: true,
+            clock: true,
+            music: true
+        }
+    },
+    'pride-intersex': {
+        bg: '#ffdb00',
+        bar: '#7902aa',
+        static: '#4a006a',
+        wiiBtnBg: '#fff5cc',
+        modalBg: '#fff5cc',
+        modalBorder: '#7902aa',
+        shape: 'round',
+        font: 'PopHappiness',
+        opacity: 1,
+        bgImage: '',
+        btnHover: '#ffffff',
+        displayMode: 'grid',
+        noiseType: 'default',
+        layout: {
+            home: true,
+            search: true,
+            clock: true,
+            music: true
+        }
+    },
+    'pride-aro': {
+        bg: '#f0fff0',
+        bar: '#3da542',
+        static: '#000000',
+        wiiBtnBg: '#ffffff',
+        modalBg: '#ffffff',
+        modalBorder: '#3da542',
+        shape: 'square',
+        font: 'monospace',
+        opacity: 1,
+        bgImage: '',
+        btnHover: '#a9a9a9',
+        displayMode: 'grid',
+        noiseType: 'default',
+        layout: {
+            home: true,
+            search: true,
+            clock: true,
+            music: true
         }
     }
+};
 
-    function saveThemeToStorage(themeObj) {
-        themeObj.preset = document.getElementById('input-preset').value;
-        themeObj.rainEnabled = document.getElementById('check-rain-shawarma').checked;
-        try { localStorage.setItem('customTheme', JSON.stringify(themeObj)); } catch (e) { }
+function saveThemeToStorage(themeObj) {
+    themeObj.preset = document.getElementById('input-preset').value;
+    themeObj.rainEnabled = document.getElementById('check-rain-shawarma').checked;
+    try {
+        localStorage.setItem('customTheme', JSON.stringify(themeObj));
+    } catch (e) {}
+}
+
+function applyTheme(themeObj) {
+    const {
+        bg,
+        bar,
+        static,
+        shape,
+        font,
+        opacity,
+        bgImage,
+        layout,
+        btnHover,
+        displayMode,
+        noiseType,
+        wiiBtnBg,
+        modalBg,
+        modalBorder
+    } = themeObj;
+
+    document.documentElement.style.setProperty('--bg-color', bg);
+    document.documentElement.style.setProperty('--bar-color', bar);
+    document.documentElement.style.setProperty('--static-color', static);
+
+    /* Apply New Variables */
+    document.documentElement.style.setProperty('--wii-btn-bg', wiiBtnBg || '#ffffff');
+    document.documentElement.style.setProperty('--modal-bg', modalBg || '#f7f7f7');
+    document.documentElement.style.setProperty('--modal-border', modalBorder || '#d4d4d4');
+
+    document.documentElement.style.setProperty('--card-opacity', opacity || 1);
+    document.documentElement.style.setProperty('--btn-hover-color', btnHover || '#40c4ff');
+
+    const fontVal = font === 'monospace' ? "'Courier New', monospace" : (font === 'sans-serif' ? "Arial, sans-serif" : "'PopHappiness', sans-serif");
+    document.documentElement.style.setProperty('--main-font', fontVal);
+
+    let btnRad = '12px';
+    let cardRad = '25px';
+    let cardClip = 'none';
+
+    if (shape === 'square') {
+        btnRad = '0px';
+        cardRad = '0px';
+    } else if (shape === 'rounded-square') {
+        btnRad = '8px';
+        cardRad = '8px';
+    } else if (shape === 'squircle') {
+        btnRad = '18px';
+        cardRad = '35px';
+    } else if (shape === 'round') {
+        btnRad = '50%';
+        cardRad = '25px';
     }
 
-    function applyTheme(themeObj) {
-        const { bg, bar, static: staticColor, shape, font, opacity, bgImage, layout, btnHover, displayMode, noiseType, wiiBtnBg, modalBg, modalBorder } = themeObj;
+    document.documentElement.style.setProperty('--btn-radius', btnRad);
+    document.documentElement.style.setProperty('--card-radius', cardRad);
+    document.documentElement.style.setProperty('--card-clip', cardClip);
 
-        const docStyle = document.documentElement.style;
-        docStyle.setProperty('--bg-color', bg);
-        docStyle.setProperty('--bar-color', bar);
-        docStyle.setProperty('--static-color', staticColor);
-        docStyle.setProperty('--wii-btn-bg', wiiBtnBg || '#ffffff');
-        docStyle.setProperty('--modal-bg', modalBg || '#f7f7f7');
-        docStyle.setProperty('--modal-border', modalBorder || '#d4d4d4');
-        docStyle.setProperty('--card-opacity', opacity || 1);
-        docStyle.setProperty('--btn-hover-color', btnHover || '#40c4ff');
-
-        const fontVal = font === 'monospace' ? "'Courier New', monospace" : (font === 'sans-serif' ? "Arial, sans-serif" : "'PopHappiness', sans-serif");
-        docStyle.setProperty('--main-font', fontVal);
-
-        let btnRad = '12px', cardRad = '25px', cardClip = 'none';
-        if (shape === 'square') { btnRad = '0px'; cardRad = '0px'; }
-        else if (shape === 'rounded-square') { btnRad = '8px'; cardRad = '8px'; }
-        else if (shape === 'squircle') { btnRad = '18px'; cardRad = '35px'; }
-        else if (shape === 'round') { btnRad = '50%'; cardRad = '25px'; }
-
-        docStyle.setProperty('--btn-radius', btnRad);
-        docStyle.setProperty('--card-radius', cardRad);
-        docStyle.setProperty('--card-clip', cardClip);
-
-        document.querySelectorAll('.game-buttons').forEach(el => {
-            el.classList.remove('layout-list', 'layout-dense', 'layout-cinema', 'layout-cozy', 'layout-simple', 'layout-big', 'layout-tiny', 'layout-wide');
-            if (displayMode && displayMode !== 'grid') el.classList.add('layout-' + displayMode);
-        });
-
-        document.body.classList.remove('noise-default', 'noise-scanlines', 'noise-dots', 'noise-none');
-        document.body.classList.add('noise-' + (noiseType || 'default'));
-
-        document.body.className = document.body.className.replace(/bg-\w+/g, '');
-        document.body.classList.add('noise-' + (noiseType || 'default'));
-
-        const currentPreset = inputPreset.value;
-        if (bgImage && bgImage.trim() !== "") {
-            document.body.style.backgroundImage = `url('${bgImage}')`;
-            document.body.classList.add('bg-is-image');
-        } else {
-            document.body.classList.remove('bg-is-image');
-            if (currentPreset === 'wii') document.body.classList.add('bg-wii');
-            else {
-                const encodedColor = encodeURIComponent(staticColor);
-                const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
-                document.body.style.backgroundImage = svg;
-                document.body.style.backgroundSize = '10px 10px';
-            }
-        }
-
-        if (layout) {
-            document.getElementById('wii-menu-button').style.display = layout.home === false ? 'none' : 'flex';
-            document.getElementById('search-button').style.display = layout.search === false ? 'none' : 'flex';
-            document.getElementById('wii-date-time-display').style.display = layout.clock === false ? 'none' : 'block';
-            document.getElementById('music-menu-toggle').style.display = layout.music === false ? 'none' : 'flex';
-        }
-        saveThemeToStorage(themeObj);
-    }
-
-    function getCurrentThemeObj() {
-        let currentBgImage = inputBgImage.value;
-        const currentBodyBg = document.body.style.backgroundImage;
-        if (currentBodyBg.includes('data:image') && !currentBodyBg.includes('svg')) {
-            currentBgImage = currentBodyBg.slice(5, -2);
-        }
-        return {
-            bg: inputBg.value,
-            bar: inputBar.value,
-            static: inputStatic.value,
-            shape: inputShape.value,
-            font: inputFont.value,
-            opacity: inputOpacity.value,
-            bgImage: currentBgImage,
-            btnHover: inputBtnHover.value,
-            displayMode: inputLayout.value,
-            noiseType: inputNoise.value,
-            wiiBtnBg: inputWiiBtnBg.value,
-            modalBg: inputModalBg.value,
-            modalBorder: inputModalBorder.value,
-            layout: {
-                home: checkHome.checked,
-                search: checkSearch.checked,
-                clock: checkClock.checked,
-                music: checkMusic.checked
-            }
-        };
-    }
-
-    function updateInputsFromTheme(theme) {
-        inputBg.value = theme.bg;
-        inputBar.value = theme.bar;
-        inputStatic.value = theme.static;
-        inputShape.value = theme.shape;
-        inputFont.value = theme.font;
-        inputOpacity.value = theme.opacity;
-        inputBtnHover.value = theme.btnHover;
-        inputLayout.value = theme.displayMode || 'grid';
-        inputNoise.value = theme.noiseType || 'default';
-        inputBgImage.value = theme.bgImage || '';
-        inputWiiBtnBg.value = theme.wiiBtnBg || '#ffffff';
-        inputModalBg.value = theme.modalBg || '#f7f7f7';
-        inputModalBorder.value = theme.modalBorder || '#d4d4d4';
-
-        if (theme.layout) {
-            checkHome.checked = theme.layout.home !== false;
-            checkSearch.checked = theme.layout.search !== false;
-            checkClock.checked = theme.layout.clock !== false;
-            checkMusic.checked = theme.layout.music !== false;
-        }
-    }
-
-    // --- THEME EVENT LISTENERS ---
-    inputPreset.addEventListener('change', (e) => {
-        const val = e.target.value;
-        if (val === 'custom') return;
-        const selectedTheme = themePresets[val];
-        if (selectedTheme) {
-            updateInputsFromTheme(selectedTheme);
-            applyTheme(selectedTheme);
-            clickSound.currentTime = 0; clickSound.play().catch(() => {});
-            showToast(`Loaded ${e.target.options[e.target.selectedIndex].text}`);
-        }
+    document.querySelectorAll('.game-buttons').forEach(el => {
+        el.classList.remove('layout-list', 'layout-dense', 'layout-cinema', 'layout-cozy', 'layout-simple', 'layout-big', 'layout-tiny', 'layout-wide');
+        if (displayMode && displayMode !== 'grid') el.classList.add('layout-' + displayMode);
     });
 
-    [inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity, checkHome, checkSearch, checkClock, checkMusic, inputBtnHover, inputLayout, inputNoise,
-        inputWiiBtnBg, inputModalBg, inputModalBorder].forEach(input => {
-            input.addEventListener('change', () => {
-                inputPreset.value = 'custom';
-                applyTheme(getCurrentThemeObj());
-            });
-            if (input.type === 'color' || input.type === 'range') input.addEventListener('input', () => {
-                inputPreset.value = 'custom';
-                applyTheme(getCurrentThemeObj());
-            });
-        });
+    document.body.classList.remove('noise-default', 'noise-scanlines', 'noise-dots', 'noise-none');
+    document.body.classList.add('noise-' + (noiseType || 'default'));
 
-    inputBgImage.addEventListener('change', () => {
-        inputBgUpload.value = '';
+    document.body.className = document.body.className.replace(/bg-\w+/g, '');
+    document.body.classList.add('noise-' + (noiseType || 'default'));
+
+    const currentPreset = inputPreset.value;
+
+    if (bgImage && bgImage.trim() !== "") {
+        document.body.style.backgroundImage = `url('${bgImage}')`;
+        document.body.classList.add('bg-is-image');
+    } else {
+        document.body.classList.remove('bg-is-image');
+
+        if (currentPreset === 'wii') document.body.classList.add('bg-wii');
+        else {
+            const encodedColor = encodeURIComponent(static);
+            const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
+            document.body.style.backgroundImage = svg;
+            document.body.style.backgroundSize = '10px 10px';
+        }
+    }
+
+    if (layout) {
+        document.getElementById('wii-menu-button').style.display = layout.home === false ? 'none' : 'flex';
+        document.getElementById('search-button').style.display = layout.search === false ? 'none' : 'flex';
+        document.getElementById('wii-date-time-display').style.display = layout.clock === false ? 'none' : 'block';
+        document.getElementById('music-menu-toggle').style.display = layout.music === false ? 'none' : 'flex';
+    }
+    saveThemeToStorage(themeObj);
+}
+
+function getCurrentThemeObj() {
+    let currentBgImage = inputBgImage.value;
+    const currentBodyBg = document.body.style.backgroundImage;
+    if (currentBodyBg.includes('data:image') && !currentBodyBg.includes('svg')) {
+        currentBgImage = currentBodyBg.slice(5, -2);
+    }
+    return {
+        bg: inputBg.value,
+        bar: inputBar.value,
+        static: inputStatic.value,
+        shape: inputShape.value,
+        font: inputFont.value,
+        opacity: inputOpacity.value,
+        bgImage: currentBgImage,
+        btnHover: inputBtnHover.value,
+        displayMode: inputLayout.value,
+        noiseType: inputNoise.value,
+
+        /* SAVE NEW INPUTS */
+        wiiBtnBg: inputWiiBtnBg.value,
+        modalBg: inputModalBg.value,
+        modalBorder: inputModalBorder.value,
+
+        layout: {
+            home: checkHome.checked,
+            search: checkSearch.checked,
+            clock: checkClock.checked,
+            music: checkMusic.checked
+        }
+    };
+}
+
+function updateInputsFromTheme(theme) {
+    inputBg.value = theme.bg;
+    inputBar.value = theme.bar;
+    inputStatic.value = theme.static;
+    inputShape.value = theme.shape;
+    inputFont.value = theme.font;
+    inputOpacity.value = theme.opacity;
+    inputBtnHover.value = theme.btnHover;
+    inputLayout.value = theme.displayMode || 'grid';
+    inputNoise.value = theme.noiseType || 'default';
+    inputBgImage.value = theme.bgImage || '';
+
+    /* UPDATE NEW INPUTS */
+    inputWiiBtnBg.value = theme.wiiBtnBg || '#ffffff';
+    inputModalBg.value = theme.modalBg || '#f7f7f7';
+    inputModalBorder.value = theme.modalBorder || '#d4d4d4';
+
+    if (theme.layout) {
+        checkHome.checked = theme.layout.home !== false;
+        checkSearch.checked = theme.layout.search !== false;
+        checkClock.checked = theme.layout.clock !== false;
+        checkMusic.checked = theme.layout.music !== false;
+    }
+}
+
+// PRESET LISTENER
+inputPreset.addEventListener('change', (e) => {
+    const val = e.target.value;
+    if (val === 'custom') return;
+    const selectedTheme = themePresets[val];
+    if (selectedTheme) {
+        updateInputsFromTheme(selectedTheme);
+        applyTheme(selectedTheme);
+        clickSound.currentTime = 0;
+        clickSound.play().catch(() => {});
+        showToast(`Loaded ${e.target.options[e.target.selectedIndex].text}`);
+    }
+});
+
+// SWITCH TO CUSTOM ON EDIT
+[inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity, checkHome, checkSearch, checkClock, checkMusic, inputBtnHover, inputLayout, inputNoise,
+    inputWiiBtnBg, inputModalBg, inputModalBorder
+].forEach(input => {
+    input.addEventListener('change', () => {
         inputPreset.value = 'custom';
         applyTheme(getCurrentThemeObj());
     });
-    inputBgUpload.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const dataUrl = event.target.result;
-                const currentTheme = getCurrentThemeObj();
-                currentTheme.bgImage = dataUrl;
-                inputBgImage.value = '';
-                inputPreset.value = 'custom';
-                applyTheme(currentTheme);
-            };
-            reader.readAsDataURL(file);
-        }
+    if (input.type === 'color' || input.type === 'range') input.addEventListener('input', () => {
+        inputPreset.value = 'custom';
+        applyTheme(getCurrentThemeObj());
     });
+});
 
-    btnReset.addEventListener('click', () => {
-        const defaults = themePresets.wii;
-        updateInputsFromTheme(defaults);
-        inputPreset.value = 'wii';
-        applyTheme(defaults);
-        clickSound.currentTime = 0; clickSound.play().catch(() => {});
-        showToast("Theme Reset");
-    });
-
-    document.getElementById('save-theme-btn').addEventListener('click', () => {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getCurrentThemeObj()));
-        const anchor = document.createElement('a');
-        anchor.href = dataStr; anchor.download = "qbbic_theme.json";
-        anchor.click();
-    });
-    document.getElementById('load-theme-btn').addEventListener('click', () => document.getElementById('input-load-theme').click());
-    document.getElementById('input-load-theme').addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+inputBgImage.addEventListener('change', () => {
+    inputBgUpload.value = '';
+    inputPreset.value = 'custom';
+    applyTheme(getCurrentThemeObj());
+});
+inputBgUpload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
         const reader = new FileReader();
         reader.onload = (event) => {
-            try {
-                const theme = JSON.parse(event.target.result);
-                applyTheme(theme);
-                updateInputsFromTheme(theme);
-                inputPreset.value = 'custom';
-                showToast("Theme Loaded!");
-            } catch (e) { showToast("Error Loading File"); }
+            const dataUrl = event.target.result;
+            const currentTheme = getCurrentThemeObj();
+            currentTheme.bgImage = dataUrl;
+            inputBgImage.value = '';
+            inputPreset.value = 'custom';
+            applyTheme(currentTheme);
         };
-        reader.readAsText(file);
-    });
-
-    // --- SEARCH LOGIC ---
-    document.getElementById('search-button').addEventListener('click', () => {
-        const container = document.getElementById('search-container');
-        container.style.display = container.style.display === 'flex' ? 'none' : 'flex';
-        const input = document.getElementById('search-input');
-        input.focus();
-        searchClickSound.currentTime = 0; searchClickSound.play().catch(() => {});
-    });
-    document.getElementById('search-submit-button').addEventListener('click', performSearch);
-    document.getElementById('search-input').addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        const buttons = document.querySelectorAll('.game-button');
-        buttons.forEach(btn => {
-            if (btn.classList.contains('placeholder')) return;
-            const title = (btn.title || "").toLowerCase();
-            if (title.includes(query)) {
-                btn.style.opacity = '1'; btn.style.filter = 'grayscale(0%)';
-            } else {
-                btn.style.opacity = '0.1'; btn.style.filter = 'grayscale(100%)';
-            }
-        });
-    });
-
-    let lastFoundIndex = -1;
-    function performSearch() {
-        const query = document.getElementById('search-input').value.toLowerCase();
-        if (!query) return;
-
-        const buttons = Array.from(document.querySelectorAll('.game-button')).filter(b => !b.classList.contains('placeholder'));
-        let foundButton = null;
-
-        for (let i = lastFoundIndex + 1; i < buttons.length; i++) {
-            if (buttons[i].title && buttons[i].title.toLowerCase().includes(query)) {
-                foundButton = buttons[i]; lastFoundIndex = i; break;
-            }
-        }
-        if (!foundButton) {
-            for (let i = 0; i <= lastFoundIndex; i++) {
-                if (buttons[i].title && buttons[i].title.toLowerCase().includes(query)) {
-                    foundButton = buttons[i]; lastFoundIndex = i; break;
-                }
-            }
-        }
-
-        if (foundButton) {
-            const page = foundButton.closest('.game-buttons');
-            const pages = document.querySelectorAll('.game-buttons');
-            currentPage = Array.from(pages).indexOf(page);
-            updatePage();
-            foundButton.style.transition = "transform 0.5s";
-            foundButton.style.transform = "scale(1.4)";
-            foundButton.style.zIndex = "100";
-            foundButton.style.boxShadow = "0 0 30px #40c4ff";
-            setTimeout(() => {
-                foundButton.style.transform = ""; foundButton.style.zIndex = ""; foundButton.style.boxShadow = "";
-            }, 1500);
-        } else { showToast("No matches found!"); }
+        reader.readAsDataURL(file);
     }
+});
 
-    // --- MUSIC PLAYER LOGIC ---
-    const volumeSlider = document.getElementById('volume-slider');
-    const nowPlayingText = document.getElementById('now-playing');
+// Reset
+btnReset.addEventListener('click', () => {
+    const defaults = themePresets.wii;
+    updateInputsFromTheme(defaults);
+    inputPreset.value = 'wii';
+    applyTheme(defaults);
+    clickSound.currentTime = 0;
+    clickSound.play().catch(() => {});
+    showToast("Theme Reset");
+});
 
-    function loadSavedBGM() {
-        const savedBGM = localStorage.getItem('qbbic-bgm');
-        if (savedBGM && savedBGM !== 'none') {
-            const song = songs.find(s => s.url === savedBGM);
-            playBGM(savedBGM, song ? song.name : "Unknown");
+// Save/Load
+document.getElementById('save-theme-btn').addEventListener('click', () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getCurrentThemeObj()));
+    const anchor = document.createElement('a');
+    anchor.href = dataStr;
+    anchor.download = "qbbic_theme.json";
+    anchor.click();
+});
+document.getElementById('load-theme-btn').addEventListener('click', () => document.getElementById('input-load-theme').click());
+document.getElementById('input-load-theme').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        try {
+            const theme = JSON.parse(event.target.result);
+            applyTheme(theme);
+            updateInputsFromTheme(theme); // Updated to sync sliders with loaded JSON
+            inputPreset.value = 'custom';
+            showToast("Theme Loaded!");
+        } catch (e) {
+            showToast("Error Loading File");
         }
-    }
+    };
+    reader.readAsText(file);
+});
 
-    volumeSlider.addEventListener('input', (e) => {
-        bgMusic.volume = e.target.value;
-    });
+// Toggle Menus
+document.getElementById('theme-menu-toggle').addEventListener('click', () => {
+    const menu = document.getElementById('theme-menu');
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    themeClickSound.currentTime = 0;
+    themeClickSound.play().catch(() => {});
+});
 
-    function playBGM(url, name) {
-        bgMusic.src = url;
-        bgMusic.volume = volumeSlider.value;
-        bgMusic.play().catch(e => console.log("Autoplay blocked until interaction"));
-        localStorage.setItem('qbbic-bgm', url);
-        nowPlayingText.textContent = name || "Unknown Track";
-    }
+// Search Logic
+document.getElementById('search-button').addEventListener('click', () => {
+    const container = document.getElementById('search-container');
+    container.style.display = container.style.display === 'flex' ? 'none' : 'flex';
+    const input = document.getElementById('search-input');
+    input.focus();
+    searchClickSound.currentTime = 0;
+    searchClickSound.play().catch(() => {});
+});
+document.getElementById('search-submit-button').addEventListener('click', performSearch);
 
-    function populateMusicMenu() {
-        const list = document.getElementById('music-list');
-        songs.forEach((song, idx) => {
-            const div = document.createElement('div');
-            div.className = 'music-option';
-            div.textContent = song.name;
-            div.onclick = () => {
-                playBGM(song.url, song.name);
-                showToast("Playing: " + song.name);
-            };
-            list.appendChild(div);
-        });
-    }
-
-    const musicToggleBtn = document.getElementById('music-menu-toggle');
-    musicToggleBtn.addEventListener('click', () => {
-        const menu = document.getElementById('music-menu');
-        const isVisible = menu.style.display === 'block';
-        menu.style.display = isVisible ? 'none' : 'block';
-        musicToggleBtn.classList.toggle('active', !isVisible);
-        themeClickSound.currentTime = 0; themeClickSound.play().catch(() => {});
-
-        if (bgMusic.paused && localStorage.getItem('qbbic-bgm') !== 'none') {
-            bgMusic.play().catch(() => {});
-        }
-    });
-
-    document.getElementById('music-option-stop').addEventListener('click', () => {
-        bgMusic.pause(); localStorage.setItem('qbbic-bgm', 'none');
-        nowPlayingText.textContent = "Stopped";
-        document.getElementById('music-menu').style.display = 'none';
-        musicToggleBtn.classList.remove('active');
-        showToast("Music Stopped");
-    });
-    document.getElementById('music-option-random').addEventListener('click', () => {
-        const randomSong = songs[Math.floor(Math.random() * songs.length)];
-        playBGM(randomSong.url, randomSong.name);
-        document.getElementById('music-menu').style.display = 'none';
-        musicToggleBtn.classList.remove('active');
-        showToast("Playing Random: " + randomSong.name);
-    });
-
-    // --- TIME LOGIC ---
-    function updateDateTime() {
-        const now = new Date();
-        document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-        document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' });
-    }
-
-    // --- HOME MENU LOGIC ---
-    const homeMenu = document.getElementById('home-menu');
-    const homeBtn = document.getElementById('wii-menu-button');
-
-    homeBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const isVisible = homeMenu.style.display === 'block';
-        homeMenu.style.display = isVisible ? 'none' : 'block';
-        const clickSnd = document.getElementById('theme-click-sound');
-        if (clickSnd) { clickSnd.currentTime = 0; clickSnd.play().catch(() => {}); }
-    });
-
-    document.getElementById('nav-index').addEventListener('click', () => window.location.href = 'index.html');
-    document.getElementById('nav-path').addEventListener('click', () => window.location.href = 'path.html');
-    document.getElementById('nav-video').addEventListener('click', () => window.location.href = 'videos.html');
-    document.getElementById('nav-discord').addEventListener('click', () => window.open('https://discord.gg/TRguRu7mwc', '_blank'));
-
-    // --- GLOBAL CLICK CLOSE LOGIC ---
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('#theme-menu') && !e.target.closest('#theme-menu-toggle') && !e.target.closest('input') && !e.target.closest('select')) {
-            document.getElementById('theme-menu').style.display = 'none';
-        }
-        if (!e.target.closest('#music-menu') && !e.target.closest('#music-menu-toggle')) {
-            document.getElementById('music-menu').style.display = 'none';
-            musicToggleBtn.classList.remove('active');
-        }
-        if (!e.target.closest('#search-container') && !e.target.closest('#search-button')) {
-            document.getElementById('search-container').style.display = 'none';
-            if (document.getElementById('search-container').style.display !== 'flex') {
-                 // Reset opacity if search closed
-                 document.querySelectorAll('.game-button').forEach(btn => {
-                    if (!btn.classList.contains('placeholder')) {
-                        btn.style.opacity = ''; btn.style.filter = '';
-                    }
-                });
-            }
-        }
-        if (!e.target.closest('#home-menu') && !e.target.closest('#wii-menu-button')) {
-            document.getElementById('home-menu').style.display = 'none';
-        }
-    });
-
-    // --- MENU TOGGLES (THEME) ---
-    document.getElementById('theme-menu-toggle').addEventListener('click', () => {
-        const menu = document.getElementById('theme-menu');
-        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        themeClickSound.currentTime = 0; themeClickSound.play().catch(() => {});
-    });
-
-    // --- RAIN SHAWARMA ---
-    const checkRain = document.getElementById('check-rain-shawarma');
-    let rainInterval;
-    function createShawarma() {
-        const el = document.createElement('div');
-        el.innerText = '🌯';
-        el.style.position = 'fixed';
-        el.style.left = Math.random() * 100 + 'vw';
-        el.style.top = '-60px';
-        el.style.fontSize = (Math.random() * 30 + 20) + 'px';
-        el.style.zIndex = '9999';
-        el.style.pointerEvents = 'none';
-        el.style.filter = 'drop-shadow(2px 4px 6px rgba(0,0,0,0.3))';
-        document.body.appendChild(el);
-        const duration = Math.random() * 2000 + 2000;
-        const animation = el.animate([
-            { transform: 'translateY(0) rotate(0deg)' },
-            { transform: `translateY(110vh) rotate(${Math.random() * 360}deg)` }
-        ], { duration: duration, easing: 'linear' });
-        animation.onfinish = () => el.remove();
-    }
-    function toggleRain(enabled) {
-        if (enabled) {
-            if (!rainInterval) {
-                rainInterval = setInterval(createShawarma, 200);
-                showToast("Shawarma Rain Activated! 🌯");
-            }
+document.getElementById('search-input').addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    const buttons = document.querySelectorAll('.game-button');
+    buttons.forEach(btn => {
+        if (btn.classList.contains('placeholder')) return;
+        const title = (btn.title || "").toLowerCase();
+        if (title.includes(query)) {
+            btn.style.opacity = '1';
+            btn.style.filter = 'grayscale(0%)';
         } else {
-            clearInterval(rainInterval);
-            rainInterval = null;
+            btn.style.opacity = '0.1';
+            btn.style.filter = 'grayscale(100%)';
+        }
+    });
+});
+
+let lastFoundIndex = -1;
+
+function performSearch() {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    if (!query) return;
+
+    const buttons = Array.from(document.querySelectorAll('.game-button')).filter(b => !b.classList.contains('placeholder'));
+    let foundButton = null;
+
+    for (let i = lastFoundIndex + 1; i < buttons.length; i++) {
+        if (buttons[i].title && buttons[i].title.toLowerCase().includes(query)) {
+            foundButton = buttons[i];
+            lastFoundIndex = i;
+            break;
         }
     }
-    checkRain.addEventListener('change', (e) => {
-        toggleRain(e.target.checked);
-        inputPreset.value = 'custom';
-        const currentTheme = getCurrentThemeObj();
-        saveThemeToStorage(currentTheme);
+    if (!foundButton) {
+        for (let i = 0; i <= lastFoundIndex; i++) {
+            if (buttons[i].title && buttons[i].title.toLowerCase().includes(query)) {
+                foundButton = buttons[i];
+                lastFoundIndex = i;
+                break;
+            }
+        }
+    }
+
+    if (foundButton) {
+        const page = foundButton.closest('.game-buttons');
+        const pages = document.querySelectorAll('.game-buttons');
+        currentPage = Array.from(pages).indexOf(page);
+        updatePage();
+        foundButton.style.transition = "transform 0.5s";
+        foundButton.style.transform = "scale(1.4)";
+        foundButton.style.zIndex = "100";
+        foundButton.style.boxShadow = "0 0 30px #40c4ff";
+        setTimeout(() => {
+            foundButton.style.transform = "";
+            foundButton.style.zIndex = "";
+            foundButton.style.boxShadow = "";
+        }, 1500);
+    } else {
+        showToast("No matches found!");
+    }
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('#search-container') && !e.target.closest('#search-button')) {
+        if (document.getElementById('search-container').style.display === 'flex') {
+            const buttons = document.querySelectorAll('.game-button');
+            buttons.forEach(btn => {
+                if (!btn.classList.contains('placeholder')) {
+                    btn.style.opacity = '';
+                    btn.style.filter = '';
+                }
+            });
+        }
+    }
+});
+
+// --- MUSIC LOGIC ---
+const volumeSlider = document.getElementById('volume-slider');
+const nowPlayingText = document.getElementById('now-playing');
+
+volumeSlider.addEventListener('input', (e) => {
+    bgMusic.volume = e.target.value;
+});
+
+function playBGM(url, name) {
+    bgMusic.src = url;
+    bgMusic.volume = volumeSlider.value;
+    bgMusic.play().catch(e => console.log("Autoplay blocked until interaction"));
+    localStorage.setItem('qbbic-bgm', url);
+    nowPlayingText.textContent = name || "Unknown Track";
+}
+
+function populateMusicMenu() {
+    const list = document.getElementById('music-list');
+    songs.forEach((song, idx) => {
+        const div = document.createElement('div');
+        div.className = 'music-option';
+        div.textContent = song.name;
+        div.onclick = () => {
+            playBGM(song.url, song.name);
+            showToast("Playing: " + song.name);
+        };
+        list.appendChild(div);
+    });
+}
+
+const musicToggleBtn = document.getElementById('music-menu-toggle');
+musicToggleBtn.addEventListener('click', () => {
+    const menu = document.getElementById('music-menu');
+    const isVisible = menu.style.display === 'block';
+    menu.style.display = isVisible ? 'none' : 'block';
+    musicToggleBtn.classList.toggle('active', !isVisible);
+    themeClickSound.currentTime = 0;
+    themeClickSound.play().catch(() => {});
+
+    if (bgMusic.paused && localStorage.getItem('qbbic-bgm') !== 'none') {
+        bgMusic.play().catch(() => {});
+    }
+});
+
+document.getElementById('music-option-stop').addEventListener('click', () => {
+    bgMusic.pause();
+    localStorage.setItem('qbbic-bgm', 'none');
+    nowPlayingText.textContent = "Stopped";
+    document.getElementById('music-menu').style.display = 'none';
+    musicToggleBtn.classList.remove('active');
+    showToast("Music Stopped");
+});
+document.getElementById('music-option-random').addEventListener('click', () => {
+    const randomSong = songs[Math.floor(Math.random() * songs.length)];
+    playBGM(randomSong.url, randomSong.name);
+    document.getElementById('music-menu').style.display = 'none';
+    musicToggleBtn.classList.remove('active');
+    showToast("Playing Random: " + randomSong.name);
+});
+
+// --- TIME LOGIC ---
+function updateDateTime() {
+    const now = new Date();
+    document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'numeric',
+        day: 'numeric'
+    });
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('#theme-menu') && !e.target.closest('#theme-menu-toggle') && !e.target.closest('input') && !e.target.closest('select')) {
+        document.getElementById('theme-menu').style.display = 'none';
+    }
+    if (!e.target.closest('#music-menu') && !e.target.closest('#music-menu-toggle')) {
+        document.getElementById('music-menu').style.display = 'none';
+        musicToggleBtn.classList.remove('active');
+    }
+    if (!e.target.closest('#search-container') && !e.target.closest('#search-button')) {
+        document.getElementById('search-container').style.display = 'none';
+    }
+});
+
+// --- HOME MENU LOGIC ---
+const homeMenu = document.getElementById('home-menu');
+const homeBtn = document.getElementById('wii-menu-button');
+
+homeBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const isVisible = homeMenu.style.display === 'block';
+    homeMenu.style.display = isVisible ? 'none' : 'block';
+    const clickSnd = document.getElementById('theme-click-sound');
+    if (clickSnd) {
+        clickSnd.currentTime = 0;
+        clickSnd.play().catch(() => {});
+    }
+});
+
+document.getElementById('nav-index').addEventListener('click', () => {
+    window.location.href = 'index.html';
+});
+
+document.getElementById('nav-path').addEventListener('click', () => {
+    window.location.href = 'path.html';
+});
+
+// FIXED CODE: Corrected syntax error here from original file
+const navVideo = document.getElementById('nav-video');
+if (navVideo) {
+    navVideo.addEventListener('click', () => {
+        window.location.href = 'videos.html';
+    });
+}
+
+const navDiscord = document.getElementById('nav-discord');
+if (navDiscord) {
+    navDiscord.addEventListener('click', () => {
+        window.open('https://discord.gg/TRguRu7mwc', '_blank');
+    });
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('#theme-menu') && !e.target.closest('#theme-menu-toggle') && !e.target.closest('input') && !e.target.closest('select')) {
+        document.getElementById('theme-menu').style.display = 'none';
+    }
+    if (!e.target.closest('#music-menu') && !e.target.closest('#music-menu-toggle')) {
+        document.getElementById('music-menu').style.display = 'none';
+        musicToggleBtn.classList.remove('active');
+    }
+    if (!e.target.closest('#search-container') && !e.target.closest('#search-button')) {
+        document.getElementById('search-container').style.display = 'none';
+    }
+    if (!e.target.closest('#home-menu') && !e.target.closest('#wii-menu-button')) {
+        document.getElementById('home-menu').style.display = 'none';
+    }
+});
+
+// --- SHAWARMA RAIN LOGIC ---
+const checkRain = document.getElementById('check-rain-shawarma');
+let rainInterval;
+
+function createShawarma() {
+    const el = document.createElement('div');
+    el.innerText = '🌯';
+    el.style.position = 'fixed';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.top = '-60px';
+    el.style.fontSize = (Math.random() * 30 + 20) + 'px';
+    el.style.zIndex = '9999';
+    el.style.pointerEvents = 'none';
+    el.style.filter = 'drop-shadow(2px 4px 6px rgba(0,0,0,0.3))';
+
+    document.body.appendChild(el);
+
+    const duration = Math.random() * 2000 + 2000;
+    const animation = el.animate([
+        { transform: 'translateY(0) rotate(0deg)' },
+        { transform: `translateY(110vh) rotate(${Math.random() * 360}deg)` }
+    ], {
+        duration: duration,
+        easing: 'linear'
     });
 
-    // --- TIME TRAVEL ---
-    const clockDisplay = document.getElementById('wii-date-time-display');
-    let timeState = 0;
-    const futureAudio = document.getElementById('sound-time-travel-future');
-    const pastAudio = document.getElementById('sound-time-travel-past');
+    animation.onfinish = () => el.remove();
+}
 
-    clockDisplay.addEventListener('click', () => {
-        timeState = (timeState + 1) % 3;
-        document.body.classList.remove('time-travel-future', 'time-travel-past');
-        futureAudio.pause(); futureAudio.currentTime = 0;
-        pastAudio.pause(); pastAudio.currentTime = 0;
-        if (timeState === 1) {
-            document.body.classList.add('time-travel-future');
-            showToast("WARPING TO THE FUTURE >> 3025");
-            futureAudio.play().catch(e => console.log("Audio play failed"));
+function toggleRain(enabled) {
+    if (enabled) {
+        if (!rainInterval) {
+            rainInterval = setInterval(createShawarma, 200);
+            showToast("Shawarma Rain Activated! 🌯");
         }
-        else if (timeState === 2) {
-            document.body.classList.add('time-travel-past');
-            showToast("WARPING TO THE PAST << 1950");
-            pastAudio.play().catch(e => console.log("Audio play failed"));
-        }
-        else {
-            showToast("RETURNING TO PRESENT");
-            clickSound.currentTime = 0; clickSound.play().catch(() => {});
-        }
-    });
+    } else {
+        clearInterval(rainInterval);
+        rainInterval = null;
+    }
+}
 
-    // Start App
-    init();
+checkRain.addEventListener('change', (e) => {
+    toggleRain(e.target.checked);
+    inputPreset.value = 'custom';
+    const currentTheme = getCurrentThemeObj();
+    saveThemeToStorage(currentTheme);
+});
+
+// --- SECRET TIME TRAVEL FEATURE ---
+const clockDisplay = document.getElementById('wii-date-time-display');
+let timeState = 0;
+
+const futureAudio = document.getElementById('sound-time-travel-future');
+const pastAudio = document.getElementById('sound-time-travel-past');
+
+clockDisplay.addEventListener('click', () => {
+    timeState = (timeState + 1) % 3;
+
+    document.body.classList.remove('time-travel-future', 'time-travel-past');
+
+    futureAudio.pause();
+    futureAudio.currentTime = 0;
+    pastAudio.pause();
+    pastAudio.currentTime = 0;
+
+    if (timeState === 1) {
+        document.body.classList.add('time-travel-future');
+        showToast("WARPING TO THE FUTURE >> 3025");
+        futureAudio.play().catch(e => console.log("Add audio file for full effect"));
+    } else if (timeState === 2) {
+        document.body.classList.add('time-travel-past');
+        showToast("WARPING TO THE PAST << 1950");
+        pastAudio.play().catch(e => console.log("Add audio file for full effect"));
+    } else {
+        showToast("RETURNING TO PRESENT");
+        clickSound.currentTime = 0;
+        clickSound.play().catch(() => {});
+    }
 });
