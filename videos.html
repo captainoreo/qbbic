@@ -3,154 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wii Homebrew Player</title>
+    <title>Homebrew Tube</title>
     <style>
-        /* --- 1. HOMEBREW CHANNEL (HBC) AESTHETIC --- */
+        /* --- 1. THE HOMEBREW CHANNEL (HBC) BACKGROUND --- */
         body {
             margin: 0;
             padding: 0;
-            /* The iconic HBC dark deep sea gradient */
-            background: radial-gradient(circle at 50% -50%, #1a4b77 0%, #000814 100%);
+            background: linear-gradient(to bottom, #2da2d6 0%, #005c97 20%, #001f4d 100%);
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: "Roboto", "Segoe UI", Tahoma, sans-serif; /* YouTube uses Roboto */
+            font-family: "Roboto", sans-serif;
             overflow: hidden;
-            color: white;
-            /* Wii Pointer Cursor */
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="1.5"><path d="M5.5 2l6 14 3.5-4 4.5 5.5-2.5 2.5-4.5-5.5-2.5 3z"/></svg>'), auto;
+            position: relative;
         }
 
-        /* Subtle scanline overlay often associated with CRT/Homebrew vibes */
-        .scanlines {
+        /* The Water Surface Wave (Top of Image 1) */
+        .water-surface {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                rgba(255,255,255,0),
-                rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.1) 50%,
-                rgba(0,0,0,0.1)
-            );
-            background-size: 100% 4px;
-            pointer-events: none;
+            height: 80px;
             z-index: 1;
+            fill: rgba(255, 255, 255, 0.1);
         }
 
-        /* --- BUBBLES (HBC STYLE) --- */
+        /* Bubbles Container */
         .bubbles-container {
             position: absolute;
             width: 100%;
             height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
             z-index: 0;
             overflow: hidden;
-            pointer-events: none;
         }
 
+        /* Individual Bubble Styling (Glassy look from Image 1) */
         .bubble {
             position: absolute;
-            /* HBC bubbles are glassy and slightly cyan-tinted */
-            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), rgba(0, 191, 255, 0.05));
-            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
             bottom: -100px;
             animation: floatUp linear infinite;
-            box-shadow: inset 0 0 20px rgba(0, 191, 255, 0.1);
-            backdrop-filter: blur(2px);
         }
 
-        /* --- 2. THE PLAYER CONTAINER --- */
+        /* --- 2. THE YOUTUBE PLAYER CONTAINER --- */
         .player-container {
             position: relative;
             width: 900px;
             max-width: 90%;
             aspect-ratio: 16/9;
-            background: #000;
-            border-radius: 12px; /* Slightly sharper corners for modern look */
-            box-shadow: 
-                0 0 0 1px rgba(255, 255, 255, 0.1), /* Bezel */
-                0 20px 60px rgba(0, 0, 0, 0.8);
+            background: black;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); /* Lift it off the water */
             z-index: 10;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            group: hover .controls-overlay { opacity: 1; }
         }
 
         video {
             width: 100%;
             height: 100%;
-            display: block;
+            object-fit: cover;
         }
 
-        /* --- 3. YOUTUBE UI OVERLAY --- */
+        /* --- 3. YOUTUBE UI OVERLAY (Image 2) --- */
         .controls-overlay {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            /* The classic YouTube bottom gradient shadow */
-            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 40%, transparent 100%);
-            padding: 0 12px 10px 12px; /* Youtube padding */
+            /* The classic YouTube bottom shadow gradient */
+            background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.4) 50%, transparent);
+            padding: 0 12px;
             box-sizing: border-box;
-            opacity: 0;
-            transition: opacity 0.2s ease;
+            opacity: 0; /* Hides when not hovering */
+            transition: opacity 0.2s;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            justify-content: flex-end;
+            height: 80px; /* Interaction area */
         }
 
         .player-container:hover .controls-overlay {
             opacity: 1;
         }
 
-        /* PROGRESS BAR (The Scrubber) */
-        .progress-track {
+        /* The Progress Bar Area */
+        .progress-area {
             width: 100%;
-            height: 5px; /* Thinner track */
-            background: rgba(255, 255, 255, 0.2);
+            height: 5px;
+            background: rgba(255,255,255,0.2);
             cursor: pointer;
             position: relative;
+            margin-bottom: 10px;
             transition: height 0.1s;
         }
-        
-        /* Make bar grow on hover like YouTube */
-        .progress-track:hover {
+
+        .progress-area:hover {
             height: 8px;
         }
 
         .progress-filled {
             height: 100%;
             width: 0%;
-            background: #ff0000; /* YouTube Red */
+            background-color: #ff0000; /* YouTube Red */
             position: relative;
         }
 
-        /* The little red dot at the end */
+        /* The Red Scrubber Dot */
         .progress-filled::after {
             content: '';
             position: absolute;
             right: -6px;
             top: 50%;
             transform: translateY(-50%) scale(0);
-            width: 12px;
-            height: 12px;
+            width: 13px;
+            height: 13px;
+            background-color: #ff0000;
             border-radius: 50%;
-            background: #ff0000;
             transition: transform 0.1s;
         }
 
-        .progress-track:hover .progress-filled::after {
+        .progress-area:hover .progress-filled::after {
             transform: translateY(-50%) scale(1);
         }
 
-        /* CONTROL BUTTONS */
-        .buttons-row {
+        /* The Control Buttons Row */
+        .controls-row {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             height: 40px;
+            padding-bottom: 5px;
         }
 
         .left-controls, .right-controls {
@@ -159,73 +149,102 @@
             gap: 10px;
         }
 
+        /* Generic Button Styles */
         button {
             background: none;
             border: none;
             cursor: pointer;
-            color: white;
-            padding: 8px;
-            opacity: 0.9;
-            transition: opacity 0.1s;
+            padding: 0;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
+            opacity: 0.9;
+            transition: opacity 0.1s;
         }
 
         button:hover {
             opacity: 1;
         }
 
-        /* Wii-style hover effect (slight pulse/wobble) */
-        button:hover .icon {
-            filter: drop-shadow(0 0 5px rgba(255,255,255,0.8));
-            transform: scale(1.1);
-        }
-
-        .icon {
-            width: 28px; /* Slightly larger icons */
-            height: 28px;
+        svg {
             fill: white;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 100%;
+            height: 100%;
         }
 
+        /* Time Display */
         .time-display {
+            color: #ddd;
             font-size: 13px;
             margin-left: 5px;
-            font-family: "Roboto", sans-serif;
-            opacity: 0.9;
+            font-weight: 400;
         }
 
-        /* Animations */
-        @keyframes floatUp {
-            0% { transform: translateY(0); opacity: 0; }
-            10% { opacity: 0.4; }
-            90% { opacity: 0.4; }
-            100% { transform: translateY(-120vh); opacity: 0; }
+        /* Autoplay Toggle Switch (Visual Only) */
+        .autoplay-toggle {
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
         }
+        .toggle-track {
+            width: 30px;
+            height: 12px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            position: relative;
+        }
+        .toggle-thumb {
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: -3px;
+            left: -2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        /* Keyframes */
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(-120vh) scale(1.1); opacity: 0; }
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="scanlines"></div>
+    <svg class="water-surface" viewBox="0 0 1440 100" preserveAspectRatio="none">
+        <path d="M0,30 C200,50 400,10 600,30 C800,50 1000,10 1200,30 C1300,40 1440,20 1440,20 V0 H0 Z" fill="#4fbbe3" opacity="0.3"></path>
+        <path d="M0,20 C300,0 500,40 800,20 C1100,0 1300,30 1440,10 V0 H0 Z" fill="#6bcbf0" opacity="0.3"></path>
+    </svg>
+
     <div class="bubbles-container" id="bubbles"></div>
 
     <div class="player-container" id="playerContainer">
         <video id="video" src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"></video>
 
         <div class="controls-overlay">
-            <div class="progress-track" id="progressContainer">
+            <div class="progress-area" id="progressContainer">
                 <div class="progress-filled" id="progressBar"></div>
             </div>
 
-            <div class="buttons-row">
+            <div class="controls-row">
                 <div class="left-controls">
-                    <button id="playBtn" title="Play (k)">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    <button id="playBtn" style="width: 28px; height: 28px;">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+
+                    <button style="width: 28px; height: 28px;">
+                        <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                     </button>
                     
-                    <button id="muteBtn" title="Mute (m)">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                    <button id="muteBtn" style="width: 28px; height: 28px; margin-left:5px;">
+                        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                     </button>
 
                     <div class="time-display">
@@ -234,12 +253,32 @@
                 </div>
 
                 <div class="right-controls">
-                    <button title="Settings">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.04.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.57 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                    <div class="autoplay-toggle">
+                        <div class="toggle-track">
+                            <div class="toggle-thumb">
+                                <svg viewBox="0 0 24 24" style="fill:black; width:12px; height:12px; margin:3px;"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button>
+                        <svg viewBox="0 0 24 24"><path d="M19 4H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zm-8 7H9.5v-.5h-2v3h2V13H11v1.5H7v-5h4V11zm7 0h-1.5v-.5h-2v3h2V13H18v1.5h-4v-5h4V11z"/></svg>
                     </button>
 
-                    <button id="fsBtn" title="Fullscreen (f)">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                    <button>
+                        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.04.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.57 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                    </button>
+
+                    <button>
+                        <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zm-10-7h9v6h-9z"/></svg>
+                    </button>
+
+                    <button>
+                         <svg viewBox="0 0 24 24"><path d="M19 6H5c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H5V8h14v8z"/></svg>
+                    </button>
+
+                    <button id="fsBtn">
+                        <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
                     </button>
                 </div>
             </div>
@@ -247,37 +286,37 @@
     </div>
 
     <script>
-        // --- 1. HBC BUBBLE GENERATOR ---
+        // --- 1. HOMEBREW BUBBLES LOGIC ---
         const bubbleContainer = document.getElementById('bubbles');
         
         function createBubble() {
             const bubble = document.createElement('div');
             bubble.classList.add('bubble');
             
-            // Randomize size (HBC has larger subtle bubbles)
-            const size = Math.random() * 80 + 20; 
+            // Randomize size (HBC bubbles are widely varied)
+            const size = Math.random() * 60 + 15; 
             bubble.style.width = `${size}px`;
             bubble.style.height = `${size}px`;
             
             // Randomize position
             bubble.style.left = `${Math.random() * 100}%`;
             
-            // Randomize speed (HBC bubbles are slow)
-            bubble.style.animationDuration = `${Math.random() * 15 + 10}s`;
+            // Randomize speed (slow and calm)
+            bubble.style.animationDuration = `${Math.random() * 10 + 10}s`;
             
             bubbleContainer.appendChild(bubble);
             
-            // Remove after animation
+            // Cleanup
             setTimeout(() => {
                 bubble.remove();
-            }, 25000);
+            }, 20000);
         }
 
-        // Init bubbles
-        for(let i=0; i<15; i++) setTimeout(createBubble, i * 500);
-        setInterval(createBubble, 1500);
+        // Initialize bubbles
+        for(let i=0; i<10; i++) setTimeout(createBubble, i * 800);
+        setInterval(createBubble, 2000);
 
-        // --- 2. VIDEO PLAYER LOGIC ---
+        // --- 2. YOUTUBE PLAYER LOGIC ---
         const video = document.getElementById('video');
         const playBtn = document.getElementById('playBtn');
         const progressBar = document.getElementById('progressBar');
@@ -287,28 +326,27 @@
         const fsBtn = document.getElementById('fsBtn');
         const playerContainer = document.getElementById('playerContainer');
 
-        // Play/Pause Toggle
         function togglePlay() {
             if (video.paused) {
                 video.play();
-                playBtn.innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+                // Change to Pause Icon
+                playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
             } else {
                 video.pause();
-                playBtn.innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+                // Change to Play Icon
+                playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
             }
         }
 
         playBtn.addEventListener('click', togglePlay);
         video.addEventListener('click', togglePlay);
 
-        // Time Formatting
         function formatTime(seconds) {
             const min = Math.floor(seconds / 60);
             const sec = Math.floor(seconds % 60);
             return `${min}:${sec < 10 ? '0' : ''}${sec}`;
         }
 
-        // Update Progress Bar & Time
         video.addEventListener('timeupdate', () => {
             const percent = (video.currentTime / video.duration) * 100;
             progressBar.style.width = `${percent}%`;
@@ -318,7 +356,6 @@
             }
         });
 
-        // Click on Progress Bar
         progressContainer.addEventListener('click', (e) => {
             const rect = progressContainer.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
@@ -327,7 +364,6 @@
             video.currentTime = (clickX / width) * duration;
         });
 
-        // Fullscreen
         fsBtn.addEventListener('click', () => {
             if (!document.fullscreenElement) {
                 playerContainer.requestFullscreen();
@@ -336,10 +372,8 @@
             }
         });
         
-        // Basic keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if(e.key === ' ' || e.key === 'k') togglePlay();
-            if(e.key === 'f') fsBtn.click();
         });
 
     </script>
