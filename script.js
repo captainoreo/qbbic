@@ -17,6 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextPageButton = document.getElementById('next-page-button');
     let currentPage = 0;
 
+    // --- DATA PERSISTENCE VARIABLES ---
+    const globalLoadInput = document.createElement('input');
+    globalLoadInput.type = 'file';
+    globalLoadInput.accept = '.json';
+    globalLoadInput.style.display = 'none';
+    globalLoadInput.id = 'global-load-input';
+    document.body.appendChild(globalLoadInput);
+
     // --- IFRAME MODAL LOGIC ---
     const gameModal = document.getElementById('game-modal');
     const gameModalContainer = document.getElementById('game-modal-container');
@@ -52,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setInterval(updateDateTime, 1000);
         loadSavedTheme();
         loadSavedBGM();
+        setupDataPersistence(); // Initialize the Save/Load buttons
     }
 
     // --- PAGE NAVIGATION ---
@@ -613,6 +622,70 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('nav-path').addEventListener('click', () => window.location.href = 'path.html');
     document.getElementById('nav-video').addEventListener('click', () => window.location.href = 'videos.html');
     document.getElementById('nav-discord').addEventListener('click', () => window.open('https://discord.gg/TRguRu7mwc', '_blank'));
+
+    // --- GLOBAL SAVE/LOAD LOGIC ---
+    function setupDataPersistence() {
+        const originalBtn = document.getElementById('nav-save-load');
+        if (!originalBtn) return;
+        
+        // We replace the single button with two specific buttons for better UX
+        const parent = originalBtn.parentNode;
+
+        // Create Export Button
+        const exportBtn = originalBtn.cloneNode(true);
+        exportBtn.id = 'nav-export-data';
+        exportBtn.innerHTML = originalBtn.innerHTML.replace('Save/Load Data', 'Export Data (Save)');
+        exportBtn.onclick = exportGlobalData;
+        
+        // Create Import Button
+        const importBtn = originalBtn.cloneNode(true);
+        importBtn.id = 'nav-import-data';
+        importBtn.innerHTML = originalBtn.innerHTML.replace('Save/Load Data', 'Import Data (Load)');
+        importBtn.onclick = () => globalLoadInput.click();
+
+        // Swap buttons
+        parent.insertBefore(exportBtn, originalBtn);
+        parent.insertBefore(importBtn, originalBtn);
+        originalBtn.remove();
+    }
+
+    function exportGlobalData() {
+        try {
+            const data = {
+                theme: JSON.parse(localStorage.getItem('customTheme') || '{}'),
+                bgm: localStorage.getItem('qbbic-bgm') || 'none',
+                timestamp: new Date().toISOString()
+            };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+            const anchor = document.createElement('a');
+            anchor.href = dataStr;
+            anchor.download = "qbbic_backup_" + new Date().toISOString().slice(0, 10) + ".json";
+            anchor.click();
+            showToast("Backup Saved!");
+        } catch (e) {
+            console.error(e);
+            showToast("Error Saving Data");
+        }
+    }
+
+    globalLoadInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                if (data.theme) localStorage.setItem('customTheme', JSON.stringify(data.theme));
+                if (data.bgm) localStorage.setItem('qbbic-bgm', data.bgm);
+                
+                showToast("Data Restored! Reloading...");
+                setTimeout(() => location.reload(), 1000);
+            } catch (e) {
+                showToast("Invalid Data File");
+            }
+        };
+        reader.readAsText(file);
+    });
 
     // --- GLOBAL CLICK CLOSE LOGIC ---
     document.addEventListener('click', (e) => {
