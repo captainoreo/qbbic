@@ -1006,11 +1006,11 @@ document.getElementById('nav-path').addEventListener('click', () => {
     window.location.href = 'path.html';
 });
 
-// FIXED CODE: Corrected syntax error here from original file
-const navVideo = document.getElementById('nav-video');
-if (navVideo) {
-    navVideo.addEventListener('click', () => {
-        window.location.href = 'videos.html';
+// UPDATED LOGIC FOR SUGGESTIONS
+const navSuggestions = document.getElementById('nav-suggestions');
+if (navSuggestions) {
+    navSuggestions.addEventListener('click', () => {
+        window.open('https://forms.gle/VFSHz9TwhpWPgyGY6', '_blank');
     });
 }
 
