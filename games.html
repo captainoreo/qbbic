@@ -291,143 +291,148 @@
         </div>
     </div>
 
-    <div id="theme-menu">
-        <div class="theme-heading">Theme Maker</div>
-
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Load Preset</span>
-            <select id="input-preset">
-                <option value="custom" selected>Custom</option>
-                <option value="wii">Default (Wii)</option>
-                <optgroup label="Pride Collection">
-                    <option value="pride-rainbow">Pride (Rainbow)</option>
-                    <option value="pride-trans">Trans Flag</option>
-                    <option value="pride-bi">Bi Flag</option>
-                    <option value="pride-pan">Pan Flag</option>
-                    <option value="pride-ace">Ace (Dark Mode)</option>
-                    <option value="pride-enby">Non-Binary</option>
-                    <option value="pride-lesbian">Lesbian Flag</option>
-                    <option value="pride-genderqueer">Genderqueer</option>
-                    <option value="pride-intersex">Intersex</option>
-                    <option value="pride-aro">Aromantic</option>
-                </optgroup>
-            </select>
+    <div id="theme-menu" class="nds-theme-shop">
+        <div class="nds-header">
+            <div class="nds-icon">
+                <svg viewBox="0 0 24 24"><path fill="#5c4a3d" d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+            </div>
+            <div class="nds-title-text">
+                <h3>Theme Settings</h3>
+                <p>Select a theme or customize.</p>
+            </div>
         </div>
 
-        <div class="theme-heading">Display Options</div>
+        <div class="nds-scroll-container">
+            
+            <input type="hidden" id="input-preset" value="custom">
 
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Layout Mode</span>
-            <select id="input-layout">
-                <option value="grid">Grid (Standard)</option>
-                <option value="list">List View</option>
-                <option value="big">Big Grid</option>
-                <option value="simple">Minimal Text</option>
-            </select>
+            <div class="nds-section-label">Presets Collection</div>
+            
+            <div class="nds-list">
+                <div class="nds-item" data-val="wii">
+                    <div class="nds-item-color" style="background: #e6e8e7;"></div>
+                    <span class="nds-item-name">Default (Wii)</span>
+                </div>
+                
+                <div class="nds-item" data-val="pride-rainbow">
+                    <div class="nds-item-color" style="background: linear-gradient(90deg, red, orange, yellow, green, blue, purple);"></div>
+                    <span class="nds-item-name">Pride (Rainbow)</span>
+                </div>
+                <div class="nds-item" data-val="pride-trans">
+                    <div class="nds-item-color" style="background: linear-gradient(90deg, #5BCEFA, #F5A9B8, white, #F5A9B8, #5BCEFA);"></div>
+                    <span class="nds-item-name">Trans Flag</span>
+                </div>
+                <div class="nds-item" data-val="pride-bi">
+                    <div class="nds-item-color" style="background: linear-gradient(90deg, #D00070, #8C4799, #0038A8);"></div>
+                    <span class="nds-item-name">Bi Flag</span>
+                </div>
+                <div class="nds-item" data-val="pride-pan">
+                    <div class="nds-item-color" style="background: linear-gradient(90deg, #FF218C, #FFD800, #21B1FF);"></div>
+                    <span class="nds-item-name">Pan Flag</span>
+                </div>
+                 <div class="nds-item" data-val="pride-ace">
+                    <div class="nds-item-color" style="background: linear-gradient(90deg, black, #a3a3a3, white, #800080);"></div>
+                    <span class="nds-item-name">Ace (Dark)</span>
+                </div>
+                <div class="nds-item" data-val="pride-enby">
+                    <div class="nds-item-color" style="background: linear-gradient(90deg, #fff430, white, #9c59d1, #2c2c2c);"></div>
+                    <span class="nds-item-name">Non-Binary</span>
+                </div>
+                 <div class="nds-item" data-val="pride-lesbian">
+                    <div class="nds-item-color" style="background: linear-gradient(90deg, #d53d5e, #ff9a56, white, #d362a4);"></div>
+                    <span class="nds-item-name">Lesbian Flag</span>
+                </div>
+            </div>
+
+            <div class="nds-section-label" style="margin-top: 15px;">Manual Customization</div>
+            
+            <div class="nds-control-row">
+                <span>Show Home</span>
+                <input type="checkbox" id="check-show-home" checked>
+            </div>
+            <div class="nds-control-row">
+                <span>Show Search</span>
+                <input type="checkbox" id="check-show-search" checked>
+            </div>
+            <div class="nds-control-row">
+                <span>Show Clock</span>
+                <input type="checkbox" id="check-show-clock" checked>
+            </div>
+             <div class="nds-control-row">
+                <span>Shawarma Rain</span>
+                <input type="checkbox" id="check-rain-shawarma">
+            </div>
+
+            <div class="nds-control-row">
+                <span>Background</span>
+                <input type="color" id="input-bg" value="#e6e8e7">
+            </div>
+            <div class="nds-control-row">
+                <span>Bar Color</span>
+                <input type="color" id="input-bar" value="#c9c5c2">
+            </div>
+            <div class="nds-control-row">
+                <span>Wii Button</span>
+                <input type="color" id="input-wii-btn-bg" value="#ffffff">
+            </div>
+            <div class="nds-control-row">
+                <span>Font Style</span>
+                <select id="input-font">
+                    <option value="PopHappiness">Wii Pop</option>
+                    <option value="sans-serif">Clean Sans</option>
+                    <option value="monospace">Retro Mono</option>
+                </select>
+            </div>
+            <div class="nds-control-row">
+                <span>Corner Shape</span>
+                 <select id="input-shape">
+                    <option value="squircle">Squircle</option>
+                    <option value="round">Round</option>
+                    <option value="rounded-square">Rounded</option>
+                    <option value="square">Square</option>
+                </select>
+            </div>
+            
+             <div class="nds-control-row">
+                <span>Layout Mode</span>
+                <select id="input-layout">
+                    <option value="grid">Grid (Standard)</option>
+                    <option value="list">List View</option>
+                    <option value="big">Big Grid</option>
+                </select>
+            </div>
+            
+             <div class="nds-control-row">
+                <span>Static Effect</span>
+                <select id="input-noise-type">
+                    <option value="default">Default</option>
+                    <option value="scanlines">Scanlines</option>
+                    <option value="none">Clean</option>
+                </select>
+            </div>
+
+             <div style="display:none;">
+                <input type="color" id="input-static" value="#555555">
+                <input type="color" id="input-btn-hover" value="#40c4ff">
+                <input type="color" id="input-modal-bg" value="#f7f7f7">
+                <input type="color" id="input-modal-border" value="#d4d4d4">
+                <input type="range" id="input-opacity" min="0.2" max="1" step="0.1" value="1">
+                <input type="text" id="input-bg-image">
+                <input type="file" id="input-bg-upload">
+             </div>
+
+            <div class="theme-btn-group" style="margin-top:20px;">
+                <button id="save-theme-btn" class="theme-action-btn primary">Save JSON</button>
+                <button id="load-theme-btn" class="theme-action-btn">Load JSON</button>
+                 <button id="reset-theme-btn" class="theme-action-btn danger">Reset</button>
+            </div>
+             <input type="file" id="input-load-theme" accept=".json" style="display: none;">
         </div>
 
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Static / Noise</span>
-            <select id="input-noise-type">
-                <option value="default">Default Noise</option>
-                <option value="scanlines">Scanlines (CRT)</option>
-                <option value="dots">Dots (Retro)</option>
-                <option value="none">None / Clean</option>
-            </select>
-        </div>
-
-        <div class="theme-heading">Menu Elements</div>
-
-        <div class="theme-maker-row">
-            <span class="theme-maker-label" style="color: #d32f2f;">🌯 Rain Shawarma</span>
-            <input type="checkbox" id="check-rain-shawarma">
-        </div>
-
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Show Home</span>
-            <input type="checkbox" id="check-show-home" checked>
-        </div>
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Show Search</span>
-            <input type="checkbox" id="check-show-search" checked>
-        </div>
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Show Clock</span>
-            <input type="checkbox" id="check-show-clock" checked>
-        </div>
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Show Music</span>
-            <input type="checkbox" id="check-show-music" checked>
-        </div>
-
-        <div class="theme-heading">Colors & Shapes</div>
-
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Background</span>
-            <input type="color" id="input-bg" value="#e6e8e7">
-        </div>
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Wii Bar</span>
-            <input type="color" id="input-bar" value="#c9c5c2">
-        </div>
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Text Color</span>
-            <input type="color" id="input-static" value="#555555">
-        </div>
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Btn Hover Color</span>
-            <input type="color" id="input-btn-hover" value="#40c4ff">
-        </div>
-
-        <div class="theme-heading">Wii Bar & Player</div>
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Wii Button Color</span>
-            <input type="color" id="input-wii-btn-bg" value="#ffffff">
-        </div>
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Player Background</span>
-            <input type="color" id="input-modal-bg" value="#f7f7f7">
-        </div>
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Player Border</span>
-            <input type="color" id="input-modal-border" value="#d4d4d4">
-        </div>
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Corner Shape</span>
-            <select id="input-shape">
-                <option value="squircle">Squircle</option>
-                <option value="round">Round</option>
-                <option value="rounded-square">Rounded</option>
-                <option value="square">Square</option>
-            </select>
-        </div>
-
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Font</span>
-            <select id="input-font">
-                <option value="PopHappiness">Wii Pop</option>
-                <option value="sans-serif">Clean Sans</option>
-                <option value="monospace">Retro Mono</option>
-            </select>
-        </div>
-
-        <div class="theme-maker-row">
-            <span class="theme-maker-label">Opacity</span>
-            <input type="range" id="input-opacity" min="0.2" max="1" step="0.1" value="1" style="width:100px;">
-        </div>
-
-        <div class="theme-heading">Background Image</div>
-        <input type="text" id="input-bg-image" placeholder="Image URL...">
-        <input type="file" id="input-bg-upload" accept="image/*" style="margin-top:5px;">
-
-        <div class="theme-btn-group">
-            <button id="reset-theme-btn" class="theme-action-btn danger" style="color:#d32f2f; border-color:#ffcdd2;">Reset</button>
-            <button id="save-theme-btn" class="theme-action-btn primary">Save</button>
-            <button id="load-theme-btn" class="theme-action-btn">Load</button>
-            <input type="file" id="input-load-theme" accept=".json" style="display: none;">
+        <div class="nds-footer">
+            <button class="nds-close-btn" id="close-theme-menu-btn">Cancel</button>
         </div>
     </div>
-
     <div id="music-menu">
         <div class="music-heading">Now Playing</div>
         <div id="now-playing">No Music Playing</div>
