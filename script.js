@@ -943,3 +943,144 @@ function init3DSMenuLogic() {
         });
     }
 }
+// --- IMPROVED SEARCH LOGIC ---
+const btnSearch = document.getElementById('search-button');
+const btnSearchClose = document.getElementById('search-submit-button'); // Now acts as close
+const inputSearch = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+const searchContainer = document.getElementById('search-container');
+
+// Store all games data for quick access
+let allGamesData = [];
+
+function indexAllGames() {
+    allGamesData = [];
+    const pages = document.querySelectorAll('.game-buttons');
+    
+    pages.forEach((page, pageIndex) => {
+        const buttons = page.querySelectorAll('.game-button');
+        buttons.forEach(btn => {
+            if (btn.classList.contains('placeholder')) return;
+            
+            // Get Image URL from inline style
+            let bgImage = '';
+            if (btn.style.backgroundImage) {
+                bgImage = btn.style.backgroundImage.slice(5, -2); // Remove url('...')
+            }
+
+            allGamesData.push({
+                title: (btn.title || btn.textContent).trim(),
+                searchStr: (btn.title || btn.textContent).toLowerCase(),
+                element: btn,
+                pageIndex: pageIndex,
+                image: bgImage
+            });
+        });
+    });
+}
+
+// Call indexing on init
+window.addEventListener('load', indexAllGames);
+
+// Toggle Search Bar
+if (btnSearch) {
+    btnSearch.addEventListener('click', () => {
+        const isFlex = searchContainer.style.display === 'flex';
+        searchContainer.style.display = isFlex ? 'none' : 'flex';
+        
+        if (!isFlex) {
+            inputSearch.value = '';
+            searchResults.innerHTML = '';
+            searchResults.classList.remove('has-results');
+            inputSearch.focus();
+            playSound(searchClickSound);
+            // Re-index just in case DOM changed
+            indexAllGames(); 
+        }
+    });
+}
+
+// Close Button logic
+if (btnSearchClose) {
+    btnSearchClose.addEventListener('click', () => {
+        searchContainer.style.display = 'none';
+    });
+}
+
+// Input Listener (Live Search)
+if (inputSearch) {
+    inputSearch.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        searchResults.innerHTML = '';
+        
+        if (query.length === 0) {
+            searchResults.classList.remove('has-results');
+            return;
+        }
+
+        const matches = allGamesData.filter(game => game.searchStr.includes(query));
+        
+        if (matches.length > 0) {
+            searchResults.classList.add('has-results');
+            matches.slice(0, 10).forEach(game => { // Limit to 10 results for performance
+                const div = document.createElement('div');
+                div.className = 'search-result-item';
+                
+                // Create HTML for result
+                div.innerHTML = `
+                    <div class="search-thumb" style="background-image: url('${game.image}')"></div>
+                    <span>${game.title} <small style="opacity:0.6; font-size:0.7em">(Page ${game.pageIndex + 1})</small></span>
+                `;
+
+                // Click Event
+                div.addEventListener('click', () => {
+                    launchGameFromSearch(game);
+                });
+
+                searchResults.appendChild(div);
+            });
+        } else {
+            searchResults.classList.remove('has-results');
+        }
+    });
+
+    // Enter Key to select first result
+    inputSearch.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const firstResult = searchResults.querySelector('.search-result-item');
+            if (firstResult) firstResult.click();
+        }
+    });
+}
+
+function launchGameFromSearch(gameObj) {
+    // 1. Close Search
+    searchContainer.style.display = 'none';
+    
+    // 2. Navigate to Page
+    currentPage = gameObj.pageIndex;
+    updatePage();
+    
+    // 3. Highlight the specific button
+    const btn = gameObj.element;
+    
+    // Scroll to it if needed (rare in this layout, but good safety)
+    btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Add Highlight Animation
+    btn.style.transition = "all 0.5s ease";
+    btn.style.transform = "scale(1.4)";
+    btn.style.zIndex = "100";
+    btn.style.boxShadow = "0 0 50px #40c4ff";
+    btn.style.borderColor = "#40c4ff";
+
+    playSound(clickSound);
+
+    // Remove Highlight after 1.5s
+    setTimeout(() => {
+        btn.style.transform = "";
+        btn.style.zIndex = "";
+        btn.style.boxShadow = "";
+        btn.style.borderColor = "";
+    }, 1500);
+}
