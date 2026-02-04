@@ -1116,3 +1116,57 @@ clockDisplay.addEventListener('click', () => {
         clickSound.play().catch(() => {});
     }
 });
+// --- NEW NINTENDO 3DS MENU LOGIC ---
+
+// 1. Handle Preset Clicks (Visual List)
+const presetItems = document.querySelectorAll('.nds-item');
+const hiddenPresetInput = document.getElementById('input-preset');
+
+presetItems.forEach(item => {
+    item.addEventListener('click', () => {
+        // Visual Selection
+        presetItems.forEach(i => i.classList.remove('selected'));
+        item.classList.add('selected');
+
+        // Logic Application
+        const val = item.dataset.val;
+        hiddenPresetInput.value = val; // Update hidden input for consistency
+
+        const selectedTheme = themePresets[val];
+        if (selectedTheme) {
+            updateInputsFromTheme(selectedTheme);
+            applyTheme(selectedTheme);
+            clickSound.currentTime = 0;
+            clickSound.play().catch(() => {});
+            showToast(`Theme changed: ${item.querySelector('.nds-item-name').innerText}`);
+        }
+    });
+});
+
+// 2. Handle Footer "Cancel" Button
+document.getElementById('close-theme-menu-btn').addEventListener('click', () => {
+    document.getElementById('theme-menu').style.display = 'none';
+    themeClickSound.currentTime = 0;
+    themeClickSound.play().catch(() => {});
+});
+
+// 3. Update Visual Selection Logic
+function highlightCurrentPreset() {
+    const currentVal = hiddenPresetInput.value;
+    presetItems.forEach(item => {
+        if (item.dataset.val === currentVal) {
+            item.classList.add('selected');
+        } else {
+            item.classList.remove('selected');
+        }
+    });
+}
+
+// 4. Hook Manual Inputs to clear selection
+// (This ensures if you manually change a color, the preset highlight disappears)
+[inputBg, inputBar, inputWiiBtnBg, inputFont, checkHome, checkSearch].forEach(input => {
+    input.addEventListener('input', () => {
+        presetItems.forEach(i => i.classList.remove('selected'));
+        hiddenPresetInput.value = 'custom';
+    });
+});
