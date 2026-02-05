@@ -1,6 +1,6 @@
 /**
  * UPDATED SCRIPT.JS
- * Improvements: Keyboard Nav, Audio Safety, Performance Fixes, Syntax Repair
+ * Improvements: Keyboard Nav, Audio Safety, Performance Fixes, Syntax Repair, Consolidated Search
  */
 
 // --- CORE VARIABLES ---
@@ -98,6 +98,7 @@ const songs = [{
 // --- INITIALIZATION WRAPPER ---
 window.addEventListener('load', () => {
     initApp();
+    indexAllGames(); // Index games for search
 });
 
 function initApp() {
@@ -119,11 +120,6 @@ function initApp() {
         if (searchContainer && searchContainer.style.display === 'flex') {
             if (e.key === 'Escape') {
                 searchContainer.style.display = 'none';
-                // Reset search filters
-                document.querySelectorAll('.game-button').forEach(btn => {
-                    btn.style.opacity = '';
-                    btn.style.filter = '';
-                });
             }
             return;
         }
@@ -591,93 +587,155 @@ if(btnThemeToggle) btnThemeToggle.addEventListener('click', () => {
     playSound(themeClickSound);
 });
 
-// Search Logic
+// --- IMPROVED SEARCH LOGIC (Consolidated) ---
 const btnSearch = document.getElementById('search-button');
-const btnSearchSubmit = document.getElementById('search-submit-button');
+const btnSearchClose = document.getElementById('search-submit-button'); // Acts as close
 const inputSearch = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+const searchContainer = document.getElementById('search-container');
 
-if(btnSearch) btnSearch.addEventListener('click', () => {
-    const container = document.getElementById('search-container');
-    container.style.display = container.style.display === 'flex' ? 'none' : 'flex';
-    if(inputSearch) inputSearch.focus();
-    playSound(searchClickSound);
-});
+// Store all games data for quick access
+let allGamesData = [];
 
-if(btnSearchSubmit) btnSearchSubmit.addEventListener('click', performSearch);
+function indexAllGames() {
+    allGamesData = [];
+    const pages = document.querySelectorAll('.game-buttons');
+    
+    pages.forEach((page, pageIndex) => {
+        const buttons = page.querySelectorAll('.game-button');
+        buttons.forEach(btn => {
+            if (btn.classList.contains('placeholder')) return;
+            
+            // Get Image URL from inline style
+            let bgImage = '';
+            if (btn.style.backgroundImage) {
+                bgImage = btn.style.backgroundImage.slice(5, -2); // Remove url('...')
+            }
 
-if(inputSearch) inputSearch.addEventListener('input', (e) => {
-    const query = e.target.value.toLowerCase();
-    const buttons = document.querySelectorAll('.game-button');
-    buttons.forEach(btn => {
-        if (btn.classList.contains('placeholder')) return;
-        const title = (btn.title || "").toLowerCase();
-        if (title.includes(query)) {
-            btn.style.opacity = '1';
-            btn.style.filter = 'grayscale(0%)';
-        } else {
-            btn.style.opacity = '0.1';
-            btn.style.filter = 'grayscale(100%)';
+            allGamesData.push({
+                title: (btn.title || btn.textContent).trim(),
+                searchStr: (btn.title || btn.textContent).toLowerCase(),
+                element: btn,
+                pageIndex: pageIndex,
+                image: bgImage
+            });
+        });
+    });
+}
+
+// Toggle Search Bar
+if (btnSearch) {
+    btnSearch.addEventListener('click', () => {
+        const isFlex = searchContainer.style.display === 'flex';
+        searchContainer.style.display = isFlex ? 'none' : 'flex';
+        
+        if (!isFlex) {
+            inputSearch.value = '';
+            if(searchResults) {
+                searchResults.innerHTML = '';
+                searchResults.classList.remove('has-results');
+            }
+            if(inputSearch) inputSearch.focus();
+            playSound(searchClickSound);
+            // Re-index just in case DOM changed
+            indexAllGames(); 
         }
     });
-});
+}
 
-let lastFoundIndex = -1;
+// Close Button logic
+if (btnSearchClose) {
+    btnSearchClose.addEventListener('click', () => {
+        if(searchContainer) searchContainer.style.display = 'none';
+    });
+}
 
-function performSearch() {
-    if(!inputSearch) return;
-    const query = inputSearch.value.toLowerCase();
-    if (!query) return;
-
-    const buttons = Array.from(document.querySelectorAll('.game-button')).filter(b => !b.classList.contains('placeholder'));
-    let foundButton = null;
-
-    for (let i = lastFoundIndex + 1; i < buttons.length; i++) {
-        if (buttons[i].title && buttons[i].title.toLowerCase().includes(query)) {
-            foundButton = buttons[i];
-            lastFoundIndex = i;
-            break;
+// Input Listener (Live Search)
+if (inputSearch) {
+    inputSearch.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        if(!searchResults) return;
+        searchResults.innerHTML = '';
+        
+        if (query.length === 0) {
+            searchResults.classList.remove('has-results');
+            return;
         }
-    }
-    if (!foundButton) {
-        for (let i = 0; i <= lastFoundIndex; i++) {
-            if (buttons[i].title && buttons[i].title.toLowerCase().includes(query)) {
-                foundButton = buttons[i];
-                lastFoundIndex = i;
-                break;
-            }
-        }
-    }
 
-    if (foundButton) {
-        const page = foundButton.closest('.game-buttons');
-        const pages = document.querySelectorAll('.game-buttons');
-        currentPage = Array.from(pages).indexOf(page);
-        updatePage();
-        foundButton.style.transition = "transform 0.5s";
-        foundButton.style.transform = "scale(1.4)";
-        foundButton.style.zIndex = "100";
-        foundButton.style.boxShadow = "0 0 30px #40c4ff";
-        setTimeout(() => {
-            foundButton.style.transform = "";
-            foundButton.style.zIndex = "";
-            foundButton.style.boxShadow = "";
-        }, 1500);
-    } else {
-        showToast("No matches found!");
-    }
+        const matches = allGamesData.filter(game => game.searchStr.includes(query));
+        
+        if (matches.length > 0) {
+            searchResults.classList.add('has-results');
+            matches.slice(0, 10).forEach(game => { // Limit to 10 results for performance
+                const div = document.createElement('div');
+                div.className = 'search-result-item';
+                
+                // Create HTML for result
+                div.innerHTML = `
+                    <div class="search-thumb" style="background-image: url('${game.image}')"></div>
+                    <span>${game.title} <small style="opacity:0.6; font-size:0.7em">(Page ${game.pageIndex + 1})</small></span>
+                `;
+
+                // Click Event
+                div.addEventListener('click', () => {
+                    launchGameFromSearch(game);
+                });
+
+                searchResults.appendChild(div);
+            });
+        } else {
+            searchResults.classList.remove('has-results');
+        }
+    });
+
+    // Enter Key to select first result
+    inputSearch.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const firstResult = searchResults.querySelector('.search-result-item');
+            if (firstResult) firstResult.click();
+        }
+    });
+}
+
+function launchGameFromSearch(gameObj) {
+    // 1. Close Search
+    if(searchContainer) searchContainer.style.display = 'none';
+    
+    // 2. Navigate to Page
+    currentPage = gameObj.pageIndex;
+    updatePage();
+    
+    // 3. Highlight the specific button
+    const btn = gameObj.element;
+    
+    // Scroll to it if needed (rare in this layout, but good safety)
+    btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Add Highlight Animation
+    btn.style.transition = "all 0.5s ease";
+    btn.style.transform = "scale(1.4)";
+    btn.style.zIndex = "100";
+    btn.style.boxShadow = "0 0 50px #40c4ff";
+    btn.style.borderColor = "#40c4ff";
+
+    playSound(clickSound);
+
+    // Remove Highlight after 1.5s
+    setTimeout(() => {
+        btn.style.transform = "";
+        btn.style.zIndex = "";
+        btn.style.boxShadow = "";
+        btn.style.borderColor = "";
+    }, 1500);
 }
 
 document.addEventListener('click', (e) => {
     const searchContainer = document.getElementById('search-container');
     if(searchContainer && !e.target.closest('#search-container') && !e.target.closest('#search-button')) {
+        // If we click outside, clear visual filters just in case (though new logic doesn't use them)
         if (searchContainer.style.display === 'flex') {
-            const buttons = document.querySelectorAll('.game-button');
-            buttons.forEach(btn => {
-                if (!btn.classList.contains('placeholder')) {
-                    btn.style.opacity = '';
-                    btn.style.filter = '';
-                }
-            });
+             // Optional: Close search on outside click
+             // searchContainer.style.display = 'none';
         }
     }
 });
@@ -942,145 +1000,4 @@ function init3DSMenuLogic() {
             playSound(themeClickSound);
         });
     }
-}
-// --- IMPROVED SEARCH LOGIC ---
-const btnSearch = document.getElementById('search-button');
-const btnSearchClose = document.getElementById('search-submit-button'); // Now acts as close
-const inputSearch = document.getElementById('search-input');
-const searchResults = document.getElementById('search-results');
-const searchContainer = document.getElementById('search-container');
-
-// Store all games data for quick access
-let allGamesData = [];
-
-function indexAllGames() {
-    allGamesData = [];
-    const pages = document.querySelectorAll('.game-buttons');
-    
-    pages.forEach((page, pageIndex) => {
-        const buttons = page.querySelectorAll('.game-button');
-        buttons.forEach(btn => {
-            if (btn.classList.contains('placeholder')) return;
-            
-            // Get Image URL from inline style
-            let bgImage = '';
-            if (btn.style.backgroundImage) {
-                bgImage = btn.style.backgroundImage.slice(5, -2); // Remove url('...')
-            }
-
-            allGamesData.push({
-                title: (btn.title || btn.textContent).trim(),
-                searchStr: (btn.title || btn.textContent).toLowerCase(),
-                element: btn,
-                pageIndex: pageIndex,
-                image: bgImage
-            });
-        });
-    });
-}
-
-// Call indexing on init
-window.addEventListener('load', indexAllGames);
-
-// Toggle Search Bar
-if (btnSearch) {
-    btnSearch.addEventListener('click', () => {
-        const isFlex = searchContainer.style.display === 'flex';
-        searchContainer.style.display = isFlex ? 'none' : 'flex';
-        
-        if (!isFlex) {
-            inputSearch.value = '';
-            searchResults.innerHTML = '';
-            searchResults.classList.remove('has-results');
-            inputSearch.focus();
-            playSound(searchClickSound);
-            // Re-index just in case DOM changed
-            indexAllGames(); 
-        }
-    });
-}
-
-// Close Button logic
-if (btnSearchClose) {
-    btnSearchClose.addEventListener('click', () => {
-        searchContainer.style.display = 'none';
-    });
-}
-
-// Input Listener (Live Search)
-if (inputSearch) {
-    inputSearch.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        searchResults.innerHTML = '';
-        
-        if (query.length === 0) {
-            searchResults.classList.remove('has-results');
-            return;
-        }
-
-        const matches = allGamesData.filter(game => game.searchStr.includes(query));
-        
-        if (matches.length > 0) {
-            searchResults.classList.add('has-results');
-            matches.slice(0, 10).forEach(game => { // Limit to 10 results for performance
-                const div = document.createElement('div');
-                div.className = 'search-result-item';
-                
-                // Create HTML for result
-                div.innerHTML = `
-                    <div class="search-thumb" style="background-image: url('${game.image}')"></div>
-                    <span>${game.title} <small style="opacity:0.6; font-size:0.7em">(Page ${game.pageIndex + 1})</small></span>
-                `;
-
-                // Click Event
-                div.addEventListener('click', () => {
-                    launchGameFromSearch(game);
-                });
-
-                searchResults.appendChild(div);
-            });
-        } else {
-            searchResults.classList.remove('has-results');
-        }
-    });
-
-    // Enter Key to select first result
-    inputSearch.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            const firstResult = searchResults.querySelector('.search-result-item');
-            if (firstResult) firstResult.click();
-        }
-    });
-}
-
-function launchGameFromSearch(gameObj) {
-    // 1. Close Search
-    searchContainer.style.display = 'none';
-    
-    // 2. Navigate to Page
-    currentPage = gameObj.pageIndex;
-    updatePage();
-    
-    // 3. Highlight the specific button
-    const btn = gameObj.element;
-    
-    // Scroll to it if needed (rare in this layout, but good safety)
-    btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-    // Add Highlight Animation
-    btn.style.transition = "all 0.5s ease";
-    btn.style.transform = "scale(1.4)";
-    btn.style.zIndex = "100";
-    btn.style.boxShadow = "0 0 50px #40c4ff";
-    btn.style.borderColor = "#40c4ff";
-
-    playSound(clickSound);
-
-    // Remove Highlight after 1.5s
-    setTimeout(() => {
-        btn.style.transform = "";
-        btn.style.zIndex = "";
-        btn.style.boxShadow = "";
-        btn.style.borderColor = "";
-    }, 1500);
 }
