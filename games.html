@@ -245,16 +245,6 @@
 
     <div class="page-indicator" id="page-indicator-dots"></div>
 
-    <div id="search-container">
-        <div class="search-bar-wrapper">
-            <input type="text" id="search-input" placeholder="Search games..." autocomplete="off">
-            <button id="search-submit-button" title="Close Search">
-                <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
-        </div>
-        <div id="search-results"></div>
-    </div>
-
     <div class="wii-bottom-bar">
         <div class="wii-bottom-bar-content">
             <div class="wii-button" id="prev-page-button" title="Previous Page">
@@ -267,9 +257,9 @@
                 </svg>
             </a>
 
-            <div class="wii-button" id="search-button" title="Search Games">
+            <div class="wii-button" id="random-button" title="Surprise Me!">
                 <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z"/>
                 </svg>
             </div>
 
@@ -356,7 +346,7 @@
                 <input type="checkbox" id="check-show-home" checked>
             </div>
             <div class="nds-control-row">
-                <span>Show Search</span>
+                <span>Show Random</span>
                 <input type="checkbox" id="check-show-search" checked>
             </div>
             <div class="nds-control-row">
@@ -492,8 +482,6 @@
     <audio id="prev-page-sound" src="/assets/WSD-SELECT.wav" preload="auto"></audio>
     <audio id="next-page-sound" src="/assets/WSD-SELECT.wav" preload="auto"></audio>
     <audio id="theme-click-sound" src="/assets/menu_open.wav" preload="auto"></audio>
-    <audio id="search-click-sound" src="/assets/menu_open.wav" preload="auto"></audio>
-
     <audio id="menu-hover-sound" src="/assets/Sample_0003.wav" preload="auto"></audio>
     <audio id="game-open-sound" src="/assets/Sample_0000.wav" preload="auto"></audio>
     <audio id="game-close-sound" src="/assets/Sample_0001.wav" preload="auto"></audio>
