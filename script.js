@@ -1,6 +1,6 @@
 /**
  * UPDATED SCRIPT.JS
- * Improvements: Keyboard Nav, Audio Safety, Performance Fixes, Syntax Repair, Consolidated Search
+ * Removed Search -> Added Random/Surprise Me
  */
 
 // --- CORE VARIABLES ---
@@ -10,7 +10,6 @@ const clickSound = document.getElementById('click-sound');
 const prevPageSound = document.getElementById('prev-page-sound');
 const nextPageSound = document.getElementById('next-page-sound');
 const themeClickSound = document.getElementById('theme-click-sound');
-const searchClickSound = document.getElementById('search-click-sound');
 const menuHoverSound = document.getElementById('menu-hover-sound');
 const gameOpenSound = document.getElementById('game-open-sound');
 const gameCloseSound = document.getElementById('game-close-sound');
@@ -98,7 +97,6 @@ const songs = [{
 // --- INITIALIZATION WRAPPER ---
 window.addEventListener('load', () => {
     initApp();
-    indexAllGames(); // Index games for search
 });
 
 function initApp() {
@@ -107,20 +105,11 @@ function initApp() {
     updateDateTime();
     setInterval(updateDateTime, 1000);
 
-    // --- KEYBOARD NAVIGATION SUPPORT (NEW) ---
+    // --- KEYBOARD NAVIGATION SUPPORT ---
     document.addEventListener('keydown', (e) => {
         // If modal is open, Escape closes it
         if (gameModal.style.display === 'flex') {
             if (e.key === 'Escape') closeGameModal();
-            return;
-        }
-
-        // If search is open, Escape closes it
-        const searchContainer = document.getElementById('search-container');
-        if (searchContainer && searchContainer.style.display === 'flex') {
-            if (e.key === 'Escape') {
-                searchContainer.style.display = 'none';
-            }
             return;
         }
 
@@ -166,12 +155,10 @@ function initApp() {
         playBGM(savedBGM, song ? song.name : "Unknown");
     }
 
-    // Initialize 3DS Menu Logic (Moved here for safety)
     init3DSMenuLogic();
 }
 
 function restoreThemeInputs(theme) {
-    // Helper to safely set values if elements exist
     const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
     const setCheck = (id, val) => { const el = document.getElementById(id); if(el) el.checked = val; };
 
@@ -190,7 +177,8 @@ function restoreThemeInputs(theme) {
 
     if (theme.layout) {
         setCheck('check-show-home', theme.layout.home !== false);
-        setCheck('check-show-search', theme.layout.search !== false);
+        // Map old 'search' pref to new 'random' pref to keep compatibility
+        setCheck('check-show-search', theme.layout.random !== false); 
         setCheck('check-show-clock', theme.layout.clock !== false);
         setCheck('check-show-music', theme.layout.music !== false);
     }
@@ -352,15 +340,15 @@ const inputBgImage = document.getElementById('input-bg-image');
 const inputBgUpload = document.getElementById('input-bg-upload');
 
 const checkHome = document.getElementById('check-show-home');
-const checkSearch = document.getElementById('check-show-search');
+// Renaming variable for clarity, though ID in HTML might still be 'check-show-search'
+// We will treat the 'search' checkbox in theme maker as the toggle for the 'Random' button now.
+const checkRandom = document.getElementById('check-show-search'); 
 const checkClock = document.getElementById('check-show-clock');
 const checkMusic = document.getElementById('check-show-music');
 const inputBtnHover = document.getElementById('input-btn-hover');
 
 const inputLayout = document.getElementById('input-layout');
 const inputNoise = document.getElementById('input-noise-type');
-
-/* NEW INPUTS */
 const inputWiiBtnBg = document.getElementById('input-wii-btn-bg');
 const inputModalBg = document.getElementById('input-modal-bg');
 const inputModalBorder = document.getElementById('input-modal-border');
@@ -368,19 +356,19 @@ const inputModalBorder = document.getElementById('input-modal-border');
 const btnReset = document.getElementById('reset-theme-btn');
 const inputPreset = document.getElementById('input-preset');
 
-// PRESET DATA CONFIGURATION
+// PRESET DATA
 const themePresets = {
-    wii: { bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', wiiBtnBg: '#ffffff', modalBg: '#f7f7f7', modalBorder: '#d4d4d4', shape: 'squircle', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#40c4ff', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-    'pride-rainbow': { bg: '#f0f0f0', bar: '#ffadad', static: '#ff6b6b', wiiBtnBg: '#fff0f0', modalBg: '#fff0f0', modalBorder: '#ffadad', shape: 'round', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ffd6a5', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-    'pride-trans': { bg: '#f5fbff', bar: '#F5A9B8', static: '#5BCEFA', wiiBtnBg: '#ffffff', modalBg: '#ffffff', modalBorder: '#5BCEFA', shape: 'squircle', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-    'pride-bi': { bg: '#f3e6fa', bar: '#D00070', static: '#0038A8', wiiBtnBg: '#f3e6fa', modalBg: '#f3e6fa', modalBorder: '#D00070', shape: 'rounded-square', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#9B4F96', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-    'pride-pan': { bg: '#fffacd', bar: '#ff218c', static: '#00b8ff', wiiBtnBg: '#ffffea', modalBg: '#ffffea', modalBorder: '#ff218c', shape: 'round', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ffd700', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-    'pride-ace': { bg: '#1a1a1a', bar: '#800080', static: '#a3a3a3', wiiBtnBg: '#333333', modalBg: '#333333', modalBorder: '#800080', shape: 'square', font: 'monospace', opacity: 0.8, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-    'pride-enby': { bg: '#fffbea', bar: '#9c59d1', static: '#2c2c2c', wiiBtnBg: '#ffffff', modalBg: '#fffbea', modalBorder: '#9c59d1', shape: 'squircle', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#fc4b4b', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-    'pride-lesbian': { bg: '#fff0f0', bar: '#d53d5e', static: '#a30262', wiiBtnBg: '#ffe6e6', modalBg: '#ffe6e6', modalBorder: '#d53d5e', shape: 'rounded-square', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ff9a56', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-    'pride-genderqueer': { bg: '#f9f9f9', bar: '#b57edc', static: '#4a8123', wiiBtnBg: '#ffffff', modalBg: '#ffffff', modalBorder: '#b57edc', shape: 'round', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-    'pride-intersex': { bg: '#ffdb00', bar: '#7902aa', static: '#4a006a', wiiBtnBg: '#fff5cc', modalBg: '#fff5cc', modalBorder: '#7902aa', shape: 'round', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } },
-    'pride-aro': { bg: '#f0fff0', bar: '#3da542', static: '#000000', wiiBtnBg: '#ffffff', modalBg: '#ffffff', modalBorder: '#3da542', shape: 'square', font: 'monospace', opacity: 1, bgImage: '', btnHover: '#a9a9a9', displayMode: 'grid', noiseType: 'default', layout: { home: true, search: true, clock: true, music: true } }
+    wii: { bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', wiiBtnBg: '#ffffff', modalBg: '#f7f7f7', modalBorder: '#d4d4d4', shape: 'squircle', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#40c4ff', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
+    'pride-rainbow': { bg: '#f0f0f0', bar: '#ffadad', static: '#ff6b6b', wiiBtnBg: '#fff0f0', modalBg: '#fff0f0', modalBorder: '#ffadad', shape: 'round', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ffd6a5', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
+    'pride-trans': { bg: '#f5fbff', bar: '#F5A9B8', static: '#5BCEFA', wiiBtnBg: '#ffffff', modalBg: '#ffffff', modalBorder: '#5BCEFA', shape: 'squircle', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
+    'pride-bi': { bg: '#f3e6fa', bar: '#D00070', static: '#0038A8', wiiBtnBg: '#f3e6fa', modalBg: '#f3e6fa', modalBorder: '#D00070', shape: 'rounded-square', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#9B4F96', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
+    'pride-pan': { bg: '#fffacd', bar: '#ff218c', static: '#00b8ff', wiiBtnBg: '#ffffea', modalBg: '#ffffea', modalBorder: '#ff218c', shape: 'round', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ffd700', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
+    'pride-ace': { bg: '#1a1a1a', bar: '#800080', static: '#a3a3a3', wiiBtnBg: '#333333', modalBg: '#333333', modalBorder: '#800080', shape: 'square', font: 'monospace', opacity: 0.8, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
+    'pride-enby': { bg: '#fffbea', bar: '#9c59d1', static: '#2c2c2c', wiiBtnBg: '#ffffff', modalBg: '#fffbea', modalBorder: '#9c59d1', shape: 'squircle', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#fc4b4b', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
+    'pride-lesbian': { bg: '#fff0f0', bar: '#d53d5e', static: '#a30262', wiiBtnBg: '#ffe6e6', modalBg: '#ffe6e6', modalBorder: '#d53d5e', shape: 'rounded-square', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ff9a56', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
+    'pride-genderqueer': { bg: '#f9f9f9', bar: '#b57edc', static: '#4a8123', wiiBtnBg: '#ffffff', modalBg: '#ffffff', modalBorder: '#b57edc', shape: 'round', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
+    'pride-intersex': { bg: '#ffdb00', bar: '#7902aa', static: '#4a006a', wiiBtnBg: '#fff5cc', modalBg: '#fff5cc', modalBorder: '#7902aa', shape: 'round', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
+    'pride-aro': { bg: '#f0fff0', bar: '#3da542', static: '#000000', wiiBtnBg: '#ffffff', modalBg: '#ffffff', modalBorder: '#3da542', shape: 'square', font: 'monospace', opacity: 1, bgImage: '', btnHover: '#a9a9a9', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } }
 };
 
 function saveThemeToStorage(themeObj) {
@@ -419,7 +407,7 @@ function applyTheme(themeObj) {
     r.style.setProperty('--card-clip', cardClip);
 
     document.querySelectorAll('.game-buttons').forEach(el => {
-        el.className = 'game-buttons'; // Reset classes
+        el.className = 'game-buttons';
         if (displayMode && displayMode !== 'grid') el.classList.add('layout-' + displayMode);
     });
 
@@ -449,7 +437,7 @@ function applyTheme(themeObj) {
     if (layout) {
         const setDisp = (id, show) => { const el = document.getElementById(id); if(el) el.style.display = show ? 'flex' : 'none'; };
         setDisp('wii-menu-button', layout.home !== false);
-        setDisp('search-button', layout.search !== false);
+        setDisp('random-button', layout.random !== false); // Updated ID mapping
         setDisp('music-menu-toggle', layout.music !== false);
         
         const clock = document.getElementById('wii-date-time-display');
@@ -465,7 +453,6 @@ function getCurrentThemeObj() {
         currentBgImage = currentBodyBg.slice(5, -2);
     }
     
-    // Safety for checkboxes
     const getChk = (el) => el ? el.checked : true;
     
     return {
@@ -474,8 +461,10 @@ function getCurrentThemeObj() {
         btnHover: inputBtnHover.value, displayMode: inputLayout.value, noiseType: inputNoise.value,
         wiiBtnBg: inputWiiBtnBg.value, modalBg: inputModalBg.value, modalBorder: inputModalBorder.value,
         layout: {
-            home: getChk(checkHome), search: getChk(checkSearch),
-            clock: getChk(checkClock), music: getChk(checkMusic)
+            home: getChk(checkHome), 
+            random: getChk(checkRandom), // Maps the checkbox to "random" now
+            clock: getChk(checkClock), 
+            music: getChk(checkMusic)
         }
     };
 }
@@ -485,7 +474,6 @@ function updateInputsFromTheme(theme) {
     if(inputBgImage) inputBgImage.value = theme.bgImage || '';
 }
 
-// PRESET LISTENER
 if(inputPreset) {
     inputPreset.addEventListener('change', (e) => {
         const val = e.target.value;
@@ -500,8 +488,7 @@ if(inputPreset) {
     });
 }
 
-// SWITCH TO CUSTOM ON EDIT
-const manualInputs = [inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity, checkHome, checkSearch, checkClock, checkMusic, inputBtnHover, inputLayout, inputNoise, inputWiiBtnBg, inputModalBg, inputModalBorder];
+const manualInputs = [inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity, checkHome, checkRandom, checkClock, checkMusic, inputBtnHover, inputLayout, inputNoise, inputWiiBtnBg, inputModalBg, inputModalBorder];
 manualInputs.forEach(input => {
     if(!input) return;
     input.addEventListener('change', () => {
@@ -536,7 +523,6 @@ if(inputBgUpload) inputBgUpload.addEventListener('change', (e) => {
     }
 });
 
-// Reset
 if(btnReset) btnReset.addEventListener('click', () => {
     const defaults = themePresets.wii;
     updateInputsFromTheme(defaults);
@@ -546,7 +532,6 @@ if(btnReset) btnReset.addEventListener('click', () => {
     showToast("Theme Reset");
 });
 
-// Save/Load logic
 const btnSaveTheme = document.getElementById('save-theme-btn');
 if(btnSaveTheme) btnSaveTheme.addEventListener('click', () => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getCurrentThemeObj()));
@@ -579,7 +564,6 @@ if(btnLoadTheme && inputLoadTheme) {
     });
 }
 
-// Toggle Menus
 const btnThemeToggle = document.getElementById('theme-menu-toggle');
 if(btnThemeToggle) btnThemeToggle.addEventListener('click', () => {
     const menu = document.getElementById('theme-menu');
@@ -587,158 +571,55 @@ if(btnThemeToggle) btnThemeToggle.addEventListener('click', () => {
     playSound(themeClickSound);
 });
 
-// --- IMPROVED SEARCH LOGIC (Consolidated) ---
-const btnSearch = document.getElementById('search-button');
-const btnSearchClose = document.getElementById('search-submit-button'); // Acts as close
-const inputSearch = document.getElementById('search-input');
-const searchResults = document.getElementById('search-results');
-const searchContainer = document.getElementById('search-container');
-
-// Store all games data for quick access
-let allGamesData = [];
-
-function indexAllGames() {
-    allGamesData = [];
-    const pages = document.querySelectorAll('.game-buttons');
-    
-    pages.forEach((page, pageIndex) => {
-        const buttons = page.querySelectorAll('.game-button');
-        buttons.forEach(btn => {
-            if (btn.classList.contains('placeholder')) return;
+// --- NEW FEATURE: RANDOM GAME ---
+const btnRandom = document.getElementById('random-button');
+if (btnRandom) {
+    btnRandom.addEventListener('click', () => {
+        playSound(clickSound);
+        
+        // 1. Collect all games (excluding placeholders)
+        const allGames = Array.from(document.querySelectorAll('.game-button:not(.placeholder)'));
+        
+        if (allGames.length > 0) {
+            // 2. Pick random
+            const randomGame = allGames[Math.floor(Math.random() * allGames.length)];
             
-            // Get Image URL from inline style
-            let bgImage = '';
-            if (btn.style.backgroundImage) {
-                bgImage = btn.style.backgroundImage.slice(5, -2); // Remove url('...')
+            // 3. Find which page it is on
+            const parentPage = randomGame.closest('.game-buttons');
+            const allPages = Array.from(document.querySelectorAll('.game-buttons'));
+            const pageIndex = allPages.indexOf(parentPage);
+            
+            // 4. Navigate to that page
+            if (pageIndex !== -1 && pageIndex !== currentPage) {
+                currentPage = pageIndex;
+                updatePage();
             }
 
-            allGamesData.push({
-                title: (btn.title || btn.textContent).trim(),
-                searchStr: (btn.title || btn.textContent).toLowerCase(),
-                element: btn,
-                pageIndex: pageIndex,
-                image: bgImage
-            });
-        });
-    });
-}
+            // 5. Scroll and highlight (Visual Cue)
+            randomGame.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            randomGame.style.transition = "all 0.5s ease";
+            randomGame.style.transform = "scale(1.4)";
+            randomGame.style.zIndex = "100";
+            randomGame.style.boxShadow = "0 0 50px #40c4ff";
+            randomGame.style.borderColor = "#40c4ff";
 
-// Toggle Search Bar
-if (btnSearch) {
-    btnSearch.addEventListener('click', () => {
-        const isFlex = searchContainer.style.display === 'flex';
-        searchContainer.style.display = isFlex ? 'none' : 'flex';
-        
-        if (!isFlex) {
-            inputSearch.value = '';
-            if(searchResults) {
-                searchResults.innerHTML = '';
-                searchResults.classList.remove('has-results');
-            }
-            if(inputSearch) inputSearch.focus();
-            playSound(searchClickSound);
-            // Re-index just in case DOM changed
-            indexAllGames(); 
+            showToast("Surprise! " + (randomGame.title || "Random Game"));
+
+            // 6. Reset highlight
+            setTimeout(() => {
+                randomGame.style.transform = "";
+                randomGame.style.zIndex = "";
+                randomGame.style.boxShadow = "";
+                randomGame.style.borderColor = "";
+            }, 1500);
+
+            // Optional: Auto-launch after animation? 
+            // Currently it just selects it. Uncomment next line to auto-launch:
+            // setTimeout(() => randomGame.click(), 1000);
         }
     });
 }
-
-// Close Button logic
-if (btnSearchClose) {
-    btnSearchClose.addEventListener('click', () => {
-        if(searchContainer) searchContainer.style.display = 'none';
-    });
-}
-
-// Input Listener (Live Search)
-if (inputSearch) {
-    inputSearch.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        if(!searchResults) return;
-        searchResults.innerHTML = '';
-        
-        if (query.length === 0) {
-            searchResults.classList.remove('has-results');
-            return;
-        }
-
-        const matches = allGamesData.filter(game => game.searchStr.includes(query));
-        
-        if (matches.length > 0) {
-            searchResults.classList.add('has-results');
-            matches.slice(0, 10).forEach(game => { // Limit to 10 results for performance
-                const div = document.createElement('div');
-                div.className = 'search-result-item';
-                
-                // Create HTML for result
-                div.innerHTML = `
-                    <div class="search-thumb" style="background-image: url('${game.image}')"></div>
-                    <span>${game.title} <small style="opacity:0.6; font-size:0.7em">(Page ${game.pageIndex + 1})</small></span>
-                `;
-
-                // Click Event
-                div.addEventListener('click', () => {
-                    launchGameFromSearch(game);
-                });
-
-                searchResults.appendChild(div);
-            });
-        } else {
-            searchResults.classList.remove('has-results');
-        }
-    });
-
-    // Enter Key to select first result
-    inputSearch.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            const firstResult = searchResults.querySelector('.search-result-item');
-            if (firstResult) firstResult.click();
-        }
-    });
-}
-
-function launchGameFromSearch(gameObj) {
-    // 1. Close Search
-    if(searchContainer) searchContainer.style.display = 'none';
-    
-    // 2. Navigate to Page
-    currentPage = gameObj.pageIndex;
-    updatePage();
-    
-    // 3. Highlight the specific button
-    const btn = gameObj.element;
-    
-    // Scroll to it if needed (rare in this layout, but good safety)
-    btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-    // Add Highlight Animation
-    btn.style.transition = "all 0.5s ease";
-    btn.style.transform = "scale(1.4)";
-    btn.style.zIndex = "100";
-    btn.style.boxShadow = "0 0 50px #40c4ff";
-    btn.style.borderColor = "#40c4ff";
-
-    playSound(clickSound);
-
-    // Remove Highlight after 1.5s
-    setTimeout(() => {
-        btn.style.transform = "";
-        btn.style.zIndex = "";
-        btn.style.boxShadow = "";
-        btn.style.borderColor = "";
-    }, 1500);
-}
-
-document.addEventListener('click', (e) => {
-    const searchContainer = document.getElementById('search-container');
-    if(searchContainer && !e.target.closest('#search-container') && !e.target.closest('#search-button')) {
-        // If we click outside, clear visual filters just in case (though new logic doesn't use them)
-        if (searchContainer.style.display === 'flex') {
-             // Optional: Close search on outside click
-             // searchContainer.style.display = 'none';
-        }
-    }
-});
 
 // --- MUSIC LOGIC ---
 const volumeSlider = document.getElementById('volume-slider');
@@ -762,7 +643,7 @@ function playBGM(url, name) {
 function populateMusicMenu() {
     const list = document.getElementById('music-list');
     if(!list) return;
-    list.innerHTML = ''; // Clear first to avoid dupes on re-run
+    list.innerHTML = '';
     songs.forEach((song, idx) => {
         const div = document.createElement('div');
         div.className = 'music-option';
@@ -823,7 +704,6 @@ document.addEventListener('click', (e) => {
     const themeMenu = document.getElementById('theme-menu');
     const themeToggle = document.getElementById('theme-menu-toggle');
     const musicMenu = document.getElementById('music-menu');
-    const searchContainer = document.getElementById('search-container');
     const homeMenu = document.getElementById('home-menu');
     const homeBtn = document.getElementById('wii-menu-button');
 
@@ -834,15 +714,11 @@ document.addEventListener('click', (e) => {
         musicMenu.style.display = 'none';
         musicToggleBtn.classList.remove('active');
     }
-    if (searchContainer && btnSearch && !e.target.closest('#search-container') && !e.target.closest('#search-button')) {
-        searchContainer.style.display = 'none';
-    }
     if (homeMenu && homeBtn && !e.target.closest('#home-menu') && !e.target.closest('#wii-menu-button')) {
         homeMenu.style.display = 'none';
     }
 });
 
-// --- HOME MENU LOGIC ---
 const homeMenu = document.getElementById('home-menu');
 const homeBtn = document.getElementById('wii-menu-button');
 
@@ -868,17 +744,17 @@ const navDiscord = document.getElementById('nav-discord');
 if (navDiscord) navDiscord.addEventListener('click', () => window.open('https://discord.gg/TRguRu7mwc', '_blank'));
 
 
-// --- SHAWARMA RAIN LOGIC (OPTIMIZED) ---
+// --- SHAWARMA RAIN LOGIC ---
 const checkRain = document.getElementById('check-rain-shawarma');
 let rainInterval;
-const MAX_SHAWARMAS = 50; // Optimization: Cap max items
+const MAX_SHAWARMAS = 50;
 
 function createShawarma() {
     if(document.querySelectorAll('.shawarma-item').length > MAX_SHAWARMAS) return;
 
     const el = document.createElement('div');
     el.innerText = '🌯';
-    el.classList.add('shawarma-item'); // Add class for tracking
+    el.classList.add('shawarma-item');
     el.style.position = 'fixed';
     el.style.left = Math.random() * 100 + 'vw';
     el.style.top = '-60px';
@@ -954,7 +830,7 @@ if(clockDisplay) {
     });
 }
 
-// --- NEW NINTENDO 3DS MENU LOGIC (Consolidated) ---
+// --- NEW NINTENDO 3DS MENU LOGIC ---
 function init3DSMenuLogic() {
     const presetItems = document.querySelectorAll('.nds-item');
     const hiddenPresetInput = document.getElementById('input-preset');
@@ -963,11 +839,9 @@ function init3DSMenuLogic() {
     if(presetItems.length > 0 && hiddenPresetInput) {
         presetItems.forEach(item => {
             item.addEventListener('click', () => {
-                // Visual Selection
                 presetItems.forEach(i => i.classList.remove('selected'));
                 item.classList.add('selected');
 
-                // Logic Application
                 const val = item.dataset.val;
                 hiddenPresetInput.value = val;
 
@@ -981,8 +855,7 @@ function init3DSMenuLogic() {
             });
         });
 
-        // Hook Manual Inputs to clear selection
-        const clearSelectionInputs = [inputBg, inputBar, inputWiiBtnBg, inputFont, checkHome, checkSearch];
+        const clearSelectionInputs = [inputBg, inputBar, inputWiiBtnBg, inputFont, checkHome, checkRandom];
         clearSelectionInputs.forEach(input => {
             if(input) {
                 input.addEventListener('input', () => {
