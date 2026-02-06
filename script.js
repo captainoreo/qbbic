@@ -1,6 +1,6 @@
 /**
  * UPDATED SCRIPT.JS
- * Removed Search -> Added Random/Surprise Me
+ * Removed "Surprise Me" -> Added "Data Management" (Save/Load)
  */
 
 // --- CORE VARIABLES ---
@@ -177,7 +177,7 @@ function restoreThemeInputs(theme) {
 
     if (theme.layout) {
         setCheck('check-show-home', theme.layout.home !== false);
-        // Map old 'search' pref to new 'random' pref to keep compatibility
+        // Map 'random' pref to the new data button for backward compatibility
         setCheck('check-show-search', theme.layout.random !== false); 
         setCheck('check-show-clock', theme.layout.clock !== false);
         setCheck('check-show-music', theme.layout.music !== false);
@@ -341,7 +341,7 @@ const inputBgUpload = document.getElementById('input-bg-upload');
 
 const checkHome = document.getElementById('check-show-home');
 // Renaming variable for clarity, though ID in HTML might still be 'check-show-search'
-// We will treat the 'search' checkbox in theme maker as the toggle for the 'Random' button now.
+// This checkbox controls the visibility of the new Data Button (formerly Random)
 const checkRandom = document.getElementById('check-show-search'); 
 const checkClock = document.getElementById('check-show-clock');
 const checkMusic = document.getElementById('check-show-music');
@@ -437,7 +437,7 @@ function applyTheme(themeObj) {
     if (layout) {
         const setDisp = (id, show) => { const el = document.getElementById(id); if(el) el.style.display = show ? 'flex' : 'none'; };
         setDisp('wii-menu-button', layout.home !== false);
-        setDisp('random-button', layout.random !== false); // Updated ID mapping
+        setDisp('memory-card-button', layout.random !== false); // UPDATED: Maps to Data Button
         setDisp('music-menu-toggle', layout.music !== false);
         
         const clock = document.getElementById('wii-date-time-display');
@@ -462,7 +462,7 @@ function getCurrentThemeObj() {
         wiiBtnBg: inputWiiBtnBg.value, modalBg: inputModalBg.value, modalBorder: inputModalBorder.value,
         layout: {
             home: getChk(checkHome), 
-            random: getChk(checkRandom), // Maps the checkbox to "random" now
+            random: getChk(checkRandom), // Maps the checkbox to "random" which controls data btn
             clock: getChk(checkClock), 
             music: getChk(checkMusic)
         }
@@ -571,52 +571,100 @@ if(btnThemeToggle) btnThemeToggle.addEventListener('click', () => {
     playSound(themeClickSound);
 });
 
-// --- NEW FEATURE: RANDOM GAME ---
-const btnRandom = document.getElementById('random-button');
-if (btnRandom) {
-    btnRandom.addEventListener('click', () => {
+// --- DATA MANAGEMENT (SAVE/LOAD) LOGIC ---
+const btnMemory = document.getElementById('memory-card-button');
+const dataMenu = document.getElementById('data-menu');
+const closeDataBtn = document.getElementById('close-data-menu-btn');
+const btnSaveData = document.getElementById('btn-save-data');
+const btnLoadData = document.getElementById('btn-load-data');
+const btnWipeData = document.getElementById('btn-wipe-data');
+const dataFileInput = document.getElementById('data-file-input');
+
+// Toggle Menu
+if (btnMemory && dataMenu) {
+    btnMemory.addEventListener('click', () => {
+        const isVisible = dataMenu.style.display === 'block';
+        // Close other menus to prevent overlap
+        if(document.getElementById('music-menu')) document.getElementById('music-menu').style.display = 'none';
+        if(document.getElementById('theme-menu')) document.getElementById('theme-menu').style.display = 'none';
+        if(document.getElementById('home-menu')) document.getElementById('home-menu').style.display = 'none';
+        
+        dataMenu.style.display = isVisible ? 'none' : 'block';
+        playSound(themeClickSound);
+    });
+}
+
+if (closeDataBtn) {
+    closeDataBtn.addEventListener('click', () => {
+        dataMenu.style.display = 'none';
         playSound(clickSound);
+    });
+}
+
+// 1. SAVE DATA (Export localStorage)
+if (btnSaveData) {
+    btnSaveData.addEventListener('click', () => {
+        const backup = JSON.stringify(localStorage);
+        const blob = new Blob([backup], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
         
-        // 1. Collect all games (excluding placeholders)
-        const allGames = Array.from(document.querySelectorAll('.game-button:not(.placeholder)'));
+        const a = document.createElement('a');
+        const timestamp = new Date().toISOString().slice(0,10);
+        a.href = url;
+        a.download = `Qbbic_Backup_${timestamp}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
         
-        if (allGames.length > 0) {
-            // 2. Pick random
-            const randomGame = allGames[Math.floor(Math.random() * allGames.length)];
-            
-            // 3. Find which page it is on
-            const parentPage = randomGame.closest('.game-buttons');
-            const allPages = Array.from(document.querySelectorAll('.game-buttons'));
-            const pageIndex = allPages.indexOf(parentPage);
-            
-            // 4. Navigate to that page
-            if (pageIndex !== -1 && pageIndex !== currentPage) {
-                currentPage = pageIndex;
-                updatePage();
+        showToast("Data Saved to File!");
+        playSound(gameOpenSound);
+    });
+}
+
+// 2. LOAD DATA (Import to localStorage)
+if (btnLoadData && dataFileInput) {
+    btnLoadData.addEventListener('click', () => {
+        dataFileInput.click();
+    });
+
+    dataFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                // Clear current and load new
+                localStorage.clear();
+                Object.keys(data).forEach(key => {
+                    localStorage.setItem(key, data[key]);
+                });
+                showToast("Data Loaded! Reloading...");
+                playSound(gameOpenSound);
+                
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } catch (err) {
+                console.error(err);
+                showToast("Error: Corrupt Save File");
+                playSound(gameCloseSound);
             }
+        };
+        reader.readAsText(file);
+    });
+}
 
-            // 5. Scroll and highlight (Visual Cue)
-            randomGame.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
-            randomGame.style.transition = "all 0.5s ease";
-            randomGame.style.transform = "scale(1.4)";
-            randomGame.style.zIndex = "100";
-            randomGame.style.boxShadow = "0 0 50px #40c4ff";
-            randomGame.style.borderColor = "#40c4ff";
-
-            showToast("Surprise! " + (randomGame.title || "Random Game"));
-
-            // 6. Reset highlight
-            setTimeout(() => {
-                randomGame.style.transform = "";
-                randomGame.style.zIndex = "";
-                randomGame.style.boxShadow = "";
-                randomGame.style.borderColor = "";
-            }, 1500);
-
-            // Optional: Auto-launch after animation? 
-            // Currently it just selects it. Uncomment next line to auto-launch:
-            // setTimeout(() => randomGame.click(), 1000);
+// 3. WIPE DATA
+if (btnWipeData) {
+    btnWipeData.addEventListener('click', () => {
+        if(confirm("Are you sure? This will reset themes, music, and local game data.")) {
+            localStorage.clear();
+            showToast("Factory Reset Complete.");
+            playSound(gameCloseSound);
+            setTimeout(() => window.location.reload(), 1000);
         }
     });
 }
@@ -706,6 +754,8 @@ document.addEventListener('click', (e) => {
     const musicMenu = document.getElementById('music-menu');
     const homeMenu = document.getElementById('home-menu');
     const homeBtn = document.getElementById('wii-menu-button');
+    const dataMenu = document.getElementById('data-menu');
+    const memoryBtn = document.getElementById('memory-card-button');
 
     if (themeMenu && themeToggle && !e.target.closest('#theme-menu') && !e.target.closest('#theme-menu-toggle') && !e.target.closest('input') && !e.target.closest('select')) {
         themeMenu.style.display = 'none';
@@ -716,6 +766,10 @@ document.addEventListener('click', (e) => {
     }
     if (homeMenu && homeBtn && !e.target.closest('#home-menu') && !e.target.closest('#wii-menu-button')) {
         homeMenu.style.display = 'none';
+    }
+    // New Data Menu close logic
+    if (dataMenu && memoryBtn && !e.target.closest('#data-menu') && !e.target.closest('#memory-card-button')) {
+        dataMenu.style.display = 'none';
     }
 });
 
