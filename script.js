@@ -928,3 +928,10 @@ function init3DSMenuLogic() {
         });
     }
 }
+const manualInputs = [
+    inputBg, inputBg2, inputBgType, inputTextColor, inputCursor, inputBlur, // NEW Added here
+    inputBar, inputStatic, inputShape, inputFont, inputOpacity, 
+    checkHome, checkRandom, checkClock, checkMusic, 
+    inputBtnHover, inputLayout, inputNoise, 
+    inputWiiBtnBg, inputModalBg, inputModalBorder
+];
