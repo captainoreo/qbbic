@@ -270,7 +270,7 @@
 
             <div class="wii-button" id="music-menu-toggle" title="Select Music">
                 <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4 4-1.79 4-4V7h4V3h-6z" />
                 </svg>
             </div>
 
@@ -365,6 +365,37 @@
             <div class="nds-control-row">
                 <span>Bar Color</span>
                 <input type="color" id="input-bar" value="#c9c5c2">
+            </div>
+
+            <div class="nds-control-row">
+                <span>Background Mode</span>
+                <select id="input-bg-type">
+                    <option value="solid">Solid Color</option>
+                    <option value="gradient">Gradient</option>
+                </select>
+            </div>
+            <div class="nds-control-row" id="row-bg-secondary" style="display:none;">
+                <span>Secondary Color</span>
+                <input type="color" id="input-bg-2" value="#ffffff">
+            </div>
+            
+            <div class="nds-control-row">
+                <span>Text Color</span>
+                <input type="color" id="input-text-color" value="#333333">
+            </div>
+
+            <div class="nds-control-row">
+                <span>Cursor Style</span>
+                <select id="input-cursor">
+                    <option value="wii">Wii Hand</option>
+                    <option value="default">Standard</option>
+                    <option value="crosshair">Crosshair</option>
+                </select>
+            </div>
+
+            <div class="nds-control-row">
+                <span>Glass Blur</span>
+                <input type="range" id="input-blur" min="0" max="20" value="4" style="width: 100px;">
             </div>
             <div class="nds-control-row">
                 <span>Wii Button</span>
