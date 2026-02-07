@@ -107,7 +107,7 @@ function initApp() {
     // --- KEYBOARD NAVIGATION SUPPORT ---
     document.addEventListener('keydown', (e) => {
         // If modal is open, Escape closes it
-        if (gameModal.style.display === 'flex') {
+        if (gameModal && gameModal.style.display === 'flex') {
             if (e.key === 'Escape') closeGameModal();
             return;
         }
@@ -128,8 +128,11 @@ function initApp() {
         try {
             const theme = JSON.parse(savedTheme);
             applyTheme(theme);
-            if (theme.preset) document.getElementById('input-preset').value = theme.preset;
-            else document.getElementById('input-preset').value = 'custom';
+            const presetInput = document.getElementById('input-preset');
+            if (presetInput) {
+                if (theme.preset) presetInput.value = theme.preset;
+                else presetInput.value = 'custom';
+            }
             
             restoreThemeInputs(theme);
 
@@ -261,33 +264,38 @@ function openGameModal(url, title) {
     if(gameModalTitle) gameModalTitle.textContent = title;
 
     // Show Modal
-    gameModal.style.display = 'flex';
-    setTimeout(() => gameModal.classList.add('active'), 10);
-    document.body.style.overflow = 'hidden';
+    if(gameModal) {
+        gameModal.style.display = 'flex';
+        setTimeout(() => gameModal.classList.add('active'), 10);
+        document.body.style.overflow = 'hidden';
 
-    gameIframe.src = 'about:blank';
-    gameModalContainer.classList.remove('crt-animate-open', 'crt-animate-close');
+        if(gameIframe) {
+            gameIframe.src = 'about:blank';
+            gameModalContainer.classList.remove('crt-animate-open', 'crt-animate-close');
 
-    gameIframe.src = url;
-    gameIframe.onload = function() {
-        this.contentWindow.focus();
-    };
-    gameModalContainer.classList.add('crt-animate-open');
-
-    showToast(`Launching ${title}...`);
+            gameIframe.src = url;
+            gameIframe.onload = function() {
+                this.contentWindow.focus();
+            };
+            gameModalContainer.classList.add('crt-animate-open');
+        }
+        showToast(`Launching ${title}...`);
+    }
 }
 
 function closeGameModal() {
     playSound(gameCloseSound);
-    gameModalContainer.classList.remove('crt-animate-open');
-    gameModalContainer.classList.add('crt-animate-close');
+    if(gameModalContainer) {
+        gameModalContainer.classList.remove('crt-animate-open');
+        gameModalContainer.classList.add('crt-animate-close');
+    }
 
     setTimeout(() => {
-        gameModal.classList.remove('active');
+        if(gameModal) gameModal.classList.remove('active');
         setTimeout(() => {
-            gameModal.style.display = 'none';
-            gameIframe.src = 'about:blank';
-            gameModalContainer.classList.remove('crt-animate-close');
+            if(gameModal) gameModal.style.display = 'none';
+            if(gameIframe) gameIframe.src = 'about:blank';
+            if(gameModalContainer) gameModalContainer.classList.remove('crt-animate-close');
             currentGameUrl = '';
             document.body.style.overflow = '';
             if (wasMusicPlayingBeforeGame && bgMusic) bgMusic.play().catch(() => {});
@@ -305,7 +313,7 @@ document.querySelectorAll('.wii-bottom-bar .wii-button').forEach(btn => {
 // --- ADVANCED MODAL BUTTONS ---
 const btnReload = document.getElementById('reload-game-btn');
 if(btnReload) btnReload.addEventListener('click', () => {
-    if (gameIframe.src && gameIframe.src !== 'about:blank') {
+    if (gameIframe && gameIframe.src && gameIframe.src !== 'about:blank') {
         gameIframe.src = gameIframe.src;
         showToast("Reloading game...");
         setTimeout(() => { if(gameIframe.contentWindow) gameIframe.contentWindow.focus(); }, 500);
@@ -328,8 +336,10 @@ if(btnBlank) btnBlank.addEventListener('click', () => {
 
 const btnFullscreen = document.getElementById('fullscreen-btn');
 if(btnFullscreen) btnFullscreen.addEventListener('click', () => {
-    const requestFS = gameIframe.requestFullscreen || gameIframe.mozRequestFullScreen || gameIframe.webkitRequestFullscreen || gameIframe.msRequestFullscreen;
-    if (requestFS) requestFS.call(gameIframe);
+    if(gameIframe) {
+        const requestFS = gameIframe.requestFullscreen || gameIframe.mozRequestFullScreen || gameIframe.webkitRequestFullscreen || gameIframe.msRequestFullscreen;
+        if (requestFS) requestFS.call(gameIframe);
+    }
 });
 
 // --- THEME MAKER VARIABLES ---
@@ -484,10 +494,19 @@ function getCurrentThemeObj() {
     const getVal = (el, def) => el ? el.value : def;
     
     return {
-        bg: inputBg.value, bar: inputBar.value, static: inputStatic.value, shape: inputShape.value,
-        font: inputFont.value, opacity: inputOpacity.value, bgImage: currentBgImage,
-        btnHover: inputBtnHover.value, displayMode: inputLayout.value, noiseType: inputNoise.value,
-        wiiBtnBg: inputWiiBtnBg.value, modalBg: inputModalBg.value, modalBorder: inputModalBorder.value,
+        bg: inputBg ? inputBg.value : '#e6e8e7', 
+        bar: inputBar ? inputBar.value : '#c9c5c2',
+        static: inputStatic ? inputStatic.value : '#555555',
+        shape: inputShape ? inputShape.value : 'squircle',
+        font: inputFont ? inputFont.value : 'PopHappiness',
+        opacity: inputOpacity ? inputOpacity.value : 1,
+        bgImage: currentBgImage,
+        btnHover: inputBtnHover ? inputBtnHover.value : '#40c4ff',
+        displayMode: inputLayout ? inputLayout.value : 'grid',
+        noiseType: inputNoise ? inputNoise.value : 'default',
+        wiiBtnBg: inputWiiBtnBg ? inputWiiBtnBg.value : '#ffffff',
+        modalBg: inputModalBg ? inputModalBg.value : '#f7f7f7',
+        modalBorder: inputModalBorder ? inputModalBorder.value : '#d4d4d4',
         // New Props
         bgType: getVal(inputBgType, 'solid'),
         bgSecondary: getVal(inputBg2, '#ffffff'),
@@ -557,10 +576,10 @@ if(inputBgUpload) inputBgUpload.addEventListener('change', (e) => {
         const reader = new FileReader();
         reader.onload = (event) => {
             const dataUrl = event.target.result;
-            const currentTheme = getCurrentThemeObj();
+            const currentTheme = getCurrentThemeObj(); // Fixed scope issue
             currentTheme.bgImage = dataUrl;
-            inputBgImage.value = '';
-            inputPreset.value = 'custom';
+            if(inputBgImage) inputBgImage.value = '';
+            if(inputPreset) inputPreset.value = 'custom';
             applyTheme(currentTheme);
         };
         reader.readAsDataURL(file);
@@ -570,7 +589,7 @@ if(inputBgUpload) inputBgUpload.addEventListener('change', (e) => {
 if(btnReset) btnReset.addEventListener('click', () => {
     const defaults = themePresets.wii;
     updateInputsFromTheme(defaults);
-    inputPreset.value = 'wii';
+    if(inputPreset) inputPreset.value = 'wii';
     applyTheme(defaults);
     playSound(clickSound);
     showToast("Theme Reset");
@@ -616,8 +635,10 @@ if(btnThemeToggle) btnThemeToggle.addEventListener('click', () => {
     if(document.getElementById('home-menu')) document.getElementById('home-menu').style.display = 'none';
     if(document.getElementById('data-menu')) document.getElementById('data-menu').style.display = 'none';
 
-    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    playSound(themeClickSound);
+    if(menu) {
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        playSound(themeClickSound);
+    }
 });
 
 // --- DATA MANAGEMENT (SAVE/LOAD) LOGIC ---
@@ -643,7 +664,7 @@ if (btnMemory && dataMenu) {
     });
 }
 
-if (closeDataBtn) {
+if (closeDataBtn && dataMenu) {
     closeDataBtn.addEventListener('click', () => {
         dataMenu.style.display = 'none';
         playSound(clickSound);
@@ -728,7 +749,9 @@ function playBGM(url, name) {
     if(!bgMusic) return;
     bgMusic.src = url;
     if(volumeSlider) bgMusic.volume = volumeSlider.value;
-    bgMusic.play().catch(e => console.log("Autoplay blocked until interaction"));
+    // Add simple catch for Autoplay Policy
+    bgMusic.play().catch(e => console.log("Autoplay blocked until user interaction"));
+    
     localStorage.setItem('qbbic-bgm', url);
     if(nowPlayingText) nowPlayingText.textContent = name || "Unknown Track";
 }
@@ -757,13 +780,15 @@ if(musicToggleBtn) {
         if(document.getElementById('home-menu')) document.getElementById('home-menu').style.display = 'none';
         if(document.getElementById('data-menu')) document.getElementById('data-menu').style.display = 'none';
 
-        const isVisible = menu.style.display === 'block';
-        menu.style.display = isVisible ? 'none' : 'block';
-        musicToggleBtn.classList.toggle('active', !isVisible);
-        playSound(themeClickSound);
+        if(menu) {
+            const isVisible = menu.style.display === 'block';
+            menu.style.display = isVisible ? 'none' : 'block';
+            musicToggleBtn.classList.toggle('active', !isVisible);
+            playSound(themeClickSound);
 
-        if (bgMusic && bgMusic.paused && localStorage.getItem('qbbic-bgm') !== 'none') {
-            bgMusic.play().catch(() => {});
+            if (bgMusic && bgMusic.paused && localStorage.getItem('qbbic-bgm') !== 'none') {
+                bgMusic.play().catch(() => {});
+            }
         }
     });
 }
@@ -773,8 +798,9 @@ if(btnStopMusic) btnStopMusic.addEventListener('click', () => {
     if(bgMusic) bgMusic.pause();
     localStorage.setItem('qbbic-bgm', 'none');
     if(nowPlayingText) nowPlayingText.textContent = "Stopped";
-    document.getElementById('music-menu').style.display = 'none';
-    musicToggleBtn.classList.remove('active');
+    const musicMenu = document.getElementById('music-menu');
+    if(musicMenu) musicMenu.style.display = 'none';
+    if(musicToggleBtn) musicToggleBtn.classList.remove('active');
     showToast("Music Stopped");
 });
 
@@ -782,8 +808,9 @@ const btnRandomMusic = document.getElementById('music-option-random');
 if(btnRandomMusic) btnRandomMusic.addEventListener('click', () => {
     const randomSong = songs[Math.floor(Math.random() * songs.length)];
     playBGM(randomSong.url, randomSong.name);
-    document.getElementById('music-menu').style.display = 'none';
-    musicToggleBtn.classList.remove('active');
+    const musicMenu = document.getElementById('music-menu');
+    if(musicMenu) musicMenu.style.display = 'none';
+    if(musicToggleBtn) musicToggleBtn.classList.remove('active');
     showToast("Playing Random: " + randomSong.name);
 });
 
@@ -863,13 +890,9 @@ function createShawarma() {
     const el = document.createElement('div');
     el.innerText = '🌯';
     el.classList.add('shawarma-item');
-    el.style.position = 'fixed';
     el.style.left = Math.random() * 100 + 'vw';
     el.style.top = '-60px';
     el.style.fontSize = (Math.random() * 30 + 20) + 'px';
-    el.style.zIndex = '9999';
-    el.style.pointerEvents = 'none';
-    el.style.filter = 'drop-shadow(2px 4px 6px rgba(0,0,0,0.3))';
 
     document.body.appendChild(el);
 
@@ -963,12 +986,13 @@ function init3DSMenuLogic() {
             });
         });
 
+        // Clear selection if a manual input is touched
         const clearSelectionInputs = [inputBg, inputBar, inputWiiBtnBg, inputFont, checkHome, checkRandom];
         clearSelectionInputs.forEach(input => {
             if(input) {
                 input.addEventListener('input', () => {
                     presetItems.forEach(i => i.classList.remove('selected'));
-                    hiddenPresetInput.value = 'custom';
+                    if(hiddenPresetInput) hiddenPresetInput.value = 'custom';
                 });
             }
         });
