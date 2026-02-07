@@ -1,6 +1,5 @@
 /**
- * UPDATED SCRIPT.JS
- * Removed "Surprise Me" -> Added "Data Management" (Save/Load)
+ * UPDATED SCRIPT.JS - Matches games.html structure
  */
 
 // --- CORE VARIABLES ---
@@ -44,7 +43,7 @@ function showToast(message) {
     }, 2500);
 }
 
-// Audio Helper to prevent crashes if ID is missing
+// Audio Helper
 function playSound(audioElement) {
     if (audioElement && typeof audioElement.play === 'function') {
         audioElement.currentTime = 0;
@@ -116,9 +115,9 @@ function initApp() {
         // Page Navigation
         if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
             if (e.key === 'ArrowLeft') {
-                prevPageButton.click();
+                if (prevPageButton && !prevPageButton.classList.contains('disabled')) prevPageButton.click();
             } else if (e.key === 'ArrowRight') {
-                nextPageButton.click();
+                if (nextPageButton && !nextPageButton.classList.contains('disabled')) nextPageButton.click();
             }
         }
     });
@@ -132,10 +131,8 @@ function initApp() {
             if (theme.preset) document.getElementById('input-preset').value = theme.preset;
             else document.getElementById('input-preset').value = 'custom';
             
-            // Restore Inputs
             restoreThemeInputs(theme);
 
-            // Restore Rain
             if (theme.rainEnabled) {
                 const rainCheck = document.getElementById('check-rain-shawarma');
                 if(rainCheck) rainCheck.checked = true;
@@ -159,8 +156,8 @@ function initApp() {
 }
 
 function restoreThemeInputs(theme) {
-    const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
-    const setCheck = (id, val) => { const el = document.getElementById(id); if(el) el.checked = val; };
+    const setVal = (id, val) => { const el = document.getElementById(id); if(el && val !== undefined) el.value = val; };
+    const setCheck = (id, val) => { const el = document.getElementById(id); if(el && val !== undefined) el.checked = val; };
 
     setVal('input-bg', theme.bg || '#e6e8e7');
     setVal('input-bar', theme.bar || '#c9c5c2');
@@ -175,9 +172,15 @@ function restoreThemeInputs(theme) {
     setVal('input-modal-bg', theme.modalBg || '#f7f7f7');
     setVal('input-modal-border', theme.modalBorder || '#d4d4d4');
 
+    // New HTML specific inputs
+    setVal('input-bg-type', theme.bgType || 'solid');
+    setVal('input-bg-2', theme.bgSecondary || '#ffffff');
+    setVal('input-text-color', theme.textColor || '#333333');
+    setVal('input-cursor', theme.cursor || 'wii');
+    setVal('input-blur', theme.blurAmount || 4);
+
     if (theme.layout) {
         setCheck('check-show-home', theme.layout.home !== false);
-        // Map 'random' pref to the new data button for backward compatibility
         setCheck('check-show-search', theme.layout.random !== false); 
         setCheck('check-show-clock', theme.layout.clock !== false);
         setCheck('check-show-music', theme.layout.music !== false);
@@ -340,9 +343,7 @@ const inputBgImage = document.getElementById('input-bg-image');
 const inputBgUpload = document.getElementById('input-bg-upload');
 
 const checkHome = document.getElementById('check-show-home');
-// Renaming variable for clarity, though ID in HTML might still be 'check-show-search'
-// This checkbox controls the visibility of the new Data Button (formerly Random)
-const checkRandom = document.getElementById('check-show-search'); 
+const checkRandom = document.getElementById('check-show-search'); // Maps to data button
 const checkClock = document.getElementById('check-show-clock');
 const checkMusic = document.getElementById('check-show-music');
 const inputBtnHover = document.getElementById('input-btn-hover');
@@ -353,22 +354,26 @@ const inputWiiBtnBg = document.getElementById('input-wii-btn-bg');
 const inputModalBg = document.getElementById('input-modal-bg');
 const inputModalBorder = document.getElementById('input-modal-border');
 
+// NEW INPUTS FROM GAMES.HTML
+const inputBgType = document.getElementById('input-bg-type');
+const inputBg2 = document.getElementById('input-bg-2');
+const inputTextColor = document.getElementById('input-text-color');
+const inputCursor = document.getElementById('input-cursor');
+const inputBlur = document.getElementById('input-blur');
+
 const btnReset = document.getElementById('reset-theme-btn');
 const inputPreset = document.getElementById('input-preset');
 
 // PRESET DATA
 const themePresets = {
-    wii: { bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', wiiBtnBg: '#ffffff', modalBg: '#f7f7f7', modalBorder: '#d4d4d4', shape: 'squircle', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#40c4ff', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
-    'pride-rainbow': { bg: '#f0f0f0', bar: '#ffadad', static: '#ff6b6b', wiiBtnBg: '#fff0f0', modalBg: '#fff0f0', modalBorder: '#ffadad', shape: 'round', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ffd6a5', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
-    'pride-trans': { bg: '#f5fbff', bar: '#F5A9B8', static: '#5BCEFA', wiiBtnBg: '#ffffff', modalBg: '#ffffff', modalBorder: '#5BCEFA', shape: 'squircle', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
-    'pride-bi': { bg: '#f3e6fa', bar: '#D00070', static: '#0038A8', wiiBtnBg: '#f3e6fa', modalBg: '#f3e6fa', modalBorder: '#D00070', shape: 'rounded-square', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#9B4F96', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
-    'pride-pan': { bg: '#fffacd', bar: '#ff218c', static: '#00b8ff', wiiBtnBg: '#ffffea', modalBg: '#ffffea', modalBorder: '#ff218c', shape: 'round', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ffd700', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
-    'pride-ace': { bg: '#1a1a1a', bar: '#800080', static: '#a3a3a3', wiiBtnBg: '#333333', modalBg: '#333333', modalBorder: '#800080', shape: 'square', font: 'monospace', opacity: 0.8, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
-    'pride-enby': { bg: '#fffbea', bar: '#9c59d1', static: '#2c2c2c', wiiBtnBg: '#ffffff', modalBg: '#fffbea', modalBorder: '#9c59d1', shape: 'squircle', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#fc4b4b', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
-    'pride-lesbian': { bg: '#fff0f0', bar: '#d53d5e', static: '#a30262', wiiBtnBg: '#ffe6e6', modalBg: '#ffe6e6', modalBorder: '#d53d5e', shape: 'rounded-square', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ff9a56', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
-    'pride-genderqueer': { bg: '#f9f9f9', bar: '#b57edc', static: '#4a8123', wiiBtnBg: '#ffffff', modalBg: '#ffffff', modalBorder: '#b57edc', shape: 'round', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
-    'pride-intersex': { bg: '#ffdb00', bar: '#7902aa', static: '#4a006a', wiiBtnBg: '#fff5cc', modalBg: '#fff5cc', modalBorder: '#7902aa', shape: 'round', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } },
-    'pride-aro': { bg: '#f0fff0', bar: '#3da542', static: '#000000', wiiBtnBg: '#ffffff', modalBg: '#ffffff', modalBorder: '#3da542', shape: 'square', font: 'monospace', opacity: 1, bgImage: '', btnHover: '#a9a9a9', displayMode: 'grid', noiseType: 'default', layout: { home: true, random: true, clock: true, music: true } }
+    wii: { bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', wiiBtnBg: '#ffffff', modalBg: '#f7f7f7', modalBorder: '#d4d4d4', shape: 'squircle', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#40c4ff', displayMode: 'grid', noiseType: 'default', bgType: 'solid', textColor: '#333333', cursor: 'wii', blurAmount: 4, layout: { home: true, random: true, clock: true, music: true } },
+    'pride-rainbow': { bg: '#f0f0f0', bar: '#ffadad', static: '#ff6b6b', wiiBtnBg: '#fff0f0', modalBg: '#fff0f0', modalBorder: '#ffadad', shape: 'round', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ffd6a5', displayMode: 'grid', noiseType: 'default', bgType: 'solid', textColor: '#333333', cursor: 'wii', blurAmount: 4, layout: { home: true, random: true, clock: true, music: true } },
+    'pride-trans': { bg: '#f5fbff', bar: '#F5A9B8', static: '#5BCEFA', wiiBtnBg: '#ffffff', modalBg: '#ffffff', modalBorder: '#5BCEFA', shape: 'squircle', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', bgType: 'solid', textColor: '#333333', cursor: 'default', blurAmount: 2, layout: { home: true, random: true, clock: true, music: true } },
+    'pride-bi': { bg: '#f3e6fa', bar: '#D00070', static: '#0038A8', wiiBtnBg: '#f3e6fa', modalBg: '#f3e6fa', modalBorder: '#D00070', shape: 'rounded-square', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#9B4F96', displayMode: 'grid', noiseType: 'default', bgType: 'solid', textColor: '#333333', cursor: 'default', blurAmount: 4, layout: { home: true, random: true, clock: true, music: true } },
+    'pride-pan': { bg: '#fffacd', bar: '#ff218c', static: '#00b8ff', wiiBtnBg: '#ffffea', modalBg: '#ffffea', modalBorder: '#ff218c', shape: 'round', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ffd700', displayMode: 'grid', noiseType: 'default', bgType: 'solid', textColor: '#333333', cursor: 'wii', blurAmount: 4, layout: { home: true, random: true, clock: true, music: true } },
+    'pride-ace': { bg: '#1a1a1a', bar: '#800080', static: '#a3a3a3', wiiBtnBg: '#333333', modalBg: '#333333', modalBorder: '#800080', shape: 'square', font: 'monospace', opacity: 0.8, bgImage: '', btnHover: '#ffffff', displayMode: 'grid', noiseType: 'default', bgType: 'solid', textColor: '#ffffff', cursor: 'crosshair', blurAmount: 0, layout: { home: true, random: true, clock: true, music: true } },
+    'pride-enby': { bg: '#fffbea', bar: '#9c59d1', static: '#2c2c2c', wiiBtnBg: '#ffffff', modalBg: '#fffbea', modalBorder: '#9c59d1', shape: 'squircle', font: 'sans-serif', opacity: 1, bgImage: '', btnHover: '#fc4b4b', displayMode: 'grid', noiseType: 'default', bgType: 'solid', textColor: '#333333', cursor: 'default', blurAmount: 4, layout: { home: true, random: true, clock: true, music: true } },
+    'pride-lesbian': { bg: '#fff0f0', bar: '#d53d5e', static: '#a30262', wiiBtnBg: '#ffe6e6', modalBg: '#ffe6e6', modalBorder: '#d53d5e', shape: 'rounded-square', font: 'PopHappiness', opacity: 1, bgImage: '', btnHover: '#ff9a56', displayMode: 'grid', noiseType: 'default', bgType: 'solid', textColor: '#333333', cursor: 'wii', blurAmount: 4, layout: { home: true, random: true, clock: true, music: true } },
 };
 
 function saveThemeToStorage(themeObj) {
@@ -381,10 +386,15 @@ function saveThemeToStorage(themeObj) {
 }
 
 function applyTheme(themeObj) {
-    const { bg, bar, static, shape, font, opacity, bgImage, layout, btnHover, displayMode, noiseType, wiiBtnBg, modalBg, modalBorder } = themeObj;
+    const { 
+        bg, bar, static, shape, font, opacity, bgImage, layout, 
+        btnHover, displayMode, noiseType, wiiBtnBg, modalBg, modalBorder,
+        bgType, bgSecondary, textColor, cursor, blurAmount 
+    } = themeObj;
 
     const r = document.documentElement;
     r.style.setProperty('--bg-color', bg);
+    if(bgSecondary) r.style.setProperty('--bg-secondary', bgSecondary);
     r.style.setProperty('--bar-color', bar);
     r.style.setProperty('--static-color', static);
     r.style.setProperty('--wii-btn-bg', wiiBtnBg || '#ffffff');
@@ -392,6 +402,17 @@ function applyTheme(themeObj) {
     r.style.setProperty('--modal-border', modalBorder || '#d4d4d4');
     r.style.setProperty('--card-opacity', opacity || 1);
     r.style.setProperty('--btn-hover-color', btnHover || '#40c4ff');
+
+    if (textColor) r.style.setProperty('--text-color', textColor);
+    
+    // Blur logic
+    if (blurAmount !== undefined) r.style.setProperty('--glass-blur', blurAmount + 'px');
+
+    // Cursor Logic
+    let cursorVal = "url('/assets/cursor.png'), auto";
+    if (cursor === 'default') cursorVal = 'auto';
+    if (cursor === 'crosshair') cursorVal = 'crosshair';
+    r.style.setProperty('--cursor-type', cursorVal);
 
     const fontVal = font === 'monospace' ? "'Courier New', monospace" : (font === 'sans-serif' ? "Arial, sans-serif" : "'PopHappiness', sans-serif");
     r.style.setProperty('--main-font', fontVal);
@@ -416,28 +437,34 @@ function applyTheme(themeObj) {
 
     const currentPreset = inputPreset ? inputPreset.value : 'custom';
 
+    // Background Type Logic
+    document.body.classList.remove('bg-wii', 'bg-is-image', 'bg-gradient');
+    document.body.style.backgroundImage = '';
+
     if (bgImage && bgImage.trim() !== "") {
         document.body.style.backgroundImage = `url('${bgImage}')`;
         document.body.classList.add('bg-is-image');
-        document.body.classList.remove('bg-wii');
+    } else if (bgType === 'gradient') {
+        document.body.classList.add('bg-gradient');
     } else {
-        document.body.classList.remove('bg-is-image');
         if (currentPreset === 'wii') {
              document.body.classList.add('bg-wii');
-             document.body.style.backgroundImage = '';
         } else {
-            document.body.classList.remove('bg-wii');
             const encodedColor = encodeURIComponent(static);
             const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
             document.body.style.backgroundImage = svg;
             document.body.style.backgroundSize = '10px 10px';
         }
     }
+    
+    // Toggle Second Color Input visibility
+    const rowBg2 = document.getElementById('row-bg-secondary');
+    if(rowBg2) rowBg2.style.display = (bgType === 'gradient') ? 'flex' : 'none';
 
     if (layout) {
         const setDisp = (id, show) => { const el = document.getElementById(id); if(el) el.style.display = show ? 'flex' : 'none'; };
         setDisp('wii-menu-button', layout.home !== false);
-        setDisp('memory-card-button', layout.random !== false); // UPDATED: Maps to Data Button
+        setDisp('memory-card-button', layout.random !== false); 
         setDisp('music-menu-toggle', layout.music !== false);
         
         const clock = document.getElementById('wii-date-time-display');
@@ -454,15 +481,23 @@ function getCurrentThemeObj() {
     }
     
     const getChk = (el) => el ? el.checked : true;
+    const getVal = (el, def) => el ? el.value : def;
     
     return {
         bg: inputBg.value, bar: inputBar.value, static: inputStatic.value, shape: inputShape.value,
         font: inputFont.value, opacity: inputOpacity.value, bgImage: currentBgImage,
         btnHover: inputBtnHover.value, displayMode: inputLayout.value, noiseType: inputNoise.value,
         wiiBtnBg: inputWiiBtnBg.value, modalBg: inputModalBg.value, modalBorder: inputModalBorder.value,
+        // New Props
+        bgType: getVal(inputBgType, 'solid'),
+        bgSecondary: getVal(inputBg2, '#ffffff'),
+        textColor: getVal(inputTextColor, '#333333'),
+        cursor: getVal(inputCursor, 'wii'),
+        blurAmount: getVal(inputBlur, 4),
+        
         layout: {
             home: getChk(checkHome), 
-            random: getChk(checkRandom), // Maps the checkbox to "random" which controls data btn
+            random: getChk(checkRandom), 
             clock: getChk(checkClock), 
             music: getChk(checkMusic)
         }
@@ -488,7 +523,16 @@ if(inputPreset) {
     });
 }
 
-const manualInputs = [inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity, checkHome, checkRandom, checkClock, checkMusic, inputBtnHover, inputLayout, inputNoise, inputWiiBtnBg, inputModalBg, inputModalBorder];
+// Collect all manual inputs
+const manualInputs = [
+    inputBg, inputBar, inputStatic, inputShape, inputFont, inputOpacity, 
+    checkHome, checkRandom, checkClock, checkMusic, 
+    inputBtnHover, inputLayout, inputNoise, 
+    inputWiiBtnBg, inputModalBg, inputModalBorder,
+    // New ones
+    inputBgType, inputBg2, inputTextColor, inputCursor, inputBlur
+];
+
 manualInputs.forEach(input => {
     if(!input) return;
     input.addEventListener('change', () => {
@@ -567,6 +611,11 @@ if(btnLoadTheme && inputLoadTheme) {
 const btnThemeToggle = document.getElementById('theme-menu-toggle');
 if(btnThemeToggle) btnThemeToggle.addEventListener('click', () => {
     const menu = document.getElementById('theme-menu');
+    // Hide others
+    if(document.getElementById('music-menu')) document.getElementById('music-menu').style.display = 'none';
+    if(document.getElementById('home-menu')) document.getElementById('home-menu').style.display = 'none';
+    if(document.getElementById('data-menu')) document.getElementById('data-menu').style.display = 'none';
+
     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
     playSound(themeClickSound);
 });
@@ -601,7 +650,7 @@ if (closeDataBtn) {
     });
 }
 
-// 1. SAVE DATA (Export localStorage)
+// 1. SAVE DATA
 if (btnSaveData) {
     btnSaveData.addEventListener('click', () => {
         const backup = JSON.stringify(localStorage);
@@ -622,7 +671,7 @@ if (btnSaveData) {
     });
 }
 
-// 2. LOAD DATA (Import to localStorage)
+// 2. LOAD DATA
 if (btnLoadData && dataFileInput) {
     btnLoadData.addEventListener('click', () => {
         dataFileInput.click();
@@ -636,17 +685,13 @@ if (btnLoadData && dataFileInput) {
         reader.onload = (event) => {
             try {
                 const data = JSON.parse(event.target.result);
-                // Clear current and load new
                 localStorage.clear();
                 Object.keys(data).forEach(key => {
                     localStorage.setItem(key, data[key]);
                 });
                 showToast("Data Loaded! Reloading...");
                 playSound(gameOpenSound);
-                
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
+                setTimeout(() => { window.location.reload(); }, 1500);
             } catch (err) {
                 console.error(err);
                 showToast("Error: Corrupt Save File");
@@ -708,6 +753,10 @@ const musicToggleBtn = document.getElementById('music-menu-toggle');
 if(musicToggleBtn) {
     musicToggleBtn.addEventListener('click', () => {
         const menu = document.getElementById('music-menu');
+        if(document.getElementById('theme-menu')) document.getElementById('theme-menu').style.display = 'none';
+        if(document.getElementById('home-menu')) document.getElementById('home-menu').style.display = 'none';
+        if(document.getElementById('data-menu')) document.getElementById('data-menu').style.display = 'none';
+
         const isVisible = menu.style.display === 'block';
         menu.style.display = isVisible ? 'none' : 'block';
         musicToggleBtn.classList.toggle('active', !isVisible);
@@ -757,6 +806,7 @@ document.addEventListener('click', (e) => {
     const dataMenu = document.getElementById('data-menu');
     const memoryBtn = document.getElementById('memory-card-button');
 
+    // Close logic
     if (themeMenu && themeToggle && !e.target.closest('#theme-menu') && !e.target.closest('#theme-menu-toggle') && !e.target.closest('input') && !e.target.closest('select')) {
         themeMenu.style.display = 'none';
     }
@@ -767,7 +817,6 @@ document.addEventListener('click', (e) => {
     if (homeMenu && homeBtn && !e.target.closest('#home-menu') && !e.target.closest('#wii-menu-button')) {
         homeMenu.style.display = 'none';
     }
-    // New Data Menu close logic
     if (dataMenu && memoryBtn && !e.target.closest('#data-menu') && !e.target.closest('#memory-card-button')) {
         dataMenu.style.display = 'none';
     }
@@ -780,6 +829,11 @@ if(homeBtn && homeMenu) {
     homeBtn.addEventListener('click', (e) => {
         e.preventDefault();
         const isVisible = homeMenu.style.display === 'block';
+        
+        if(document.getElementById('music-menu')) document.getElementById('music-menu').style.display = 'none';
+        if(document.getElementById('theme-menu')) document.getElementById('theme-menu').style.display = 'none';
+        if(document.getElementById('data-menu')) document.getElementById('data-menu').style.display = 'none';
+
         homeMenu.style.display = isVisible ? 'none' : 'block';
         playSound(themeClickSound);
     });
@@ -928,10 +982,3 @@ function init3DSMenuLogic() {
         });
     }
 }
-const manualInputs = [
-    inputBg, inputBg2, inputBgType, inputTextColor, inputCursor, inputBlur, // NEW Added here
-    inputBar, inputStatic, inputShape, inputFont, inputOpacity, 
-    checkHome, checkRandom, checkClock, checkMusic, 
-    inputBtnHover, inputLayout, inputNoise, 
-    inputWiiBtnBg, inputModalBg, inputModalBorder
-];
