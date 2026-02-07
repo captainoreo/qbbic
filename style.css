@@ -1,25 +1,19 @@
 /* --- CORE STYLES --- */
 :root {
-  /* DEFAULT COLORS */
   --bg-color: #e6e8e7;
   --bg-secondary: #ffffff;
   --bar-color: #c9c5c2;
   --static-color: #555555;
   --text-color: #333333;
-  
-  /* CUSTOMIZABLE VARS */
   --wii-btn-bg: #ffffff;
   --modal-bg: #f7f7f7;
   --modal-border: #d4d4d4;
   --btn-hover-color: #40c4ff; 
-  
-  /* SHAPE & EFFECT VARIABLES */
   --btn-radius: 12px; 
   --card-radius: 25px; 
   --card-opacity: 1;
   --card-clip: none; 
   --glass-blur: 4px;
-  
   --box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
   --main-font: 'PopHappiness', sans-serif;
   --cursor-type: url('/assets/cursor.png'), auto;
@@ -59,13 +53,8 @@ body {
   transition: background-color 0.5s ease, color 0.5s ease, filter 0.5s ease;
 }
 
-/* --- SHAWARMA RAIN ITEM --- */
 .shawarma-item {
-    position: fixed;
-    z-index: 1500; /* Behind menus, above content */
-    pointer-events: none; /* CRITICAL: Allows clicking through the rain */
-    user-select: none;
-    will-change: transform;
+    position: fixed; z-index: 1500; pointer-events: none; user-select: none; will-change: transform;
 }
 
 /* --- TIME TRAVEL MODES --- */
@@ -99,7 +88,6 @@ body.time-travel-past {
     background-image: url('data:image/svg+xml;utf8,<svg width="4" height="4" viewBox="0 0 4 4" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h4v4H0z" fill="%23eaddcf"/><path d="M0 0h4v4H0z" fill="%23d8c8b8" fill-opacity="0.4" style="filter:url(%23noise)"/></svg>') !important;
     filter: sepia(0.6) contrast(0.9);
 }
-
 body.time-travel-past .wii-button,
 body.time-travel-past .game-button {
     border-color: #5a4a3a !important;
@@ -108,32 +96,21 @@ body.time-travel-past .game-button {
 }
 body.time-travel-past .wii-button { border-radius: 12px !important; }
 
-/* --- BACKGROUND PATTERNS --- */
+/* --- BACKGROUNDS --- */
 body.bg-wii {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
-  background-size: 10px 10px;
-  background-repeat: repeat;
+  background-size: 10px 10px; background-repeat: repeat;
 }
-body.bg-gradient {
-    background: linear-gradient(135deg, var(--bg-color) 0%, var(--bg-secondary) 100%) !important;
-    background-attachment: fixed !important;
-}
-body.bg-is-image {
-    background-size: cover !important;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    animation: none;
-}
+body.bg-gradient { background: linear-gradient(135deg, var(--bg-color) 0%, var(--bg-secondary) 100%) !important; background-attachment: fixed !important; }
+body.bg-is-image { background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; animation: none; }
 
 .wii-bottom-bar {
   position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
-  background-color: var(--bar-color); 
-  border-top: 2px solid var(--static-color);
+  background-color: var(--bar-color); border-top: 2px solid var(--static-color);
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
   display: flex; justify-content: center; align-items: center;
   gap: 20px; padding: 0 20px; box-sizing: border-box; 
-  z-index: 2000; /* Increased to stay above game cards */
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  z-index: 2000; transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 .wii-bottom-bar-content { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 900px; }
 
@@ -141,27 +118,21 @@ body.bg-is-image {
 .wii-button {
   background-color: var(--wii-btn-bg);
   background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(0, 0, 0, 0.1) 100%);
-  border: 2px solid #aaaaaa; 
-  border-radius: var(--btn-radius);
+  border: 2px solid #aaaaaa; border-radius: var(--btn-radius);
   width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  position: relative; overflow: hidden;
+  cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative; overflow: hidden;
 }
 .wii-button:hover, .wii-button.active { 
     transform: translateY(-2px); border-color: var(--btn-hover-color);
-    box-shadow: 0 0 8px var(--btn-hover-color), inset 0 0 5px #fff; 
-    cursor: var(--cursor-type), pointer; 
+    box-shadow: 0 0 8px var(--btn-hover-color), inset 0 0 5px #fff; cursor: var(--cursor-type), pointer; 
 }
 .wii-button:active { transform: scale(0.95); filter: brightness(0.9); }
 .wii-button-svg { width: 60%; height: 60%; transition: filter 0.3s ease, fill 0.3s ease; fill: var(--static-color); }
 .wii-button:hover .wii-button-svg, .wii-button.active .wii-button-svg { fill: #000; }
 
 .wii-date-time { 
-    font-size: 1rem; text-align: center; color: var(--static-color); 
-    user-select: none; transition: color 0.3s ease;
-    min-width: 120px; display: flex; flex-direction: column; align-items: center;
-    cursor: help; 
+    font-size: 1rem; text-align: center; color: var(--static-color); user-select: none; transition: color 0.3s ease;
+    min-width: 120px; display: flex; flex-direction: column; align-items: center; cursor: help; 
 }
 .wii-date-time:hover { transform: scale(1.1); }
 .wii-date-time .time { font-size: 1.6rem; line-height: 1.1; font-weight: bold; letter-spacing: 1px; }
@@ -169,12 +140,11 @@ body.bg-is-image {
 
 #game-pages-container {
   position: relative; z-index: 10; width: 100%; max-width: 1000px; height: 600px; 
-  display: flex; align-items: center; justify-content: center; margin-bottom: 60px;
-  overflow: visible;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 60px; overflow: visible;
 }
 #game-pages-wrapper { display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); width: 100%; }
 
-/* --- GAME BUTTONS & LAYOUTS --- */
+/* --- GAME BUTTONS --- */
 .game-buttons {
   display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); 
   gap: 15px; width: 100%; height: 500px; justify-items: center; align-items: center;
@@ -187,11 +157,8 @@ body.bg-is-image {
 .game-buttons.layout-big .game-button { width: 400px; height: 220px; }
 
 .game-button {
-  width: 220px; height: 130px;
-  background-color: #ffffff;
-  border-radius: var(--card-radius); 
-  clip-path: var(--card-clip); 
-  opacity: var(--card-opacity);
+  width: 220px; height: 130px; background-color: #ffffff;
+  border-radius: var(--card-radius); clip-path: var(--card-clip); opacity: var(--card-opacity);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   text-decoration: none; color: black; font-weight: bold; text-align: center;
   position: relative; cursor: var(--cursor-type), auto;
@@ -221,17 +188,13 @@ body.bg-is-image {
 .noise-none .game-button::before { display: none; }
 
 .game-button:hover { 
-    transform: scale(1.02);
-    box-shadow: 0 0 0 6px var(--btn-hover-color), 0 0 20px var(--btn-hover-color); 
-    border-color: #7bc6eb; z-index: 20; 
-    cursor: var(--cursor-type), pointer; opacity: 1 !important; filter: grayscale(0%) !important;
+    transform: scale(1.02); box-shadow: 0 0 0 6px var(--btn-hover-color), 0 0 20px var(--btn-hover-color); 
+    border-color: #7bc6eb; z-index: 20; cursor: var(--cursor-type), pointer; opacity: 1 !important; filter: grayscale(0%) !important;
 }
 .game-button-text {
-  position: absolute; bottom: 0; width: 100%; 
-  background: rgba(255,255,255,0.85);
+  position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.85);
   border-bottom-left-radius: var(--card-radius); border-bottom-right-radius: var(--card-radius);
-  font-size: 0.9rem; padding: 4px 0; display: none; color: #333; z-index: 5; 
-  backdrop-filter: blur(var(--glass-blur));
+  font-size: 0.9rem; padding: 4px 0; display: none; color: #333; z-index: 5; backdrop-filter: blur(var(--glass-blur));
 }
 .game-button:hover .game-button-text { display: block; }
 .game-button.placeholder {
@@ -248,12 +211,13 @@ body.bg-is-image {
 .page-dot:hover { transform: scale(1.3); background-color: rgba(255,255,255,0.5); }
 .page-dot.active { background-color: var(--static-color); pointer-events: none; }
 
-/* --- MENUS (High Z-Index) --- */
-#theme-menu, #music-menu, #home-menu, #data-menu {
+/* --- CORNER MENUS (MUSIC & HOME) --- */
+/* FIX: We removed #theme-menu and #data-menu from here so they don't look like the music player */
+#music-menu, #home-menu {
   position: fixed; background: rgba(255, 255, 255, 0.95); 
   border: 2px solid var(--static-color); border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
-  z-index: 3000; /* Above bottom bar */
+  z-index: 3000; 
   display: none;
   color: #333; backdrop-filter: blur(5px);
 }
@@ -270,74 +234,9 @@ body.bg-is-image {
 #home-menu .music-option { display: flex; align-items: center; justify-content: flex-start; gap: 12px; text-align: left; font-weight: bold; padding: 12px; }
 .menu-icon { width: 24px; height: 24px; fill: currentColor; flex-shrink: 0; }
 
-/* --- MODAL (Highest Z-Index) --- */
-#game-modal {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background-color: rgba(0, 0, 0, 0.9); display: none; justify-content: center; align-items: center; 
-  z-index: 9999; /* TOP LEVEL */
-  opacity: 0; transition: opacity 0.3s ease; pointer-events: none; backdrop-filter: blur(10px);
-}
-#game-modal.active { opacity: 1; pointer-events: auto; }
-
-#game-modal-container {
-  width: 100%; height: 100%; max-width: 1280px; max-height: 90vh; display: flex; flex-direction: column;
-  background-color: var(--modal-bg); 
-  border-radius: 24px; overflow: hidden; 
-  box-shadow: 0 0 50px rgba(64, 196, 255, 0.3), 0 20px 40px rgba(0,0,0,0.4); 
-  border: 5px solid var(--modal-border);
-  position: relative;
-}
-
-#game-modal-header {
-  flex-shrink: 0; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
-  background: var(--modal-bg);
-  border-bottom: 2px solid #ccc; height: 60px;
-  z-index: 5; position: relative;
-}
-#game-modal-title { font-size: 1.5rem; font-weight: bold; color: #555; font-family: var(--main-font); text-shadow: 1px 1px 0px #fff; }
-#game-modal-controls { display: flex; gap: 12px; align-items: center; }
-.control-btn {
-  background: linear-gradient(to bottom, #fcfcfc 0%, #dcdcdc 100%); color: #555; border: 2px solid #b0b0b0; 
-  border-radius: 30px; padding: 0 24px; height: 40px; display: flex; align-items: center; justify-content: center; gap: 8px;
-  cursor: pointer; transition: all 0.2s; font-family: var(--main-font); font-weight: bold; font-size: 0.9rem;
-}
-.control-btn:hover { border-color: #40c4ff; box-shadow: 0 0 8px #40c4ff, inset 0 0 5px rgba(255,255,255,1); color: #0091ea; transform: scale(1.05); }
-.control-btn svg { width: 20px; height: 20px; fill: currentColor; }
-.control-btn.close-btn { color: #d32f2f; border-color: #ef9a9a; }
-.control-btn.close-btn:hover { box-shadow: 0 0 8px #ff5252; border-color: #ff1744; color: #b71c1c; }
-
-#game-iframe-wrapper { 
-    flex-grow: 1; position: relative; background-color: #000; border-top: 1px solid #999; overflow: hidden; 
-    transform-origin: center center;
-}
-#game-iframe { width: 100%; height: 100%; border: none; display: block; opacity: 0; }
-
-@keyframes crt-on {
-    0% { transform: scale(1, 0.005); filter: brightness(10); opacity: 0; }
-    40% { transform: scale(1, 0.005); filter: brightness(10); opacity: 1; }
-    70% { transform: scale(1, 1); filter: brightness(2); opacity: 1; }
-    100% { transform: scale(1, 1); filter: brightness(1); opacity: 1; }
-}
-@keyframes crt-off {
-    0% { transform: scale(1, 1); filter: brightness(1); opacity: 1; }
-    40% { transform: scale(1, 0.005); filter: brightness(5); opacity: 1; }
-    100% { transform: scale(0, 0); filter: brightness(0); opacity: 0; }
-}
-
-.crt-animate-open #game-iframe-wrapper { animation: crt-on 0.4s ease-out forwards; }
-.crt-animate-open #game-iframe { opacity: 1; transition: opacity 0.1s 0.3s; }
-.crt-animate-close #game-iframe-wrapper { animation: crt-off 0.4s ease-in forwards; }
-
-#toast-notification {
-  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
-  background-color: var(--bar-color); color: var(--static-color); padding: 12px 24px; border-radius: 30px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 5000;
-  font-weight: bold; border: 2px solid var(--static-color); text-align: center; font-family: sans-serif;
-}
-#toast-notification.show { transform: translateX(-50%) translateY(0); }
-
-/* --- NINTENDO 3DS THEME SHOP STYLES --- */
-.nds-theme-shop {
+/* --- CENTERED 3DS MENUS (THEME & DATA) --- */
+/* FIX: These now have their own dedicated styling block ensuring high priority */
+#theme-menu, #data-menu, .nds-theme-shop {
     width: 360px !important;
     height: 480px !important;
     background-color: #f0f0f0;
@@ -350,9 +249,13 @@ body.bg-is-image {
     overflow: hidden;
     font-family: var(--main-font), sans-serif;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
-    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    position: fixed; 
+    top: 50% !important; left: 50% !important; /* Forces centering */
+    transform: translate(-50%, -50%) !important;
+    bottom: auto !important; right: auto !important; /* Resets corner positioning if inherited */
     z-index: 3000;
 }
+
 .nds-header {
     background: linear-gradient(to bottom, #ffe033 0%, #ffcc00 100%);
     height: 70px; display: flex; align-items: center; padding: 0 15px;
@@ -367,10 +270,8 @@ body.bg-is-image {
 .nds-section-label { font-size: 0.8rem; font-weight: bold; color: #333; margin: 10px 0 5px 5px; text-shadow: 1px 1px 0 rgba(255,255,255,0.8); }
 .nds-list { display: flex; flex-direction: column; gap: 8px; }
 .nds-item {
-    background: white; border-radius: 20px; height: 40px;
-    display: flex; align-items: center; padding: 0 5px;
-    border: 2px solid #ccc; cursor: pointer; box-shadow: 0 2px 0 #aaa;
-    transition: transform 0.1s;
+    background: white; border-radius: 20px; height: 40px; display: flex; align-items: center; padding: 0 5px;
+    border: 2px solid #ccc; cursor: pointer; box-shadow: 0 2px 0 #aaa; transition: transform 0.1s;
 }
 .nds-item:active { transform: translateY(2px); box-shadow: 0 0 0 #aaa; }
 .nds-item.selected { border: 3px solid #00d2ff; box-shadow: 0 0 5px #00d2ff; }
@@ -378,8 +279,7 @@ body.bg-is-image {
 .nds-item-name { font-size: 0.95rem; font-weight: bold; color: #333; flex-grow: 1; }
 .nds-control-row {
     background: white; border-radius: 8px; padding: 5px 10px; margin-bottom: 5px;
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 0.9rem; border: 1px solid #ccc;
+    display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; border: 1px solid #ccc;
 }
 .nds-control-row select { width: 100px; }
 .nds-control-row input[type="color"] { border: none; height: 25px; width: 40px; padding: 0; }
@@ -399,3 +299,57 @@ body.bg-is-image {
     cursor: pointer; box-shadow: 0 3px 0 #999;
 }
 .nds-close-btn:active { transform: translateY(3px); box-shadow: none; }
+
+/* --- MODAL (Highest Z-Index) --- */
+#game-modal {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.9); display: none; justify-content: center; align-items: center; 
+  z-index: 9999; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; backdrop-filter: blur(10px);
+}
+#game-modal.active { opacity: 1; pointer-events: auto; }
+#game-modal-container {
+  width: 100%; height: 100%; max-width: 1280px; max-height: 90vh; display: flex; flex-direction: column;
+  background-color: var(--modal-bg); border-radius: 24px; overflow: hidden; 
+  box-shadow: 0 0 50px rgba(64, 196, 255, 0.3), 0 20px 40px rgba(0,0,0,0.4); 
+  border: 5px solid var(--modal-border); position: relative;
+}
+#game-modal-header {
+  flex-shrink: 0; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
+  background: var(--modal-bg); border-bottom: 2px solid #ccc; height: 60px; z-index: 5; position: relative;
+}
+#game-modal-title { font-size: 1.5rem; font-weight: bold; color: #555; font-family: var(--main-font); text-shadow: 1px 1px 0px #fff; }
+#game-modal-controls { display: flex; gap: 12px; align-items: center; }
+.control-btn {
+  background: linear-gradient(to bottom, #fcfcfc 0%, #dcdcdc 100%); color: #555; border: 2px solid #b0b0b0; 
+  border-radius: 30px; padding: 0 24px; height: 40px; display: flex; align-items: center; justify-content: center; gap: 8px;
+  cursor: pointer; transition: all 0.2s; font-family: var(--main-font); font-weight: bold; font-size: 0.9rem;
+}
+.control-btn:hover { border-color: #40c4ff; box-shadow: 0 0 8px #40c4ff, inset 0 0 5px rgba(255,255,255,1); color: #0091ea; transform: scale(1.05); }
+.control-btn svg { width: 20px; height: 20px; fill: currentColor; }
+.control-btn.close-btn { color: #d32f2f; border-color: #ef9a9a; }
+.control-btn.close-btn:hover { box-shadow: 0 0 8px #ff5252; border-color: #ff1744; color: #b71c1c; }
+
+#game-iframe-wrapper { flex-grow: 1; position: relative; background-color: #000; border-top: 1px solid #999; overflow: hidden; transform-origin: center center; }
+#game-iframe { width: 100%; height: 100%; border: none; display: block; opacity: 0; }
+@keyframes crt-on {
+    0% { transform: scale(1, 0.005); filter: brightness(10); opacity: 0; }
+    40% { transform: scale(1, 0.005); filter: brightness(10); opacity: 1; }
+    70% { transform: scale(1, 1); filter: brightness(2); opacity: 1; }
+    100% { transform: scale(1, 1); filter: brightness(1); opacity: 1; }
+}
+@keyframes crt-off {
+    0% { transform: scale(1, 1); filter: brightness(1); opacity: 1; }
+    40% { transform: scale(1, 0.005); filter: brightness(5); opacity: 1; }
+    100% { transform: scale(0, 0); filter: brightness(0); opacity: 0; }
+}
+.crt-animate-open #game-iframe-wrapper { animation: crt-on 0.4s ease-out forwards; }
+.crt-animate-open #game-iframe { opacity: 1; transition: opacity 0.1s 0.3s; }
+.crt-animate-close #game-iframe-wrapper { animation: crt-off 0.4s ease-in forwards; }
+
+#toast-notification {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+  background-color: var(--bar-color); color: var(--static-color); padding: 12px 24px; border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 5000;
+  font-weight: bold; border: 2px solid var(--static-color); text-align: center; font-family: sans-serif;
+}
+#toast-notification.show { transform: translateX(-50%) translateY(0); }
