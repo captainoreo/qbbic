@@ -1,6 +1,6 @@
 /**
  * UPDATED SCRIPT.JS
- * Improvements: Keyboard Nav, Audio Safety, Performance Fixes, Syntax Repair, Consolidated Search
+ * Improvements: Memory Card System, UI Refresh, Keyboard Nav, Audio Safety, Performance Fixes
  */
 
 // --- CORE VARIABLES ---
@@ -164,6 +164,13 @@ function initApp() {
     if (savedBGM && savedBGM !== 'none') {
         const song = songs.find(s => s.url === savedBGM);
         playBGM(savedBGM, song ? song.name : "Unknown");
+    }
+
+    // Load Memory Card Notes
+    const savedNotes = localStorage.getItem('qbbic-notes');
+    if(savedNotes) {
+        const noteArea = document.getElementById('memory-card-notes');
+        if(noteArea) noteArea.value = savedNotes;
     }
 
     // Initialize 3DS Menu Logic (Moved here for safety)
@@ -826,6 +833,8 @@ document.addEventListener('click', (e) => {
     const searchContainer = document.getElementById('search-container');
     const homeMenu = document.getElementById('home-menu');
     const homeBtn = document.getElementById('wii-menu-button');
+    const memMenu = document.getElementById('memory-card-menu');
+    const memBtn = document.getElementById('memory-card-button');
 
     if (themeMenu && themeToggle && !e.target.closest('#theme-menu') && !e.target.closest('#theme-menu-toggle') && !e.target.closest('input') && !e.target.closest('select')) {
         themeMenu.style.display = 'none';
@@ -839,6 +848,9 @@ document.addEventListener('click', (e) => {
     }
     if (homeMenu && homeBtn && !e.target.closest('#home-menu') && !e.target.closest('#wii-menu-button')) {
         homeMenu.style.display = 'none';
+    }
+    if (memMenu && memBtn && !e.target.closest('#memory-card-menu') && !e.target.closest('#memory-card-button')) {
+        memMenu.style.display = 'none';
     }
 });
 
@@ -867,6 +879,87 @@ if (navSuggestions) navSuggestions.addEventListener('click', () => window.open('
 const navDiscord = document.getElementById('nav-discord');
 if (navDiscord) navDiscord.addEventListener('click', () => window.open('https://discord.gg/TRguRu7mwc', '_blank'));
 
+// --- MEMORY CARD LOGIC (NEW) ---
+const memBtn = document.getElementById('memory-card-button');
+const memMenu = document.getElementById('memory-card-menu');
+const memClose = document.getElementById('close-memory-menu-btn');
+const memNotes = document.getElementById('memory-card-notes');
+const btnSaveNotes = document.getElementById('save-notes-btn');
+const btnExportData = document.getElementById('export-data-btn');
+const btnImportData = document.getElementById('import-data-btn');
+const inputImportData = document.getElementById('input-import-data');
+
+if(memBtn && memMenu) {
+    memBtn.addEventListener('click', () => {
+        const isVisible = memMenu.style.display === 'block';
+        memMenu.style.display = isVisible ? 'none' : 'block';
+        playSound(themeClickSound);
+    });
+}
+
+if(memClose) {
+    memClose.addEventListener('click', () => {
+        memMenu.style.display = 'none';
+        playSound(themeClickSound);
+    });
+}
+
+if(btnSaveNotes) {
+    btnSaveNotes.addEventListener('click', () => {
+        const notes = memNotes.value;
+        localStorage.setItem('qbbic-notes', notes);
+        showToast("Notes Saved to Memory Card!");
+        playSound(clickSound);
+    });
+}
+
+if(btnExportData) {
+    btnExportData.addEventListener('click', () => {
+        // Collect all localStorage data
+        const data = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            data[key] = localStorage.getItem(key);
+        }
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+        const anchor = document.createElement('a');
+        anchor.href = dataStr;
+        anchor.download = "qbbic_memory_card.json";
+        anchor.click();
+        showToast("Data Exported");
+    });
+}
+
+if(btnImportData && inputImportData) {
+    btnImportData.addEventListener('click', () => inputImportData.click());
+    inputImportData.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                // Restore logic
+                Object.keys(data).forEach(key => {
+                    localStorage.setItem(key, data[key]);
+                });
+                
+                // Re-apply immediate effects
+                const savedTheme = localStorage.getItem('customTheme');
+                if (savedTheme) applyTheme(JSON.parse(savedTheme));
+                
+                const savedNotes = localStorage.getItem('qbbic-notes');
+                if(savedNotes && memNotes) memNotes.value = savedNotes;
+
+                showToast("Memory Card Loaded!");
+                playSound(clickSound);
+            } catch (e) {
+                showToast("Corrupt Memory Card Data");
+            }
+        };
+        reader.readAsText(file);
+    });
+}
 
 // --- SHAWARMA RAIN LOGIC (OPTIMIZED) ---
 const checkRain = document.getElementById('check-rain-shawarma');
