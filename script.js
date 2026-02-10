@@ -1,6 +1,6 @@
 /**
  * UPDATED SCRIPT.JS
- * Features: Dark Theme, Data Manager, Universal 3DS Menus, Iframe Customization
+ * Features: Full Music List, Dark Theme, Data Manager, Universal 3DS Menus, Iframe Customization
  */
 
 // --- CORE VARIABLES ---
@@ -52,29 +52,22 @@ function playSound(audioElement) {
     }
 }
 
-// --- MUSIC DATA ---
-const songs = [{
-    name: 'Wii U Mii Maker',
-    url: '/assets/Wii U OST - Mii Maker (Mii Editor).flac'
-}, {
-    name: 'Droopy likes your face',
-    url: '/assets/Droopy likes your face.flac'
-}, {
-    name: 'Sleepville',
-    url: '/assets/Sleepville - Little Man Legends.mp3'
-}, {
-    name: 'Beneath the Mask',
-    url: '/assets/Beneath the Mask -instrumental version- - Lyn.mp3'
-}, {
-    name: 'Training day',
-    url: '/assets/MTraining Day.mp3'
-}, {
-    name: 'Super Mario Galaxy - File Select',
-    url: '/assets/Super Mario Galaxy - File Select.mp3'
-}, {
-    name: 'Nintendo DSi - Main Menu Theme',
-    url: '/assets/Nintendo DSi - Main Menu Theme.mp3'
-}];
+// --- MUSIC DATA (Restored) ---
+const songs = [
+    { name: 'Wii U Mii Maker', url: '/assets/Wii U OST - Mii Maker (Mii Editor).flac' },
+    { name: 'Droopy likes your face', url: '/assets/Droopy likes your face.flac' },
+    { name: 'Sleepville', url: '/assets/Sleepville - Little Man Legends.mp3' },
+    { name: 'Beneath the Mask', url: '/assets/Beneath the Mask -instrumental version- - Lyn.mp3' },
+    { name: 'Training day', url: '/assets/MTraining Day.mp3' },
+    { name: 'Super Mario Galaxy - File Select', url: '/assets/Super Mario Galaxy - File Select.mp3' },
+    { name: 'Pokemon B&W 2 - Aspertia City', url: '/assets/Pokemon Black & White 2 OST - Aspertia City.mp3' },
+    { name: '3_31 (Persona 3)', url: '/assets/3_31.mp3' },
+    { name: 'Harry Mack - Reporting In', url: '/assets/Harry Mack - Reporting In.mp3' },
+    { name: 'Nintendo DSi - Main Menu', url: '/assets/Nintendo DSi - Main Menu Theme.mp3' },
+    { name: 'Takeshi Abo - Lightgreen', url: '/assets/Takeshi Abo - Lightgreen.mp3' },
+    { name: 'Takeshi Abo - Illusions', url: '/assets/Takeshi Abo - Illusions.mp3' },
+    { name: 'Garoad - Safe Haven', url: '/assets/Garoad - Safe Haven.mp3' }
+];
 
 // --- INITIALIZATION ---
 window.addEventListener('load', () => {
@@ -254,7 +247,7 @@ const inputModalBorder = document.getElementById('input-modal-border');
 const inputModalBlur = document.getElementById('input-modal-blur');
 const inputPreset = document.getElementById('input-preset');
 
-// --- PRESETS (Cleaned up, added Dark) ---
+// --- PRESETS ---
 const themePresets = {
     wii: { 
         bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', wiiBtnBg: '#ffffff', 
@@ -309,7 +302,6 @@ function applyTheme(themeObj) {
     document.body.classList.remove('noise-default', 'noise-scanlines', 'noise-none');
     document.body.classList.add('noise-' + (noiseType || 'default'));
 
-    // Checkboxes
     if (themeObj.layout) {
         const setDisp = (id, show) => { const el = document.getElementById(id); if(el) el.style.display = show ? 'flex' : 'none'; };
         setDisp('wii-menu-button', themeObj.layout.home !== false);
@@ -317,7 +309,6 @@ function applyTheme(themeObj) {
         setDisp('wii-date-time-display', themeObj.layout.clock !== false);
     }
     
-    // SVG Color (Based on Static)
     const encodedColor = encodeURIComponent(static);
     const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
     document.body.style.backgroundImage = svg;
@@ -535,7 +526,6 @@ const txtImport = document.getElementById('data-import-area');
 if(btnGenBackup) {
     btnGenBackup.addEventListener('click', () => {
         const backup = JSON.stringify(localStorage);
-        // Base64 encode for a "safer" looking string (optional)
         const encoded = btoa(unescape(encodeURIComponent(backup)));
         txtExport.value = encoded;
     });
@@ -609,7 +599,7 @@ const clockDisplay = document.getElementById('wii-date-time-display');
 let timeState = 0;
 if(clockDisplay) {
     clockDisplay.addEventListener('click', (e) => {
-        e.stopPropagation(); // Stop toggling theme if clicking clock
+        e.stopPropagation();
         timeState = (timeState + 1) % 3;
         document.body.classList.remove('time-travel-future', 'time-travel-past');
         if (timeState === 1) { document.body.classList.add('time-travel-future'); showToast("WARPING TO 3025"); } 
