@@ -9,6 +9,7 @@
   --wii-btn-bg: #ffffff;
   --modal-bg: #f7f7f7;
   --modal-border: #d4d4d4;
+  --modal-backdrop-blur: 10px;
   
   /* CUSTOMIZABLE ACCENT */
   --btn-hover-color: #40c4ff; 
@@ -63,14 +64,14 @@ body {
 
 /* --- TIME TRAVEL MODES --- */
 
-/* FUTURE MODE: Dark, Neon, Cyberpunk */
+/* FUTURE MODE */
 body.time-travel-future {
     --bg-color: #050a14 !important;
     --bar-color: #001122 !important;
     --static-color: #00ffcc !important; 
     --btn-hover-color: #ff00ff !important;
-    --wii-btn-bg: #002233 !important; /* Future Button */
-    --modal-bg: #0a0f1e !important;   /* Future Modal */
+    --wii-btn-bg: #002233 !important; 
+    --modal-bg: #0a0f1e !important;
     --modal-border: #00ffcc !important;
     
     --main-font: 'Courier New', monospace !important;
@@ -79,27 +80,16 @@ body.time-travel-future {
     background-size: 50px 50px !important;
     filter: contrast(1.2) saturate(1.2) drop-shadow(0 0 5px rgba(0,255,204,0.5));
 }
+body.time-travel-future .wii-bottom-bar { border-top: 2px solid #00ffcc !important; box-shadow: 0 -5px 20px rgba(0, 255, 204, 0.3) !important; }
 
-body.time-travel-future .wii-button,
-body.time-travel-future .game-button {
-    border-color: #00ffcc !important;
-    box-shadow: 0 0 10px #00ffcc, inset 0 0 10px rgba(0,0,0,0.5) !important;
-    color: #00ffcc !important;
-    border-radius: 4px !important; 
-}
-body.time-travel-future .wii-bottom-bar {
-    border-top: 2px solid #00ffcc !important;
-    box-shadow: 0 -5px 20px rgba(0, 255, 204, 0.3) !important;
-}
-
-/* PAST MODE: Sepia, Old Paper, Retro */
+/* PAST MODE */
 body.time-travel-past {
     --bg-color: #eaddcf !important;
     --bar-color: #8c7b6c !important;
     --static-color: #5a4a3a !important;
     --btn-hover-color: #8b0000 !important;
-    --wii-btn-bg: #fdf5e6 !important; /* Past Button */
-    --modal-bg: #fdf5e6 !important;   /* Past Modal */
+    --wii-btn-bg: #fdf5e6 !important; 
+    --modal-bg: #fdf5e6 !important; 
     --modal-border: #5a4a3a !important;
 
     --main-font: 'Times New Roman', serif !important;
@@ -107,18 +97,6 @@ body.time-travel-past {
     background-image: url('data:image/svg+xml;utf8,<svg width="4" height="4" viewBox="0 0 4 4" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h4v4H0z" fill="%23eaddcf"/><path d="M0 0h4v4H0z" fill="%23d8c8b8" fill-opacity="0.4" style="filter:url(%23noise)"/></svg>') !important;
     filter: sepia(0.6) contrast(0.9);
 }
-
-body.time-travel-past .wii-button,
-body.time-travel-past .game-button {
-    border-color: #5a4a3a !important;
-    border-radius: 50% !important; 
-    box-shadow: 3px 3px 0px rgba(90, 74, 58, 0.5) !important;
-}
-body.time-travel-past .wii-button {
-    border-radius: 12px !important;
-}
-
-/* --------------------------- */
 
 /* --- CONSOLE BACKGROUND PATTERNS --- */
 body.bg-wii {
@@ -146,7 +124,6 @@ body.bg-is-image {
 
 /* --- BUTTONS --- */
 .wii-button {
-  /* UPDATED: Uses Variable + Glass Overlay */
   background-color: var(--wii-btn-bg);
   background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(0, 0, 0, 0.1) 100%);
   border: 2px solid #aaaaaa; 
@@ -164,7 +141,6 @@ body.bg-is-image {
 }
 .wii-button:active { transform: scale(0.95); filter: brightness(0.9); }
 
-/* UPDATED: SVG Fill uses static color var now */
 .wii-button-svg { 
     width: 60%; height: 60%; 
     transition: filter 0.3s ease, fill 0.3s ease; 
@@ -189,7 +165,7 @@ body.bg-is-image {
 }
 #game-pages-wrapper { display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); width: 100%; }
 
-/* --- LAYOUT MODES (PRESERVED) --- */
+/* --- LAYOUT MODES --- */
 .game-buttons {
   display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); 
   gap: 15px; width: 100%; height: 500px; justify-items: center; align-items: center;
@@ -198,23 +174,8 @@ body.bg-is-image {
 .game-buttons.layout-list { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(6, 1fr); gap: 10px; }
 .game-buttons.layout-list .game-button { width: 100%; height: 65px; flex-direction: row; justify-content: flex-start; padding-left: 80px; box-sizing: border-box; background-position: left center; background-size: 80px auto; }
 .game-buttons.layout-list .game-button-text { display: block; position: static; background: none; width: auto; padding: 0 10px; text-align: left; font-size: 1.1rem; border-radius: 0; color: inherit; text-shadow: 1px 1px 0 rgba(255,255,255,0.5); }
-.game-buttons.layout-dense .game-button { width: 180px; height: 110px; }
-.game-buttons.layout-cinema { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(6, 1fr); gap: 10px; }
-.game-buttons.layout-cinema .game-button { width: 100%; height: 70px; background-size: cover; background-position: center; }
-.game-buttons.layout-cozy { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); gap: 20px; }
-.game-buttons.layout-cozy .game-button { width: 260px; height: 110px; }
-.game-buttons.layout-simple { gap: 10px; }
-.game-buttons.layout-simple .game-button { background-image: none !important; background-color: rgba(255,255,255,0.7); border: 2px solid var(--static-color); box-shadow: none; }
-.game-buttons.layout-simple .game-button::after { display: none; }
-.game-buttons.layout-simple .game-button-text { display: flex; position: relative; width: auto; height: 100%; align-items: center; justify-content: center; background: none; color: var(--static-color); font-size: 1rem; padding: 0; backdrop-filter: none; }
 .game-buttons.layout-big { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 30px; }
 .game-buttons.layout-big .game-button { width: 400px; height: 220px; }
-.game-buttons.layout-tiny { grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(4, 1fr); gap: 8px; }
-.game-buttons.layout-tiny .game-button { width: 160px; height: 90px; }
-.game-buttons.layout-wide { grid-template-columns: 1fr; grid-template-rows: repeat(6, 1fr); gap: 8px; }
-.game-buttons.layout-wide .game-button { width: 90%; height: 60px; flex-direction: row; justify-content: flex-start; padding-left: 80px; box-sizing: border-box; background-position: left center; background-size: 80px auto; }
-.game-buttons.layout-wide .game-button-text { display: block; position: static; background: none; width: auto; padding: 0 10px; text-align: left; font-size: 1.2rem; border-radius: 0; color: inherit; text-shadow: 1px 1px 0 rgba(255,255,255,0.5); }
-
 
 /* --- GAME CHANNEL CARD --- */
 .game-button {
@@ -249,10 +210,6 @@ body.bg-is-image {
   background: repeating-linear-gradient(to bottom, transparent, transparent 2px, rgba(0, 0, 0, 0.5) 2px, rgba(0, 0, 0, 0.5) 4px);
   background-size: 100% 100%; animation: none; opacity: 0.3;
 }
-.noise-dots .game-button::before {
-  background-image: radial-gradient(rgba(0,0,0,0.4) 1px, transparent 1px);
-  background-size: 4px 4px; opacity: 0.4; animation: none;
-}
 .noise-none .game-button::before { display: none; }
 
 .game-button:hover { 
@@ -267,7 +224,6 @@ body.bg-is-image {
   font-size: 0.9rem; padding: 4px 0; display: none; color: #333; z-index: 5; backdrop-filter: blur(4px);
 }
 .game-button:hover .game-button-text { display: block; }
-
 .game-button.placeholder {
   background-image: none !important; background-color: rgba(255,255,255,0.4);
   border: 2px dashed #cccccc; color: #999; font-size: 0.8rem; opacity: 0.6; pointer-events: none;
@@ -282,61 +238,20 @@ body.bg-is-image {
 .page-dot:hover { transform: scale(1.3); background-color: rgba(255,255,255,0.5); }
 .page-dot.active { background-color: var(--static-color); pointer-events: none; }
 
-/* Menus */
-#search-container, #theme-menu, #music-menu, #home-menu {
-  position: fixed; background: rgba(255, 255, 255, 0.95); 
-  border: 2px solid var(--static-color); border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
-  z-index: 2000;
-  display: none;
-  color: #333; backdrop-filter: blur(5px);
-}
-
-#search-container { bottom: 110px; left: 50%; transform: translateX(-50%); padding: 10px; flex-direction: row; gap: 5px; }
-#search-input { padding: 5px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
-#search-submit-button { padding: 5px 12px; background: var(--static-color); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-
-#theme-menu { bottom: 80px; right: 20px; width: 300px; padding: 15px; max-height: 80vh; overflow-y: auto; }
-.theme-heading { font-weight: bold; margin-bottom: 10px; border-bottom: 2px solid #eee; padding-bottom: 5px; color: #444; margin-top: 15px; }
-.theme-heading:first-child { margin-top: 0; }
-
-.theme-maker-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.theme-maker-label { font-size: 0.9rem; font-weight: bold; color: #555; }
-input[type="color"] { width: 40px; height: 30px; border: none; cursor: pointer; background: none; }
-select, input[type="checkbox"] { cursor: pointer; }
-select { padding: 4px; border-radius: 4px; border: 1px solid #ccc; max-width: 140px; }
-input[type="text"] { width: 100%; padding: 5px; margin-bottom: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-input[type="file"] { width: 100%; font-size: 0.8rem; }
-input[type="range"] { width: 100%; cursor: pointer; }
-
-.theme-btn-group { display: flex; gap: 5px; margin-top: 15px; }
-.theme-action-btn { flex: 1; padding: 8px; border: 1px solid #aaa; border-radius: 4px; cursor: pointer; font-weight: bold; background: #eee; font-size: 0.8rem; }
-.theme-action-btn:hover { background: #ddd; }
-.theme-action-btn.primary { background: #40c4ff; color: white; border-color: #0091ea; }
-
-#music-menu { bottom: 80px; left: 20px; width: 280px; padding: 15px; max-height: 400px; overflow-y: auto; }
-.music-option { padding: 8px 10px; cursor: pointer; border-radius: 4px; font-size: 0.9rem; margin-bottom: 4px; transition: background 0.2s; }
-.music-option:hover { background-color: #e0e0e0; color: #40c4ff; }
-.music-heading { font-weight: bold; color: #888; margin: 5px 0; font-size: 0.8rem; text-transform: uppercase; }
-.music-divider { border: 0; height: 1px; background: #ccc; margin: 10px 0; }
-#now-playing { font-size: 0.95rem; color: #40c4ff; font-weight: bold; margin-bottom: 10px; text-align: center; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #f0f8ff; padding: 5px; border-radius: 4px; border: 1px solid #b3e5fc; }
-.volume-control { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding: 0 5px; }
-
-#home-menu { bottom: 95px; left: 100px; width: 220px; padding: 10px; }
-#home-menu .music-option { display: flex; align-items: center; justify-content: flex-start; gap: 12px; text-align: left; font-weight: bold; padding: 12px; }
-.menu-icon { width: 24px; height: 24px; fill: currentColor; flex-shrink: 0; }
 
 /* --- MODAL WITH CRT ANIMATION --- */
 #game-modal {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background-color: rgba(0, 0, 0, 0.9); display: none; justify-content: center; align-items: center; z-index: 1000;
-  opacity: 0; transition: opacity 0.3s ease; pointer-events: none; backdrop-filter: blur(10px);
+  background-color: rgba(0, 0, 0, 0.5); /* Fallback */
+  display: none; justify-content: center; align-items: center; z-index: 1000;
+  opacity: 0; transition: opacity 0.3s ease; pointer-events: none; 
+  /* CUSTOMIZABLE BLUR */
+  backdrop-filter: blur(var(--modal-backdrop-blur));
 }
 #game-modal.active { opacity: 1; pointer-events: auto; }
 
 #game-modal-container {
   width: 100%; height: 100%; max-width: 1280px; max-height: 90vh; display: flex; flex-direction: column;
-  /* UPDATED: Uses Modal Variables */
   background-color: var(--modal-bg); 
   border-radius: 24px; overflow: hidden; 
   box-shadow: 0 0 50px rgba(64, 196, 255, 0.3), 0 20px 40px rgba(0,0,0,0.4); 
@@ -346,7 +261,6 @@ input[type="range"] { width: 100%; cursor: pointer; }
 
 #game-modal-header {
   flex-shrink: 0; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
-  /* UPDATED: Uses Modal Variables */
   background: var(--modal-bg);
   border-bottom: 2px solid #ccc; height: 60px;
   z-index: 5; position: relative;
@@ -380,10 +294,8 @@ input[type="range"] { width: 100%; cursor: pointer; }
     40% { transform: scale(1, 0.005); filter: brightness(5); opacity: 1; }
     100% { transform: scale(0, 0); filter: brightness(0); opacity: 0; }
 }
-
 .crt-animate-open #game-iframe-wrapper { animation: crt-on 0.4s ease-out forwards; }
 .crt-animate-open #game-iframe { opacity: 1; transition: opacity 0.1s 0.3s; }
-
 .crt-animate-close #game-iframe-wrapper { animation: crt-off 0.4s ease-in forwards; }
 
 #toast-notification {
@@ -393,241 +305,95 @@ input[type="range"] { width: 100%; cursor: pointer; }
   font-weight: bold; border: 2px solid var(--static-color); text-align: center; font-family: sans-serif;
 }
 #toast-notification.show { transform: translateX(-50%) translateY(0); }
-/* --- NINTENDO 3DS THEME SHOP STYLES --- */
 
+/* --- 3DS / NDS MENU STYLES (UNIVERSAL) --- */
 .nds-theme-shop {
     width: 360px !important;
     height: 480px !important;
     background-color: #f0f0f0;
     /* Wavy Blue Background Pattern */
-    background-image: 
-        repeating-linear-gradient(
-            -45deg, 
-            #8fd6f7 0px, 
-            #8fd6f7 10px, 
-            #7bc6eb 10px, 
-            #7bc6eb 20px
-        );
-    border: 8px solid #333 !important; /* The Bezel */
+    background-image: repeating-linear-gradient(-45deg, #f0f0f0 0px, #f0f0f0 10px, #e6e6e6 10px, #e6e6e6 20px);
+    border: 8px solid #333 !important; 
     border-radius: 12px !important;
     padding: 0 !important;
-    display: none; /* Hidden by default */
+    display: none; 
     flex-direction: column;
     overflow: hidden;
     font-family: var(--main-font), sans-serif;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
-    
-    /* Center on screen */
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
     z-index: 2000;
 }
 
-/* Header (Yellow Gradient) */
+/* Header */
 .nds-header {
     background: linear-gradient(to bottom, #ffe033 0%, #ffcc00 100%);
-    height: 70px;
-    display: flex;
-    align-items: center;
-    padding: 0 15px;
-    border-bottom: 2px solid #d4a000;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    flex-shrink: 0;
+    height: 70px; display: flex; align-items: center; padding: 0 15px;
+    border-bottom: 2px solid #d4a000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0;
 }
-
-.nds-icon {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.nds-icon svg { width: 32px; height: 32px; fill: #5c4a3d; }
-
-.nds-title-text {
-    margin-left: 10px;
-    color: #5c4a3d;
-}
+.nds-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+.nds-icon svg { width: 32px; height: 32px; fill: currentColor; }
+.nds-title-text { margin-left: 10px; color: #5c4a3d; }
 .nds-title-text h3 { margin: 0; font-size: 1.2rem; line-height: 1; text-transform: uppercase; letter-spacing: 0.5px; }
 .nds-title-text p { margin: 2px 0 0 0; font-size: 0.75rem; opacity: 0.8; }
 
-/* Scroll Container (The Content) */
+/* Scroll Container */
 .nds-scroll-container {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 10px;
-    background: rgba(255,255,255,0.4); /* Slight tint over the waves */
+    flex-grow: 1; overflow-y: auto; padding: 10px;
+    background: rgba(255,255,255,0.4);
 }
 
 /* Section Labels */
 .nds-section-label {
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #333;
-    margin: 10px 0 5px 5px;
+    font-size: 0.8rem; font-weight: bold; color: #333; margin: 10px 0 5px 5px;
     text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
 }
 
-/* List Items (The Presets) */
-.nds-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
+/* List Items */
+.nds-list { display: flex; flex-direction: column; gap: 8px; }
 .nds-item {
-    background: white;
-    border-radius: 20px; /* Highly rounded ends */
-    height: 40px;
-    display: flex;
-    align-items: center;
-    padding: 0 5px;
-    border: 2px solid #ccc;
-    cursor: pointer;
-    box-shadow: 0 2px 0 #aaa;
+    background: white; border-radius: 20px; min-height: 40px; display: flex; align-items: center;
+    padding: 5px 10px; border: 2px solid #ccc; cursor: pointer; box-shadow: 0 2px 0 #aaa;
     transition: transform 0.1s;
 }
-
-.nds-item:active {
-    transform: translateY(2px);
-    box-shadow: 0 0 0 #aaa;
-}
-
-/* The Selected State (Cyan Border) */
-.nds-item.selected {
-    border: 3px solid #00d2ff; /* 3DS Highlight Cyan */
-    box-shadow: 0 0 5px #00d2ff;
-}
+.nds-item:active { transform: translateY(2px); box-shadow: 0 0 0 #aaa; }
+.nds-item.selected { border: 3px solid #00d2ff; box-shadow: 0 0 5px #00d2ff; }
 
 .nds-item-color {
-    width: 30px;
-    height: 24px;
-    border-radius: 12px; /* Match outer curve */
-    border: 1px solid rgba(0,0,0,0.1);
-    margin-right: 10px;
-    margin-left: 2px;
+    width: 30px; height: 24px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1);
+    margin-right: 10px; margin-left: 2px;
 }
+.nds-item-name { font-size: 0.95rem; font-weight: bold; color: #333; flex-grow: 1; }
 
-.nds-item-name {
-    font-size: 0.95rem;
-    font-weight: bold;
-    color: #333;
-    flex-grow: 1;
-}
-
-/* Controls Rows (Manual Inputs) */
+/* Controls Rows */
 .nds-control-row {
-    background: white;
-    border-radius: 8px;
-    padding: 5px 10px;
-    margin-bottom: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.9rem;
-    border: 1px solid #ccc;
+    background: white; border-radius: 8px; padding: 5px 10px; margin-bottom: 5px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.9rem; border: 1px solid #ccc;
 }
 .nds-control-row select { width: 100px; }
 .nds-control-row input[type="color"] { border: none; height: 25px; width: 40px; padding: 0; }
 
-/* Footer (Cancel Button) */
+/* Footer */
 .nds-footer {
-    height: 50px;
-    background: #333;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start; /* 3DS usually has buttons on left/right */
-    padding: 0 10px;
-    flex-shrink: 0;
-    border-top: 1px solid #555;
+    height: 50px; background: #333; display: flex; align-items: center;
+    justify-content: flex-start; padding: 0 10px; flex-shrink: 0; border-top: 1px solid #555;
 }
-
 .nds-close-btn {
     background: linear-gradient(to bottom, #fff 0%, #ddd 100%);
-    border: none;
-    border-radius: 20px;
-    padding: 5px 20px;
-    font-weight: bold;
-    color: #333;
-    font-size: 0.9rem;
-    cursor: pointer;
-    box-shadow: 0 3px 0 #999;
+    border: none; border-radius: 20px; padding: 5px 20px;
+    font-weight: bold; color: #333; font-size: 0.9rem; cursor: pointer; box-shadow: 0 3px 0 #999;
 }
-.nds-close-btn:active {
-    transform: translateY(3px);
-    box-shadow: none;
-}
-/* --- IMPROVED SEARCH DROPDOWN --- */
-#search-container {
-    /* Keep existing styles, but ensure flex-direction allows stacking */
-    flex-direction: column !important; 
-    align-items: stretch !important;
-    gap: 0 !important;
-    padding: 0 !important;
-    overflow: visible !important;
-    /* Adjust width for better visibility */
-    width: 300px; 
-}
+.nds-close-btn:active { transform: translateY(3px); box-shadow: none; }
 
-/* The Input Area Wrapper */
-.search-bar-wrapper {
-    display: flex;
-    padding: 10px;
-    gap: 5px;
+/* TEXT AREAS FOR DATA MENU */
+textarea {
+    width: 100%; height: 60px; border: 1px solid #ccc; border-radius: 8px;
+    font-family: monospace; font-size: 0.8rem; padding: 5px; resize: none;
+    box-sizing: border-box; margin-bottom: 5px;
 }
-
-#search-input {
-    flex-grow: 1;
-    font-family: var(--main-font);
-    font-size: 1rem;
-}
-
-/* The Dropdown List */
-#search-results {
-    max-height: 300px;
-    overflow-y: auto;
-    background: rgba(255, 255, 255, 0.95);
-    border-top: 1px solid #ccc;
-    display: none; /* Hidden by default */
-    flex-direction: column;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
-#search-results.has-results {
-    display: flex;
-}
-
-.search-result-item {
-    padding: 10px 15px;
-    cursor: pointer;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: background 0.2s;
-    font-size: 0.9rem;
-    color: #333;
-    text-align: left;
-}
-
-.search-result-item:last-child {
-    border-bottom: none;
-}
-
-.search-result-item:hover, .search-result-item.selected {
-    background-color: var(--btn-hover-color);
-    color: white;
-}
-
-/* Thumbnail in search result */
-.search-thumb {
-    width: 30px; 
-    height: 30px; 
-    border-radius: 4px;
-    background-size: cover;
-    background-position: center;
-    border: 1px solid #ccc;
-}
+.theme-btn-group { display: flex; gap: 5px; margin-top: 5px; }
+.theme-action-btn { flex: 1; padding: 8px; border: 1px solid #aaa; border-radius: 4px; cursor: pointer; font-weight: bold; background: #eee; font-size: 0.8rem; }
+.theme-action-btn:hover { background: #ddd; }
+.theme-action-btn.primary { background: #40c4ff; color: white; border-color: #0091ea; }
+.theme-action-btn.danger { background: #ff5e62; color: white; border-color: #ce4246; }
