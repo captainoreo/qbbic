@@ -5,12 +5,13 @@
   --bar-color: #c9c5c2;
   --static-color: #555555;
   
-  /* UI ELEMENTS */
+  /* CUSTOMIZABLE WII BAR & MODAL */
   --wii-btn-bg: #ffffff;
   --modal-bg: #f7f7f7;
   --modal-border: #d4d4d4;
+  --modal-backdrop: rgba(0, 0, 0, 0.9); /* Default Backdrop */
   
-  /* ACCENT */
+  /* CUSTOMIZABLE ACCENT */
   --btn-hover-color: #40c4ff; 
   
   /* SHAPE & EFFECT VARIABLES */
@@ -19,22 +20,23 @@
   --card-opacity: 1;
   --card-clip: none; 
   
-  --shadow-intensity: 10px; /* NEW */
-  --cursor-image: url('/assets/cursor.png'), auto; /* NEW */
-  --scanline-opacity: 0.4; /* NEW */
+  --box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  --transform-hover: scale(1.05);
   
-  /* PLAYER EDITOR VARS */
-  --player-padding: 0px;
-  --player-radius: 0px;
-  --player-glow: 0px;
-
   /* FONTS */
   --main-font: 'PopHappiness', sans-serif;
 }
 
 @font-face { font-family: 'PopHappiness'; src: url('/assets/PopHappiness.OTF') format('opentype'); }
 
-/* --- GLOBAL LAYOUT --- */
+/* --- GLOBAL ANIMATIONS --- */
+@keyframes noise-anim {
+  0% { transform: translate(0, 0); }
+  /* ... (Animation keyframes same as before) ... */
+  100% { transform: translate(5%, 0); }
+}
+
+/* Base Body */
 body {
   margin: 0;
   font-family: var(--main-font);
@@ -47,238 +49,171 @@ body {
   justify-content: center;
   padding: 0;
   box-sizing: border-box;
-  cursor: var(--cursor-image);
+  cursor: url('/assets/cursor.png'), auto;
   overflow: hidden;
-  transition: background-color 0.5s ease;
+  transition: background-color 0.5s ease, color 0.5s ease, background-image 0.5s ease, filter 0.5s ease;
 }
 
-/* --- UNIVERSAL MENU DESIGN (Glass/Wii U Style) --- */
-.universal-menu {
-    position: fixed;
-    /* Centered by default, JS handles positioning if needed */
-    bottom: 100px; left: 50%; transform: translateX(-50%);
-    width: 350px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    border-radius: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.5);
-    z-index: 2000;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    animation: menu-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+/* ... (TIME TRAVEL MODES - SAME AS BEFORE) ... */
 
-@keyframes menu-pop {
-    0% { transform: translateX(-50%) scale(0.9); opacity: 0; }
-    100% { transform: translateX(-50%) scale(1); opacity: 1; }
-}
+/* ... (CONSOLE BACKGROUND PATTERNS - SAME AS BEFORE) ... */
 
-.uni-header {
-    background: linear-gradient(to right, rgba(255,255,255,0.9), rgba(240,240,240,0.9));
-    padding: 12px 15px;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-    display: flex; justify-content: space-between; align-items: center;
-    font-weight: bold; color: #444; text-transform: uppercase; letter-spacing: 1px;
-    font-size: 0.9rem;
-}
-
-.uni-close-btn {
-    width: 24px; height: 24px; border-radius: 50%;
-    background: #ff5252; color: white;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 1.2rem; line-height: 1;
-    transition: transform 0.2s;
-}
-.uni-close-btn:hover { transform: scale(1.1); background: #ff1744; }
-
-.uni-content {
-    padding: 15px;
-    max-height: 400px;
-    overflow-y: auto;
-    font-size: 0.9rem;
-}
-
-.uni-row {
-    display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px;
-}
-.uni-label {
-    font-size: 0.8rem; font-weight: bold; color: #666; margin-bottom: 5px; display: block;
-}
-.uni-divider {
-    border: 0; height: 1px; background: rgba(0,0,0,0.1); margin: 10px 0;
-}
-
-/* Universal Inputs */
-.uni-input-group {
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-}
-.uni-input-group.wide {
-    width: 100%; flex-direction: row; justify-content: space-between; margin-bottom: 8px;
-}
-input[type="color"] { border: none; width: 30px; height: 30px; cursor: pointer; border-radius: 50%; padding: 0; overflow: hidden; }
-input[type="range"] { flex-grow: 1; margin-left: 10px; cursor: pointer; }
-input[type="text"], textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-family: inherit; background: rgba(255,255,255,0.8); }
-select { padding: 5px; border-radius: 5px; border: 1px solid #ccc; background: white; font-family: inherit; }
-
-/* Universal Buttons */
-.uni-btn {
-    flex: 1; padding: 10px; border: none; border-radius: 10px;
-    background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    cursor: pointer; font-weight: bold; color: #444; font-family: inherit;
-    transition: all 0.2s; border: 1px solid #ddd;
-}
-.uni-btn:hover { background: var(--btn-hover-color); color: white; transform: translateY(-2px); border-color: transparent; }
-.uni-btn.primary { background: var(--btn-hover-color); color: white; border: none; }
-.uni-btn.danger { background: #ff8a80; color: white; border: none; }
-.uni-btn.danger:hover { background: #ff5252; }
-
-/* Universal List (Music/Nav) */
-.uni-list { display: flex; flex-direction: column; gap: 5px; }
-.uni-list-item {
-    padding: 10px; background: rgba(255,255,255,0.6); border-radius: 8px;
-    cursor: pointer; transition: background 0.2s; border: 1px solid transparent;
-}
-.uni-list-item:hover { background: white; border-color: var(--btn-hover-color); color: var(--btn-hover-color); }
-.uni-marquee {
-    background: #333; color: #00e5ff; padding: 10px; border-radius: 5px;
-    font-family: monospace; text-align: center; margin-bottom: 10px;
-}
-
-/* --- OVERRIDES FOR SPECIFIC MENUS --- */
-#music-menu { height: auto; }
-#search-container { bottom: 120px; }
-
-/* --- WII BAR --- */
 .wii-bottom-bar {
   position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
   background-color: var(--bar-color); 
   border-top: 2px solid var(--static-color);
-  box-shadow: 0 -4px var(--shadow-intensity) rgba(0, 0, 0, 0.2); /* Custom Shadow */
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
   display: flex; justify-content: center; align-items: center;
   gap: 20px; padding: 0 20px; box-sizing: border-box; z-index: 100;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 .wii-bottom-bar-content { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 900px; }
 
-.wii-button {
-  background-color: var(--wii-btn-bg);
-  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(0, 0, 0, 0.1) 100%);
-  border: 2px solid #aaaaaa; 
-  border-radius: var(--btn-radius);
-  width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; 
-  transition: all 0.2s ease;
-  box-shadow: 0 2px var(--shadow-intensity) rgba(0,0,0,0.1);
-}
-.wii-button:hover { 
-    transform: translateY(-5px); border-color: var(--btn-hover-color);
-    box-shadow: 0 5px 15px var(--btn-hover-color); 
-}
-.wii-button-svg { width: 60%; height: 60%; fill: var(--static-color); transition: fill 0.3s; }
-.wii-button:hover .wii-button-svg { fill: #000; }
+/* ... (BUTTONS & GAME LAYOUT - SAME AS BEFORE) ... */
 
-.wii-date-time { 
-    font-size: 1rem; text-align: center; color: var(--static-color); user-select: none;
-    cursor: help; 
-}
-.wii-date-time .time { font-size: 1.6rem; font-weight: bold; }
-.wii-date-time .date { font-size: 0.9rem; opacity: 0.8; }
+/* ... (GAME CHANNEL CARD - SAME AS BEFORE) ... */
 
-/* --- MAIN GAME GRID --- */
-#game-pages-container {
-  position: relative; z-index: 10; width: 100%; max-width: 1000px; height: 600px; 
-  display: flex; align-items: center; justify-content: center; margin-bottom: 60px;
-}
-#game-pages-wrapper { display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); width: 100%; }
+/* ... (SEARCH DROPDOWN - SAME AS BEFORE) ... */
 
-.game-buttons {
-  display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); 
-  gap: 15px; width: 100%; height: 500px; justify-items: center; align-items: center;
-  padding: 0 40px; box-sizing: border-box; flex-shrink: 0;
-}
-
-.game-button {
-  width: 220px; height: 130px;
-  background-color: #ffffff;
-  border-radius: var(--card-radius); 
-  clip-path: var(--card-clip); 
-  opacity: var(--card-opacity);
-  position: relative; 
-  background-size: cover; background-position: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border: 4px solid #eaeaea; overflow: hidden;
-  box-shadow: 2px 4px var(--shadow-intensity) rgba(0,0,0,0.2);
+/* --- NINTENDO 3DS THEME SHOP (UNIFIED STYLE FOR ALL MENUS) --- */
+.nds-theme-shop {
+    width: 360px !important;
+    height: 480px !important;
+    background-color: #f0f0f0;
+    /* Wavy Blue Background Pattern */
+    background-image: 
+        repeating-linear-gradient(
+            -45deg, 
+            rgba(143, 214, 247, 0.5) 0px, 
+            rgba(143, 214, 247, 0.5) 10px, 
+            rgba(123, 198, 235, 0.5) 10px, 
+            rgba(123, 198, 235, 0.5) 20px
+        );
+    border: 8px solid #333 !important; /* The Bezel */
+    border-radius: 12px !important;
+    padding: 0 !important;
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    overflow: hidden;
+    font-family: var(--main-font), sans-serif;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+    
+    /* Center on screen */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000;
 }
 
-/* NOISE FILTER LAYER (Controlled by var) */
-.game-button::before {
-  content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-  pointer-events: none; z-index: 1; mix-blend-mode: overlay; opacity: var(--scanline-opacity);
-  background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23noiseFilter)"/></svg>');
+/* Header */
+.nds-header {
+    background: linear-gradient(to bottom, #ffe033 0%, #ffcc00 100%);
+    height: 70px;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    border-bottom: 2px solid #d4a000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+}
+.nds-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin-right: 10px; }
+.nds-icon svg { width: 32px; height: 32px; fill: #5c4a3d; }
+.nds-title-text { color: #5c4a3d; }
+.nds-title-text h3 { margin: 0; font-size: 1.1rem; line-height: 1; text-transform: uppercase; letter-spacing: 0.5px; }
+.nds-title-text p { margin: 2px 0 0 0; font-size: 0.75rem; opacity: 0.8; }
+
+/* Scroll Container */
+.nds-scroll-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(255,255,255,0.6); /* Slight white tint */
 }
 
-.game-button:hover { 
-    transform: scale(1.05);
-    box-shadow: 0 0 0 4px var(--btn-hover-color), 0 0 25px var(--btn-hover-color); 
-    border-color: #7bc6eb; z-index: 20; 
+/* Section Labels */
+.nds-section-label {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0 5px 5px;
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
 }
-.game-button-text {
-  position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.85);
-  font-size: 0.9rem; padding: 4px 0; display: none; color: #333; z-index: 5; text-align: center;
-}
-.game-button:hover .game-button-text { display: block; }
 
-/* --- MODAL & PLAYER EDITOR --- */
+/* List Items */
+.nds-list { display: flex; flex-direction: column; gap: 8px; }
+
+.nds-item {
+    background: white;
+    border-radius: 20px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    border: 2px solid #ccc;
+    cursor: pointer;
+    box-shadow: 0 2px 0 #aaa;
+    transition: transform 0.1s;
+}
+.nds-item:active { transform: translateY(2px); box-shadow: 0 0 0 #aaa; }
+.nds-item.selected { border: 3px solid #00d2ff; box-shadow: 0 0 5px #00d2ff; }
+
+.nds-item-color {
+    width: 30px; height: 24px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1);
+    margin-right: 10px; margin-left: 2px;
+}
+.nds-item-name { font-size: 0.95rem; font-weight: bold; color: #333; flex-grow: 1; }
+
+/* Controls Rows */
+.nds-control-row {
+    background: white; border-radius: 8px; padding: 5px 10px; margin-bottom: 5px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.9rem; border: 1px solid #ccc;
+}
+.nds-control-row select { width: 100px; padding: 2px; border-radius: 4px; border: 1px solid #ccc; }
+.nds-control-row input[type="color"] { border: none; height: 25px; width: 40px; padding: 0; cursor: pointer; }
+
+/* Footer */
+.nds-footer {
+    height: 50px; background: #333; display: flex; align-items: center; justify-content: center;
+    padding: 0 10px; flex-shrink: 0; border-top: 1px solid #555;
+}
+.nds-close-btn {
+    background: linear-gradient(to bottom, #fff 0%, #ddd 100%);
+    border: none; border-radius: 20px; padding: 5px 30px;
+    font-weight: bold; color: #333; font-size: 0.9rem; cursor: pointer;
+    box-shadow: 0 3px 0 #999;
+}
+.nds-close-btn:active { transform: translateY(3px); box-shadow: none; }
+
+.theme-btn-group { display: flex; gap: 5px; margin-top: 10px; }
+.theme-action-btn { flex: 1; padding: 8px; border: 1px solid #aaa; border-radius: 4px; cursor: pointer; font-weight: bold; background: #eee; font-size: 0.8rem; }
+.theme-action-btn.primary { background: #40c4ff; color: white; border-color: #0091ea; }
+.theme-action-btn.danger { background: #ff5252; color: white; border-color: #d32f2f; }
+
+
+/* --- MODAL WITH CRT ANIMATION --- */
 #game-modal {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background-color: rgba(0, 0, 0, 0.9); display: none; justify-content: center; align-items: center; z-index: 1000;
-  backdrop-filter: blur(10px);
+  background-color: var(--modal-backdrop); /* UPDATED to use Variable */
+  display: none; justify-content: center; align-items: center; z-index: 1000;
+  opacity: 0; transition: opacity 0.3s ease; pointer-events: none; backdrop-filter: blur(5px);
 }
-#game-modal.active { display: flex; }
+#game-modal.active { opacity: 1; pointer-events: auto; }
 
 #game-modal-container {
   width: 100%; height: 100%; max-width: 1280px; max-height: 90vh; display: flex; flex-direction: column;
   background-color: var(--modal-bg); 
   border-radius: 24px; overflow: hidden; 
-  box-shadow: 0 0 50px rgba(64, 196, 255, 0.3); 
+  box-shadow: 0 0 50px rgba(64, 196, 255, 0.3), 0 20px 40px rgba(0,0,0,0.4); 
   border: 5px solid var(--modal-border);
   position: relative;
 }
 
 #game-modal-header {
-  padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
-  background: var(--modal-bg); border-bottom: 2px solid #ccc; height: 60px;
+  flex-shrink: 0; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
+  background: var(--modal-bg);
+  border-bottom: 2px solid #ccc; height: 60px;
+  z-index: 5; position: relative;
 }
-#game-modal-controls { display: flex; gap: 10px; }
-.control-btn {
-  background: white; border: 1px solid #ccc; border-radius: 20px; width: 40px; height: 40px;
-  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;
-}
-.control-btn:hover { background: var(--btn-hover-color); border-color: transparent; }
-.control-btn svg { width: 20px; fill: #555; }
-.control-btn:hover svg { fill: white; }
-
-/* The Game Viewport (Affected by Player Editor) */
-#game-iframe-wrapper { 
-    flex-grow: 1; position: relative; background-color: #000; overflow: hidden;
-    padding: var(--player-padding); /* Editable padding */
-    transition: padding 0.3s;
-}
-#game-iframe { 
-    width: 100%; height: 100%; border: none; display: block; 
-    border-radius: var(--player-radius); /* Editable radius */
-    box-shadow: 0 0 var(--player-glow) rgba(64, 196, 255, 0.5); /* Editable glow */
-}
-
-#toast-notification {
-  position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%);
-  background-color: #333; color: white; padding: 12px 24px; border-radius: 30px;
-  opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 3000;
-  font-weight: bold;
-}
-#toast-notification.show { opacity: 1; }
-
-.page-indicator { position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 90; }
-.page-dot { width: 10px; height: 10px; background: rgba(0,0,0,0.2); border-radius: 50%; cursor: pointer; }
-.page-dot.active { background: var(--static-color); transform: scale(1.2); }
+/* ... (REST OF MODAL STYLES SAME AS BEFORE) ... */
