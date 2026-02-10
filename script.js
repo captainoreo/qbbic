@@ -8,7 +8,7 @@ const gameCloseSound = document.getElementById('game-close-sound');
 
 const gamePagesWrapper = document.getElementById('game-pages-wrapper');
 let currentPage = 0;
-const totalPages = 2; // Adjust if you add more pages
+const totalPages = 15; // Changed from 2 to 15 to match the HTML
 
 // --- INITIALIZATION ---
 window.addEventListener('load', () => {
