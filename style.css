@@ -5,36 +5,21 @@
   --bar-color: #c9c5c2;
   --static-color: #555555;
   
-  /* CUSTOMIZABLE WII BAR & MODAL */
+  /* CUSTOMIZABLE */
   --wii-btn-bg: #ffffff;
   --modal-bg: #f7f7f7;
   --modal-border: #d4d4d4;
-  --modal-backdrop: rgba(0, 0, 0, 0.9); /* Default Backdrop */
-  
-  /* CUSTOMIZABLE ACCENT */
+  --modal-backdrop: rgba(0, 0, 0, 0.9);
   --btn-hover-color: #40c4ff; 
   
-  /* SHAPE & EFFECT VARIABLES */
+  /* SHAPE VARIABLES */
   --btn-radius: 12px; 
   --card-radius: 25px; 
-  --card-opacity: 1;
-  --card-clip: none; 
   
-  --box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  --transform-hover: scale(1.05);
-  
-  /* FONTS */
   --main-font: 'PopHappiness', sans-serif;
 }
 
-@font-face { font-family: 'PopHappiness'; src: url('/assets/PopHappiness.OTF') format('opentype'); }
-
-/* --- GLOBAL ANIMATIONS --- */
-@keyframes noise-anim {
-  0% { transform: translate(0, 0); }
-  /* ... (Animation keyframes same as before) ... */
-  100% { transform: translate(5%, 0); }
-}
+@font-face { font-family: 'PopHappiness'; src: url('assets/PopHappiness.OTF') format('opentype'); }
 
 /* Base Body */
 body {
@@ -47,173 +32,197 @@ body {
   min-height: 100vh;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  box-sizing: border-box;
-  cursor: url('/assets/cursor.png'), auto;
   overflow: hidden;
-  transition: background-color 0.5s ease, color 0.5s ease, background-image 0.5s ease, filter 0.5s ease;
+  transition: background-color 0.5s ease;
+  /* DSi grid pattern overlay */
+  background-image: radial-gradient(#ccc 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
-/* ... (TIME TRAVEL MODES - SAME AS BEFORE) ... */
-
-/* ... (CONSOLE BACKGROUND PATTERNS - SAME AS BEFORE) ... */
-
+/* --- WII BOTTOM BAR --- */
 .wii-bottom-bar {
   position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
   background-color: var(--bar-color); 
-  border-top: 2px solid var(--static-color);
-  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+  border-top: 2px solid #fff;
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
   display: flex; justify-content: center; align-items: center;
-  gap: 20px; padding: 0 20px; box-sizing: border-box; z-index: 100;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  z-index: 100; /* Above background, below modals */
 }
-.wii-bottom-bar-content { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 900px; }
+.wii-bottom-bar-content { 
+    display: flex; justify-content: space-between; align-items: center; 
+    width: 100%; max-width: 900px; padding: 0 20px;
+}
 
-/* ... (BUTTONS & GAME LAYOUT - SAME AS BEFORE) ... */
+/* WII BUTTONS */
+.wii-button {
+  width: 50px; height: 35px;
+  border-radius: 20px;
+  background-color: var(--wii-btn-bg);
+  border: 2px solid #aaa;
+  display: flex; justify-content: center; align-items: center;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.2s;
+}
+.wii-button:hover { transform: scale(1.1); box-shadow: 0 0 10px var(--btn-hover-color); border-color: var(--btn-hover-color); }
+.wii-button-svg { width: 24px; height: 24px; fill: #555; }
+.wii-button.disabled { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
 
-/* ... (GAME CHANNEL CARD - SAME AS BEFORE) ... */
+/* CLOCK */
+.wii-date-time { text-align: center; cursor: pointer; color: #555; }
+.wii-date-time .time { font-size: 1.5rem; font-weight: bold; }
+.wii-date-time .date { font-size: 0.9rem; }
 
-/* ... (SEARCH DROPDOWN - SAME AS BEFORE) ... */
+/* --- GAME GRID --- */
+#game-pages-container {
+    width: 100%; max-width: 1000px; overflow: hidden;
+    margin-bottom: 90px; /* Space for bottom bar */
+}
+#game-pages-wrapper {
+    display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    width: 100%;
+}
+.game-buttons {
+    min-width: 100%; display: grid; 
+    grid-template-columns: repeat(4, 1fr); gap: 15px;
+    padding: 20px; box-sizing: border-box;
+}
 
-/* --- NINTENDO 3DS THEME SHOP (UNIFIED STYLE FOR ALL MENUS) --- */
+/* GAME CARD */
+.game-button {
+    background-size: cover; background-position: center;
+    border-radius: var(--btn-radius);
+    height: 140px; border: 4px solid white;
+    box-shadow: 2px 5px 10px rgba(0,0,0,0.2);
+    cursor: pointer; position: relative; overflow: hidden;
+    transition: transform 0.2s;
+}
+.game-button:hover { transform: scale(1.05); border-color: var(--btn-hover-color); z-index: 10; }
+.game-button-text {
+    position: absolute; bottom: 0; width: 100%;
+    background: rgba(255,255,255,0.9); color: #333;
+    font-size: 0.8rem; text-align: center; padding: 3px 0;
+    border-top: 1px solid #ddd;
+}
+.game-button.placeholder { opacity: 0.3; pointer-events: none; border: 2px dashed #999; background: #eee; }
+
+/* --- DSi STYLE MENUS (The Popups) --- */
 .nds-theme-shop {
-    width: 360px !important;
-    height: 480px !important;
+    width: 340px; height: 450px;
     background-color: #f0f0f0;
-    /* Wavy Blue Background Pattern */
-    background-image: 
-        repeating-linear-gradient(
-            -45deg, 
-            rgba(143, 214, 247, 0.5) 0px, 
-            rgba(143, 214, 247, 0.5) 10px, 
-            rgba(123, 198, 235, 0.5) 10px, 
-            rgba(123, 198, 235, 0.5) 20px
-        );
-    border: 8px solid #333 !important; /* The Bezel */
-    border-radius: 12px !important;
-    padding: 0 !important;
+    /* DSi Wavy Pattern */
+    background-image: repeating-linear-gradient(-45deg, #e0f7fa 0px, #e0f7fa 10px, #b2ebf2 10px, #b2ebf2 20px);
+    border: 6px solid #333; border-radius: 10px;
     display: none; /* Hidden by default */
     flex-direction: column;
-    overflow: hidden;
-    font-family: var(--main-font), sans-serif;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
-    
-    /* Center on screen */
-    position: fixed;
-    top: 50%;
-    left: 50%;
+    position: fixed; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 2000;
+    z-index: 2000; /* Very high priority */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    font-family: sans-serif;
 }
 
-/* Header */
 .nds-header {
-    background: linear-gradient(to bottom, #ffe033 0%, #ffcc00 100%);
-    height: 70px;
-    display: flex;
-    align-items: center;
-    padding: 0 15px;
-    border-bottom: 2px solid #d4a000;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    flex-shrink: 0;
+    height: 60px; padding: 0 15px;
+    display: flex; align-items: center;
+    border-bottom: 2px solid rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: white; /* Default fallback */
 }
-.nds-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin-right: 10px; }
-.nds-icon svg { width: 32px; height: 32px; fill: #5c4a3d; }
-.nds-title-text { color: #5c4a3d; }
-.nds-title-text h3 { margin: 0; font-size: 1.1rem; line-height: 1; text-transform: uppercase; letter-spacing: 0.5px; }
-.nds-title-text p { margin: 2px 0 0 0; font-size: 0.75rem; opacity: 0.8; }
+.nds-icon svg { width: 32px; height: 32px; margin-right: 10px; }
+.nds-title-text h3 { margin: 0; font-size: 1.1rem; text-transform: uppercase; }
+.nds-title-text p { margin: 0; font-size: 0.7rem; opacity: 0.7; }
 
-/* Scroll Container */
 .nds-scroll-container {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 10px;
-    background: rgba(255,255,255,0.6); /* Slight white tint */
+    flex-grow: 1; overflow-y: auto; padding: 10px;
+    background: rgba(255,255,255,0.5);
 }
 
-/* Section Labels */
-.nds-section-label {
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #333;
-    margin: 10px 0 5px 5px;
-    text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
-}
+.nds-section-label { font-size: 0.8rem; font-weight: bold; margin: 10px 0 5px; color: #444; }
 
-/* List Items */
 .nds-list { display: flex; flex-direction: column; gap: 8px; }
-
 .nds-item {
-    background: white;
-    border-radius: 20px;
-    min-height: 40px;
-    display: flex;
-    align-items: center;
-    padding: 5px;
-    border: 2px solid #ccc;
-    cursor: pointer;
-    box-shadow: 0 2px 0 #aaa;
-    transition: transform 0.1s;
+    background: white; border: 2px solid #ccc; border-radius: 8px;
+    padding: 8px; display: flex; align-items: center; cursor: pointer;
 }
-.nds-item:active { transform: translateY(2px); box-shadow: 0 0 0 #aaa; }
-.nds-item.selected { border: 3px solid #00d2ff; box-shadow: 0 0 5px #00d2ff; }
+.nds-item:hover { background: #fffde7; border-color: #ffd600; }
+.nds-item.selected { border-color: #0091ea; box-shadow: 0 0 5px #0091ea; }
+.nds-item-color { width: 24px; height: 24px; border-radius: 4px; border: 1px solid #aaa; margin-right: 10px; }
 
-.nds-item-color {
-    width: 30px; height: 24px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1);
-    margin-right: 10px; margin-left: 2px;
-}
-.nds-item-name { font-size: 0.95rem; font-weight: bold; color: #333; flex-grow: 1; }
-
-/* Controls Rows */
 .nds-control-row {
-    background: white; border-radius: 8px; padding: 5px 10px; margin-bottom: 5px;
+    background: white; border-radius: 5px; padding: 8px; margin-bottom: 5px;
     display: flex; justify-content: space-between; align-items: center;
-    font-size: 0.9rem; border: 1px solid #ccc;
+    border: 1px solid #ccc; font-size: 0.9rem;
 }
-.nds-control-row select { width: 100px; padding: 2px; border-radius: 4px; border: 1px solid #ccc; }
-.nds-control-row input[type="color"] { border: none; height: 25px; width: 40px; padding: 0; cursor: pointer; }
 
-/* Footer */
+.nds-textarea {
+    width: 90%; height: 100px; padding: 8px; border-radius: 5px; border: 1px solid #999;
+    font-family: monospace; resize: none; margin-bottom: 10px;
+}
+.nds-now-playing {
+    background: white; border: 2px dashed #999; padding: 10px; text-align: center;
+    border-radius: 5px; margin-bottom: 10px; color: #555;
+}
+
 .nds-footer {
     height: 50px; background: #333; display: flex; align-items: center; justify-content: center;
-    padding: 0 10px; flex-shrink: 0; border-top: 1px solid #555;
+    border-top: 1px solid #000;
 }
 .nds-close-btn {
-    background: linear-gradient(to bottom, #fff 0%, #ddd 100%);
-    border: none; border-radius: 20px; padding: 5px 30px;
-    font-weight: bold; color: #333; font-size: 0.9rem; cursor: pointer;
-    box-shadow: 0 3px 0 #999;
+    background: #ddd; border: none; border-radius: 20px; padding: 8px 30px;
+    font-weight: bold; cursor: pointer; box-shadow: 0 3px 0 #999;
 }
 .nds-close-btn:active { transform: translateY(3px); box-shadow: none; }
 
-.theme-btn-group { display: flex; gap: 5px; margin-top: 10px; }
-.theme-action-btn { flex: 1; padding: 8px; border: 1px solid #aaa; border-radius: 4px; cursor: pointer; font-weight: bold; background: #eee; font-size: 0.8rem; }
+.theme-btn-group { display: flex; gap: 5px; margin-top: 10px; width: 100%; }
+.theme-action-btn { flex: 1; padding: 8px; border: 1px solid #aaa; border-radius: 5px; cursor: pointer; font-weight: bold; }
 .theme-action-btn.primary { background: #40c4ff; color: white; border-color: #0091ea; }
 .theme-action-btn.danger { background: #ff5252; color: white; border-color: #d32f2f; }
 
-
-/* --- MODAL WITH CRT ANIMATION --- */
+/* --- GAME PLAYER MODAL --- */
 #game-modal {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background-color: var(--modal-backdrop); /* UPDATED to use Variable */
-  display: none; justify-content: center; align-items: center; z-index: 1000;
-  opacity: 0; transition: opacity 0.3s ease; pointer-events: none; backdrop-filter: blur(5px);
+  background-color: var(--modal-backdrop);
+  display: none; justify-content: center; align-items: center; 
+  z-index: 5000; /* Highest Z-index */
+  backdrop-filter: blur(5px);
 }
-#game-modal.active { opacity: 1; pointer-events: auto; }
+#game-modal.active { display: flex; }
 
 #game-modal-container {
-  width: 100%; height: 100%; max-width: 1280px; max-height: 90vh; display: flex; flex-direction: column;
+  width: 90%; height: 85%; max-width: 1200px;
   background-color: var(--modal-bg); 
-  border-radius: 24px; overflow: hidden; 
-  box-shadow: 0 0 50px rgba(64, 196, 255, 0.3), 0 20px 40px rgba(0,0,0,0.4); 
-  border: 5px solid var(--modal-border);
-  position: relative;
+  border-radius: 15px; overflow: hidden; 
+  display: flex; flex-direction: column;
+  border: 4px solid var(--modal-border);
+  box-shadow: 0 0 40px rgba(0,0,0,0.8);
 }
 
 #game-modal-header {
-  flex-shrink: 0; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
-  background: var(--modal-bg);
-  border-bottom: 2px solid #ccc; height: 60px;
-  z-index: 5; position: relative;
+    height: 50px; background: #e0e0e0; display: flex; justify-content: space-between; align-items: center;
+    padding: 0 20px; border-bottom: 1px solid #ccc;
 }
-/* ... (REST OF MODAL STYLES SAME AS BEFORE) ... */
+#game-modal-controls .control-btn {
+    background: none; border: none; cursor: pointer; padding: 5px;
+}
+#game-modal-controls .control-btn svg { width: 24px; height: 24px; fill: #555; }
+#game-modal-controls .control-btn:hover svg { fill: #000; }
+
+#game-iframe-wrapper { flex-grow: 1; position: relative; background: black; }
+#game-iframe { width: 100%; height: 100%; border: none; }
+
+/* --- SHAWARMA RAIN --- */
+.shawarma-item {
+    position: fixed; top: -50px; font-size: 24px; z-index: 9999; pointer-events: none;
+}
+#toast-notification {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.8); color: white; padding: 10px 20px;
+    border-radius: 20px; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    z-index: 6000;
+}
+#toast-notification.show { opacity: 1; }
+
+@media (max-width: 600px) {
+    .game-buttons { grid-template-columns: repeat(2, 1fr); }
+    .wii-bottom-bar-content { padding: 0 10px; }
+}
