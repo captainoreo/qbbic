@@ -8,7 +8,7 @@ const gameCloseSound = document.getElementById('game-close-sound');
 
 const gamePagesWrapper = document.getElementById('game-pages-wrapper');
 let currentPage = 0;
-const totalPages = 15; // Changed from 2 to 15 to match the HTML
+const totalPages = 15; // Set to 15 to match HTML
 
 // --- INITIALIZATION ---
 window.addEventListener('load', () => {
@@ -20,7 +20,7 @@ window.addEventListener('load', () => {
     setInterval(updateDateTime, 1000);
 });
 
-// --- MENU TOGGLE LOGIC (Unified) ---
+// --- MENU TOGGLE LOGIC ---
 const menuMap = {
     'memory-card-button': 'memory-card-menu',
     'theme-menu-toggle': 'theme-menu',
@@ -43,7 +43,7 @@ Object.keys(menuMap).forEach(btnId => {
             const target = document.getElementById(targetId);
             const isVisible = target.style.display === 'flex';
             
-            closeAllMenus(); // Close others first
+            closeAllMenus();
             
             if (!isVisible) {
                 target.style.display = 'flex';
@@ -53,7 +53,6 @@ Object.keys(menuMap).forEach(btnId => {
     }
 });
 
-// Close buttons inside menus
 document.querySelectorAll('.nds-close-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         closeAllMenus();
@@ -114,7 +113,7 @@ function openGame(url, title) {
 
 document.getElementById('close-game-modal-btn').addEventListener('click', () => {
     gameModal.classList.remove('active');
-    gameIframe.src = 'about:blank'; // Stops game audio
+    gameIframe.src = 'about:blank';
     playSound(gameCloseSound);
     
     if(wasMusicPlaying && bgMusic) {
@@ -131,11 +130,21 @@ document.getElementById('reload-game-btn').addEventListener('click', () => {
     gameIframe.src = gameIframe.src;
 });
 
-// --- MUSIC SYSTEM ---
+// --- MUSIC SYSTEM (FULL TRACK LIST) ---
 const songs = [
-    { name: 'Wii Mii Maker', url: 'assets/Wii U OST - Mii Maker (Mii Editor).flac' },
-    { name: 'DSi Menu', url: 'assets/Nintendo DSi - Main Menu Theme.mp3' },
-    { name: 'Mario Galaxy', url: 'assets/Super Mario Galaxy - File Select.mp3' }
+    { name: 'Wii U Mii Maker', url: 'assets/Wii U OST - Mii Maker (Mii Editor).flac' },
+    { name: 'Droopy likes your face', url: 'assets/Droopy likes your face.flac' },
+    { name: 'Sleepville', url: 'assets/Sleepville - Little Man Legends.mp3' },
+    { name: 'Beneath the Mask', url: 'assets/Beneath the Mask -instrumental version- - Lyn.mp3' },
+    { name: 'Training day', url: 'assets/MTraining Day.mp3' },
+    { name: 'Super Mario Galaxy - File Select', url: 'assets/Super Mario Galaxy - File Select.mp3' },
+    { name: 'Pokemon B&W 2 - Aspertia City', url: 'assets/Pokemon Black & White 2 OST - Aspertia City.mp3' },
+    { name: '3_31 (Persona 3)', url: 'assets/3_31.mp3' },
+    { name: 'Harry Mack - Reporting In', url: 'assets/Harry Mack - Reporting In.mp3' },
+    { name: 'Nintendo DSi - Main Menu', url: 'assets/Nintendo DSi - Main Menu Theme.mp3' },
+    { name: 'Takeshi Abo - Lightgreen', url: 'assets/Takeshi Abo - Lightgreen.mp3' },
+    { name: 'Takeshi Abo - Illusions', url: 'assets/Takeshi Abo - Illusions.mp3' },
+    { name: 'Garoad - Safe Haven', url: 'assets/Garoad - Safe Haven.mp3' }
 ];
 
 function populateMusicMenu() {
@@ -174,7 +183,6 @@ function applyTheme(theme) {
     const root = document.documentElement;
     if(theme.bg) root.style.setProperty('--bg-color', theme.bg);
     if(theme.bar) root.style.setProperty('--bar-color', theme.bar);
-    // Add logic for Shawarma Rain
     if(theme.rain) toggleRain(true);
     else toggleRain(false);
 }
