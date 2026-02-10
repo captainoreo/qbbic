@@ -225,7 +225,7 @@
                 <a data-href="#" class="game-button placeholder"><span>Slot 11</span></a>
                 <a data-href="#" class="game-button placeholder"><span>Slot 12</span></a>
             </nav>
-
+            
             <nav class="game-buttons" aria-label="Page 15">
                 <a data-href="#" class="game-button placeholder"><span>Slot 1</span></a>
                 <a data-href="#" class="game-button placeholder"><span>Slot 2</span></a>
@@ -251,15 +251,15 @@
                 <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" /></svg>
             </div>
 
-            <a href="#" class="wii-button" id="wii-menu-button" title="Qbbic Menu">
+            <a href="#" class="wii-button" id="wii-menu-button" title="Home Menu">
                 <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm5 15h-2v-6H9v6H7v-7.81l5-4.5 5 4.5V18z" />
                 </svg>
             </a>
 
-            <div class="wii-button" id="random-button" title="Surprise Me!">
+            <div class="wii-button" id="data-menu-toggle" title="Save/Load Data">
                 <svg class="wii-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z"/>
+                    <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
                 </svg>
             </div>
 
@@ -293,49 +293,23 @@
             </div>
             <div class="nds-title-text">
                 <h3>Theme Settings</h3>
-                <p>Select a theme or customize.</p>
+                <p>Customize your look.</p>
             </div>
         </div>
 
         <div class="nds-scroll-container">
-            
             <input type="hidden" id="input-preset" value="custom">
 
-            <div class="nds-section-label">Presets Collection</div>
+            <div class="nds-section-label">Presets</div>
             
             <div class="nds-list">
                 <div class="nds-item" data-val="wii">
                     <div class="nds-item-color" style="background: #e6e8e7;"></div>
                     <span class="nds-item-name">Default (Wii)</span>
                 </div>
-                
-                <div class="nds-item" data-val="pride-rainbow">
-                    <div class="nds-item-color" style="background: linear-gradient(90deg, red, orange, yellow, green, blue, purple);"></div>
-                    <span class="nds-item-name">Pride (Rainbow)</span>
-                </div>
-                <div class="nds-item" data-val="pride-trans">
-                    <div class="nds-item-color" style="background: linear-gradient(90deg, #5BCEFA, #F5A9B8, white, #F5A9B8, #5BCEFA);"></div>
-                    <span class="nds-item-name">Trans Flag</span>
-                </div>
-                <div class="nds-item" data-val="pride-bi">
-                    <div class="nds-item-color" style="background: linear-gradient(90deg, #D00070, #8C4799, #0038A8);"></div>
-                    <span class="nds-item-name">Bi Flag</span>
-                </div>
-                <div class="nds-item" data-val="pride-pan">
-                    <div class="nds-item-color" style="background: linear-gradient(90deg, #FF218C, #FFD800, #21B1FF);"></div>
-                    <span class="nds-item-name">Pan Flag</span>
-                </div>
-                 <div class="nds-item" data-val="pride-ace">
-                    <div class="nds-item-color" style="background: linear-gradient(90deg, black, #a3a3a3, white, #800080);"></div>
-                    <span class="nds-item-name">Ace (Dark)</span>
-                </div>
-                <div class="nds-item" data-val="pride-enby">
-                    <div class="nds-item-color" style="background: linear-gradient(90deg, #fff430, white, #9c59d1, #2c2c2c);"></div>
-                    <span class="nds-item-name">Non-Binary</span>
-                </div>
-                 <div class="nds-item" data-val="pride-lesbian">
-                    <div class="nds-item-color" style="background: linear-gradient(90deg, #d53d5e, #ff9a56, white, #d362a4);"></div>
-                    <span class="nds-item-name">Lesbian Flag</span>
+                <div class="nds-item" data-val="dark">
+                    <div class="nds-item-color" style="background: #121212;"></div>
+                    <span class="nds-item-name">Midnight (Dark)</span>
                 </div>
             </div>
 
@@ -346,7 +320,7 @@
                 <input type="checkbox" id="check-show-home" checked>
             </div>
             <div class="nds-control-row">
-                <span>Show Random</span>
+                <span>Show Search</span>
                 <input type="checkbox" id="check-show-search" checked>
             </div>
             <div class="nds-control-row">
@@ -365,6 +339,10 @@
             <div class="nds-control-row">
                 <span>Bar Color</span>
                 <input type="color" id="input-bar" value="#c9c5c2">
+            </div>
+            <div class="nds-control-row">
+                <span>Text/Icon Color</span>
+                <input type="color" id="input-static" value="#555555">
             </div>
             <div class="nds-control-row">
                 <span>Wii Button</span>
@@ -406,11 +384,23 @@
                 </select>
             </div>
 
-             <div style="display:none;">
-                <input type="color" id="input-static" value="#555555">
-                <input type="color" id="input-btn-hover" value="#40c4ff">
+            <div class="nds-section-label" style="margin-top: 15px;">Player / Modal</div>
+            
+            <div class="nds-control-row">
+                <span>Modal Color</span>
                 <input type="color" id="input-modal-bg" value="#f7f7f7">
+            </div>
+            <div class="nds-control-row">
+                <span>Border Color</span>
                 <input type="color" id="input-modal-border" value="#d4d4d4">
+            </div>
+            <div class="nds-control-row">
+                <span>Backdrop Blur</span>
+                <input type="range" id="input-modal-blur" min="0" max="20" value="10" style="width: 100px;">
+            </div>
+
+             <div style="display:none;">
+                <input type="color" id="input-btn-hover" value="#40c4ff">
                 <input type="range" id="input-opacity" min="0.2" max="1" step="0.1" value="1">
                 <input type="text" id="input-bg-image">
                 <input type="file" id="input-bg-upload">
@@ -425,36 +415,115 @@
         </div>
 
         <div class="nds-footer">
-            <button class="nds-close-btn" id="close-theme-menu-btn">Cancel</button>
+            <button class="nds-close-btn" id="close-theme-menu-btn">Close</button>
         </div>
     </div>
-    <div id="music-menu">
-        <div class="music-heading">Now Playing</div>
-        <div id="now-playing">No Music Playing</div>
-        <hr class="music-divider">
-        <div class="volume-control">
-            <span class="volume-label">Vol:</span>
-            <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.4">
+
+    <div id="music-menu" class="nds-theme-shop">
+        <div class="nds-header" style="background: linear-gradient(to bottom, #40c4ff 0%, #0091ea 100%); border-bottom-color: #0064b7;">
+            <div class="nds-icon">
+                <svg viewBox="0 0 24 24"><path fill="#fff" d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+            </div>
+            <div class="nds-title-text" style="color: white;">
+                <h3>Music Player</h3>
+                <p>Select tracks or adjust volume.</p>
+            </div>
         </div>
-        <hr class="music-divider">
-        <div class="music-heading">Music Options</div>
-        <div class="music-option" id="music-option-random">Random (Auto-play)</div>
-        <div class="music-option" id="music-option-stop">Stop Music</div>
-        <hr class="music-divider">
-        <div class="music-heading">Songs</div>
-        <div id="music-list"></div>
+
+        <div class="nds-scroll-container">
+            <div id="now-playing" style="text-align:center; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 8px; margin-bottom: 10px; font-weight: bold;">No Music Playing</div>
+            
+            <div class="nds-control-row">
+                <span>Volume</span>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.4" style="width: 120px;">
+            </div>
+
+            <div class="nds-section-label">Controls</div>
+            <div class="nds-list">
+                 <div class="nds-item" id="music-option-random">
+                    <span class="nds-item-name">Random (Shuffle)</span>
+                </div>
+                <div class="nds-item" id="music-option-stop">
+                    <span class="nds-item-name" style="color: red;">Stop Music</span>
+                </div>
+            </div>
+
+            <div class="nds-section-label" style="margin-top:15px;">Track List</div>
+            <div class="nds-list" id="music-list">
+                </div>
+        </div>
+
+        <div class="nds-footer">
+            <button class="nds-close-btn" id="close-music-menu-btn">Close</button>
+        </div>
     </div>
 
-    <div id="home-menu">
-    <div class="music-heading" style="text-align:center;">Navigation</div>
-    <div class="music-option" id="nav-index"><svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" /></svg><span>Return to Index</span></div>
-    <div class="music-option" id="nav-path"><svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.5 19.5h-5v-3h-5v-11h5v1L6 9l2.5 2.5 2.5-2.5 5 5V19.5zM13.5 13.5l5 5h-5v-5z" /></svg><span>Go to Path.html</span></div>
-    
-    <div class="music-option" id="nav-suggestions"><svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg><span>Suggestions</span></div>
+    <div id="home-menu" class="nds-theme-shop">
+         <div class="nds-header" style="background: linear-gradient(to bottom, #77DD77 0%, #59a859 100%); border-bottom-color: #3d753d;">
+            <div class="nds-icon">
+                <svg viewBox="0 0 24 24"><path fill="#fff" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            </div>
+            <div class="nds-title-text" style="color: white;">
+                <h3>Navigation</h3>
+                <p>Quick links & external sites.</p>
+            </div>
+        </div>
 
-    <hr class="music-divider">
-    <div class="music-option" id="nav-discord" style="color: #5865F2;"><svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg><span>Join Discord</span></div>
-</div>
+        <div class="nds-scroll-container">
+            <div class="nds-list">
+                <div class="nds-item" id="nav-index">
+                    <span class="nds-item-name">Return to Index</span>
+                </div>
+                <div class="nds-item" id="nav-path">
+                    <span class="nds-item-name">Go to Path.html</span>
+                </div>
+                <div class="nds-item" id="nav-suggestions">
+                    <span class="nds-item-name">Suggestions Form</span>
+                </div>
+                 <div class="nds-item" id="nav-discord">
+                    <div class="nds-item-color" style="background: #5865F2; width: 24px; height: 24px; border-radius: 4px;"></div>
+                    <span class="nds-item-name">Join Discord</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="nds-footer">
+            <button class="nds-close-btn" id="close-home-menu-btn">Close</button>
+        </div>
+    </div>
+
+    <div id="data-menu" class="nds-theme-shop">
+         <div class="nds-header" style="background: linear-gradient(to bottom, #ff9966 0%, #ff5e62 100%); border-bottom-color: #ce4246;">
+            <div class="nds-icon">
+                <svg viewBox="0 0 24 24"><path fill="#fff" d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+            </div>
+            <div class="nds-title-text" style="color: white;">
+                <h3>Data Manager</h3>
+                <p>Backup & Restore Settings.</p>
+            </div>
+        </div>
+
+        <div class="nds-scroll-container">
+            <p style="font-size: 0.8rem; margin: 5px; color: #555;">Warning: This backs up Qbbic settings and local saves for games hosted on this domain. Cross-site iframe saves cannot be accessed.</p>
+            
+            <div class="nds-section-label">Export Data</div>
+            <textarea id="data-export-area" readonly placeholder="Click 'Generate Backup' to see your data string here."></textarea>
+            <div class="theme-btn-group">
+                <button id="btn-generate-backup" class="theme-action-btn primary">Generate String</button>
+                <button id="btn-copy-backup" class="theme-action-btn">Copy to Clipboard</button>
+            </div>
+
+            <div class="nds-section-label" style="margin-top: 20px;">Import Data</div>
+            <textarea id="data-import-area" placeholder="Paste your backup string here..."></textarea>
+            <div class="theme-btn-group">
+                <button id="btn-load-backup" class="theme-action-btn danger">Load & Refresh</button>
+            </div>
+        </div>
+
+        <div class="nds-footer">
+            <button class="nds-close-btn" id="close-data-menu-btn">Close</button>
+        </div>
+    </div>
 
     <div id="game-modal" role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
         <div id="game-modal-container">
