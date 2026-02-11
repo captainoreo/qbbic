@@ -1,6 +1,6 @@
 /**
  * UPDATED SCRIPT.JS
- * Features: Full Music List, Dark Theme, Data Manager, Universal 3DS Menus, Iframe Customization
+ * Fixes: Preset Loading, JSON Data File Support, Gradient Themes
  */
 
 // --- CORE VARIABLES ---
@@ -52,7 +52,7 @@ function playSound(audioElement) {
     }
 }
 
-// --- MUSIC DATA (Restored) ---
+// --- MUSIC DATA ---
 const songs = [
     { name: 'Wii U Mii Maker', url: '/assets/Wii U OST - Mii Maker (Mii Editor).flac' },
     { name: 'Droopy likes your face', url: '/assets/Droopy likes your face.flac' },
@@ -86,7 +86,7 @@ function initApp() {
         try {
             const theme = JSON.parse(savedTheme);
             applyTheme(theme);
-            restoreThemeInputs(theme);
+            updateInputsFromTheme(theme);
             if (theme.rainEnabled) toggleRain(true);
         } catch (e) { console.error(e); }
     } else {
@@ -100,34 +100,6 @@ function initApp() {
     }
 
     init3DSMenuLogic();
-}
-
-function restoreThemeInputs(theme) {
-    const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
-    const setCheck = (id, val) => { const el = document.getElementById(id); if(el) el.checked = val; };
-
-    setVal('input-bg', theme.bg || '#e6e8e7');
-    setVal('input-bar', theme.bar || '#c9c5c2');
-    setVal('input-static', theme.static || '#555555');
-    setVal('input-shape', theme.shape || 'squircle');
-    setVal('input-font', theme.font || 'PopHappiness');
-    setVal('input-layout', theme.displayMode || 'grid');
-    setVal('input-noise-type', theme.noiseType || 'default');
-    setVal('input-wii-btn-bg', theme.wiiBtnBg || '#ffffff');
-    setVal('input-modal-bg', theme.modalBg || '#f7f7f7');
-    setVal('input-modal-border', theme.modalBorder || '#d4d4d4');
-    setVal('input-modal-blur', theme.modalBlur || '10');
-
-    if (theme.layout) {
-        setCheck('check-show-home', theme.layout.home !== false);
-        setCheck('check-show-search', theme.layout.search !== false);
-        setCheck('check-show-clock', theme.layout.clock !== false);
-        
-        if(theme.layout.rain) {
-            setCheck('check-rain-shawarma', true);
-            toggleRain(true);
-        }
-    }
 }
 
 // --- PAGE NAVIGATION ---
@@ -233,9 +205,15 @@ if(btnFullscreen) btnFullscreen.addEventListener('click', () => {
     if (requestFS) requestFS.call(gameIframe);
 });
 
-// --- THEME MAKER ---
+// --- THEME MAKER VARIABLES ---
 const inputBg = document.getElementById('input-bg');
+const inputBg2 = document.getElementById('input-bg-2'); // NEW: Gradient Color 2
+const checkBgGradient = document.getElementById('check-bg-gradient'); // NEW: Gradient Toggle
+
 const inputBar = document.getElementById('input-bar');
+const inputBar2 = document.getElementById('input-bar-2'); // NEW: Gradient Color 2
+const checkBarGradient = document.getElementById('check-bar-gradient'); // NEW: Gradient Toggle
+
 const inputStatic = document.getElementById('input-static');
 const inputShape = document.getElementById('input-shape');
 const inputFont = document.getElementById('input-font');
@@ -247,35 +225,112 @@ const inputModalBorder = document.getElementById('input-modal-border');
 const inputModalBlur = document.getElementById('input-modal-blur');
 const inputPreset = document.getElementById('input-preset');
 
-// --- PRESETS ---
-const themePresets = {
-    wii: { 
-        bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', wiiBtnBg: '#ffffff', 
-        modalBg: '#f7f7f7', modalBorder: '#d4d4d4', modalBlur: '10',
-        shape: 'squircle', font: 'PopHappiness', displayMode: 'grid', noiseType: 'default',
-        layout: { home: true, search: true, clock: true } 
-    },
-    dark: { 
-        bg: '#121212', bar: '#1f1f1f', static: '#e0e0e0', wiiBtnBg: '#2c2c2c', 
-        modalBg: '#1e1e1e', modalBorder: '#333333', modalBlur: '15',
-        shape: 'round', font: 'sans-serif', displayMode: 'grid', noiseType: 'none',
-        layout: { home: true, search: true, clock: true } 
-    }
-};
+// --- THEME LOGIC ---
 
-function saveThemeToStorage(themeObj) {
-    if(inputPreset) themeObj.preset = inputPreset.value;
-    const checkRain = document.getElementById('check-rain-shawarma');
-    if(checkRain) themeObj.rainEnabled = checkRain.checked;
-    try { localStorage.setItem('customTheme', JSON.stringify(themeObj)); } catch (e) {}
+// Helper to restore inputs from a theme object
+function updateInputsFromTheme(theme) {
+    const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+    const setCheck = (id, val) => { const el = document.getElementById(id); if(el) el.checked = val; };
+
+    // Standard Inputs
+    setVal('input-bg', theme.bg || '#e6e8e7');
+    setVal('input-bar', theme.bar || '#c9c5c2');
+    setVal('input-static', theme.static || '#555555');
+    setVal('input-shape', theme.shape || 'squircle');
+    setVal('input-font', theme.font || 'PopHappiness');
+    setVal('input-layout', theme.displayMode || 'grid');
+    setVal('input-noise-type', theme.noiseType || 'default');
+    setVal('input-wii-btn-bg', theme.wiiBtnBg || '#ffffff');
+    setVal('input-modal-bg', theme.modalBg || '#f7f7f7');
+    setVal('input-modal-border', theme.modalBorder || '#d4d4d4');
+    setVal('input-modal-blur', theme.modalBlur || '10');
+
+    // Gradient Inputs
+    setVal('input-bg-2', theme.bg2 || '#ffffff');
+    setCheck('check-bg-gradient', theme.useBgGradient || false);
+    
+    setVal('input-bar-2', theme.bar2 || '#ffffff');
+    setCheck('check-bar-gradient', theme.useBarGradient || false);
+
+    // Layout Toggles
+    if (theme.layout) {
+        setCheck('check-show-home', theme.layout.home !== false);
+        setCheck('check-show-search', theme.layout.search !== false);
+        setCheck('check-show-clock', theme.layout.clock !== false);
+        
+        if(theme.layout.rain) {
+            setCheck('check-rain-shawarma', true);
+            toggleRain(true);
+        }
+    }
+}
+
+// Helper to get current inputs as object
+function getCurrentThemeObj() {
+    const getChk = (id) => { const el = document.getElementById(id); return el ? el.checked : false; };
+    const getVal = (id) => { const el = document.getElementById(id); return el ? el.value : ''; };
+    
+    // Default fallback to prevent errors if inputs are missing
+    return {
+        bg: getVal('input-bg'),
+        bg2: getVal('input-bg-2'),
+        useBgGradient: getChk('check-bg-gradient'),
+        
+        bar: getVal('input-bar'),
+        bar2: getVal('input-bar-2'),
+        useBarGradient: getChk('check-bar-gradient'),
+        
+        static: getVal('input-static'),
+        shape: getVal('input-shape'),
+        font: getVal('input-font'),
+        displayMode: getVal('input-layout'),
+        noiseType: getVal('input-noise-type'),
+        wiiBtnBg: getVal('input-wii-btn-bg'),
+        modalBg: getVal('input-modal-bg'),
+        modalBorder: getVal('input-modal-border'),
+        modalBlur: getVal('input-modal-blur'),
+        
+        layout: {
+            home: getChk('check-show-home'),
+            search: getChk('check-show-search'),
+            clock: getChk('check-show-clock')
+        }
+    };
 }
 
 function applyTheme(themeObj) {
-    const { bg, bar, static, shape, font, wiiBtnBg, modalBg, modalBorder, modalBlur, displayMode, noiseType } = themeObj;
+    const { 
+        bg, bg2, useBgGradient, 
+        bar, bar2, useBarGradient, 
+        static, shape, font, wiiBtnBg, 
+        modalBg, modalBorder, modalBlur, displayMode, noiseType 
+    } = themeObj;
 
     const r = document.documentElement;
-    r.style.setProperty('--bg-color', bg);
-    r.style.setProperty('--bar-color', bar);
+
+    // Handle Background (Gradient vs Solid)
+    if (useBgGradient && bg2) {
+        r.style.setProperty('--bg-color', bg); // Fallback
+        // We inject the gradient directly into a new variable or override the bg-image
+        // For simplicity, we'll set a CSS variable that the body uses
+        document.body.style.backgroundImage = `linear-gradient(to bottom, ${bg}, ${bg2})`;
+        document.body.style.backgroundAttachment = 'fixed';
+    } else {
+        r.style.setProperty('--bg-color', bg);
+        document.body.style.backgroundImage = ''; // Reset to allow noise/pattern
+    }
+
+    // Handle Bar (Gradient vs Solid)
+    if (useBarGradient && bar2) {
+        // We need to set the bar background to a gradient
+        const barEl = document.querySelector('.wii-bottom-bar');
+        if(barEl) barEl.style.background = `linear-gradient(to bottom, ${bar}, ${bar2})`;
+    } else {
+        r.style.setProperty('--bar-color', bar);
+        const barEl = document.querySelector('.wii-bottom-bar');
+        if(barEl) barEl.style.background = ''; // Reset to variable
+    }
+
     r.style.setProperty('--static-color', static);
     r.style.setProperty('--wii-btn-bg', wiiBtnBg || '#ffffff');
     r.style.setProperty('--modal-bg', modalBg || '#f7f7f7');
@@ -309,28 +364,42 @@ function applyTheme(themeObj) {
         setDisp('wii-date-time-display', themeObj.layout.clock !== false);
     }
     
-    const encodedColor = encodeURIComponent(static);
-    const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
-    document.body.style.backgroundImage = svg;
+    // Re-apply SVG noise pattern if no gradient is selected
+    if (!useBgGradient) {
+        const encodedColor = encodeURIComponent(static);
+        const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
+        document.body.style.backgroundImage = svg;
+    }
 
     saveThemeToStorage(themeObj);
 }
 
-function getCurrentThemeObj() {
-    const getChk = (id) => { const el = document.getElementById(id); return el ? el.checked : true; };
-    return {
-        bg: inputBg.value, bar: inputBar.value, static: inputStatic.value, shape: inputShape.value,
-        font: inputFont.value, displayMode: inputLayout.value, noiseType: inputNoise.value,
-        wiiBtnBg: inputWiiBtnBg.value, modalBg: inputModalBg.value, modalBorder: inputModalBorder.value,
-        modalBlur: inputModalBlur.value,
-        layout: {
-            home: getChk('check-show-home'), search: getChk('check-show-search'),
-            clock: getChk('check-show-clock')
-        }
-    };
+// --- PRESETS ---
+const themePresets = {
+    wii: { 
+        bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', wiiBtnBg: '#ffffff', 
+        modalBg: '#f7f7f7', modalBorder: '#d4d4d4', modalBlur: '10',
+        shape: 'squircle', font: 'PopHappiness', displayMode: 'grid', noiseType: 'default',
+        useBgGradient: false, useBarGradient: false,
+        layout: { home: true, search: true, clock: true } 
+    },
+    dark: { 
+        bg: '#121212', bar: '#1f1f1f', static: '#e0e0e0', wiiBtnBg: '#2c2c2c', 
+        modalBg: '#1e1e1e', modalBorder: '#333333', modalBlur: '15',
+        shape: 'round', font: 'sans-serif', displayMode: 'grid', noiseType: 'none',
+        useBgGradient: false, useBarGradient: false,
+        layout: { home: true, search: true, clock: true } 
+    }
+};
+
+function saveThemeToStorage(themeObj) {
+    if(inputPreset) themeObj.preset = inputPreset.value;
+    const checkRain = document.getElementById('check-rain-shawarma');
+    if(checkRain) themeObj.rainEnabled = checkRain.checked;
+    try { localStorage.setItem('customTheme', JSON.stringify(themeObj)); } catch (e) {}
 }
 
-// Preset Change
+// Preset Change (Dropdown)
 if(inputPreset) {
     inputPreset.addEventListener('change', (e) => {
         if (e.target.value === 'custom') return;
@@ -345,13 +414,27 @@ if(inputPreset) {
 }
 
 // Manual Input Changes
-const manualInputs = [inputBg, inputBar, inputStatic, inputShape, inputFont, inputLayout, inputNoise, inputWiiBtnBg, inputModalBg, inputModalBorder, inputModalBlur];
-manualInputs.forEach(input => {
+// We collect all possible inputs and attach listeners
+const allThemeInputs = [
+    inputBg, inputBg2, checkBgGradient,
+    inputBar, inputBar2, checkBarGradient,
+    inputStatic, inputShape, inputFont, inputLayout, inputNoise, 
+    inputWiiBtnBg, inputModalBg, inputModalBorder, inputModalBlur
+];
+
+allThemeInputs.forEach(input => {
     if(!input) return;
     input.addEventListener('input', () => {
         if(inputPreset) inputPreset.value = 'custom';
         applyTheme(getCurrentThemeObj());
     });
+    // Checkboxes need 'change' event specifically
+    if(input.type === 'checkbox') {
+        input.addEventListener('change', () => {
+            if(inputPreset) inputPreset.value = 'custom';
+            applyTheme(getCurrentThemeObj());
+        });
+    }
 });
 
 // Reset
@@ -387,7 +470,7 @@ if(btnLoadTheme && inputLoadTheme) {
             try {
                 const theme = JSON.parse(event.target.result);
                 applyTheme(theme);
-                restoreThemeInputs(theme);
+                updateInputsFromTheme(theme);
                 if(inputPreset) inputPreset.value = 'custom';
                 showToast("Theme Loaded!");
             } catch (e) { showToast("Error Loading File"); }
@@ -516,62 +599,85 @@ setupMenuToggle('music-menu-toggle', 'music-menu');
 setupMenuToggle('wii-menu-button', 'home-menu');
 setupMenuToggle('data-menu-toggle', 'data-menu');
 
-// --- DATA MANAGER LOGIC ---
-const btnGenBackup = document.getElementById('btn-generate-backup');
-const txtExport = document.getElementById('data-export-area');
-const btnCopyBackup = document.getElementById('btn-copy-backup');
-const btnLoadBackup = document.getElementById('btn-load-backup');
-const txtImport = document.getElementById('data-import-area');
+// --- DATA MANAGER LOGIC (FILE SYSTEM) ---
+const btnSaveDataFile = document.getElementById('btn-save-data-file');
+const btnLoadDataFile = document.getElementById('btn-load-data-file');
+const inputLoadDataFile = document.getElementById('input-load-data-file');
 
-if(btnGenBackup) {
-    btnGenBackup.addEventListener('click', () => {
-        const backup = JSON.stringify(localStorage);
-        const encoded = btoa(unescape(encodeURIComponent(backup)));
-        txtExport.value = encoded;
-    });
-}
-if(btnCopyBackup) {
-    btnCopyBackup.addEventListener('click', () => {
-        if(txtExport.value) {
-            txtExport.select();
-            document.execCommand('copy');
-            showToast("Copied to Clipboard!");
-        }
-    });
-}
-if(btnLoadBackup) {
-    btnLoadBackup.addEventListener('click', () => {
-        if(!txtImport.value) return;
+// SAVE TO FILE
+if(btnSaveDataFile) {
+    btnSaveDataFile.addEventListener('click', () => {
         try {
-            const decoded = decodeURIComponent(escape(atob(txtImport.value.trim())));
-            const data = JSON.parse(decoded);
+            const backup = JSON.stringify(localStorage);
+            const blob = new Blob([backup], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
             
-            // Restore
-            localStorage.clear();
-            Object.keys(data).forEach(key => {
-                localStorage.setItem(key, data[key]);
-            });
-            showToast("Data Restored! Reloading...");
-            setTimeout(() => location.reload(), 1000);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "qbbic_save_data.json";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast("Save Data Downloaded!");
         } catch(e) {
-            showToast("Invalid Backup String!");
             console.error(e);
+            showToast("Error Saving Data");
         }
     });
 }
 
-// --- 3DS PRESET LOGIC ---
+// LOAD FROM FILE
+if(btnLoadDataFile && inputLoadDataFile) {
+    btnLoadDataFile.addEventListener('click', () => inputLoadDataFile.click());
+    
+    inputLoadDataFile.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if(!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                // Basic validation
+                if (typeof data !== 'object') throw new Error("Invalid JSON");
+
+                // Restore
+                localStorage.clear();
+                Object.keys(data).forEach(key => {
+                    localStorage.setItem(key, data[key]);
+                });
+
+                showToast("Data Restored! Reloading...");
+                setTimeout(() => location.reload(), 1000);
+            } catch(e) {
+                showToast("Invalid Save File!");
+                console.error(e);
+            }
+        };
+        reader.readAsText(file);
+    });
+}
+
+
+// --- 3DS PRESET LOGIC (FIXED) ---
 function init3DSMenuLogic() {
-    const presetItems = document.querySelectorAll('.nds-item[data-val]');
+    // We target elements inside the theme menu with the class .nds-item and data-val
+    const presetItems = document.querySelectorAll('#theme-menu .nds-item[data-val]');
     const hiddenPresetInput = document.getElementById('input-preset');
 
     if(presetItems.length > 0 && hiddenPresetInput) {
         presetItems.forEach(item => {
-            item.addEventListener('click', () => {
+            // Remove old listeners by cloning (optional safety) or just add new one
+            item.onclick = () => { // using onclick to override potential duplicates
+                // Visual update
                 presetItems.forEach(i => i.classList.remove('selected'));
                 item.classList.add('selected');
+                
                 const val = item.dataset.val;
                 hiddenPresetInput.value = val;
+                
                 const selectedTheme = themePresets[val];
                 if (selectedTheme) {
                     updateInputsFromTheme(selectedTheme);
@@ -579,7 +685,7 @@ function init3DSMenuLogic() {
                     playSound(clickSound);
                     showToast(`Theme changed: ${item.querySelector('.nds-item-name').innerText}`);
                 }
-            });
+            };
         });
     }
 }
