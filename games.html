@@ -313,37 +313,32 @@
                 </div>
             </div>
 
-            <div class="nds-section-label" style="margin-top: 15px;">Manual Customization</div>
+            <div class="nds-section-label" style="margin-top: 15px;">Global Colors</div>
             
             <div class="nds-control-row">
-                <span>Show Home</span>
-                <input type="checkbox" id="check-show-home" checked>
-            </div>
-            <div class="nds-control-row">
-                <span>Show Search</span>
-                <input type="checkbox" id="check-show-search" checked>
-            </div>
-            <div class="nds-control-row">
-                <span>Show Clock</span>
-                <input type="checkbox" id="check-show-clock" checked>
-            </div>
-             <div class="nds-control-row">
-                <span>Shawarma Rain</span>
-                <input type="checkbox" id="check-rain-shawarma">
+                <span>Background</span>
+                <div style="display:flex; gap:5px; align-items:center;">
+                    <input type="checkbox" id="check-bg-gradient" title="Enable Gradient">
+                    <input type="color" id="input-bg" value="#e6e8e7" title="Main Color">
+                    <input type="color" id="input-bg-2" value="#ffffff" title="Gradient Color">
+                </div>
             </div>
 
-            <div class="nds-control-row">
-                <span>Background</span>
-                <input type="color" id="input-bg" value="#e6e8e7">
+             <div class="nds-control-row">
+                <span>Bottom Bar</span>
+                 <div style="display:flex; gap:5px; align-items:center;">
+                    <input type="checkbox" id="check-bar-gradient" title="Enable Gradient">
+                    <input type="color" id="input-bar" value="#c9c5c2" title="Main Color">
+                    <input type="color" id="input-bar-2" value="#ffffff" title="Gradient Color">
+                </div>
             </div>
-            <div class="nds-control-row">
-                <span>Bar Color</span>
-                <input type="color" id="input-bar" value="#c9c5c2">
-            </div>
+
             <div class="nds-control-row">
                 <span>Text/Icon Color</span>
                 <input type="color" id="input-static" value="#555555">
             </div>
+
+            <div class="nds-section-label" style="margin-top: 15px;">Appearance</div>
             <div class="nds-control-row">
                 <span>Wii Button</span>
                 <input type="color" id="input-wii-btn-bg" value="#ffffff">
@@ -383,6 +378,10 @@
                     <option value="none">Clean</option>
                 </select>
             </div>
+             <div class="nds-control-row">
+                <span>Shawarma Rain</span>
+                <input type="checkbox" id="check-rain-shawarma">
+            </div>
 
             <div class="nds-section-label" style="margin-top: 15px;">Player / Modal</div>
             
@@ -399,16 +398,9 @@
                 <input type="range" id="input-modal-blur" min="0" max="20" value="10" style="width: 100px;">
             </div>
 
-             <div style="display:none;">
-                <input type="color" id="input-btn-hover" value="#40c4ff">
-                <input type="range" id="input-opacity" min="0.2" max="1" step="0.1" value="1">
-                <input type="text" id="input-bg-image">
-                <input type="file" id="input-bg-upload">
-             </div>
-
             <div class="theme-btn-group" style="margin-top:20px;">
-                <button id="save-theme-btn" class="theme-action-btn primary">Save JSON</button>
-                <button id="load-theme-btn" class="theme-action-btn">Load JSON</button>
+                <button id="save-theme-btn" class="theme-action-btn primary">Save Theme</button>
+                <button id="load-theme-btn" class="theme-action-btn">Load Theme</button>
                  <button id="reset-theme-btn" class="theme-action-btn danger">Reset</button>
             </div>
              <input type="file" id="input-load-theme" accept=".json" style="display: none;">
@@ -429,15 +421,12 @@
                 <p>Select tracks or adjust volume.</p>
             </div>
         </div>
-
         <div class="nds-scroll-container">
             <div id="now-playing" style="text-align:center; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 8px; margin-bottom: 10px; font-weight: bold;">No Music Playing</div>
-            
             <div class="nds-control-row">
                 <span>Volume</span>
                 <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.4" style="width: 120px;">
             </div>
-
             <div class="nds-section-label">Controls</div>
             <div class="nds-list">
                  <div class="nds-item" id="music-option-random">
@@ -447,12 +436,9 @@
                     <span class="nds-item-name" style="color: red;">Stop Music</span>
                 </div>
             </div>
-
             <div class="nds-section-label" style="margin-top:15px;">Track List</div>
-            <div class="nds-list" id="music-list">
-                </div>
+            <div class="nds-list" id="music-list"></div>
         </div>
-
         <div class="nds-footer">
             <button class="nds-close-btn" id="close-music-menu-btn">Close</button>
         </div>
@@ -468,7 +454,6 @@
                 <p>Quick links & external sites.</p>
             </div>
         </div>
-
         <div class="nds-scroll-container">
             <div class="nds-list">
                 <div class="nds-item" id="nav-index">
@@ -486,7 +471,6 @@
                 </div>
             </div>
         </div>
-
         <div class="nds-footer">
             <button class="nds-close-btn" id="close-home-menu-btn">Close</button>
         </div>
@@ -498,26 +482,25 @@
                 <svg viewBox="0 0 24 24"><path fill="#fff" d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
             </div>
             <div class="nds-title-text" style="color: white;">
-                <h3>Data Manager</h3>
-                <p>Backup & Restore Settings.</p>
+                <h3>Memory Card</h3>
+                <p>Manage your save data.</p>
             </div>
         </div>
 
         <div class="nds-scroll-container">
-            <p style="font-size: 0.8rem; margin: 5px; color: #555;">Warning: This backs up Qbbic settings and local saves for games hosted on this domain. Cross-site iframe saves cannot be accessed.</p>
+            <p style="font-size: 0.8rem; margin: 5px; color: #555;">Save your theme, music settings, and local game data to a file on your device.</p>
             
-            <div class="nds-section-label">Export Data</div>
-            <textarea id="data-export-area" readonly placeholder="Click 'Generate Backup' to see your data string here."></textarea>
-            <div class="theme-btn-group">
-                <button id="btn-generate-backup" class="theme-action-btn primary">Generate String</button>
-                <button id="btn-copy-backup" class="theme-action-btn">Copy to Clipboard</button>
-            </div>
+            <div class="nds-section-label">Save Data</div>
+            <button id="btn-save-data-file" class="theme-action-btn primary" style="width: 100%; height: 40px; font-size: 1rem;">
+                Download Save (.json)
+            </button>
 
-            <div class="nds-section-label" style="margin-top: 20px;">Import Data</div>
-            <textarea id="data-import-area" placeholder="Paste your backup string here..."></textarea>
-            <div class="theme-btn-group">
-                <button id="btn-load-backup" class="theme-action-btn danger">Load & Refresh</button>
-            </div>
+            <div class="nds-section-label" style="margin-top: 20px;">Load Data</div>
+            <button id="btn-load-data-file" class="theme-action-btn danger" style="width: 100%; height: 40px; font-size: 1rem;">
+                Upload Save File
+            </button>
+            
+            <input type="file" id="input-load-data-file" accept=".json" style="display: none;">
         </div>
 
         <div class="nds-footer">
@@ -532,7 +515,7 @@
                 <div id="game-modal-controls">
                     <button id="reload-game-btn" type="button" class="control-btn" title="Reload Game"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z" /></svg><span>Reset</span></button>
                     <button id="open-new-tab-btn" type="button" class="control-btn" title="Open in New Tab"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z" /></svg><span>Tab</span></button>
-                    <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloak)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-1.34-3-3-3z" /></svg><span>Mask</span></button>
+                    <button id="open-blank-btn" type="button" class="control-btn" title="Open in about:blank (Cloak)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-1.34-3-3-1.34-3-3-3z" /></svg><span>Mask</span></button>
                     <button id="fullscreen-btn" type="button" class="control-btn" title="Fullscreen Game"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" /></svg><span>Max</span></button>
                     <button id="close-game-modal-btn" type="button" class="control-btn close-btn" title="Close Player"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" /></svg><span>Close</span></button>
                 </div>
@@ -554,7 +537,6 @@
     <audio id="menu-hover-sound" src="/assets/Sample_0003.wav" preload="auto"></audio>
     <audio id="game-open-sound" src="/assets/Sample_0000.wav" preload="auto"></audio>
     <audio id="game-close-sound" src="/assets/Sample_0001.wav" preload="auto"></audio>
-
     <audio id="sound-time-travel-future" src="/assets/Sonic CD - Future Sound Effect - Orange Blur.wav" preload="auto"></audio>
     <audio id="sound-time-travel-past" src="/assets/Sonic CD - Past Sound Effect - Orange Blur.wav" preload="auto"></audio>
 
