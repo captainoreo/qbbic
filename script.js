@@ -1,6 +1,6 @@
 /**
- * UPDATED SCRIPT.JS
- * Fixes: Preset Loading, JSON Data File Support, Gradient Themes
+ * MERGED SCRIPT.JS
+ * Features: Full Music List, Dark Theme, File Data Manager, Universal 3DS Menus, Merged Theme Maker (Gradients + Patterns)
  */
 
 // --- CORE VARIABLES ---
@@ -205,15 +205,10 @@ if(btnFullscreen) btnFullscreen.addEventListener('click', () => {
     if (requestFS) requestFS.call(gameIframe);
 });
 
-// --- THEME MAKER VARIABLES ---
+// --- THEME MAKER INPUTS (MERGED) ---
+// Original inputs
 const inputBg = document.getElementById('input-bg');
-const inputBg2 = document.getElementById('input-bg-2'); // NEW: Gradient Color 2
-const checkBgGradient = document.getElementById('check-bg-gradient'); // NEW: Gradient Toggle
-
 const inputBar = document.getElementById('input-bar');
-const inputBar2 = document.getElementById('input-bar-2'); // NEW: Gradient Color 2
-const checkBarGradient = document.getElementById('check-bar-gradient'); // NEW: Gradient Toggle
-
 const inputStatic = document.getElementById('input-static');
 const inputShape = document.getElementById('input-shape');
 const inputFont = document.getElementById('input-font');
@@ -225,14 +220,21 @@ const inputModalBorder = document.getElementById('input-modal-border');
 const inputModalBlur = document.getElementById('input-modal-blur');
 const inputPreset = document.getElementById('input-preset');
 
-// --- THEME LOGIC ---
+// New Gradient inputs
+const inputBg2 = document.getElementById('input-bg-2');
+const checkBgGradient = document.getElementById('check-bg-gradient');
+const inputBar2 = document.getElementById('input-bar-2');
+const checkBarGradient = document.getElementById('check-bar-gradient');
 
-// Helper to restore inputs from a theme object
+
+// --- THEME FUNCTIONS ---
+
+// Update UI inputs based on a loaded theme object
 function updateInputsFromTheme(theme) {
     const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
     const setCheck = (id, val) => { const el = document.getElementById(id); if(el) el.checked = val; };
 
-    // Standard Inputs
+    // Standard
     setVal('input-bg', theme.bg || '#e6e8e7');
     setVal('input-bar', theme.bar || '#c9c5c2');
     setVal('input-static', theme.static || '#555555');
@@ -245,19 +247,16 @@ function updateInputsFromTheme(theme) {
     setVal('input-modal-border', theme.modalBorder || '#d4d4d4');
     setVal('input-modal-blur', theme.modalBlur || '10');
 
-    // Gradient Inputs
+    // Gradients
     setVal('input-bg-2', theme.bg2 || '#ffffff');
     setCheck('check-bg-gradient', theme.useBgGradient || false);
-    
     setVal('input-bar-2', theme.bar2 || '#ffffff');
     setCheck('check-bar-gradient', theme.useBarGradient || false);
 
-    // Layout Toggles
     if (theme.layout) {
         setCheck('check-show-home', theme.layout.home !== false);
         setCheck('check-show-search', theme.layout.search !== false);
         setCheck('check-show-clock', theme.layout.clock !== false);
-        
         if(theme.layout.rain) {
             setCheck('check-rain-shawarma', true);
             toggleRain(true);
@@ -265,12 +264,11 @@ function updateInputsFromTheme(theme) {
     }
 }
 
-// Helper to get current inputs as object
+// Gather current input values into an object
 function getCurrentThemeObj() {
     const getChk = (id) => { const el = document.getElementById(id); return el ? el.checked : false; };
     const getVal = (id) => { const el = document.getElementById(id); return el ? el.value : ''; };
     
-    // Default fallback to prevent errors if inputs are missing
     return {
         bg: getVal('input-bg'),
         bg2: getVal('input-bg-2'),
@@ -298,6 +296,7 @@ function getCurrentThemeObj() {
     };
 }
 
+// Apply the theme to the CSS variables and Body
 function applyTheme(themeObj) {
     const { 
         bg, bg2, useBgGradient, 
@@ -308,29 +307,31 @@ function applyTheme(themeObj) {
 
     const r = document.documentElement;
 
-    // Handle Background (Gradient vs Solid)
+    // 1. Handle Background: Gradient vs Pattern
     if (useBgGradient && bg2) {
-        r.style.setProperty('--bg-color', bg); // Fallback
-        // We inject the gradient directly into a new variable or override the bg-image
-        // For simplicity, we'll set a CSS variable that the body uses
+        // Apply Gradient
+        r.style.setProperty('--bg-color', bg);
         document.body.style.backgroundImage = `linear-gradient(to bottom, ${bg}, ${bg2})`;
         document.body.style.backgroundAttachment = 'fixed';
     } else {
+        // Apply Solid Color + Original SVG Pattern
         r.style.setProperty('--bg-color', bg);
-        document.body.style.backgroundImage = ''; // Reset to allow noise/pattern
+        const encodedColor = encodeURIComponent(static);
+        const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
+        document.body.style.backgroundImage = svg;
+        document.body.style.backgroundAttachment = ''; // reset
     }
 
-    // Handle Bar (Gradient vs Solid)
-    if (useBarGradient && bar2) {
-        // We need to set the bar background to a gradient
-        const barEl = document.querySelector('.wii-bottom-bar');
-        if(barEl) barEl.style.background = `linear-gradient(to bottom, ${bar}, ${bar2})`;
-    } else {
+    // 2. Handle Bar: Gradient vs Solid
+    const barEl = document.querySelector('.wii-bottom-bar');
+    if (useBarGradient && bar2 && barEl) {
+        barEl.style.background = `linear-gradient(to bottom, ${bar}, ${bar2})`;
+    } else if (barEl) {
         r.style.setProperty('--bar-color', bar);
-        const barEl = document.querySelector('.wii-bottom-bar');
-        if(barEl) barEl.style.background = ''; // Reset to variable
+        barEl.style.background = ''; // falls back to CSS var
     }
 
+    // 3. Apply Standard Variables
     r.style.setProperty('--static-color', static);
     r.style.setProperty('--wii-btn-bg', wiiBtnBg || '#ffffff');
     r.style.setProperty('--modal-bg', modalBg || '#f7f7f7');
@@ -363,13 +364,6 @@ function applyTheme(themeObj) {
         setDisp('data-menu-toggle', themeObj.layout.search !== false);
         setDisp('wii-date-time-display', themeObj.layout.clock !== false);
     }
-    
-    // Re-apply SVG noise pattern if no gradient is selected
-    if (!useBgGradient) {
-        const encodedColor = encodeURIComponent(static);
-        const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
-        document.body.style.backgroundImage = svg;
-    }
 
     saveThemeToStorage(themeObj);
 }
@@ -399,7 +393,7 @@ function saveThemeToStorage(themeObj) {
     try { localStorage.setItem('customTheme', JSON.stringify(themeObj)); } catch (e) {}
 }
 
-// Preset Change (Dropdown)
+// Preset Logic
 if(inputPreset) {
     inputPreset.addEventListener('change', (e) => {
         if (e.target.value === 'custom') return;
@@ -413,8 +407,7 @@ if(inputPreset) {
     });
 }
 
-// Manual Input Changes
-// We collect all possible inputs and attach listeners
+// Watch All Inputs
 const allThemeInputs = [
     inputBg, inputBg2, checkBgGradient,
     inputBar, inputBar2, checkBarGradient,
@@ -428,7 +421,7 @@ allThemeInputs.forEach(input => {
         if(inputPreset) inputPreset.value = 'custom';
         applyTheme(getCurrentThemeObj());
     });
-    // Checkboxes need 'change' event specifically
+    // Checkboxes change event
     if(input.type === 'checkbox') {
         input.addEventListener('change', () => {
             if(inputPreset) inputPreset.value = 'custom';
@@ -448,7 +441,7 @@ if(btnReset) btnReset.addEventListener('click', () => {
     showToast("Theme Reset");
 });
 
-// JSON Save/Load (Theme)
+// JSON Theme Save/Load
 const btnSaveTheme = document.getElementById('save-theme-btn');
 if(btnSaveTheme) btnSaveTheme.addEventListener('click', () => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getCurrentThemeObj()));
@@ -581,7 +574,7 @@ function setupMenuToggle(btnId, menuId) {
             const isVisible = menu.style.display === 'flex';
             closeAllMenus();
             if(!isVisible) {
-                menu.style.display = 'flex'; // 3DS menus are flex
+                menu.style.display = 'flex';
                 playSound(themeClickSound);
             }
         });
@@ -604,14 +597,13 @@ const btnSaveDataFile = document.getElementById('btn-save-data-file');
 const btnLoadDataFile = document.getElementById('btn-load-data-file');
 const inputLoadDataFile = document.getElementById('input-load-data-file');
 
-// SAVE TO FILE
+// Save
 if(btnSaveDataFile) {
     btnSaveDataFile.addEventListener('click', () => {
         try {
             const backup = JSON.stringify(localStorage);
             const blob = new Blob([backup], { type: "application/json" });
             const url = URL.createObjectURL(blob);
-            
             const a = document.createElement('a');
             a.href = url;
             a.download = "qbbic_save_data.json";
@@ -619,7 +611,6 @@ if(btnSaveDataFile) {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            
             showToast("Save Data Downloaded!");
         } catch(e) {
             console.error(e);
@@ -628,7 +619,7 @@ if(btnSaveDataFile) {
     });
 }
 
-// LOAD FROM FILE
+// Load
 if(btnLoadDataFile && inputLoadDataFile) {
     btnLoadDataFile.addEventListener('click', () => inputLoadDataFile.click());
     
@@ -640,10 +631,8 @@ if(btnLoadDataFile && inputLoadDataFile) {
         reader.onload = (event) => {
             try {
                 const data = JSON.parse(event.target.result);
-                // Basic validation
                 if (typeof data !== 'object') throw new Error("Invalid JSON");
 
-                // Restore
                 localStorage.clear();
                 Object.keys(data).forEach(key => {
                     localStorage.setItem(key, data[key]);
@@ -661,23 +650,18 @@ if(btnLoadDataFile && inputLoadDataFile) {
 }
 
 
-// --- 3DS PRESET LOGIC (FIXED) ---
+// --- 3DS PRESET LOGIC ---
 function init3DSMenuLogic() {
-    // We target elements inside the theme menu with the class .nds-item and data-val
     const presetItems = document.querySelectorAll('#theme-menu .nds-item[data-val]');
     const hiddenPresetInput = document.getElementById('input-preset');
 
     if(presetItems.length > 0 && hiddenPresetInput) {
         presetItems.forEach(item => {
-            // Remove old listeners by cloning (optional safety) or just add new one
-            item.onclick = () => { // using onclick to override potential duplicates
-                // Visual update
+            item.onclick = () => {
                 presetItems.forEach(i => i.classList.remove('selected'));
                 item.classList.add('selected');
-                
                 const val = item.dataset.val;
                 hiddenPresetInput.value = val;
-                
                 const selectedTheme = themePresets[val];
                 if (selectedTheme) {
                     updateInputsFromTheme(selectedTheme);
