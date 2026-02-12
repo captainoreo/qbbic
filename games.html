@@ -300,56 +300,67 @@
         <div class="nds-scroll-container">
             <input type="hidden" id="input-preset" value="custom">
 
-            <div class="nds-section-label">Presets</div>
-            
-            <div class="nds-list">
+            <div class="nds-section-label">Select Preset</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <div class="nds-item" data-val="wii">
                     <div class="nds-item-color" style="background: #e6e8e7;"></div>
-                    <span class="nds-item-name">Default (Wii)</span>
+                    <span class="nds-item-name">Wii</span>
                 </div>
                 <div class="nds-item" data-val="dark">
                     <div class="nds-item-color" style="background: #121212;"></div>
-                    <span class="nds-item-name">Midnight (Dark)</span>
+                    <span class="nds-item-name">Midnight</span>
+                </div>
+                <div class="nds-item" data-val="matrix">
+                    <div class="nds-item-color" style="background: #000; border: 1px solid #0f0;"></div>
+                    <span class="nds-item-name">Matrix</span>
+                </div>
+                <div class="nds-item" data-val="ocean">
+                    <div class="nds-item-color" style="background: #e0f7fa;"></div>
+                    <span class="nds-item-name">Ocean</span>
+                </div>
+                <div class="nds-item" data-val="cherry">
+                    <div class="nds-item-color" style="background: #fff0f5;"></div>
+                    <span class="nds-item-name">Cherry</span>
+                </div>
+                <div class="nds-item" data-val="blueprint">
+                    <div class="nds-item-color" style="background: #0d47a1;"></div>
+                    <span class="nds-item-name">Blueprint</span>
+                </div>
+                <div class="nds-item" data-val="terminal">
+                    <div class="nds-item-color" style="background: #1a1a1a;"></div>
+                    <span class="nds-item-name">Terminal</span>
+                </div>
+                <div class="nds-item" data-val="paper">
+                    <div class="nds-item-color" style="background: #fdfbf7;"></div>
+                    <span class="nds-item-name">Paper</span>
                 </div>
             </div>
 
             <div class="nds-section-label" style="margin-top: 15px;">Colors</div>
-            
             <div class="nds-control-row">
                 <span>Background</span>
                 <input type="color" id="input-bg" value="#e6e8e7">
             </div>
-
             <div class="nds-control-row">
-                <span>Grid Line Color</span>
+                <span>Grid Lines</span>
                 <input type="color" id="input-grid-color" value="#d6d8d7">
             </div>
-
             <div class="nds-control-row">
                 <span>Bottom Bar</span>
                 <input type="color" id="input-bar" value="#c9c5c2">
             </div>
-
             <div class="nds-control-row">
-                <span>Text/Icon Color</span>
+                <span>Text/Icons</span>
                 <input type="color" id="input-static" value="#555555">
             </div>
-
-            <div class="nds-section-label" style="margin-top: 15px;">Appearance</div>
             <div class="nds-control-row">
                 <span>Wii Button</span>
                 <input type="color" id="input-wii-btn-bg" value="#ffffff">
             </div>
+
+            <div class="nds-section-label" style="margin-top: 15px;">Design</div>
             <div class="nds-control-row">
-                <span>Font Style</span>
-                <select id="input-font">
-                    <option value="PopHappiness">Wii Pop</option>
-                    <option value="sans-serif">Clean Sans</option>
-                    <option value="monospace">Retro Mono</option>
-                </select>
-            </div>
-            <div class="nds-control-row">
-                <span>Corner Shape</span>
+                <span>Shape</span>
                  <select id="input-shape">
                     <option value="squircle">Squircle</option>
                     <option value="round">Round</option>
@@ -357,47 +368,59 @@
                     <option value="square">Square</option>
                 </select>
             </div>
-            
-             <div class="nds-control-row">
-                <span>Layout Mode</span>
-                <select id="input-layout">
-                    <option value="grid">Grid (Standard)</option>
-                    <option value="list">List View</option>
-                    <option value="big">Big Grid</option>
+            <div class="nds-control-row">
+                <span>Font</span>
+                <select id="input-font">
+                    <option value="PopHappiness">Wii Pop</option>
+                    <option value="sans-serif">Clean Sans</option>
+                    <option value="monospace">Retro Mono</option>
                 </select>
             </div>
-            
-             <div class="nds-control-row">
-                <span>Static Effect</span>
+            <div class="nds-control-row">
+                <span>Effect</span>
                 <select id="input-noise-type">
-                    <option value="default">Default</option>
+                    <option value="default">TV Static</option>
                     <option value="scanlines">Scanlines</option>
                     <option value="none">Clean</option>
+                </select>
+            </div>
+
+            <div class="nds-section-label" style="margin-top: 15px;">Layout</div>
+            <div class="nds-control-row">
+                <span>View Mode</span>
+                <select id="input-layout">
+                    <option value="grid">Grid</option>
+                    <option value="list">List</option>
+                    <option value="big">Big Icons</option>
                 </select>
             </div>
              <div class="nds-control-row">
                 <span>Shawarma Rain</span>
                 <input type="checkbox" id="check-rain-shawarma">
             </div>
+            <div style="display:flex; justify-content:space-between; margin-top:5px;">
+                <label style="font-size:0.8rem;"><input type="checkbox" id="check-show-home" checked> Home</label>
+                <label style="font-size:0.8rem;"><input type="checkbox" id="check-show-search" checked> Data</label>
+                <label style="font-size:0.8rem;"><input type="checkbox" id="check-show-clock" checked> Clock</label>
+            </div>
 
-            <div class="nds-section-label" style="margin-top: 15px;">Player / Modal</div>
-            
+            <div class="nds-section-label" style="margin-top: 15px;">Game Player</div>
             <div class="nds-control-row">
                 <span>Modal Color</span>
                 <input type="color" id="input-modal-bg" value="#f7f7f7">
             </div>
             <div class="nds-control-row">
-                <span>Border Color</span>
+                <span>Border</span>
                 <input type="color" id="input-modal-border" value="#d4d4d4">
             </div>
             <div class="nds-control-row">
-                <span>Backdrop Blur</span>
-                <input type="range" id="input-modal-blur" min="0" max="20" value="10" style="width: 100px;">
+                <span>Blur</span>
+                <input type="range" id="input-modal-blur" min="0" max="20" value="10" style="width: 80px;">
             </div>
 
             <div class="theme-btn-group" style="margin-top:20px;">
-                <button id="save-theme-btn" class="theme-action-btn primary">Save Theme</button>
-                <button id="load-theme-btn" class="theme-action-btn">Load Theme</button>
+                <button id="save-theme-btn" class="theme-action-btn primary">Save</button>
+                <button id="load-theme-btn" class="theme-action-btn">Load</button>
                  <button id="reset-theme-btn" class="theme-action-btn danger">Reset</button>
             </div>
              <input type="file" id="input-load-theme" accept=".json" style="display: none;">
