@@ -313,24 +313,21 @@
                 </div>
             </div>
 
-            <div class="nds-section-label" style="margin-top: 15px;">Global Colors</div>
+            <div class="nds-section-label" style="margin-top: 15px;">Colors</div>
             
             <div class="nds-control-row">
                 <span>Background</span>
-                <div style="display:flex; gap:5px; align-items:center;">
-                    <input type="checkbox" id="check-bg-gradient" title="Enable Gradient">
-                    <input type="color" id="input-bg" value="#e6e8e7" title="Main Color">
-                    <input type="color" id="input-bg-2" value="#ffffff" title="Gradient Color">
-                </div>
+                <input type="color" id="input-bg" value="#e6e8e7">
             </div>
 
-             <div class="nds-control-row">
+            <div class="nds-control-row">
+                <span>Grid Line Color</span>
+                <input type="color" id="input-grid-color" value="#d6d8d7">
+            </div>
+
+            <div class="nds-control-row">
                 <span>Bottom Bar</span>
-                 <div style="display:flex; gap:5px; align-items:center;">
-                    <input type="checkbox" id="check-bar-gradient" title="Enable Gradient">
-                    <input type="color" id="input-bar" value="#c9c5c2" title="Main Color">
-                    <input type="color" id="input-bar-2" value="#ffffff" title="Gradient Color">
-                </div>
+                <input type="color" id="input-bar" value="#c9c5c2">
             </div>
 
             <div class="nds-control-row">
@@ -455,6 +452,7 @@
             </div>
         </div>
         <div class="nds-scroll-container">
+            <div class="nds-section-label">Links</div>
             <div class="nds-list">
                 <div class="nds-item" id="nav-index">
                     <span class="nds-item-name">Return to Index</span>
@@ -468,6 +466,22 @@
                  <div class="nds-item" id="nav-discord">
                     <div class="nds-item-color" style="background: #5865F2; width: 24px; height: 24px; border-radius: 4px;"></div>
                     <span class="nds-item-name">Join Discord</span>
+                </div>
+            </div>
+
+            <div class="nds-section-label" style="margin-top: 15px;">Cloaking / Tab Mask</div>
+            <div class="nds-list">
+                <div class="nds-item" id="cloak-open-blank">
+                    <span class="nds-item-name">Open in About:Blank</span>
+                </div>
+                <div class="nds-item" id="cloak-set-title">
+                    <span class="nds-item-name">Set Tab Title</span>
+                </div>
+                <div class="nds-item" id="cloak-set-icon">
+                    <span class="nds-item-name">Set Tab Icon</span>
+                </div>
+                <div class="nds-item" id="cloak-reset">
+                    <span class="nds-item-name" style="color: #666;">Reset Tab</span>
                 </div>
             </div>
         </div>
