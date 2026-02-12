@@ -1,6 +1,6 @@
 /**
- * MERGED SCRIPT.JS
- * Features: Full Music List, Dark Theme, File Data Manager, Universal 3DS Menus, Merged Theme Maker (Gradients + Patterns)
+ * UPDATED SCRIPT.JS
+ * Features: Grid Customization, Cloaking Menu, Removed Gradients
  */
 
 // --- CORE VARIABLES ---
@@ -85,9 +85,8 @@ function initApp() {
     if (savedTheme) {
         try {
             const theme = JSON.parse(savedTheme);
-            applyTheme(theme);
             updateInputsFromTheme(theme);
-            if (theme.rainEnabled) toggleRain(true);
+            applyTheme(theme);
         } catch (e) { console.error(e); }
     } else {
         if(document.getElementById('input-preset')) document.getElementById('input-preset').value = 'custom';
@@ -205,9 +204,9 @@ if(btnFullscreen) btnFullscreen.addEventListener('click', () => {
     if (requestFS) requestFS.call(gameIframe);
 });
 
-// --- THEME MAKER INPUTS (MERGED) ---
-// Original inputs
+// --- THEME MAKER INPUTS ---
 const inputBg = document.getElementById('input-bg');
+const inputGrid = document.getElementById('input-grid-color'); // NEW
 const inputBar = document.getElementById('input-bar');
 const inputStatic = document.getElementById('input-static');
 const inputShape = document.getElementById('input-shape');
@@ -220,22 +219,14 @@ const inputModalBorder = document.getElementById('input-modal-border');
 const inputModalBlur = document.getElementById('input-modal-blur');
 const inputPreset = document.getElementById('input-preset');
 
-// New Gradient inputs
-const inputBg2 = document.getElementById('input-bg-2');
-const checkBgGradient = document.getElementById('check-bg-gradient');
-const inputBar2 = document.getElementById('input-bar-2');
-const checkBarGradient = document.getElementById('check-bar-gradient');
-
-
 // --- THEME FUNCTIONS ---
 
-// Update UI inputs based on a loaded theme object
 function updateInputsFromTheme(theme) {
     const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
     const setCheck = (id, val) => { const el = document.getElementById(id); if(el) el.checked = val; };
 
-    // Standard
     setVal('input-bg', theme.bg || '#e6e8e7');
+    setVal('input-grid-color', theme.gridColor || '#d6d8d7'); // NEW
     setVal('input-bar', theme.bar || '#c9c5c2');
     setVal('input-static', theme.static || '#555555');
     setVal('input-shape', theme.shape || 'squircle');
@@ -247,37 +238,25 @@ function updateInputsFromTheme(theme) {
     setVal('input-modal-border', theme.modalBorder || '#d4d4d4');
     setVal('input-modal-blur', theme.modalBlur || '10');
 
-    // Gradients
-    setVal('input-bg-2', theme.bg2 || '#ffffff');
-    setCheck('check-bg-gradient', theme.useBgGradient || false);
-    setVal('input-bar-2', theme.bar2 || '#ffffff');
-    setCheck('check-bar-gradient', theme.useBarGradient || false);
-
-    if (theme.layout) {
-        setCheck('check-show-home', theme.layout.home !== false);
-        setCheck('check-show-search', theme.layout.search !== false);
-        setCheck('check-show-clock', theme.layout.clock !== false);
-        if(theme.layout.rain) {
-            setCheck('check-rain-shawarma', true);
-            toggleRain(true);
-        }
+    const layout = theme.layout || {};
+    setCheck('check-show-home', layout.home !== false);
+    setCheck('check-show-search', layout.search !== false);
+    setCheck('check-show-clock', layout.clock !== false);
+    
+    if(layout.rain) {
+        setCheck('check-rain-shawarma', true);
+        toggleRain(true);
     }
 }
 
-// Gather current input values into an object
 function getCurrentThemeObj() {
     const getChk = (id) => { const el = document.getElementById(id); return el ? el.checked : false; };
     const getVal = (id) => { const el = document.getElementById(id); return el ? el.value : ''; };
     
     return {
         bg: getVal('input-bg'),
-        bg2: getVal('input-bg-2'),
-        useBgGradient: getChk('check-bg-gradient'),
-        
+        gridColor: getVal('input-grid-color'), // NEW
         bar: getVal('input-bar'),
-        bar2: getVal('input-bar-2'),
-        useBarGradient: getChk('check-bar-gradient'),
-        
         static: getVal('input-static'),
         shape: getVal('input-shape'),
         font: getVal('input-font'),
@@ -287,7 +266,6 @@ function getCurrentThemeObj() {
         modalBg: getVal('input-modal-bg'),
         modalBorder: getVal('input-modal-border'),
         modalBlur: getVal('input-modal-blur'),
-        
         layout: {
             home: getChk('check-show-home'),
             search: getChk('check-show-search'),
@@ -296,42 +274,28 @@ function getCurrentThemeObj() {
     };
 }
 
-// Apply the theme to the CSS variables and Body
 function applyTheme(themeObj) {
     const { 
-        bg, bg2, useBgGradient, 
-        bar, bar2, useBarGradient, 
-        static, shape, font, wiiBtnBg, 
+        bg, gridColor, bar, static, shape, font, wiiBtnBg, 
         modalBg, modalBorder, modalBlur, displayMode, noiseType 
     } = themeObj;
 
     const r = document.documentElement;
 
-    // 1. Handle Background: Gradient vs Pattern
-    if (useBgGradient && bg2) {
-        // Apply Gradient
-        r.style.setProperty('--bg-color', bg);
-        document.body.style.backgroundImage = `linear-gradient(to bottom, ${bg}, ${bg2})`;
-        document.body.style.backgroundAttachment = 'fixed';
-    } else {
-        // Apply Solid Color + Original SVG Pattern
-        r.style.setProperty('--bg-color', bg);
-        const encodedColor = encodeURIComponent(static);
-        const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1" opacity="0.4"/></svg>')`;
-        document.body.style.backgroundImage = svg;
-        document.body.style.backgroundAttachment = ''; // reset
-    }
+    // 1. Background & Grid
+    r.style.setProperty('--bg-color', bg);
+    // Use gridColor for SVG stroke, fallback to gray if undefined
+    const strokeColor = gridColor || '#d6d8d7';
+    const encodedColor = encodeURIComponent(strokeColor);
+    const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1"/></svg>')`;
+    document.body.style.backgroundImage = svg;
 
-    // 2. Handle Bar: Gradient vs Solid
+    // 2. Bar
+    r.style.setProperty('--bar-color', bar);
     const barEl = document.querySelector('.wii-bottom-bar');
-    if (useBarGradient && bar2 && barEl) {
-        barEl.style.background = `linear-gradient(to bottom, ${bar}, ${bar2})`;
-    } else if (barEl) {
-        r.style.setProperty('--bar-color', bar);
-        barEl.style.background = ''; // falls back to CSS var
-    }
+    if(barEl) barEl.style.background = ''; // Clear any previous gradient style
 
-    // 3. Apply Standard Variables
+    // 3. UI Colors & Shapes
     r.style.setProperty('--static-color', static);
     r.style.setProperty('--wii-btn-bg', wiiBtnBg || '#ffffff');
     r.style.setProperty('--modal-bg', modalBg || '#f7f7f7');
@@ -358,12 +322,13 @@ function applyTheme(themeObj) {
     document.body.classList.remove('noise-default', 'noise-scanlines', 'noise-none');
     document.body.classList.add('noise-' + (noiseType || 'default'));
 
-    if (themeObj.layout) {
-        const setDisp = (id, show) => { const el = document.getElementById(id); if(el) el.style.display = show ? 'flex' : 'none'; };
-        setDisp('wii-menu-button', themeObj.layout.home !== false);
-        setDisp('data-menu-toggle', themeObj.layout.search !== false);
-        setDisp('wii-date-time-display', themeObj.layout.clock !== false);
-    }
+    // 4. Layout
+    const layout = themeObj.layout || {};
+    const setDisp = (id, show) => { const el = document.getElementById(id); if(el) el.style.display = show ? 'flex' : 'none'; };
+    
+    setDisp('wii-menu-button', layout.home !== false);
+    setDisp('data-menu-toggle', layout.search !== false);
+    setDisp('wii-date-time-display', layout.clock !== false);
 
     saveThemeToStorage(themeObj);
 }
@@ -371,17 +336,15 @@ function applyTheme(themeObj) {
 // --- PRESETS ---
 const themePresets = {
     wii: { 
-        bg: '#e6e8e7', bar: '#c9c5c2', static: '#555555', wiiBtnBg: '#ffffff', 
+        bg: '#e6e8e7', gridColor: '#d6d8d7', bar: '#c9c5c2', static: '#555555', wiiBtnBg: '#ffffff', 
         modalBg: '#f7f7f7', modalBorder: '#d4d4d4', modalBlur: '10',
         shape: 'squircle', font: 'PopHappiness', displayMode: 'grid', noiseType: 'default',
-        useBgGradient: false, useBarGradient: false,
         layout: { home: true, search: true, clock: true } 
     },
     dark: { 
-        bg: '#121212', bar: '#1f1f1f', static: '#e0e0e0', wiiBtnBg: '#2c2c2c', 
+        bg: '#121212', gridColor: '#222222', bar: '#1f1f1f', static: '#e0e0e0', wiiBtnBg: '#2c2c2c', 
         modalBg: '#1e1e1e', modalBorder: '#333333', modalBlur: '15',
         shape: 'round', font: 'sans-serif', displayMode: 'grid', noiseType: 'none',
-        useBgGradient: false, useBarGradient: false,
         layout: { home: true, search: true, clock: true } 
     }
 };
@@ -409,8 +372,7 @@ if(inputPreset) {
 
 // Watch All Inputs
 const allThemeInputs = [
-    inputBg, inputBg2, checkBgGradient,
-    inputBar, inputBar2, checkBarGradient,
+    inputBg, inputGrid, inputBar,
     inputStatic, inputShape, inputFont, inputLayout, inputNoise, 
     inputWiiBtnBg, inputModalBg, inputModalBorder, inputModalBlur
 ];
@@ -421,7 +383,6 @@ allThemeInputs.forEach(input => {
         if(inputPreset) inputPreset.value = 'custom';
         applyTheme(getCurrentThemeObj());
     });
-    // Checkboxes change event
     if(input.type === 'checkbox') {
         input.addEventListener('change', () => {
             if(inputPreset) inputPreset.value = 'custom';
@@ -462,8 +423,8 @@ if(btnLoadTheme && inputLoadTheme) {
         reader.onload = (event) => {
             try {
                 const theme = JSON.parse(event.target.result);
-                applyTheme(theme);
                 updateInputsFromTheme(theme);
+                applyTheme(theme);
                 if(inputPreset) inputPreset.value = 'custom';
                 showToast("Theme Loaded!");
             } catch (e) { showToast("Error Loading File"); }
@@ -558,7 +519,7 @@ if(checkRain) checkRain.addEventListener('change', (e) => {
     saveThemeToStorage(getCurrentThemeObj());
 });
 
-// --- MENU TOGGLING SYSTEM (UNIVERSAL) ---
+// --- MENU TOGGLING ---
 function closeAllMenus() {
     document.querySelectorAll('.nds-theme-shop').forEach(el => el.style.display = 'none');
 }
@@ -592,12 +553,57 @@ setupMenuToggle('music-menu-toggle', 'music-menu');
 setupMenuToggle('wii-menu-button', 'home-menu');
 setupMenuToggle('data-menu-toggle', 'data-menu');
 
-// --- DATA MANAGER LOGIC (FILE SYSTEM) ---
+// --- CLOAKING LOGIC ---
+const btnCloakOpen = document.getElementById('cloak-open-blank');
+const btnCloakTitle = document.getElementById('cloak-set-title');
+const btnCloakIcon = document.getElementById('cloak-set-icon');
+const btnCloakReset = document.getElementById('cloak-reset');
+
+if(btnCloakOpen) {
+    btnCloakOpen.addEventListener('click', () => {
+        const newWindow = window.open('about:blank', '_blank');
+        if (newWindow) {
+            newWindow.document.write(`<!DOCTYPE html><html lang="en"><head><title>${document.title}</title><link rel="icon" href="/assets/Icon (1).svg"><style>body, html { margin: 0; padding: 0; width:100%; height:100%; overflow: hidden; background: #000; } iframe { width:100%; height:100%; border:none; }</style></head><body><iframe src="${window.location.href}"></iframe></body></html>`);
+            newWindow.document.close();
+            showToast("Opened in About:Blank");
+        }
+    });
+}
+if(btnCloakTitle) {
+    btnCloakTitle.addEventListener('click', () => {
+        const newTitle = prompt("Enter new tab title:", "Google Drive");
+        if(newTitle) {
+            document.title = newTitle;
+            showToast("Title Changed");
+        }
+    });
+}
+if(btnCloakIcon) {
+    btnCloakIcon.addEventListener('click', () => {
+        const newIcon = prompt("Enter icon URL (or leave blank for Google Drive):", "");
+        const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+        link.type = 'image/x-icon';
+        link.rel = 'shortcut icon';
+        // Default to Google Drive icon if blank
+        link.href = newIcon || "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png";
+        document.getElementsByTagName('head')[0].appendChild(link);
+        showToast("Icon Changed");
+    });
+}
+if(btnCloakReset) {
+    btnCloakReset.addEventListener('click', () => {
+        document.title = "Qbbic";
+        const link = document.querySelector("link[rel*='icon']");
+        if(link) link.href = "/assets/Icon (1).svg";
+        showToast("Tab Reset");
+    });
+}
+
+// --- DATA MANAGER ---
 const btnSaveDataFile = document.getElementById('btn-save-data-file');
 const btnLoadDataFile = document.getElementById('btn-load-data-file');
 const inputLoadDataFile = document.getElementById('input-load-data-file');
 
-// Save
 if(btnSaveDataFile) {
     btnSaveDataFile.addEventListener('click', () => {
         try {
@@ -619,7 +625,6 @@ if(btnSaveDataFile) {
     });
 }
 
-// Load
 if(btnLoadDataFile && inputLoadDataFile) {
     btnLoadDataFile.addEventListener('click', () => inputLoadDataFile.click());
     
@@ -648,7 +653,6 @@ if(btnLoadDataFile && inputLoadDataFile) {
         reader.readAsText(file);
     });
 }
-
 
 // --- 3DS PRESET LOGIC ---
 function init3DSMenuLogic() {
