@@ -1,6 +1,6 @@
 /**
- * UPDATED SCRIPT.JS
- * Features: Grid Customization, Cloaking Menu, Removed Gradients
+ * REBUILT SCRIPT.JS
+ * Features: Expanded Presets, Organized Theme Maker, Grid Customization, Cloaking
  */
 
 // --- CORE VARIABLES ---
@@ -89,7 +89,8 @@ function initApp() {
             applyTheme(theme);
         } catch (e) { console.error(e); }
     } else {
-        if(document.getElementById('input-preset')) document.getElementById('input-preset').value = 'custom';
+        // Default to Custom if no save found, or let inputs default
+        if(document.getElementById('input-preset')) document.getElementById('input-preset').value = 'wii';
     }
 
     const savedBGM = localStorage.getItem('qbbic-bgm');
@@ -206,7 +207,7 @@ if(btnFullscreen) btnFullscreen.addEventListener('click', () => {
 
 // --- THEME MAKER INPUTS ---
 const inputBg = document.getElementById('input-bg');
-const inputGrid = document.getElementById('input-grid-color'); // NEW
+const inputGrid = document.getElementById('input-grid-color');
 const inputBar = document.getElementById('input-bar');
 const inputStatic = document.getElementById('input-static');
 const inputShape = document.getElementById('input-shape');
@@ -226,7 +227,7 @@ function updateInputsFromTheme(theme) {
     const setCheck = (id, val) => { const el = document.getElementById(id); if(el) el.checked = val; };
 
     setVal('input-bg', theme.bg || '#e6e8e7');
-    setVal('input-grid-color', theme.gridColor || '#d6d8d7'); // NEW
+    setVal('input-grid-color', theme.gridColor || '#d6d8d7');
     setVal('input-bar', theme.bar || '#c9c5c2');
     setVal('input-static', theme.static || '#555555');
     setVal('input-shape', theme.shape || 'squircle');
@@ -255,7 +256,7 @@ function getCurrentThemeObj() {
     
     return {
         bg: getVal('input-bg'),
-        gridColor: getVal('input-grid-color'), // NEW
+        gridColor: getVal('input-grid-color'),
         bar: getVal('input-bar'),
         static: getVal('input-static'),
         shape: getVal('input-shape'),
@@ -284,16 +285,17 @@ function applyTheme(themeObj) {
 
     // 1. Background & Grid
     r.style.setProperty('--bg-color', bg);
-    // Use gridColor for SVG stroke, fallback to gray if undefined
     const strokeColor = gridColor || '#d6d8d7';
     const encodedColor = encodeURIComponent(strokeColor);
+    // Standard Grid Pattern
     const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1"/></svg>')`;
     document.body.style.backgroundImage = svg;
 
     // 2. Bar
     r.style.setProperty('--bar-color', bar);
+    // Remove fixed gradients if any exist
     const barEl = document.querySelector('.wii-bottom-bar');
-    if(barEl) barEl.style.background = ''; // Clear any previous gradient style
+    if(barEl) barEl.style.background = ''; 
 
     // 3. UI Colors & Shapes
     r.style.setProperty('--static-color', static);
@@ -333,7 +335,7 @@ function applyTheme(themeObj) {
     saveThemeToStorage(themeObj);
 }
 
-// --- PRESETS ---
+// --- EXTENDED PRESETS ---
 const themePresets = {
     wii: { 
         bg: '#e6e8e7', gridColor: '#d6d8d7', bar: '#c9c5c2', static: '#555555', wiiBtnBg: '#ffffff', 
@@ -346,6 +348,42 @@ const themePresets = {
         modalBg: '#1e1e1e', modalBorder: '#333333', modalBlur: '15',
         shape: 'round', font: 'sans-serif', displayMode: 'grid', noiseType: 'none',
         layout: { home: true, search: true, clock: true } 
+    },
+    matrix: {
+        bg: '#000000', gridColor: '#004400', bar: '#002200', static: '#00ff00', wiiBtnBg: '#001100',
+        modalBg: '#001100', modalBorder: '#00ff00', modalBlur: '0',
+        shape: 'square', font: 'monospace', displayMode: 'list', noiseType: 'scanlines',
+        layout: { home: true, search: true, clock: true }
+    },
+    ocean: {
+        bg: '#e0f7fa', gridColor: '#80deea', bar: '#00bcd4', static: '#006064', wiiBtnBg: '#ffffff',
+        modalBg: '#e0f7fa', modalBorder: '#00bcd4', modalBlur: '12',
+        shape: 'squircle', font: 'sans-serif', displayMode: 'grid', noiseType: 'default',
+        layout: { home: true, search: true, clock: true }
+    },
+    cherry: {
+        bg: '#fff0f5', gridColor: '#ffb7b2', bar: '#ffc1e3', static: '#880e4f', wiiBtnBg: '#ffffff',
+        modalBg: '#fff0f5', modalBorder: '#ff80ab', modalBlur: '8',
+        shape: 'round', font: 'PopHappiness', displayMode: 'big', noiseType: 'none',
+        layout: { home: true, search: true, clock: true }
+    },
+    blueprint: {
+        bg: '#0d47a1', gridColor: '#ffffff', bar: '#1565c0', static: '#ffffff', wiiBtnBg: '#1976d2',
+        modalBg: '#0d47a1', modalBorder: '#ffffff', modalBlur: '0',
+        shape: 'square', font: 'monospace', displayMode: 'grid', noiseType: 'none',
+        layout: { home: true, search: true, clock: true }
+    },
+    terminal: {
+        bg: '#1a1a1a', gridColor: '#333333', bar: '#262626', static: '#ffb300', wiiBtnBg: '#333333',
+        modalBg: '#262626', modalBorder: '#ffb300', modalBlur: '0',
+        shape: 'square', font: 'monospace', displayMode: 'list', noiseType: 'scanlines',
+        layout: { home: true, search: true, clock: true }
+    },
+    paper: {
+        bg: '#fdfbf7', gridColor: '#a8a8a8', bar: '#f0ebd8', static: '#4a4a4a', wiiBtnBg: '#ffffff',
+        modalBg: '#ffffff', modalBorder: '#4a4a4a', modalBlur: '2',
+        shape: 'rounded-square', font: 'sans-serif', displayMode: 'list', noiseType: 'default',
+        layout: { home: true, search: true, clock: true }
     }
 };
 
@@ -553,7 +591,7 @@ setupMenuToggle('music-menu-toggle', 'music-menu');
 setupMenuToggle('wii-menu-button', 'home-menu');
 setupMenuToggle('data-menu-toggle', 'data-menu');
 
-// --- CLOAKING LOGIC ---
+// --- CLOAKING ---
 const btnCloakOpen = document.getElementById('cloak-open-blank');
 const btnCloakTitle = document.getElementById('cloak-set-title');
 const btnCloakIcon = document.getElementById('cloak-set-icon');
@@ -584,7 +622,6 @@ if(btnCloakIcon) {
         const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
         link.type = 'image/x-icon';
         link.rel = 'shortcut icon';
-        // Default to Google Drive icon if blank
         link.href = newIcon || "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png";
         document.getElementsByTagName('head')[0].appendChild(link);
         showToast("Icon Changed");
