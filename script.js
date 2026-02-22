@@ -1,6 +1,6 @@
 /**
  * REBUILT SCRIPT.JS
- * Features: Expanded Presets, Organized Theme Maker, Grid Customization, Cloaking
+ * Features: Expanded Presets, Organized Theme Maker, Console Modes, Brightness/Contrast
  */
 
 // --- CORE VARIABLES ---
@@ -149,6 +149,8 @@ document.querySelectorAll('.game-button').forEach(btn => {
 
 function openGameModal(url, title) {
     playSound(gameOpenSound);
+    document.body.classList.add('game-active'); // Removes brightness/contrast filter during gameplay
+    
     if(bgMusic) wasMusicPlayingBeforeGame = !bgMusic.paused;
     if(bgMusic) bgMusic.pause();
     currentGameUrl = url;
@@ -172,6 +174,7 @@ function closeGameModal() {
         gameModal.classList.remove('active');
         setTimeout(() => {
             gameModal.style.display = 'none';
+            document.body.classList.remove('game-active'); // Re-enable filters
             gameIframe.src = 'about:blank';
             gameModalContainer.classList.remove('crt-animate-close');
             currentGameUrl = '';
@@ -212,12 +215,14 @@ const inputBar = document.getElementById('input-bar');
 const inputStatic = document.getElementById('input-static');
 const inputShape = document.getElementById('input-shape');
 const inputFont = document.getElementById('input-font');
-const inputLayout = document.getElementById('input-layout');
+const inputConsole = document.getElementById('input-console');
 const inputNoise = document.getElementById('input-noise-type');
 const inputWiiBtnBg = document.getElementById('input-wii-btn-bg');
 const inputModalBg = document.getElementById('input-modal-bg');
 const inputModalBorder = document.getElementById('input-modal-border');
 const inputModalBlur = document.getElementById('input-modal-blur');
+const inputBrightness = document.getElementById('input-brightness');
+const inputContrast = document.getElementById('input-contrast');
 const inputPreset = document.getElementById('input-preset');
 
 // --- THEME FUNCTIONS ---
@@ -232,12 +237,14 @@ function updateInputsFromTheme(theme) {
     setVal('input-static', theme.static || '#555555');
     setVal('input-shape', theme.shape || 'squircle');
     setVal('input-font', theme.font || 'PopHappiness');
-    setVal('input-layout', theme.displayMode || 'grid');
+    setVal('input-console', theme.consoleMode || 'wii');
     setVal('input-noise-type', theme.noiseType || 'default');
     setVal('input-wii-btn-bg', theme.wiiBtnBg || '#ffffff');
     setVal('input-modal-bg', theme.modalBg || '#f7f7f7');
     setVal('input-modal-border', theme.modalBorder || '#d4d4d4');
     setVal('input-modal-blur', theme.modalBlur || '10');
+    setVal('input-brightness', theme.brightness !== undefined ? theme.brightness : 100);
+    setVal('input-contrast', theme.contrast !== undefined ? theme.contrast : 100);
 
     const layout = theme.layout || {};
     setCheck('check-show-home', layout.home !== false);
@@ -261,12 +268,14 @@ function getCurrentThemeObj() {
         static: getVal('input-static'),
         shape: getVal('input-shape'),
         font: getVal('input-font'),
-        displayMode: getVal('input-layout'),
+        consoleMode: getVal('input-console'),
         noiseType: getVal('input-noise-type'),
         wiiBtnBg: getVal('input-wii-btn-bg'),
         modalBg: getVal('input-modal-bg'),
         modalBorder: getVal('input-modal-border'),
         modalBlur: getVal('input-modal-blur'),
+        brightness: getVal('input-brightness'),
+        contrast: getVal('input-contrast'),
         layout: {
             home: getChk('check-show-home'),
             search: getChk('check-show-search'),
@@ -278,22 +287,41 @@ function getCurrentThemeObj() {
 function applyTheme(themeObj) {
     const { 
         bg, gridColor, bar, static, shape, font, wiiBtnBg, 
-        modalBg, modalBorder, modalBlur, displayMode, noiseType 
+        modalBg, modalBorder, modalBlur, consoleMode, noiseType, brightness, contrast
     } = themeObj;
 
     const r = document.documentElement;
+    
+    // Apply brightness and contrast
+    r.style.setProperty('--theme-brightness', (brightness || 100) / 100);
+    r.style.setProperty('--theme-contrast', (contrast || 100) / 100);
 
-    // 1. Background & Grid
+    // 1. Background Colors
     r.style.setProperty('--bg-color', bg);
+    
     const strokeColor = gridColor || '#d6d8d7';
     const encodedColor = encodeURIComponent(strokeColor);
-    // Standard Grid Pattern
-    const svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1"/></svg>')`;
+    
+    // Dynamically generate background SVGs based on the selected console mode
+    let svg = '';
+    if (consoleMode === 'ps3') {
+        // Soft flowing wave pattern
+        svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><path d="M0 100 Q 50 50 100 100 T 200 100" fill="none" stroke="${encodedColor}" stroke-width="2" opacity="0.4"/><path d="M0 120 Q 50 70 100 120 T 200 120" fill="none" stroke="${encodedColor}" stroke-width="1" opacity="0.2"/></svg>')`;
+        document.body.style.backgroundSize = '200px 200px';
+    } else if (consoleMode === '3ds') {
+        // Dotted/Checkered background pattern
+        svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="2" cy="2" r="2" fill="${encodedColor}" opacity="0.8"/><circle cx="12" cy="12" r="2" fill="${encodedColor}" opacity="0.8"/></svg>')`;
+        document.body.style.backgroundSize = '20px 20px';
+    } else {
+        // Standard Wii Grid
+        svg = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="${encodedColor}" stroke-width="1"/></svg>')`;
+        document.body.style.backgroundSize = '10px 10px';
+    }
+    
     document.body.style.backgroundImage = svg;
 
     // 2. Bar
     r.style.setProperty('--bar-color', bar);
-    // Remove fixed gradients if any exist
     const barEl = document.querySelector('.wii-bottom-bar');
     if(barEl) barEl.style.background = ''; 
 
@@ -318,7 +346,7 @@ function applyTheme(themeObj) {
 
     document.querySelectorAll('.game-buttons').forEach(el => {
         el.className = 'game-buttons';
-        if (displayMode && displayMode !== 'grid') el.classList.add('layout-' + displayMode);
+        if (consoleMode && consoleMode !== 'wii') el.classList.add('console-' + consoleMode);
     });
 
     document.body.classList.remove('noise-default', 'noise-scanlines', 'noise-none');
@@ -340,49 +368,57 @@ const themePresets = {
     wii: { 
         bg: '#e6e8e7', gridColor: '#d6d8d7', bar: '#c9c5c2', static: '#555555', wiiBtnBg: '#ffffff', 
         modalBg: '#f7f7f7', modalBorder: '#d4d4d4', modalBlur: '10',
-        shape: 'squircle', font: 'PopHappiness', displayMode: 'grid', noiseType: 'default',
+        shape: 'squircle', font: 'PopHappiness', consoleMode: 'wii', noiseType: 'default',
+        brightness: 100, contrast: 100,
         layout: { home: true, search: true, clock: true } 
     },
     dark: { 
         bg: '#121212', gridColor: '#222222', bar: '#1f1f1f', static: '#e0e0e0', wiiBtnBg: '#2c2c2c', 
         modalBg: '#1e1e1e', modalBorder: '#333333', modalBlur: '15',
-        shape: 'round', font: 'sans-serif', displayMode: 'grid', noiseType: 'none',
+        shape: 'round', font: 'sans-serif', consoleMode: 'ps3', noiseType: 'none',
+        brightness: 110, contrast: 110,
         layout: { home: true, search: true, clock: true } 
     },
     matrix: {
         bg: '#000000', gridColor: '#004400', bar: '#002200', static: '#00ff00', wiiBtnBg: '#001100',
         modalBg: '#001100', modalBorder: '#00ff00', modalBlur: '0',
-        shape: 'square', font: 'monospace', displayMode: 'list', noiseType: 'scanlines',
+        shape: 'square', font: 'monospace', consoleMode: 'wii', noiseType: 'scanlines',
+        brightness: 120, contrast: 120,
         layout: { home: true, search: true, clock: true }
     },
     ocean: {
         bg: '#e0f7fa', gridColor: '#80deea', bar: '#00bcd4', static: '#006064', wiiBtnBg: '#ffffff',
         modalBg: '#e0f7fa', modalBorder: '#00bcd4', modalBlur: '12',
-        shape: 'squircle', font: 'sans-serif', displayMode: 'grid', noiseType: 'default',
+        shape: 'squircle', font: 'sans-serif', consoleMode: 'wii', noiseType: 'default',
+        brightness: 100, contrast: 100,
         layout: { home: true, search: true, clock: true }
     },
     cherry: {
         bg: '#fff0f5', gridColor: '#ffb7b2', bar: '#ffc1e3', static: '#880e4f', wiiBtnBg: '#ffffff',
         modalBg: '#fff0f5', modalBorder: '#ff80ab', modalBlur: '8',
-        shape: 'round', font: 'PopHappiness', displayMode: 'big', noiseType: 'none',
+        shape: 'round', font: 'PopHappiness', consoleMode: '3ds', noiseType: 'none',
+        brightness: 100, contrast: 100,
         layout: { home: true, search: true, clock: true }
     },
     blueprint: {
         bg: '#0d47a1', gridColor: '#ffffff', bar: '#1565c0', static: '#ffffff', wiiBtnBg: '#1976d2',
         modalBg: '#0d47a1', modalBorder: '#ffffff', modalBlur: '0',
-        shape: 'square', font: 'monospace', displayMode: 'grid', noiseType: 'none',
+        shape: 'square', font: 'monospace', consoleMode: 'ps3', noiseType: 'none',
+        brightness: 100, contrast: 100,
         layout: { home: true, search: true, clock: true }
     },
     terminal: {
         bg: '#1a1a1a', gridColor: '#333333', bar: '#262626', static: '#ffb300', wiiBtnBg: '#333333',
         modalBg: '#262626', modalBorder: '#ffb300', modalBlur: '0',
-        shape: 'square', font: 'monospace', displayMode: 'list', noiseType: 'scanlines',
+        shape: 'square', font: 'monospace', consoleMode: 'wii', noiseType: 'scanlines',
+        brightness: 110, contrast: 110,
         layout: { home: true, search: true, clock: true }
     },
     paper: {
         bg: '#fdfbf7', gridColor: '#a8a8a8', bar: '#f0ebd8', static: '#4a4a4a', wiiBtnBg: '#ffffff',
         modalBg: '#ffffff', modalBorder: '#4a4a4a', modalBlur: '2',
-        shape: 'rounded-square', font: 'sans-serif', displayMode: 'list', noiseType: 'default',
+        shape: 'rounded-square', font: 'sans-serif', consoleMode: '3ds', noiseType: 'default',
+        brightness: 90, contrast: 105,
         layout: { home: true, search: true, clock: true }
     }
 };
@@ -411,8 +447,9 @@ if(inputPreset) {
 // Watch All Inputs
 const allThemeInputs = [
     inputBg, inputGrid, inputBar,
-    inputStatic, inputShape, inputFont, inputLayout, inputNoise, 
-    inputWiiBtnBg, inputModalBg, inputModalBorder, inputModalBlur
+    inputStatic, inputShape, inputFont, inputConsole, inputNoise, 
+    inputWiiBtnBg, inputModalBg, inputModalBorder, inputModalBlur,
+    inputBrightness, inputContrast
 ];
 
 allThemeInputs.forEach(input => {
