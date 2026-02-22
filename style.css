@@ -11,6 +11,10 @@
   --modal-border: #d4d4d4;
   --modal-backdrop-blur: 10px;
   
+  /* BRIGHTNESS & CONTRAST */
+  --theme-brightness: 1;
+  --theme-contrast: 1;
+  
   /* CUSTOMIZABLE ACCENT */
   --btn-hover-color: #40c4ff; 
   
@@ -62,6 +66,11 @@ body {
   transition: background-color 0.5s ease, color 0.5s ease, background-image 0.5s ease, filter 0.5s ease;
 }
 
+/* Apply brightness/contrast filter unless playing a game */
+body:not(.game-active) {
+    filter: brightness(var(--theme-brightness)) contrast(var(--theme-contrast));
+}
+
 /* --- TIME TRAVEL MODES --- */
 
 /* FUTURE MODE */
@@ -96,19 +105,6 @@ body.time-travel-past {
     --card-opacity: 1 !important;
     background-image: url('data:image/svg+xml;utf8,<svg width="4" height="4" viewBox="0 0 4 4" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h4v4H0z" fill="%23eaddcf"/><path d="M0 0h4v4H0z" fill="%23d8c8b8" fill-opacity="0.4" style="filter:url(%23noise)"/></svg>') !important;
     filter: sepia(0.6) contrast(0.9);
-}
-
-/* --- CONSOLE BACKGROUND PATTERNS --- */
-body.bg-wii {
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="none"/><path d="M 5 0 L 5 10" stroke="%23d6d8d7" stroke-width="1"/></svg>');
-  background-size: 10px 10px;
-  background-repeat: repeat;
-}
-body.bg-is-image {
-    background-size: cover !important;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    animation: none;
 }
 
 .wii-bottom-bar {
@@ -165,17 +161,40 @@ body.bg-is-image {
 }
 #game-pages-wrapper { display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); width: 100%; }
 
-/* --- LAYOUT MODES --- */
+/* --- CONSOLE MODES --- */
+
+/* Wii Mode (Default) */
 .game-buttons {
   display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); 
   gap: 15px; width: 100%; height: 500px; justify-items: center; align-items: center;
   padding: 0 40px; box-sizing: border-box; flex-shrink: 0;
 }
-.game-buttons.layout-list { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(6, 1fr); gap: 10px; }
-.game-buttons.layout-list .game-button { width: 100%; height: 65px; flex-direction: row; justify-content: flex-start; padding-left: 80px; box-sizing: border-box; background-position: left center; background-size: 80px auto; }
-.game-buttons.layout-list .game-button-text { display: block; position: static; background: none; width: auto; padding: 0 10px; text-align: left; font-size: 1.1rem; border-radius: 0; color: inherit; text-shadow: 1px 1px 0 rgba(255,255,255,0.5); }
-.game-buttons.layout-big { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 30px; }
-.game-buttons.layout-big .game-button { width: 400px; height: 220px; }
+
+/* PS3 XMB Mode */
+.game-buttons.console-ps3 { 
+    display: flex; 
+    flex-direction: row; 
+    flex-wrap: wrap; 
+    align-content: center;
+    justify-content: center; 
+    gap: 25px; 
+}
+.game-buttons.console-ps3 .game-button { 
+    width: 150px; 
+    height: 150px; 
+}
+
+/* 3DS Mode */
+.game-buttons.console-3ds { 
+    display: grid; 
+    grid-template-columns: repeat(6, 1fr); 
+    grid-template-rows: repeat(2, 1fr); 
+    gap: 15px; 
+}
+.game-buttons.console-3ds .game-button { 
+    width: 110px; 
+    height: 110px; 
+}
 
 /* --- GAME CHANNEL CARD --- */
 .game-button {
