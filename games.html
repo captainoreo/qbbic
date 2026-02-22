@@ -357,6 +357,14 @@
                 <span>Wii Button</span>
                 <input type="color" id="input-wii-btn-bg" value="#ffffff">
             </div>
+            <div class="nds-control-row">
+                <span>Brightness</span>
+                <input type="range" id="input-brightness" min="50" max="150" value="100" style="width: 80px;">
+            </div>
+            <div class="nds-control-row">
+                <span>Contrast</span>
+                <input type="range" id="input-contrast" min="50" max="150" value="100" style="width: 80px;">
+            </div>
 
             <div class="nds-section-label" style="margin-top: 15px;">Design</div>
             <div class="nds-control-row">
@@ -387,11 +395,11 @@
 
             <div class="nds-section-label" style="margin-top: 15px;">Layout</div>
             <div class="nds-control-row">
-                <span>View Mode</span>
-                <select id="input-layout">
-                    <option value="grid">Grid</option>
-                    <option value="list">List</option>
-                    <option value="big">Big Icons</option>
+                <span>Console Mode</span>
+                <select id="input-console">
+                    <option value="wii">Wii</option>
+                    <option value="ps3">PS3 XMB</option>
+                    <option value="3ds">Nintendo 3DS</option>
                 </select>
             </div>
              <div class="nds-control-row">
