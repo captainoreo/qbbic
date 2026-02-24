@@ -2,7 +2,7 @@
 
 /* --- CORE MODERN OVERRIDES --- */
 body.ui-modern {
-    /* Removed !important from color variables to allow theme switching/customization */
+    /* Allow theme switching/customization to pass through */
     --wii-btn-bg: transparent;
     --btn-hover-color: #ffffff;
     --main-font: system-ui, -apple-system, sans-serif;
@@ -39,7 +39,7 @@ body.ui-modern #next-page-button {
 }
 
 .modern-logo-text {
-    color: var(--static-color, #fff); /* Syncs with theme UI color */
+    color: var(--static-color, #fff); 
     font-size: 2.5rem;
     margin: 0;
     font-weight: 800;
@@ -54,7 +54,7 @@ body.ui-modern .wii-bottom-bar {
     backdrop-filter: blur(12px); 
     -webkit-backdrop-filter: blur(12px); 
     box-shadow: none;
-    background-color: var(--bar-color); /* Syncs with theme bar color */
+    background-color: var(--bar-color); 
 }
 body.ui-modern .wii-button { border: none; box-shadow: none; background-image: none; border-radius: 8px; width: 44px; height: 44px; }
 body.ui-modern .wii-button:hover { background-color: rgba(255,255,255,0.1) !important; transform: translateY(-2px); box-shadow: none; }
@@ -73,15 +73,15 @@ body.ui-modern .crt-animate-open #game-iframe-wrapper, body.ui-modern .crt-anima
 
 /* --- MODERN LAYOUT SYSTEM --- */
 #modern-container {
-    display: none; /* Hidden in Classic Mode */
-    max-width: 1200px; /* Widened slightly to fit 6 items comfortably */
+    display: none; 
+    max-width: 1200px; 
     margin: 0 auto;
     padding: 20px;
     font-family: var(--main-font);
 }
 
 body.ui-modern #modern-container {
-    display: block; /* Visible in Modern Mode */
+    display: block; 
 }
 
 .modern-section-title {
@@ -99,10 +99,10 @@ body.ui-modern #modern-container {
     gap: 20px;
 }
 
-/* All Games: 6-Column Grid Layout */
+/* All Games: 5-Column Grid Layout */
 .modern-all-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 15px;
 }
 
@@ -169,7 +169,7 @@ body.ui-modern .modern-dev-grid .game-button-text {
     text-align: center;
 }
 
-/* Specifics for All Games Cards (Grid of 6) */
+/* Specifics for All Games Cards (Grid of 5) */
 body.ui-modern .modern-all-grid .game-button {
     height: 120px;
     align-items: flex-end;
