@@ -161,39 +161,11 @@ body.time-travel-past {
 }
 #game-pages-wrapper { display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); width: 100%; }
 
-/* --- CONSOLE MODES --- */
-
-/* Wii Mode (Default) */
+/* Default Game Grid */
 .game-buttons {
   display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); 
   gap: 15px; width: 100%; height: 500px; justify-items: center; align-items: center;
   padding: 0 40px; box-sizing: border-box; flex-shrink: 0;
-}
-
-/* PS3 XMB Mode */
-.game-buttons.console-ps3 { 
-    display: flex; 
-    flex-direction: row; 
-    flex-wrap: wrap; 
-    align-content: center;
-    justify-content: center; 
-    gap: 25px; 
-}
-.game-buttons.console-ps3 .game-button { 
-    width: 150px; 
-    height: 150px; 
-}
-
-/* 3DS Mode */
-.game-buttons.console-3ds { 
-    display: grid; 
-    grid-template-columns: repeat(6, 1fr); 
-    grid-template-rows: repeat(2, 1fr); 
-    gap: 15px; 
-}
-.game-buttons.console-3ds .game-button { 
-    width: 110px; 
-    height: 110px; 
 }
 
 /* --- GAME CHANNEL CARD --- */
@@ -416,3 +388,138 @@ textarea {
 .theme-action-btn:hover { background: #ddd; }
 .theme-action-btn.primary { background: #40c4ff; color: white; border-color: #0091ea; }
 .theme-action-btn.danger { background: #ff5e62; color: white; border-color: #ce4246; }
+
+/* --- MODERN UI (GN-MATH.DEV STYLE) OVERRIDES --- */
+body.ui-modern {
+    --bg-color: #0c0c0e !important;
+    --bar-color: rgba(12, 12, 14, 0.7) !important;
+    --static-color: #ffffff !important;
+    --wii-btn-bg: transparent !important;
+    --modal-bg: #151515 !important;
+    --modal-border: #333333 !important;
+    --btn-hover-color: #ffffff !important;
+    --main-font: system-ui, -apple-system, sans-serif !important;
+    
+    background-image: none !important;
+    filter: none !important; 
+}
+
+/* Transform bottom bar into a sleek top navbar */
+body.ui-modern .wii-bottom-bar {
+    top: 0;
+    bottom: auto;
+    height: 65px;
+    border-top: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: none;
+}
+
+/* Offset games grid for the top navbar */
+body.ui-modern #game-pages-container {
+    margin-top: 80px; 
+    margin-bottom: 0;
+}
+
+/* Clean up navbar buttons */
+body.ui-modern .wii-button {
+    border: none;
+    box-shadow: none;
+    background-image: none;
+    border-radius: 8px;
+    width: 44px; 
+    height: 44px;
+}
+body.ui-modern .wii-button:hover {
+    background-color: rgba(255,255,255,0.1) !important;
+    transform: translateY(-2px);
+    box-shadow: none;
+}
+body.ui-modern .wii-button-svg {
+    fill: #a0a0a0;
+}
+body.ui-modern .wii-button:hover .wii-button-svg {
+    fill: #ffffff;
+}
+body.ui-modern .wii-date-time {
+    color: #eeeeee;
+}
+
+/* Modern Game Cards */
+body.ui-modern .game-button {
+    border: 1px solid #2a2a2a;
+    border-radius: 14px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+body.ui-modern .game-button::before,
+body.ui-modern .game-button::after {
+    display: none !important; /* Removes Wii glare and CRT noise */
+}
+body.ui-modern .game-button:hover {
+    border-color: #555555;
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.6), 0 0 15px rgba(255,255,255,0.05);
+    filter: none !important;
+}
+body.ui-modern .game-button-text {
+    background: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+    backdrop-filter: blur(5px);
+    border-bottom-left-radius: 14px; 
+    border-bottom-right-radius: 14px;
+    padding: 8px 0;
+    font-size: 0.95rem;
+}
+
+/* Modern Modal (No CRT) */
+body.ui-modern #game-modal-container {
+    border-radius: 12px;
+    border: 1px solid #333;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+}
+body.ui-modern #game-modal-header {
+    background: #111111;
+    border-bottom: 1px solid #2a2a2a;
+}
+body.ui-modern #game-modal-title {
+    color: #eeeeee;
+    text-shadow: none;
+}
+body.ui-modern .control-btn {
+    background: transparent;
+    border: 1px solid #444;
+    color: #cccccc;
+    box-shadow: none;
+}
+body.ui-modern .control-btn:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: #666;
+    color: #ffffff;
+    transform: scale(1.02);
+}
+body.ui-modern .control-btn.close-btn:hover {
+    background: rgba(211, 47, 47, 0.2);
+    border-color: #d32f2f;
+    color: #ff5252;
+}
+body.ui-modern .crt-animate-open #game-iframe-wrapper,
+body.ui-modern .crt-animate-close #game-iframe-wrapper {
+    animation: none !important; /* Disable CRT flash */
+}
+body.ui-modern #game-iframe {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+/* Page Dots */
+body.ui-modern .page-indicator {
+    bottom: 30px;
+}
+body.ui-modern .page-dot {
+    background-color: #333333;
+    border-color: transparent;
+}
+body.ui-modern .page-dot.active {
+    background-color: #ffffff;
+}
