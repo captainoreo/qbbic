@@ -1,7 +1,18 @@
 // modern.js
 
 // Add or change your Developer Picks here. Must match the 'title' attribute exactly!
-const DEV_PICKS = ["Dynamite Headdy", "Undertale", "Cave Story", "Spelunky"];
+const DEV_PICKS = [
+    "Dynamite Headdy", 
+    "Undertale", 
+    "Cave Story", 
+    "Spelunky",
+    "Hollow Knight",
+    "Pizza Tower",
+    "Mario 64",
+    "OMORI",
+    "Terraria",
+    "Balatro"
+];
 
 window.addEventListener('load', () => {
     buildModernLayout();
@@ -43,7 +54,7 @@ function buildModernLayout() {
     const devGrid = document.createElement('div');
     devGrid.className = 'modern-dev-grid';
 
-    // Changed from vertical list to a grid structure
+    // Grid container for all games
     const allGrid = document.createElement('div');
     allGrid.className = 'modern-all-grid';
 
