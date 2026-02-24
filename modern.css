@@ -1,0 +1,162 @@
+/* modern.css */
+
+/* --- CORE MODERN OVERRIDES --- */
+body.ui-modern {
+    --bg-color: #0c0c0e !important;
+    --bar-color: rgba(12, 12, 14, 0.7) !important;
+    --static-color: #ffffff !important;
+    --wii-btn-bg: transparent !important;
+    --modal-bg: #151515 !important;
+    --modal-border: #333333 !important;
+    --btn-hover-color: #ffffff !important;
+    --main-font: system-ui, -apple-system, sans-serif !important;
+    
+    background-image: none !important;
+    filter: none !important; 
+    
+    /* UNLOCK SCROLLING FOR MODERN MODE */
+    overflow-y: auto !important; 
+    padding-top: 80px; 
+    padding-bottom: 50px;
+}
+
+/* Hide Classic UI Elements completely */
+body.ui-modern #game-pages-container,
+body.ui-modern #page-indicator-dots,
+body.ui-modern #prev-page-button,
+body.ui-modern #next-page-button {
+    display: none !important;
+}
+
+/* Transform bottom bar into a sleek top navbar */
+body.ui-modern .wii-bottom-bar {
+    top: 0; bottom: auto; height: 65px;
+    border-top: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: none;
+}
+body.ui-modern .wii-button { border: none; box-shadow: none; background-image: none; border-radius: 8px; width: 44px; height: 44px; }
+body.ui-modern .wii-button:hover { background-color: rgba(255,255,255,0.1) !important; transform: translateY(-2px); box-shadow: none; }
+body.ui-modern .wii-button-svg { fill: #a0a0a0; }
+body.ui-modern .wii-button:hover .wii-button-svg { fill: #ffffff; }
+body.ui-modern .wii-date-time { color: #eeeeee; }
+
+/* Modern Modal (No CRT Flash) */
+body.ui-modern #game-modal-container { border-radius: 12px; border: 1px solid #333; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); }
+body.ui-modern #game-modal-header { background: #111111; border-bottom: 1px solid #2a2a2a; }
+body.ui-modern #game-modal-title { color: #eeeeee; text-shadow: none; }
+body.ui-modern .control-btn { background: transparent; border: 1px solid #444; color: #cccccc; box-shadow: none; }
+body.ui-modern .control-btn:hover { background: rgba(255,255,255,0.1); border-color: #666; color: #ffffff; transform: scale(1.02); }
+body.ui-modern .control-btn.close-btn:hover { background: rgba(211, 47, 47, 0.2); border-color: #d32f2f; color: #ff5252; }
+body.ui-modern .crt-animate-open #game-iframe-wrapper, body.ui-modern .crt-animate-close #game-iframe-wrapper { animation: none !important; }
+
+/* --- MODERN LAYOUT SYSTEM --- */
+#modern-container {
+    display: none; /* Hidden in Classic Mode */
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: var(--main-font);
+}
+
+body.ui-modern #modern-container {
+    display: block; /* Visible in Modern Mode */
+}
+
+.modern-section-title {
+    color: #fff;
+    font-size: 1.8rem;
+    margin: 40px 0 20px 0;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
+
+/* Dev Picks: Grid Layout */
+.modern-dev-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+/* Vertical List Layout */
+.modern-vertical-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* --- MODERN GAME CARDS --- */
+body.ui-modern .game-button {
+    position: relative;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    display: flex;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    /* Strip classic effects */
+    clip-path: none; opacity: 1; filter: none !important;
+}
+
+body.ui-modern .game-button::before { display: none !important; }
+
+/* Dimmer overlay to make text pop */
+body.ui-modern .game-button::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 100%);
+    z-index: 1;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+body.ui-modern .game-button:hover {
+    transform: translateY(-4px);
+    border-color: var(--btn-hover-color);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+}
+
+/* Text styling */
+body.ui-modern .game-button-text {
+    position: relative;
+    z-index: 2;
+    display: block !important;
+    color: #fff;
+    background: transparent;
+    font-weight: bold;
+    backdrop-filter: none;
+}
+
+/* Specifics for Dev Picks Cards */
+body.ui-modern .modern-dev-grid .game-button {
+    height: 140px;
+    align-items: flex-end;
+    justify-content: center;
+}
+body.ui-modern .modern-dev-grid .game-button-text {
+    padding: 10px;
+    font-size: 1.2rem;
+    text-shadow: 1px 1px 4px #000;
+}
+
+/* Specifics for Vertical List Cards */
+body.ui-modern .modern-vertical-list .game-button {
+    height: 70px;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 20px;
+    background-position: center 25%; /* adjust framing for thin row */
+}
+
+/* Sidebar-style linear gradient overlay for vertical rows */
+body.ui-modern .modern-vertical-list .game-button::after {
+    background: linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.1) 100%);
+}
+
+body.ui-modern .modern-vertical-list .game-button-text {
+    font-size: 1.2rem;
+    text-shadow: none;
+}
