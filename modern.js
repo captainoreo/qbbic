@@ -15,6 +15,22 @@ function buildModernLayout() {
     const modernContainer = document.createElement('div');
     modernContainer.id = 'modern-container';
 
+    // Build the Header (Logo + Text)
+    const headerContainer = document.createElement('div');
+    headerContainer.className = 'modern-header-container';
+    
+    const logoImg = document.createElement('img');
+    logoImg.src = '/assets/Icon (1).svg';
+    logoImg.alt = 'Qbbic Logo';
+    logoImg.className = 'modern-logo';
+    
+    const logoText = document.createElement('h1');
+    logoText.textContent = 'Qbbic';
+    logoText.className = 'modern-logo-text';
+    
+    headerContainer.appendChild(logoImg);
+    headerContainer.appendChild(logoText);
+
     // Headers
     const devTitle = document.createElement('h2');
     devTitle.className = 'modern-section-title';
@@ -22,25 +38,28 @@ function buildModernLayout() {
     
     const allTitle = document.createElement('h2');
     allTitle.className = 'modern-section-title';
-    allTitle.textContent = 'All Games';
 
     // Layout Containers
     const devGrid = document.createElement('div');
     devGrid.className = 'modern-dev-grid';
 
-    const allList = document.createElement('div');
-    allList.className = 'modern-vertical-list';
+    // Changed from vertical list to a grid structure
+    const allGrid = document.createElement('div');
+    allGrid.className = 'modern-all-grid';
 
     // Scrape all existing games from the classic HTML grid
     const allGameNodes = document.querySelectorAll('#game-pages-container .game-button:not(.placeholder)');
     
+    // Add the dynamic count to the "All Games" title
+    allTitle.textContent = `All Games (${allGameNodes.length})`;
+    
     allGameNodes.forEach(node => {
         const title = node.title || node.querySelector('.game-button-text').innerText;
         
-        // 1. Clone and add to "All Games" list
+        // 1. Clone and add to "All Games" grid
         const listClone = node.cloneNode(true);
         attachModalLogic(listClone, node.dataset.href, title);
-        allList.appendChild(listClone);
+        allGrid.appendChild(listClone);
 
         // 2. Clone and add to "Dev Picks" if the title matches our array
         if (DEV_PICKS.includes(title)) {
@@ -51,10 +70,11 @@ function buildModernLayout() {
     });
 
     // Assemble the DOM
+    modernContainer.appendChild(headerContainer);
     modernContainer.appendChild(devTitle);
     modernContainer.appendChild(devGrid);
     modernContainer.appendChild(allTitle);
-    modernContainer.appendChild(allList);
+    modernContainer.appendChild(allGrid);
 
     // Insert it into the page right next to the classic container
     classicContainer.parentNode.insertBefore(modernContainer, classicContainer.nextSibling);
