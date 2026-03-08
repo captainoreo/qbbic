@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chaz-99</title></title>
+    <title>Qbbic</title>
     <link rel="icon" href="/assets/Icon (1).svg" type="image/gif">
     
     <style>
@@ -50,7 +50,7 @@
         }
 
         /* --- Card Styling --- */
-        .game-card {
+        .html-card {
             background-color: var(--card-bg);
             border-radius: 12px;
             overflow: hidden;
@@ -63,7 +63,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
 
-        .game-card:hover {
+        .html-card:hover {
             transform: translateY(-6px);
             border-color: var(--accent-color);
             box-shadow: 0 10px 20px var(--card-hover-shadow);
@@ -88,14 +88,14 @@
         }
 
         /* Styling for empty placeholder slots */
-        .game-card.placeholder {
+        .html-card.placeholder {
             opacity: 0.3;
             pointer-events: none;
             border: 2px dashed #444;
             background-color: transparent;
             box-shadow: none;
         }
-        .game-card.placeholder .card-image {
+        .html-card.placeholder .card-image {
             background-color: #222;
             border-bottom: none;
         }
@@ -108,7 +108,7 @@
         <p>Select a game to play</p>
     </div>
 
-    <div class="card-grid" id="game-grid"></div>
+    <div class="card-grid" id="html-grid"></div>
 
     <script>
         // Your complete game list extracted from the HTML
@@ -311,12 +311,12 @@
         ];
 
         // Function to render the cards
-        const grid = document.getElementById('game-grid');
+        const grid = document.getElementById('html-grid');
 
         games.forEach(game => {
             const card = document.createElement('a');
             card.href = game.href;
-            card.className = game.isPlaceholder ? 'game-card placeholder' : 'game-card';
+            card.className = game.isPlaceholder ? 'html-card placeholder' : 'html-card';
             card.title = game.title;
 
             const imageDiv = document.createElement('div');
