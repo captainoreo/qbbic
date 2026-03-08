@@ -3,220 +3,335 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qbbic - System Warning</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" href="/assets/Icon (1).svg" type="image/gif" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Qbbic - Game Library</title>
+    <link rel="icon" href="/assets/Icon (1).svg" type="image/gif">
     
     <style>
-        /* --- GLOBAL & RESET --- */
-        body, html {
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --accent-color: #40c4ff;
+            --card-hover-shadow: rgba(64, 196, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
             margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #0b0f19; /* Deep, dark modern background */
-            font-family: 'Inter', Arial, sans-serif;
-            overflow: hidden;
-            color: #ffffff;
+            padding: 40px 20px;
         }
 
-        /* --- 1. MODERN WARNING SCREEN (Top Layer) --- */
-        #safety-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(11, 15, 25, 0.95);
-            z-index: 99999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.6s ease-in-out;
-            backdrop-filter: blur(8px);
-        }
-
-        #safety-screen.fade-out {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .warning-card {
-            background-color: #111827;
-            border: 1px solid #374151;
-            border-top: 4px solid #ef4444; /* Stark red warning line */
-            border-radius: 8px;
-            padding: 50px 40px;
-            max-width: 650px;
-            width: 90%;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        .header {
             text-align: center;
-        }
-
-        .icon-wrapper {
-            background-color: rgba(239, 68, 68, 0.1);
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 25px auto;
-            color: #ef4444;
-        }
-
-        .safety-title {
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: #f3f4f6;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
-
-        .safety-text {
-            font-size: 16px;
-            line-height: 1.7;
-            color: #9ca3af;
             margin-bottom: 40px;
         }
 
-        .safety-text strong {
-            color: #d1d5db;
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            color: var(--text-primary);
         }
 
-        .btn-continue {
-            background-color: #ef4444;
-            color: #ffffff;
-            border: none;
-            padding: 14px 36px;
-            font-size: 15px;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
         }
 
-        .btn-continue:hover {
-            background-color: #dc2626;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 8px -1px rgba(239, 68, 68, 0.4);
+        /* --- Card Grid Layout --- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
-        .btn-continue:active {
-            transform: translateY(1px);
-        }
-
-        /* --- 2. MODERN LOADING SCREEN (Bottom Layer) --- */
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #0b0f19;
-            z-index: 1; 
+        /* --- Card Styling --- */
+        .html-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--text-primary);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
 
-        .spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-left-color: #ef4444;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 24px;
+        .html-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent-color);
+            box-shadow: 0 10px 20px var(--card-hover-shadow);
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .card-image {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-bottom: 1px solid #2a2a2a;
         }
 
-        .loading-text {
-            color: #6b7280;
-            font-size: 14px;
+        .card-title {
+            padding: 16px;
+            text-align: center;
             font-weight: 600;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            animation: pulseText 2s infinite ease-in-out;
+            font-size: 1.05rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        @keyframes pulseText {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+        /* Styling for empty placeholder slots */
+        .html-card.placeholder {
+            opacity: 0.3;
+            pointer-events: none;
+            border: 2px dashed #444;
+            background-color: transparent;
+            box-shadow: none;
         }
-
+        .html-card.placeholder .card-image {
+            background-color: #222;
+            border-bottom: none;
+        }
     </style>
 </head>
 <body>
 
-    <audio id="select-sound" src="/assets/Options.wav" preload="auto"></audio>
-
-    <div id="safety-screen">
-        <div class="warning-card">
-            <div class="icon-wrapper">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-10 h-10" style="width: 40px; height: 40px;">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-            </div>
-            <div class="safety-title">Work & School Safety Warning</div>
-            <div class="safety-text">
-                <p style="margin-bottom: 15px;">Before proceeding, please ensure you have fully completed all assigned classwork and job responsibilities.</p>
-                <p>If you are caught neglecting your duties to access this site, <strong>Team Qbbic claims no responsibility.</strong></p>
-            </div>
-            <button id="btn-acknowledge" class="btn-continue">I Understand & Continue</button>
-        </div>
+    <div class="header">
+        <h1>Qbbic Library</h1>
+        <p>Select a game to play</p>
     </div>
 
-    <div id="loading-screen">
-        <div class="spinner"></div>
-        <div class="loading-text">Initializing Qbbic System</div>
-    </div>
+    <div class="card-grid" id="html-grid"></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const safetyScreen = document.getElementById('safety-screen');
-            const ackButton = document.getElementById('btn-acknowledge');
-            const selectSound = document.getElementById('select-sound');
-            
-            function enterSite() {
-                // Prevent double clicking
-                if(safetyScreen.getAttribute('data-clicked') === 'true') return;
-                safetyScreen.setAttribute('data-clicked', 'true');
-                
-                // 1. Play Sound
-                if(selectSound) {
-                    selectSound.currentTime = 0;
-                    selectSound.play().catch(e => console.log('Audio autoplay blocked'));
-                }
-                
-                // 2. Fade out Safety Screen
-                safetyScreen.classList.add('fade-out');
+        // Your complete game list extracted from the HTML
+        const games = [
+            // Page 1
+            { href: "/games/clyumenikki.html", img: "/assets/nikki.jpg", title: "Yume Nikki" },
+            { href: "/games/clBFDIBranches.html", img: "/assets/IMG_7499.jpeg", title: "BFDI: Branches" },
+            { href: "/games/DOOM.html", img: "/assets/doom1.jpg", title: "Doom 1" },
+            { href: "/games/Doom 2.html", img: "/assets/doom2.png", title: "Doom 2" },
+            { href: "/games/Nubbys Number Factory.html", img: "/assets/factory.jpg", title: "Nubby's Factory" },
+            { href: "/games/Pizza Tower.html", img: "/assets/pizzatower.jpg", title: "Pizza Tower" },
+            { href: "/games/clcavestory.html", img: "/assets/cavestory.png", title: "Cave Story" },
+            { href: "/games/clbfdia5b.html", img: "/assets/572190-vqi8cznu-v4.jpg", title: "BFDIA5B" },
+            { href: "/games/cluncannycatgolf.html", img: "/assets/uncanny-cat-canny-cat.gif", title: "Uncanny Cat Golf" },
+            { href: "/games/n-gon.html", img: "/assets/ngon.png", title: "N-GON" },
+            { href: "https://deltacook.vercel.app/", img: "/assets/hx2er6ahcrv11.gif", title: "Deltarune" },
+            { href: "/games/Half Life.html", img: "/assets/2133.png", title: "Half-Life" },
 
-                // 3. Wait a moment for the fade to finish, then redirect
-                setTimeout(() => {
-                    window.location.href = 'Home.html';
-                }, 2000); // Shortened the wait time slightly to match the faster, modern feel
+            // Page 2
+            { href: "/games/Hollow Knight(1).html", img: "/assets/knight.jpeg", title: "Hollow Knight" },
+            { href: "/games/clparappatherapperalt.html", img: "/assets/Sony-playstation-parappa-the-rapper.png", title: "Parappa" },
+            { href: "/games/clsmashremix.html", img: "/assets/remix.jpg", title: "Smash Remix" },
+            { href: "/games/Fallout.html", img: "/assets/585.webp", title: "Fallout" },
+            { href: "/games/WebFishing.html", img: "/assets/423.png", title: "Webfishing" },
+            { href: "/games/Kindergarten.html", img: "/assets/garten1.png", title: "Kindergarten" },
+            { href: "/games/Kindergarten 2.html", img: "/assets/garten2.png", title: "Kindergarten 2" },
+            { href: "/games/Kindergarten 3.html", img: "/assets/garten3.png", title: "Kindergarten 3" },
+            { href: "/games/clkirbysadventure.html", img: "/assets/kirby.png", title: "Kirby's Adventure" },
+            { href: "/games/clpacmana.html", img: "/assets/pacman.png", title: "Pac-Man" },
+            { href: "/games/clbindingofisaccsheeptime.html", img: "/assets/350.png", title: "Isaac" },
+            { href: "/games/Dadish.html", img: "/assets/IMG_6019.jpeg", title: "Dadish" },
+
+            // Page 3
+            { href: "/games/Dadish 2.html", img: "/assets/IMG_6020.jpeg", title: "Dadish 2" },
+            { href: "/games/Dadish 3.html", img: "/assets/IMG_6021.jpeg", title: "Dadish 3" },
+            { href: "/games/Dadish 3D.html", img: "/assets/IMG_6022.jpeg", title: "Dadish 3D" },
+            { href: "/games/clgoldensun.html", img: "/assets/IMG_6027.jpeg", title: "Godzilla" },
+            { href: "/games/clmariosmysterymeat.html", img: "/assets/IMG_6034.png", title: "Mystery Meat" },
+            { href: "/games/cldonkeykong64.html", img: "/assets/IMG_6033.jpeg", title: "DK 64" },
+            { href: "/games/clcheesechompers3d.html", img: "/assets/IMG_6060.jpeg", title: "Cheese Chompers" },
+            { href: "/games/Postal.html", img: "/assets/686592.png", title: "Postal" },
+            { href: "/games/cliwbtg.html", img: "/assets/IMG_6121.png", title: "IWBTG" },
+            { href: "/games/clundertale.html", img: "/assets/undertale-pixel-art.gif", title: "Undertale" },
+            { href: "/games/Balatro.html", img: "/assets/Balatro_cover.jpg", title: "Balatro" },
+            { href: "/games/clmonkeymart.html", img: "/assets/IMG_6142.jpeg", title: "Monkey Mart" },
+
+            // Page 4
+            { href: "/games/pvz.html", img: "/assets/Plantsvs.ZombiesNintendoDS.png", title: "PvZ" },
+            { href: "/games/clctgpnitro.html", img: "/assets/ctgp.jpg", title: "CTGP Nitro" },
+            { href: "/games/clkirbysqueaksquad.html", img: "/assets/squeak.png", title: "Squeak Squad" },
+            { href: "/games/clkirbysuperstarultra.html", img: "/assets/ultra.jpg", title: "Super Star Ultra" },
+            { href: "/games/clgta2alt.html", img: "/assets/gta2.jpg", title: "GTA 2" },
+            { href: "/games/clgtaalty.html", img: "/assets/gta1.jpg", title: "GTA 1" },
+            { href: "/games/clocarinaoftime.html", img: "/assets/oot.jpg", title: "Ocarina of Time" },
+            { href: "/games/clmajorasmask.html", img: "/assets/majora.jpg", title: "Majora's Mask" },
+            { href: "/games/cldrmario(1).html", img: "/assets/drmario.jpg", title: "Dr. Mario" },
+            { href: "/games/cllearntofly.html", img: "/assets/340.png", title: "Learn to Fly" },
+            { href: "/games/cllearntofly2.html", img: "/assets/341.png", title: "Learn to Fly 2" },
+            { href: "/games/cllearntofly3.html", img: "/assets/342.png", title: "Learn to Fly 3" },
+
+            // Page 5
+            { href: "/games/cllearntoflyidle.html", img: "/assets/343.png", title: "Learn to Fly Idle" },
+            { href: "/games/clwebecomewhatwebehold.html", img: "/assets/become.png", title: "WBWWB" },
+            { href: "/games/ristar.html", img: "/assets/ristar.jpeg", title: "Ristar" },
+            { href: "/games/cldynamiteheaddy.html", img: "/assets/headdy.jpg", title: "Dynamite Headdy" },
+            { href: "https://mariosixty.vercel.app/sm64/index.html", img: "/assets/IMG_6233.jpeg", title: "Mario 64" },
+            { href: "/games/clFNAF.html", img: "/assets/FNaF1.jpg", title: "FNAF 1" },
+            { href: "/games/clFNAF2.html", img: "/assets/FNAF 2.png", title: "FNAF 2" },
+            { href: "/games/clFNAF3.html", img: "/assets/FNaF3.png", title: "FNAF 3" },
+            { href: "/games/clFNAF4.html", img: "/assets/Fnaf4.png", title: "FNAF 4" },
+            { href: "/games/clfnafworldd.html", img: "/assets/FNaFWorld.png", title: "FNAF World" },
+            { href: "/games/clfnafsl.html", img: "/assets/fnafsl.png", title: "Sister Location" },
+            { href: "/games/clfnafps.html", img: "/assets/FFPS.png", title: "Pizzeria Sim" },
+
+            // Page 6
+            { href: "/games/clfnac1.html", img: "/assets/FNAC1ICON.png", title: "FNAC 1" },
+            { href: "/games/clfridaynightfunkin.html", img: "/assets/fnf.jpeg", title: "FNF" },
+            { href: "/games/clfruitninja.html", img: "/assets/FruitNinja.jpg", title: "Fruit Ninja" },
+            { href: "/games/clrunningfred.html", img: "/assets/fred.png", title: "Running Fred" },
+            { href: "/games/clspelunky.html", img: "/assets/spelunky.png", title: "Spelunky" },
+            { href: "/games/Oneshot (LEGACY).html", img: "/assets/oneshot.png", title: "Oneshot" },
+            { href: "/games/Off.html", img: "/assets/off.jpg", title: "OFF" },
+            { href: "/games/BFDIA 5b_ 5_30.html", img: "/assets/ruby.gif", title: "BFDIA 5b" },
+            { href: "/games/clpico8edu.html", img: "/assets/pico.png", title: "Pico-8" },
+            { href: "/games/clonebitadventure.html", img: "/assets/onebit.png", title: "Onebit" },
+            { href: "/games/clunitresdreams.html", img: "/assets/IMG_6334.png", title: "Unitres" },
+            { href: "/games/cltetris.html", img: "/assets/IMG_6335.png", title: "Tetris" },
+
+            // Page 7
+            { href: "/games/clpeggle.html", img: "/assets/IMG_6381.jpeg", title: "Peggle" },
+            { href: "/games/clgranddad.html", img: "/assets/IMG_6382.webp", title: "Grand Dad" },
+            { href: "/games/clpicosschool.html", img: "/assets/IMG_6383.png", title: "Pico's School" },
+            { href: "/games/clpomgetsinternet.html", img: "/assets/IMG_6386.png", title: "Pom Gets Wifi" },
+            { href: "/games/clpunchout.html", img: "/assets/IMG_6437.jpeg", title: "Punch-Out" },
+            { href: "/games/clearthbound.html", img: "/assets/IMG_6443.webp", title: "Mother" },
+            { href: "/games/clearthboundsnes.html", img: "/assets/IMG_6444.jpeg", title: "Mother 2" },
+            { href: "/games/clearthbound3.html", img: "/assets/IMG_6445.jpeg", title: "Mother 3" },
+            { href: "/games/Buster Jam.html", img: "/assets/boom.gif", title: "Buster Jam" },
+            { href: "/games/clovofixed.html", img: "/assets/ovo.jpeg", title: "OvO" },
+            { href: "/games/clmyteardrop.html", img: "/assets/tear.gif", title: "My Teardrop" },
+            { href: "/games/cljetpackjoyride(1).html", img: "/assets/jetpack.jpeg", title: "Jetpack Joyride" },
+
+            // Page 8
+            { href: "/games/clretrobowl.html", img: "/assets/bowl.png", title: "Retro Bowl" },
+            { href: "/games/OMORI.html", img: "/assets/IMG_6503.jpeg", title: "OMORI" },
+            { href: "https://burritobison.vercel.app/", img: "/assets/IMG_6510.png", title: "Burrito bison" },
+            { href: "/games/clgtachina.html", img: "/assets/IMG_6525.jpeg", title: "GTA chinatown wars" },
+            { href: "/games/clkirbyandtheamzingmirror.html", img: "/assets/IMG_6526.jpeg", title: "Kirby amazing mirror" },
+            { href: "/games/clpokeruby.html", img: "/assets/IMG_6527.jpeg", title: "Pokemon Ruby" },
+            { href: "/games/clpokeblack2alt.html", img: "/assets/IMG_6528.jpeg", title: "Pokemon Black 2" },
+            { href: "/games/clpokemonleafgreen.html", img: "/assets/IMG_6529.jpeg", title: "Pokemon Leafgreen" },
+            { href: "/games/clmeatboyflash.html", img: "/assets/IMG_6530.jpeg", title: "MeatBoy" },
+            { href: "/games/Grand Theft Auto_ Vice City.html", img: "/assets/IMG_6556.jpeg", title: "GTA Vice city" },
+            { href: "/games/clsonicandfallingstar.html", img: "/assets/IMG_6599.webp", title: "Sonic fallen star" },
+            { href: "/games/clsuperfallingfred.html", img: "/assets/IMG_6601.png", title: "Super falling fred" },
+
+            // Page 9
+            { href: "/games/clsolatrobo.html", img: "/assets/IMG_6678.jpeg", title: "Solatorobo" },
+            { href: "/games/Please Dont Touch Anything.html", img: "/assets/IMG_6691.png", title: "don't touch anything" },
+            { href: "/games/1 Date Danger.html", img: "/assets/IMG_6692.jpeg", title: "1 Date Danger" },
+            { href: "/games/cllozspirittracks.html", img: "/assets/IMG_6744.png", title: "Zelda: Spirit tracks" },
+            { href: "/games/cldrawntolife.html", img: "/assets/IMG_6778.jpeg", title: "Drawn to life" },
+            { href: "/games/cldrawntolife2.html", img: "/assets/IMG_6779.jpeg", title: "DTL: next chapter" },
+            { href: "/games/cltouhou.html", img: "/assets/IMG_6837.webp", title: "Touhou 1" },
+            { href: "/games/cltouhou2.html", img: "/assets/IMG_6838.webp", title: "Touhou 2" },
+            { href: "/games/cltouhou3.html", img: "/assets/IMG_6839.webp", title: "Touhou 3" },
+            { href: "/games/cltouhou4.html", img: "/assets/IMG_6840.jpeg", title: "Touhou 4" },
+            { href: "/games/cltouhou5.html", img: "/assets/IMG_6841.jpeg", title: "Touhou 5" },
+            { href: "/games/Happy Wheels.html", img: "/assets/IMG_6847.png", title: "Happy Wheels" },
+
+            // Page 10
+            { href: "/games/Papa's Wingeria.html", img: "/assets/IMG_6842.jpeg", title: "Papa's Wingeria" },
+            { href: "/games/Papa's Sushiria.html", img: "/assets/IMG_6843.jpeg", title: "Papa's Sushiria" },
+            { href: "/games/Papa's Cheeseria.html", img: "/assets/IMG_6844.png", title: "Papa's Cheeseria" },
+            { href: "/games/Papa's Hot Doggeria.html", img: "/assets/IMG_6857.jpeg", title: "Papa's Hot Doggeria" },
+            { href: "/games/Pizza Tower_ Scoutdigo.html", img: "/assets/IMG_6859.webp", title: "Pizza Tower Scoutdigo" },
+            { href: "/games/Chiikawa Puzzle.html", img: "/assets/IMG_6858.png", title: "Chiikawa Puzzle" },
+            { href: "/games/A Dance of Fire and Ice.html", img: "/assets/IMG_6860.png", title: "A Dance of Fire and Ice" },
+            { href: "/games/Baldi's Basics Plus.html", img: "/assets/IMG_6861.webp", title: "Baldi's Basics Plus" },
+            { href: "/games/In Stars and Time.html", img: "/assets/IMG_6869.jpeg", title: "In Stars and Time" },
+            { href: "/games/Buckshot.html", img: "/assets/IMG_6870.jpeg", title: "Buckshot Roulette" },
+            { href: "/games/Adventure Capatalist.html", img: "/assets/IMG_6927.jpeg", title: "Adventure Capitalist" },
+            { href: "/games/cltotm.html", img: "/assets/IMG_6933.png", title: "Tomb of the mask" },
+
+            // Page 11
+            { href: "/games/clwariowareinc.html", img: "/assets/IMG_6950.jpeg", title: "WarioWare Inc" },
+            { href: "/games/clmarioandluigisuperstarsaga.html", img: "/assets/IMG_6954.jpeg", title: "Superstar Saga" },
+            { href: "/games/clpartnersintime.html", img: "/assets/IMG_6953.jpeg", title: "Partners in time" },
+            { href: "/games/clinsidestory.html", img: "/assets/IMG_6955.jpeg", title: "Bowser's inside story" },
+            { href: "/games/Terraria.html", img: "/assets/IMG_6973.jpeg", title: "Terraria" },
+            { href: "/games/Raldi's Crackhouse.html", img: "/assets/IMG_6974.webp", title: "Raldi's Crackhouse" },
+            { href: "/games/Cooking Mama.html", img: "/assets/IMG_6981.jpeg", title: "Cooking Mama" },
+            { href: "/games/Bendy and the Ink Machine.html", img: "/assets/IMG_6982.webp", title: "Bendy and the Ink Machine" },
+            { href: "/games/They Are Coming.html", img: "/assets/IMG_6983.webp", title: "They Are Coming" },
+            { href: "/games/Slither.io.html", img: "/assets/IMG_6984.jpeg", title: "Slither.io" },
+            { href: "/games/Kirby ~ Soft & Wet.html", img: "/assets/IMG_6996.jpeg", title: "Kirby Soft & Wet" },
+            { href: "/games/Half Life_ Opposing Force.html", img: "/assets/693.png", title: "Half Life Opposing Force" },
+
+            // Page 12
+            { href: "/games/clcodenamegordon.html", img: "/assets/IMG_7031.jpeg", title: "Codename gordon" },
+            { href: "/games/clportalflash.html", img: "/assets/IMG_7032.jpeg", title: "Portal Flash" },
+            { href: "/games/clkoopasrevenge.html", img: "/assets/IMG_7033.png", title: "A Koopa's revenge" },
+            { href: "/games/clakoopasrevenge2.html", img: "/assets/IMG_7034.png", title: "A Koopa's revenge 2" },
+            { href: "/games/clvvvvvv.html", img: "/assets/IMG_7035.jpeg", title: "VVVVVV" },
+            { href: "/games/clpunchthetrump.html", img: "/assets/Untitled517_20260118165745.png", title: "Punch the █████" },
+            { href: "/games/Ikachan.html", img: "/assets/IMG_7064.jpeg", title: "Ikachan" },
+            { href: "/games/Appel.html", img: "/assets/IMG_7068.jpeg", title: "Appel" },
+            { href: "/games/cldonkeykongcountry.html", img: "/assets/IMG_7065.png", title: "DK country" },
+            { href: "/games/cldonkeykongcountry2.html", img: "/assets/IMG_7066.jpeg", title: "DK country 2" },
+            { href: "/games/cldonkeykongcountry3.html", img: "/assets/IMG_7067.jpeg", title: "DK country 3" },
+            { href: "/games/Penguino - 5K Follower Special.html", img: "/assets/IMG_7072.png", title: "Penguino" },
+
+            // Page 13
+            { href: "/games/Minecraft 1.8.8.html", img: "/assets/IMG_7110.jpeg", title: "Minecraft 1.8.8" },
+            { href: "/games/Minecraft 1.12.2.html", img: "/assets/Untitled519_20260125142821.png", title: "Minecraft 1.12.2" },
+            { href: "/games/CircloO.html", img: "/assets/IMG_7113.jpeg", title: "CircloO" },
+            { href: "/games/CircloO 2.html", img: "/assets/IMG_7114.png", title: "CircloO 2" },
+            { href: "/games/Quake III Arena.html", img: "/assets/IMG_7115.jpeg", title: "Quake III Arena" },
+            { href: "/games/cltempoverdose.html", img: "/assets/IMG_7116.png", title: "Tempoverdose" },
+            { href: "/games/clcoryinthehouse.html", img: "/assets/IMG_7159.jpeg", title: "Cory in the house" },
+            { href: "/games/clumjammerlammy.html", img: "/assets/IMG_7171.jpeg", title: "Um jammer lammy" },
+            { href: "/games/clmetalslug.html", img: "/assets/IMG_7239.jpeg", title: "metalslug" },
+            { href: "/games/clmetalslug2.html", img: "/assets/IMG_7240.jpeg", title: "metalslug 2" },
+            { href: "/games/clsimpsonsarcade.html", img: "/assets/IMG_7243.jpeg", title: "simpsons arcade" },
+            { href: "/games/Iron Lung.html", img: "/assets/IMG_7252.png", title: "Iron Lung" },
+
+            // Page 14
+            { href: "/games/clmariovsluigi.html", img: "/assets/IMG_7500.png", title: "Mario vs Luigi Online" },
+            { href: "/games/acidbunny.html", img: "/assets/IMG_7333.jpeg", title: "Acid Bunny" },
+            { href: "/games/acidbunny2.html", img: "/assets/IMG_7334.png", title: "Acid Bunny 2" },
+            { href: "/games/Clover Pit.html", img: "/assets/IMG_7360.jpeg", title: "Clover Pit" },
+            { href: "/games/Antonblast.html", img: "/assets/IMG_7361.jpeg", title: "Antonblast" },
+            { href: "/games/Untitled Goose Game.html", img: "/assets/IMG_7359.jpeg", title: "Untitled Goose Game" },
+            { href: "/games/Super Mario Bros. Remastered.html", img: "/assets/IMG_7419.png", title: "Mario Bros Remastered" },
+            { href: "/games/Brotato.html", img: "/assets/IMG_7420.png", title: "Brotato" },
+            { href: "#", img: "", title: "Slot 9", isPlaceholder: true },
+            { href: "#", img: "", title: "Slot 10", isPlaceholder: true },
+            { href: "#", img: "", title: "Slot 11", isPlaceholder: true },
+            { href: "#", img: "", title: "Slot 12", isPlaceholder: true }
+        ];
+
+        // Function to render the cards
+        const grid = document.getElementById('html-grid');
+
+        games.forEach(game => {
+            const card = document.createElement('a');
+            card.href = game.href;
+            card.className = game.isPlaceholder ? 'html-card placeholder' : 'html-card';
+            card.title = game.title;
+
+            const imageDiv = document.createElement('div');
+            imageDiv.className = 'card-image';
+            if (game.img) {
+                imageDiv.style.backgroundImage = `url('${game.img}')`;
             }
 
-            // Listen for button click
-            ackButton.addEventListener('click', enterSite);
-            
-            // Listen for Enter key as a quick shortcut
-            document.addEventListener('keydown', (e) => {
-                if (document.body.contains(safetyScreen) && e.key === 'Enter') {
-                    enterSite();
-                }
-            });
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'card-title';
+            titleDiv.textContent = game.title;
+
+            card.appendChild(imageDiv);
+            card.appendChild(titleDiv);
+            grid.appendChild(card);
         });
     </script>
 </body>
